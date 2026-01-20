@@ -69,7 +69,7 @@ export function SliderGallery({ images, title, primaryColor = '#2563eb' }: Slide
               className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden transition ${
                 index === currentIndex ? 'ring-2 ring-offset-2' : 'opacity-60 hover:opacity-100'
               }`}
-              style={{ ringColor: index === currentIndex ? primaryColor : undefined }}
+              style={index === currentIndex ? { '--tw-ring-color': primaryColor } as React.CSSProperties : undefined}
             >
               <Image
                 src={image}

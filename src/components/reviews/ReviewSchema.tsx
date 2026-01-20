@@ -56,18 +56,19 @@ export function ReviewSchema({
     }))
   }
 
-  // Limpiar undefined
-  if (!schema.aggregateRating) {
-    delete schema.aggregateRating
+  // Limpiar undefined usando type assertion
+  const schemaObj = schema as any
+  if (!schemaObj.aggregateRating) {
+    delete schemaObj.aggregateRating
   }
-  if (schema.review.length === 0) {
-    delete schema.review
+  if (schemaObj.review.length === 0) {
+    delete schemaObj.review
   }
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaObj) }}
     />
   )
 }

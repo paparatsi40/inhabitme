@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-12-15.clover',
 })
 
 const supabase = createClient(
@@ -69,7 +69,8 @@ export async function POST(
     // Get host email from Clerk
     let hostEmail = process.env.INTERNAL_ALERT_EMAIL!
     try {
-      const user = await clerkClient.users.getUser(userId)
+      const client = await clerkClient()
+      const user = await client.users.getUser(userId)
       hostEmail = user.emailAddresses[0]?.emailAddress || hostEmail
       console.log('✅ Host email:', hostEmail)
     } catch (err) {

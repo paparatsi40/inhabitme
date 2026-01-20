@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
@@ -241,7 +241,8 @@ export async function POST(
       // Get guest email from Clerk
       let guestEmail = process.env.INTERNAL_ALERT_EMAIL!;
       try {
-        const guestUser = await clerkClient.users.getUser(booking.guest_id);
+        const client = await clerkClient();
+        const guestUser = await client.users.getUser(booking.guest_id);
         guestEmail = guestUser.emailAddresses[0].emailAddress;
       } catch (emailError) {
         console.error('Error fetching guest email:', emailError);

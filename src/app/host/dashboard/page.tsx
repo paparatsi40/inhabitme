@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth, clerkClient } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { getHostLeads } from '@/lib/hosts/getHostLeads'
 
@@ -20,14 +20,21 @@ function getPaymentLink(
 }
 
 export default async function HostDashboardPage() {
-  const { userId, sessionClaims } = auth()
+  const { userId } = await auth()
 
   if (!userId) {
     redirect('/sign-in')
   }
 
-  const hostEmail =
-    sessionClaims?.email_addresses?.[0]?.email_address
+  // Get user email from Clerk
+  let hostEmail = ''
+  try {
+    const client = await clerkClient()
+    const user = await client.users.getUser(userId)
+    hostEmail = user.emailAddresses[0]?.emailAddress || ''
+  } catch (error) {
+    console.error('Error getting user email:', error)
+  }
 
   if (!hostEmail) {
     return <p>No email associated with this account.</p>

@@ -232,7 +232,7 @@ export default function PropertyDetailPage() {
                   </div>
                   
                   {/* Imágenes secundarias con hover */}
-                  {propertyImages.slice(1, 5).map((img, idx) => (
+                  {propertyImages.slice(1, 5).map((img: string, idx: number) => (
                     <div key={idx} className="relative overflow-hidden rounded-xl group cursor-pointer">
                       <img
                         src={img}
@@ -412,8 +412,8 @@ export default function PropertyDetailPage() {
               {/* Trust Badges & Activity */}
               <div className="pt-4 border-t-2 border-gray-100">
                 <TrustBadges
-                  property={property}
-                  stats={activityStats}
+                  isVerified={true}
+                  showActivity={true}
                 />
               </div>
             </div>
@@ -468,7 +468,7 @@ export default function PropertyDetailPage() {
         onConfirm={handleConfirmAndPay}
         property={property}
         leadPrice={leadPrice}
-        isLoading={creatingCheckout}
+        isProcessing={creatingCheckout}
       />
 
       {/* Modal de Booking Request */}

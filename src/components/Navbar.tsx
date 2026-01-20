@@ -2,14 +2,15 @@
 
 import { Link } from '@/i18n/routing';
 import NextLink from 'next/link';
-import { useAuth } from '@/contexts/AuthContext';
+import { useUser, useClerk } from '@clerk/nextjs';
 import { useTranslations } from 'next-intl';
 import { Button } from './ui/button';
 import { Building2, User, LogOut } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const t = useTranslations('common');
 
   return (
@@ -51,11 +52,11 @@ export function Navbar() {
                   <div className="flex items-center gap-2 hidden sm:flex">
                     <User className="h-5 w-5 text-gray-600" />
                     <span className="text-sm text-gray-700">
-                      {user.email?.split('@')[0]}
+                      {user.emailAddresses?.[0]?.emailAddress?.split('@')[0] || user.firstName || 'User'}
                     </span>
                   </div>
                   <Button
-                    onClick={signOut}
+                    onClick={() => signOut()}
                     variant="outline"
                     size="sm"
                     className="flex items-center gap-2"

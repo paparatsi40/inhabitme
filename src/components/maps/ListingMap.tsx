@@ -54,7 +54,7 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
   const mapRef = useRef<HTMLDivElement>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const mapInstanceRef = useRef<any>(null)
 
   useEffect(() => {
     let mounted = true
@@ -86,7 +86,7 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
           zoom = 16 // Aún más zoom para listing específico
         }
 
-        const map = new google.maps.Map(mapRef.current, {
+        const map = new (window as any).google.maps.Map(mapRef.current, {
           center: coordinates,
           zoom: zoom,
           styles: [
@@ -106,7 +106,7 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
         mapInstanceRef.current = map
 
         // Círculo mostrando área aproximada (no ubicación exacta)
-        new google.maps.Circle({
+        new (window as any).google.maps.Circle({
           strokeColor: '#8B5CF6',
           strokeOpacity: 0.8,
           strokeWeight: 2,
@@ -118,12 +118,12 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
         })
 
         // Pin central
-        new google.maps.Marker({
+        new (window as any).google.maps.Marker({
           position: coordinates,
           map,
           title: neighborhoodName || cityName || 'Ubicación',
           icon: {
-            path: google.maps.SymbolPath.CIRCLE,
+            path: (window as any).google.maps.SymbolPath.CIRCLE,
             scale: 10,
             fillColor: '#8B5CF6',
             fillOpacity: 1,

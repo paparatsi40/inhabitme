@@ -213,8 +213,12 @@ export async function sendHostNewLeadEmail(data: LeadNotificationData) {
       text: generateHostEmailText(data),
     })
     
-    console.log('[Email] Host notification sent:', result.id)
-    return { success: true, id: result.id }
+    if (result.error) {
+      throw new Error(result.error.message)
+    }
+    
+    console.log('[Email] Host notification sent:', result.data?.id)
+    return { success: true, id: result.data?.id }
   } catch (error) {
     console.error('[Email] Error sending host notification:', error)
     return { success: false, error }
@@ -432,8 +436,8 @@ export async function sendGuestUnlockedEmail(data: LeadNotificationData) {
       text: generateGuestEmailText(data),
     })
     
-    console.log('[Email] Guest confirmation sent:', result.id)
-    return { success: true, id: result.id }
+    console.log('[Email] Guest confirmation sent:', result.data?.id || 'unknown')
+    return { success: true, id: result.data?.id || 'unknown' }
   } catch (error) {
     console.error('[Email] Error sending guest confirmation:', error)
     return { success: false, error }

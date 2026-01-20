@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme } from '@/lib/domain/listing-theme'
+import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme, TemplateId } from '@/lib/domain/listing-theme'
 import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
@@ -158,7 +158,7 @@ export default function CustomizeListingPage() {
               </div>
               
               <div className="space-y-3">
-                {Object.entries(THEME_PRESETS).map(([key, preset]) => (
+                {(Object.entries(THEME_PRESETS) as [TemplateId, ListingTheme][]).map(([key, preset]) => (
                   <button
                     key={key}
                     onClick={() => handleTemplateChange(key)}

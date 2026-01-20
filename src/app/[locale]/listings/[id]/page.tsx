@@ -15,7 +15,7 @@ const supabase = createClient(
 
 export default async function ListingDetailPage({ params }: PageProps) {
   const listings = await searchListings({})
-  const listing = listings.find((l) => l.id === params.id)
+  const listing = listings.find((l: any) => l.id === params.id)
 
   if (!listing) {
     notFound()
@@ -61,11 +61,6 @@ export default async function ListingDetailPage({ params }: PageProps) {
         typography: {
           family: themeData.font_family,
           headingStyle: themeData.heading_style,
-        },
-        metadata: THEME_PRESETS[themeData.template as keyof typeof THEME_PRESETS]?.metadata || {
-          name: themeData.template,
-          description: 'Custom theme',
-          idealFor: [],
         },
       }
     }

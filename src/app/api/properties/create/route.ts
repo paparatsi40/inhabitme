@@ -130,18 +130,18 @@ export async function POST(req: NextRequest) {
 
   // 🔔 Check if there are users waiting for this city
   try {
-    if (city_slug) {
-      const waitingCount = await getWaitlistCount(city_slug)
+    if (city) {
+      const waitingCount = await getWaitlistCount(city)
       
       if (waitingCount > 0) {
-        console.log(`[API] 📧 Found ${waitingCount} users waiting for ${city_name || city_slug}`)
+        console.log(`[API] 📧 Found ${waitingCount} users waiting for ${city}`)
         
         // Notify waitlist asynchronously (don't block response)
         notifyWaitlist({
           propertyId: data.id,
           propertyTitle: title,
-          cityName: city_name || city_slug,
-          citySlug: city_slug,
+          cityName: city,
+          citySlug: city,
           propertyUrl: `https://inhabitme.com/properties/${data.id}`,
           imageUrl: images && images.length > 0 ? images[0] : undefined,
         }).catch(error => {

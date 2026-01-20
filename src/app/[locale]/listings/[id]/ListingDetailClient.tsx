@@ -61,7 +61,7 @@ export function ListingDetailClient({ listing }: { listing: ListingProps }) {
   // Extraer nombre del neighborhood (puede ser string u objeto)
   const neighborhoodName = typeof listing.neighborhood === 'string' 
     ? listing.neighborhood 
-    : listing.neighborhood?.name || null
+    : (listing.neighborhood as any)?.name || null
 
   // Normalizar neighborhood para slug
   const neighborhoodSlug = neighborhoodName
@@ -176,14 +176,14 @@ export function ListingDetailClient({ listing }: { listing: ListingProps }) {
       <div className="mb-8 flex flex-wrap items-center gap-4 text-gray-700">
         <div className="flex items-center gap-2">
           <Bed className="h-5 w-5 text-blue-600" />
-          <span className="font-medium">{listing.bedrooms}</span>
-          <span className="text-sm">habitación{listing.bedrooms > 1 ? 'es' : ''}</span>
+          <span className="font-medium">{listing.bedrooms || 1}</span>
+          <span className="text-sm">habitación{(listing.bedrooms || 1) > 1 ? 'es' : ''}</span>
         </div>
         <span className="text-gray-300">•</span>
         <div className="flex items-center gap-2">
           <Bath className="h-5 w-5 text-blue-600" />
-          <span className="font-medium">{listing.bathrooms}</span>
-          <span className="text-sm">baño{listing.bathrooms > 1 ? 's' : ''}</span>
+          <span className="font-medium">{listing.bathrooms || 1}</span>
+          <span className="text-sm">baño{(listing.bathrooms || 1) > 1 ? 's' : ''}</span>
         </div>
         <span className="text-gray-300">•</span>
         <div className="flex items-center gap-2">
@@ -272,10 +272,10 @@ export function ListingDetailClient({ listing }: { listing: ListingProps }) {
         <div className="mb-4">
           <div className="flex flex-wrap items-center gap-2 text-gray-700 mb-3">
             <Bed className="h-5 w-5 text-purple-600" />
-            <span className="font-semibold">{listing.bedrooms} habitación{listing.bedrooms > 1 ? 'es' : ''}</span>
+            <span className="font-semibold">{listing.bedrooms || 1} habitación{(listing.bedrooms || 1) > 1 ? 'es' : ''}</span>
             <span className="text-gray-400">•</span>
             <Bath className="h-5 w-5 text-purple-600" />
-            <span className="font-semibold">{listing.bathrooms} baño{listing.bathrooms > 1 ? 's' : ''}</span>
+            <span className="font-semibold">{listing.bathrooms || 1} baño{(listing.bathrooms || 1) > 1 ? 's' : ''}</span>
             {listing.wifi_speed_mbps && (
               <>
                 <span className="text-gray-400">•</span>

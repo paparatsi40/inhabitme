@@ -230,7 +230,7 @@ export async function notifyWaitlist(data: WaitlistNotificationData) {
           })
           .eq('id', user.id)
         
-        return { success: true, email: user.email, id: result.id }
+        return { success: true, email: user.email, id: result.data?.id || 'unknown' }
       } catch (emailError) {
         console.error(`[Waitlist] ❌ Error sending to ${user.email}:`, emailError)
         return { success: false, email: user.email, error: emailError }

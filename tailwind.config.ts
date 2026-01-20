@@ -51,18 +51,7 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-      },
-      // inhabitme Design System Tokens
-      colors: {
-        // Brand colors (consistencia en gradientes)
+        // inhabitme Brand colors
         brand: {
           blue: {
             50: '#eff6ff',
@@ -86,6 +75,18 @@ const config: Config = {
           info: '#3b82f6',
         },
       },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        // inhabitme custom radius
+        card: '0.75rem',      // 12px - cards estándar
+        'card-lg': '1rem',    // 16px - cards grandes
+        'card-xl': '1.5rem',  // 24px - secciones destacadas
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      },
       spacing: {
         // Consistent spacing scale
         section: '3rem',      // 48px - espaciado entre secciones
@@ -99,12 +100,6 @@ const config: Config = {
         'hero-lg': ['3rem', { lineHeight: '1.1', fontWeight: '700' }],     // 48px
         'section-title': ['1.5rem', { lineHeight: '1.3', fontWeight: '600' }], // 24px
         'card-title': ['1.125rem', { lineHeight: '1.4', fontWeight: '600' }],  // 18px
-      },
-      borderRadius: {
-        // Consistent border radius
-        card: '0.75rem',      // 12px - cards estándar
-        'card-lg': '1rem',    // 16px - cards grandes
-        'card-xl': '1.5rem',  // 24px - secciones destacadas
       },
     },
   },

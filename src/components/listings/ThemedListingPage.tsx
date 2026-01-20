@@ -99,7 +99,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                 Comodidades
               </h2>
               <AmenitiesDisplay
-                amenities={listing.amenities}
+                amenities={listing.amenities as unknown as Record<string, boolean | number>}
                 variant={activeTheme.layout.amenities}
                 colors={activeTheme.colors}
               />
