@@ -7,8 +7,11 @@ async function setAdminRole() {
   const userEmail = 'TU_EMAIL_AQUI@example.com'; // CAMBIA ESTO por tu email
   
   try {
+    // Obtener cliente de Clerk
+    const client = await clerkClient();
+    
     // Buscar usuario por email
-    const users = await clerkClient.users.getUserList({
+    const users = await client.users.getUserList({
       emailAddress: [userEmail],
     });
 
@@ -21,7 +24,7 @@ async function setAdminRole() {
     console.log(`✅ Usuario encontrado: ${user.firstName} ${user.lastName} (${user.id})`);
 
     // Actualizar metadata
-    await clerkClient.users.updateUserMetadata(user.id, {
+    await client.users.updateUserMetadata(user.id, {
       publicMetadata: {
         role: 'admin',
       },
