@@ -69,6 +69,11 @@ export default function EditPropertyPage() {
         
         const data = await res.json()
         
+        // Verificar que data existe
+        if (!data) {
+          throw new Error('No data received')
+        }
+        
         setFormData({
           title: data.title || '',
           description: data.description || '',
