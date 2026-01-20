@@ -11,16 +11,16 @@ async function setAdminRole() {
     const client = await clerkClient();
     
     // Buscar usuario por email
-    const users = await client.users.getUserList({
+    const response = await client.users.getUserList({
       emailAddress: [userEmail],
     });
 
-    if (users.length === 0) {
+    if (!response.data || response.data.length === 0) {
       console.error('❌ Usuario no encontrado con ese email');
       return;
     }
 
-    const user = users[0];
+    const user = response.data[0];
     console.log(`✅ Usuario encontrado: ${user.firstName} ${user.lastName} (${user.id})`);
 
     // Actualizar metadata
