@@ -1,0 +1,62 @@
+{
+  "comparison": {
+    "other": {
+      "title": "Otras plataformas",
+      "commission": "Comisiones del 15-20%",
+      "commissionDesc": "Sobre el precio total del alquiler",
+      "hiddenFees": "Fees escondidos hasta €500",
+      "hiddenFeesDesc": "Descubres el costo real al final",
+      "hostPays": "El host paga comisión",
+      "hostPaysDesc": "Resulta en precios más altos para ti",
+      "example": "Ejemplo 3 meses en Madrid:",
+      "total": "€1,200 + €180 = €1,380",
+      "breakdown": "Alquiler + comisiones"
+    },
+    "inhabitme": {
+      "title": "InhabitMe",
+      "badge": "MEJOR PRECIO",
+      "lowFee": "Solo €9-19 por contactar",
+      "lowFeeDesc": "Pago único (no mensual)",
+      "noFees": "Sin comisiones adicionales",
+      "noFeesDesc": "El precio que ves es el que pagas",
+      "hostFree": "El host NO paga nada",
+      "hostFreeDesc": "Precios más justos para ambos",
+      "example": "Ejemplo 3 meses en Madrid:",
+      "total": "€1,200 + €12 = €1,212",
+      "breakdown": "Alquiler + contacto"
+    },
+    "savingsHighlight": "💰 Ahorro promedio por estancia",
+    "savingsAmount": "€300 - €1,000",
+    "savingsDesc": "Dependiendo de la duración y ciudad",
+    "benefitsGuest": {
+      "title": "✨ Beneficios para ti (Guest)",
+      "save90": "Pagas hasta <strong>90% menos</strong> que plataformas tradicionales",
+      "directContact": "Contacto <strong>directo con el host</strong> - negocias condiciones",
+      "transparent": "Sin intermediarios después - <strong>trato transparente</strong>"
+    },
+    "benefitsHost": {
+      "title": "🏡 Beneficios para el Host",
+      "zeroCommission": "<strong>Cero comisiones</strong> - se queda con el 100% del alquiler",
+      "betterPrices": "Puede ofrecer <strong>mejores precios</strong> sin perder dinero",
+      "qualityLeads": "Leads de calidad - solo gente <strong>realmente interesada</strong>"
+    }
+  },
+  "citiesSection": {
+    "title": "Encuentra tu ciudad perfecta",
+    "subtitle": "Estancias medias en las mejores ciudades para nómadas digitales",
+    "from": "Desde {price}/mes",
+    "viewProperties": "Ver propiedades"
+  },
+  "faqSection": {
+    "title": "Preguntas frecuentes",
+    "subtitle": "Todo lo que necesitas saber sobre cómo funciona inhabitme",
+    "contactSupport": "¿Tienes más preguntas? Estamos aquí para ayudarte",
+    "contactCta": "Contactar soporte"
+  },
+  "finalCta": {
+    "title": "¿Listo para encontrar tu próximo hogar?",
+    "subtitle": "Únete a cientos de nómadas digitales que ya viven y trabajan en inhabitme",
+    "viewProperties": "Ver propiedades",
+    "listSpace": "Publicar mi espacio"
+  }
+}

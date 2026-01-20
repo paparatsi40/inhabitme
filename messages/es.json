@@ -1,0 +1,279 @@
+{
+  "metadata": {
+    "title": "InhabitMe - Estancias medias sin sorpresas",
+    "description": "Alojamientos de 1-6 meses listos para vivir y trabajar. Precio claro, legal, sin sorpresas."
+  },
+  "common": {
+    "logo": "InhabitMe",
+    "language": "Idioma",
+    "dashboard": "Panel",
+    "myProperties": "Mis Propiedades",
+    "signOut": "Cerrar sesión",
+    "settings": "Configuración",
+    "search": "Buscar",
+    "viewPublic": "Ver Pública",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "publishProperty": "Publicar Propiedad",
+    "logout": "Salir"
+  },
+  "home": {
+    "hero": {
+      "title": "Tu hogar para",
+      "titleHighlight": "meses, no noches",
+      "subtitle": "Encuentra el espacio perfecto para <strong>vivir y trabajar</strong>.<br/>Sin comisiones absurdas. Sin sorpresas.",
+      "badge": "Estancias medias sin intermediarios",
+      "features": {
+        "wifi": "WiFi >50 Mbps verificado",
+        "workspace": "Espacio de trabajo",
+        "transparent": "Precio transparente"
+      },
+      "cta": {
+        "primary": "Ver propiedades",
+        "secondary": "Publicar mi espacio"
+      },
+      "trustSignal": "Hosts verificados · WiFi garantizado · Cero fake data",
+      "pricingBadge": "€89 fee único por reserva confirmada",
+      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Precio transparente desde el inicio",
+      "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
+    },
+    "whyInhabitme": {
+      "title": "¿Por qué inhabitme?",
+      "subtitle": "Diseñado específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>",
+      "verified": {
+        "title": "100% Verificado para trabajar",
+        "description": "WiFi >50 Mbps medido, escritorio dedicado y ambiente tranquilo. Cada propiedad pasa verificación."
+      },
+      "transparent": {
+        "title": "Precio claro, sin sorpresas",
+        "description": "Precio mensual todo incluido. Sin comisiones ocultas, sin tarifas sorpresa. Sabes exactamente qué pagas."
+      },
+      "flexible": {
+        "title": "Flexibilidad total",
+        "description": "De 1 a 12 meses. Sin compromisos eternos, sin burocracia compleja. Empieza cuando quieras."
+      },
+      "cta": "Explorar Madrid →"
+    },
+    "howItWorks": {
+      "title": "Transparencia total en precios",
+      "subtitle": "Sin comisiones escondidas · Sin sobrecargos · Sin sorpresas",
+      "otherPlatforms": {
+        "title": "Otras plataformas",
+        "commission": "Comisiones del 15-20%",
+        "commissionDesc": "Sobre el precio total del alquiler",
+        "fees": "Fees escondidos hasta €500",
+        "feesDesc": "Descubres el costo real al final",
+        "host": "El host paga comisión",
+        "hostDesc": "Resulta en precios más altos para ti"
+      },
+      "inhabitme": {
+        "title": "InhabitMe",
+        "badge": "MEJOR PRECIO",
+        "oneFee": "Solo €89 por reserva confirmada",
+        "oneFeeDesc": "Pagas solo cuando todo está confirmado",
+        "zeroCommission": "Sin comisiones mensuales",
+        "zeroCommissionDesc": "El precio del alquiler es directo al host",
+        "host": "El host paga €50 solo al cerrar",
+        "hostDesc": "Ambos pagan solo si la reserva se confirma",
+        "fairPrice": "Precio justo garantizado",
+        "fairPriceDesc": "El host no necesita inflar el precio"
+      },
+      "example": {
+        "title": "Ejemplo 3 meses en Madrid:",
+        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €89"
+      },
+      "savings": {
+        "badge": "💰 Ahorro promedio por estancia",
+        "amount": "€450 - €1,000",
+        "description": "Dependiendo de la duración y ciudad",
+        "title": "¡Ahorras €451 en este ejemplo!",
+        "subtitle": "Y el ahorro aumenta cuando alquilas por más tiempo"
+      },
+      "benefits": {
+        "guest": {
+          "title": "✨ Beneficios para ti (Guest)",
+          "point1": "Pagas 83% menos en fees que plataformas tradicionales",
+          "point2": "Contacto directo con el host - negocias condiciones",
+          "point3": "Sin sorpresas, transparencia total desde el día 1",
+          "point4": "Propiedades verificadas y hosts confiables"
+        },
+        "host": {
+          "title": "🏠 Beneficios para hosts",
+          "point1": "Solo €50 cuando cierras - conservas casi todo",
+          "point2": "Atrae inquilinos que buscan precios justos",
+          "point3": "Negociación directa - tú decides tus condiciones",
+          "point4": "Proceso simple y transparente"
+        }
+      }
+    },
+    "cities": {
+      "title": "Ciudades disponibles",
+      "subtitle": "Vive y trabaja en Europa y Latinoamérica",
+      "madrid": {
+        "subtitle": "Capital de España",
+        "from": "Desde €800/mes"
+      },
+      "barcelona": {
+        "subtitle": "Mar y Modernismo",
+        "from": "Desde €900/mes"
+      },
+      "valencia": {
+        "subtitle": "Playa y calidad de vida",
+        "from": "Desde €700/mes"
+      },
+      "sevilla": {
+        "subtitle": "Sol y flamenco",
+        "from": "Desde €600/mes"
+      },
+      "lisboa": {
+        "subtitle": "Fiscalidad favorable",
+        "from": "Desde €750/mes"
+      },
+      "porto": {
+        "subtitle": "Vino y autenticidad",
+        "from": "Desde €650/mes"
+      },
+      "mexico": {
+        "subtitle": "Capital digital de LatAm",
+        "from": "Desde €500/mes"
+      },
+      "buenosaires": {
+        "subtitle": "Cultura y tango",
+        "from": "Desde €400/mes"
+      },
+      "medellin": {
+        "subtitle": "Eterna primavera",
+        "from": "Desde €450/mes"
+      }
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "q1": {
+        "question": "¿Cuánto cuesta?",
+        "answer": "€9-19 por contactar al host (según ciudad). Pago único. Sin comisiones adicionales. Solo pagas por desbloquear el contacto, luego tratas directamente con el anfitrión."
+      },
+      "q2": {
+        "question": "¿Por qué es tan barato?",
+        "answer": "No cobramos comisión al host ni porcentaje del alquiler. Solo cobramos por conectarte. Por eso es mucho más barato que agencias tradicionales (€50-500) o plataformas como Airbnb (15%)."
+      },
+      "q3": {
+        "question": "¿Qué obtengo por €12?",
+        "answer": "Email directo del host + template de mensaje pre-escrito + garantía de respuesta en 48h o devolución. Contactas directo, negocias tus condiciones y cierras el trato sin intermediarios."
+      },
+      "q4": {
+        "question": "¿El host paga algo?",
+        "answer": "No. Cero comisiones. El host no paga nada. Por eso los precios son más justos - no necesita inflar el alquiler para cubrir comisiones de plataforma."
+      },
+      "q5": {
+        "question": "¿El WiFi está realmente verificado?",
+        "answer": "Sí. Todas las propiedades garantizan WiFi >50 Mbps, verificado y apto para trabajo remoto. No aceptamos propiedades sin buen internet."
+      },
+      "q6": {
+        "question": "¿Qué pasa con las cancelaciones?",
+        "answer": "Negocias las condiciones de cancelación directamente con el host. Cada anfitrión tiene su política. Esto te da flexibilidad para llegar a acuerdos que convengan a ambas partes."
+      },
+      "q7": {
+        "question": "¿Y si el host no responde?",
+        "answer": "Garantizamos respuesta del host en 48 horas. Si no responde, devolvemos el 100% de tu pago. Sin preguntas."
+      },
+      "q8": {
+        "question": "¿El pago es seguro?",
+        "answer": "Sí. Usamos Stripe, el mismo sistema que usan Airbnb, Uber y miles de empresas. Encriptación de nivel bancario. Tus datos siempre protegidos."
+      }
+    },
+    "finalCta": {
+      "title": "¿Listo para encontrar tu hogar?",
+      "subtitle": "Cientos de apartamentos verificados en 9 ciudades. Desde €9 para contactar.",
+      "cta": "Ver propiedades"
+    }
+  },
+  "properties": {
+    "contactHost": "Contactar Anfitrión",
+    "availability": "Disponibilidad",
+    "features": "Características",
+    "description": "Descripción",
+    "location": "Ubicación",
+    "price": "Precio",
+    "perMonth": "/mes",
+    "bedrooms": "habitaciones",
+    "bathrooms": "baños",
+    "size": "m²",
+    "available": "Disponible",
+    "rented": "Rentado",
+    "viewMore": "Ver más propiedades",
+    "unlockContact": "Desbloquear contacto por €{price}"
+  },
+  "cities": {
+    "exploreProperties": "Explora propiedades en {city}",
+    "neighborhoods": "Barrios en {city}",
+    "seeAll": "Ver todos los barrios",
+    "comingSoon": "Próximamente",
+    "notifyMe": "Avísame cuando haya propiedades",
+    "properties": "{count} propiedades disponibles"
+  },
+  "footer": {
+    "tagline": "Tu hogar perfecto para trabajar remoto. Alojamientos verificados con WiFi rápido en las mejores ciudades.",
+    "product": "Producto",
+    "search": "Buscar alojamiento",
+    "cities": {
+      "madrid": "Madrid",
+      "barcelona": "Barcelona",
+      "valencia": "Valencia",
+      "lisboa": "Lisboa"
+    },
+    "company": "Empresa",
+    "about": "Sobre nosotros",
+    "contact": "Contacto",
+    "faq": "Preguntas frecuentes",
+    "legal": "Legal",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio",
+    "cookies": "Política de cookies",
+    "rights": "Todos los derechos reservados.",
+    "made": "Hecho con ❤️ para nómadas digitales"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "hello": "¡Hola, Anfitrión! 👋",
+    "subtitle": "Gestiona tus propiedades y leads desde un solo lugar",
+    "viewProperties": "Ver Mis Propiedades",
+    "properties": "Propiedades",
+    "leadsReceived": "Leads Recibidos",
+    "views": "Vistas",
+    "conversion": "Conversión",
+    "comingSoon": "Próximamente",
+    "yourProperties": "Tus Propiedades",
+    "viewAll": "Ver Todas",
+    "manageListings": "Gestiona tus listados y ve los leads recibidos",
+    "noProperties": "Aún no tienes propiedades",
+    "noPropertiesDesc": "Publica tu primera propiedad y empieza a recibir leads de profesionales remotos",
+    "publishFirst": "Publicar Mi Primera Propiedad",
+    "perMonth": "/mes",
+    "view": "Ver",
+    "quickLinks": "Quick Links",
+    "searchAccommodation": "Buscar Alojamiento",
+    "findNextHome": "Encuentra tu próximo hogar en inhabitme",
+    "myProperties": "Mis Propiedades",
+    "manageLeads": "Gestiona tus listados y leads",
+    "newProperty": "Nueva Propiedad",
+    "publishSpace": "Publica un nuevo espacio",
+    "backToDashboard": "Dashboard",
+    "new": "Nueva",
+    "totalLeads": "Leads Totales",
+    "revenue": "Ingresos",
+    "active": "✓ Activa",
+    "inactive": "Inactiva",
+    "leads": "lead",
+    "leadsPlural": "leads",
+    "leadsSection": "Leads Recibidos",
+    "noLeads": "Sin leads aún",
+    "contactLead": "Contactar"
+  }
+}

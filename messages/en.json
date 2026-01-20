@@ -1,0 +1,279 @@
+{
+  "metadata": {
+    "title": "InhabitMe - Medium-term stays without surprises",
+    "description": "1-6 month accommodations ready to live and work. Clear price, legal, no surprises."
+  },
+  "common": {
+    "logo": "InhabitMe",
+    "language": "Language",
+    "dashboard": "Dashboard",
+    "myProperties": "My Properties",
+    "signOut": "Sign Out",
+    "settings": "Settings",
+    "search": "Search",
+    "viewPublic": "View Public",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "publishProperty": "List Property",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero": {
+      "title": "Your home for",
+      "titleHighlight": "months, not nights",
+      "subtitle": "Find the perfect space to <strong>live and work</strong>.<br/>No absurd commissions. No surprises.",
+      "badge": "Medium-term stays without intermediaries",
+      "features": {
+        "wifi": "WiFi >50 Mbps verified",
+        "workspace": "Workspace included",
+        "transparent": "Transparent pricing"
+      },
+      "cta": {
+        "primary": "View properties",
+        "secondary": "List my space"
+      },
+      "trustSignal": "Verified hosts · WiFi guaranteed · No fake data",
+      "pricingBadge": "Only €9-19 to contact host",
+      "pricingSubtitle": "No hidden fees · No host commissions · We pass the savings to you",
+      "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
+    },
+    "whyInhabitme": {
+      "title": "Why inhabitme?",
+      "subtitle": "Designed specifically for <strong>medium-term stays</strong> and <strong>remote work</strong>",
+      "verified": {
+        "title": "100% Verified for work",
+        "description": "WiFi >50 Mbps measured, dedicated desk and quiet environment. Every property passes verification."
+      },
+      "transparent": {
+        "title": "Clear pricing, no surprises",
+        "description": "All-inclusive monthly price. No hidden fees, no surprise charges. You know exactly what you pay."
+      },
+      "flexible": {
+        "title": "Total flexibility",
+        "description": "From 1 to 12 months. No endless commitments, no complex bureaucracy. Start whenever you want."
+      },
+      "cta": "Explore Madrid →"
+    },
+    "howItWorks": {
+      "title": "Total Price Transparency",
+      "subtitle": "No hidden commissions · No surcharges · No surprises",
+      "otherPlatforms": {
+        "title": "Other platforms",
+        "commission": "15-20% commissions",
+        "commissionDesc": "On the total rental price",
+        "fees": "Hidden fees up to €500",
+        "feesDesc": "You discover the real cost at the end",
+        "host": "Host pays commission",
+        "hostDesc": "Results in higher prices for you"
+      },
+      "inhabitme": {
+        "title": "InhabitMe",
+        "badge": "BEST PRICE",
+        "oneFee": "Only €89 when booking confirmed",
+        "oneFeeDesc": "Pay only when everything is confirmed",
+        "zeroCommission": "No monthly commissions",
+        "zeroCommissionDesc": "Rent price goes directly to host",
+        "host": "Host pays €50 only when closing",
+        "hostDesc": "Both pay only if booking is confirmed",
+        "fairPrice": "Guaranteed fair price",
+        "fairPriceDesc": "Host doesn't need to inflate the price"
+      },
+      "example": {
+        "title": "Example 3 months in Madrid:",
+        "inhabitme": "Rent (€1,200/month × 3) + €89 fee"
+      },
+      "savings": {
+        "badge": "💰 Average savings per stay",
+        "amount": "€450 - €1,000",
+        "description": "Depending on duration and city",
+        "title": "You save €451 in this example!",
+        "subtitle": "And savings increase when you rent longer"
+      },
+      "benefits": {
+        "guest": {
+          "title": "✨ Benefits for you (Guest)",
+          "point1": "Pay 83% less in fees than traditional platforms",
+          "point2": "Direct contact with host - negotiate conditions",
+          "point3": "No surprises, total transparency from day 1",
+          "point4": "Verified properties and trusted hosts"
+        },
+        "host": {
+          "title": "🏠 Benefits for hosts",
+          "point1": "Only €50 when you close - keep almost everything",
+          "point2": "Attract tenants looking for fair prices",
+          "point3": "Direct negotiation - you decide your conditions",
+          "point4": "Simple and transparent process"
+        }
+      }
+    },
+    "cities": {
+      "title": "Available cities",
+      "subtitle": "Live and work in Europe and Latin America",
+      "madrid": {
+        "subtitle": "Capital of Spain",
+        "from": "From €800/month"
+      },
+      "barcelona": {
+        "subtitle": "Sea and Modernism",
+        "from": "From €900/month"
+      },
+      "valencia": {
+        "subtitle": "Beach and quality of life",
+        "from": "From €700/month"
+      },
+      "sevilla": {
+        "subtitle": "Sun and flamenco",
+        "from": "From €600/month"
+      },
+      "lisboa": {
+        "subtitle": "Favorable taxation",
+        "from": "From €750/month"
+      },
+      "porto": {
+        "subtitle": "Wine and authenticity",
+        "from": "From €650/month"
+      },
+      "mexico": {
+        "subtitle": "Digital capital of LatAm",
+        "from": "From €500/month"
+      },
+      "buenosaires": {
+        "subtitle": "Culture and tango",
+        "from": "From €400/month"
+      },
+      "medellin": {
+        "subtitle": "Eternal spring",
+        "from": "From €450/month"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": {
+        "question": "How much does it cost?",
+        "answer": "€9-19 to contact the host (depending on city). One-time payment. No additional commissions. You only pay to unlock the contact, then you deal directly with the host."
+      },
+      "q2": {
+        "question": "Why is it so cheap?",
+        "answer": "We don't charge commission to the host or percentage of the rent. We only charge for connecting you. That's why it's much cheaper than traditional agencies (€50-500) or platforms like Airbnb (15%)."
+      },
+      "q3": {
+        "question": "What do I get for €12?",
+        "answer": "Direct email of the host + pre-written message template + 48h response guarantee or money back. You contact directly, negotiate your conditions and close the deal without intermediaries."
+      },
+      "q4": {
+        "question": "Does the host pay anything?",
+        "answer": "No. Zero commissions. The host doesn't pay anything. That's why prices are fairer - they don't need to inflate the rent to cover platform commissions."
+      },
+      "q5": {
+        "question": "Is WiFi really verified?",
+        "answer": "Yes. All properties guarantee >50 Mbps WiFi, verified and suitable for remote work. We don't accept properties without good internet."
+      },
+      "q6": {
+        "question": "What about cancellations?",
+        "answer": "You negotiate cancellation conditions directly with the host. Each host has their own policy. This gives you flexibility to reach agreements that suit both parties."
+      },
+      "q7": {
+        "question": "What if the host doesn't respond?",
+        "answer": "We guarantee host response within 48 hours. If they don't respond, we refund 100% of your payment. No questions asked."
+      },
+      "q8": {
+        "question": "Is payment secure?",
+        "answer": "Yes. We use Stripe, the same system used by Airbnb, Uber and thousands of companies. Bank-level encryption. Your data is always protected."
+      }
+    },
+    "finalCta": {
+      "title": "Ready to find your home?",
+      "subtitle": "Hundreds of verified apartments in 9 cities. From €9 to contact.",
+      "cta": "View properties"
+    }
+  },
+  "properties": {
+    "contactHost": "Contact Host",
+    "availability": "Availability",
+    "features": "Features",
+    "description": "Description",
+    "location": "Location",
+    "price": "Price",
+    "perMonth": "/month",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "size": "m²",
+    "available": "Available",
+    "rented": "Rented",
+    "viewMore": "View more properties",
+    "unlockContact": "Unlock contact for €{price}"
+  },
+  "cities": {
+    "exploreProperties": "Explore properties in {city}",
+    "neighborhoods": "Neighborhoods in {city}",
+    "seeAll": "See all neighborhoods",
+    "comingSoon": "Coming soon",
+    "notifyMe": "Notify me when there are properties",
+    "properties": "{count} properties available"
+  },
+  "footer": {
+    "tagline": "Your perfect home for remote work. Verified accommodations with fast WiFi in the best cities.",
+    "product": "Product",
+    "search": "Search accommodation",
+    "cities": {
+      "madrid": "Madrid",
+      "barcelona": "Barcelona",
+      "valencia": "Valencia",
+      "lisboa": "Lisbon"
+    },
+    "company": "Company",
+    "about": "About us",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "cookies": "Cookie Policy",
+    "rights": "All rights reserved.",
+    "made": "Made with ❤️ for digital nomads"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "hello": "Hello, Host! 👋",
+    "subtitle": "Manage your properties and leads from one place",
+    "viewProperties": "View My Properties",
+    "properties": "Properties",
+    "leadsReceived": "Leads Received",
+    "views": "Views",
+    "conversion": "Conversion",
+    "comingSoon": "Coming Soon",
+    "yourProperties": "Your Properties",
+    "viewAll": "View All",
+    "manageListings": "Manage your listings and see received leads",
+    "noProperties": "You don't have any properties yet",
+    "noPropertiesDesc": "Publish your first property and start receiving leads from remote professionals",
+    "publishFirst": "Publish My First Property",
+    "perMonth": "/month",
+    "view": "View",
+    "quickLinks": "Quick Links",
+    "searchAccommodation": "Search Accommodation",
+    "findNextHome": "Find your next home on inhabitme",
+    "myProperties": "My Properties",
+    "manageLeads": "Manage your listings and leads",
+    "newProperty": "New Property",
+    "publishSpace": "Publish a new space",
+    "backToDashboard": "Dashboard",
+    "new": "New",
+    "totalLeads": "Total Leads",
+    "revenue": "Revenue",
+    "active": "✓ Active",
+    "inactive": "Inactive",
+    "leads": "lead",
+    "leadsPlural": "leads",
+    "leadsSection": "Leads Received",
+    "noLeads": "No leads yet",
+    "contactLead": "Contact"
+  }
+}
