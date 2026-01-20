@@ -1,4 +1,5 @@
-import { Link, redirect } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
+import { redirect as nextRedirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,7 @@ export default async function DashboardPage() {
   const t = await getTranslations('dashboard');
 
   if (!userId) {
-    redirect('/sign-in');
+    nextRedirect('/sign-in');
   }
 
   // Obtener stats del usuario
