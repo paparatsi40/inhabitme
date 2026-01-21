@@ -69,7 +69,17 @@ export async function POST(
     console.log('📧 Guest email:', booking.guest_email);
     
     // Use guest_fee_amount from database (calculated by trigger based on booking value)
-    const guestFeeAmount = booking.guest_fee_amount || booking.guest_fee || 8900 // Fallback
+    // If not set, calculate based on duration
+    let guestFeeAmount = booking.guest_fee_amount || booking.guest_fee
+    
+    if (!guestFeeAmount && booking.months_duration) {
+      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
+      const fees = calculateDurationFees(booking.months_duration)
+      guestFeeAmount = fees.guestFee
+    } else if (!guestFeeAmount) {
+      guestFeeAmount = 13900 // Default to 2-3 months tier if no duration
+    }
+    
     const pricingTier = booking.pricing_tier || 'Standard'
     
     console.log('💰 Amounts:', {

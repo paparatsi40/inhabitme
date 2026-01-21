@@ -77,7 +77,17 @@ export async function POST(
     }
 
     // Use host_fee_amount from database (calculated by trigger based on booking value)
-    const hostFeeAmount = booking.host_fee_amount || 5000 // Fallback to €50 if not set
+    // If not set, calculate based on duration and featured status
+    let hostFeeAmount = booking.host_fee_amount
+    
+    if (!hostFeeAmount && booking.months_duration) {
+      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
+      const fees = calculateDurationFees(booking.months_duration)
+      hostFeeAmount = booking.featured_used ? fees.hostFeaturedFee : fees.hostFee
+    } else if (!hostFeeAmount) {
+      hostFeeAmount = 7900 // Default to 2-3 months tier if no duration
+    }
+    
     const pricingTier = booking.pricing_tier || 'Standard'
 
     console.log('💰 Host fee amount:', hostFeeAmount / 100, 'EUR')
