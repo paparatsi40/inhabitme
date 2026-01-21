@@ -93,7 +93,7 @@
         "badge": "💰 Average savings per stay",
         "amount": "€320 - €900",
         "description": "Depending on duration and city",
-        "title": "You save €451 in this example!",
+        "title": "You save €322 in this example!",
         "subtitle": "And savings increase when you rent longer"
       },
       "benefits": {
@@ -156,20 +156,20 @@
     "faq": {
       "title": "Frequently asked questions",
       "q1": {
-        "question": "How much does it cost?",
-        "answer": "€9-19 to contact the host (depending on city). One-time payment. No additional commissions. You only pay to unlock the contact, then you deal directly with the host."
+        "question": "How much does inhabitme cost?",
+        "answer": "<strong class=\"text-blue-600\">€79-239 one-time fee for the tenant</strong> based on stay duration. It's a <strong>one-time payment, not monthly</strong>. No commissions on rent, no hidden percentages. You pay once to get the contact and coordinate everything directly."
       },
       "q2": {
-        "question": "Why is it so cheap?",
-        "answer": "We don't charge commission to the host or percentage of the rent. We only charge for connecting you. That's why it's much cheaper than traditional agencies (€50-500) or platforms like Airbnb (15%)."
+        "question": "Why is it so cheap compared to Airbnb?",
+        "answer": "Because we charge a <strong>transparent flat fee</strong> (€79-239 based on duration), not percentages on rent. Airbnb charges 14-20% of the total. For 3 months at €1200/month, Airbnb charges €500-720. inhabitme only €139. You save hundreds of euros. It's a <strong>fairer and more transparent model</strong>."
       },
       "q3": {
-        "question": "What do I get for €12?",
-        "answer": "Direct email of the host + pre-written message template + 48h response guarantee or money back. You contact directly, negotiate your conditions and close the deal without intermediaries."
+        "question": "What exactly do I get for this fee?",
+        "answer": "<strong>Verified direct contact of the host</strong> (email + phone) + <strong class=\"text-purple-600\">48h response guarantee</strong> or money back. inhabitme acts as a trusted intermediary. After the match, you communicate directly with the host to coordinate everything."
       },
       "q4": {
         "question": "Does the host pay anything?",
-        "answer": "No. Zero commissions. The host doesn't pay anything. That's why prices are fairer - they don't need to inflate the rent to cover platform commissions."
+        "answer": "Yes, the host pays <strong class=\"text-orange-600\">€49-119 when accepting a request</strong> (based on stay duration). <strong>Founding Hosts 2026 pay nothing</strong> (€0 fee throughout 2026). This ensures commitment from both parties and allows inhabitme to operate sustainably."
       },
       "q5": {
         "question": "Is WiFi really verified?",
@@ -190,8 +190,27 @@
     },
     "finalCta": {
       "title": "Ready to find your home?",
-      "subtitle": "Hundreds of verified apartments in 9 cities. From €9 to contact.",
+      "subtitle": "Join hundreds of digital nomads who already live and work on inhabitme",
       "cta": "View properties"
+    },
+    "citiesSection": {
+      "title": "Find your perfect city",
+      "subtitle": "Medium-term stays in the best cities for digital nomads",
+      "from": "From",
+      "perMonth": "/month",
+      "viewProperties": "View properties"
+    },
+    "finalCtaSection": {
+      "title": "Ready to find your next home?",
+      "subtitle": "Join hundreds of digital nomads who already live and work on inhabitme",
+      "viewProperties": "View properties",
+      "listSpace": "List my space"
+    },
+    "faqSection": {
+      "title": "Frequently asked questions",
+      "subtitle": "Everything you need to know about how inhabitme works",
+      "moreQuestions": "Have more questions? We're here to help",
+      "contactSupport": "Contact support"
     }
   },
   "properties": {

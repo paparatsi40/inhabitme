@@ -93,7 +93,7 @@
         "badge": "💰 Ahorro promedio por estancia",
         "amount": "€320 - €900",
         "description": "Dependiendo de la duración y ciudad",
-        "title": "¡Ahorras €451 en este ejemplo!",
+        "title": "¡Ahorras €322 en este ejemplo!",
         "subtitle": "Y el ahorro aumenta cuando alquilas por más tiempo"
       },
       "benefits": {
@@ -156,20 +156,20 @@
     "faq": {
       "title": "Preguntas frecuentes",
       "q1": {
-        "question": "¿Cuánto cuesta?",
-        "answer": "€9-19 por contactar al host (según ciudad). Pago único. Sin comisiones adicionales. Solo pagas por desbloquear el contacto, luego tratas directamente con el anfitrión."
+        "question": "¿Cuánto cuesta usar inhabitme?",
+        "answer": "<strong class=\"text-blue-600\">€79-239 fee único para el inquilino</strong> según duración de la estancia. Es un <strong>pago único, no mensual</strong>. Sin comisiones sobre el alquiler, sin porcentajes ocultos. Pagas una sola vez para obtener el contacto y coordinar todo directamente."
       },
       "q2": {
-        "question": "¿Por qué es tan barato?",
-        "answer": "No cobramos comisión al host ni porcentaje del alquiler. Solo cobramos por conectarte. Por eso es mucho más barato que agencias tradicionales (€50-500) o plataformas como Airbnb (15%)."
+        "question": "¿Por qué es tan barato comparado con Airbnb?",
+        "answer": "Porque cobramos un <strong>fee flat transparente</strong> (€79-239 según duración), no porcentajes sobre el alquiler. Airbnb cobra 14-20% del total. En 3 meses de €1200/mes, Airbnb cobra €500-720. inhabitme solo €139. Ahorras cientos de euros. Es un <strong>modelo más justo y transparente</strong>."
       },
       "q3": {
-        "question": "¿Qué obtengo por €12?",
-        "answer": "Email directo del host + template de mensaje pre-escrito + garantía de respuesta en 48h o devolución. Contactas directo, negocias tus condiciones y cierras el trato sin intermediarios."
+        "question": "¿Qué obtengo exactamente por este fee?",
+        "answer": "<strong>Contacto directo verificado del host</strong> (email + teléfono) + <strong class=\"text-purple-600\">garantía de respuesta en 48h</strong> o devolución del dinero. inhabitme actúa como intermediario de confianza. Después del match, te comunicas directamente con el host para coordinar todo."
       },
       "q4": {
         "question": "¿El host paga algo?",
-        "answer": "No. Cero comisiones. El host no paga nada. Por eso los precios son más justos - no necesita inflar el alquiler para cubrir comisiones de plataforma."
+        "answer": "Sí, el host paga <strong class=\"text-orange-600\">€49-119 cuando acepta una solicitud</strong> (según duración de la estancia). Los <strong>Founding Hosts 2026 no pagan nada</strong> (€0 fee durante todo 2026). Esto asegura compromiso de ambas partes y permite que inhabitme opere de forma sostenible."
       },
       "q5": {
         "question": "¿El WiFi está realmente verificado?",
@@ -190,8 +190,27 @@
     },
     "finalCta": {
       "title": "¿Listo para encontrar tu hogar?",
-      "subtitle": "Cientos de apartamentos verificados en 9 ciudades. Desde €9 para contactar.",
+      "subtitle": "Únete a cientos de nómadas digitales que ya viven y trabajan en inhabitme",
       "cta": "Ver propiedades"
+    },
+    "citiesSection": {
+      "title": "Encuentra tu ciudad perfecta",
+      "subtitle": "Estancias medias en las mejores ciudades para nómadas digitales",
+      "from": "Desde",
+      "perMonth": "/mes",
+      "viewProperties": "Ver propiedades"
+    },
+    "finalCtaSection": {
+      "title": "¿Listo para encontrar tu próximo hogar?",
+      "subtitle": "Únete a cientos de nómadas digitales que ya viven y trabajan en inhabitme",
+      "viewProperties": "Ver propiedades",
+      "listSpace": "Publicar mi espacio"
+    },
+    "faqSection": {
+      "title": "Preguntas frecuentes",
+      "subtitle": "Todo lo que necesitas saber sobre cómo funciona inhabitme",
+      "moreQuestions": "¿Tienes más preguntas? Estamos aquí para ayudarte",
+      "contactSupport": "Contactar soporte"
     }
   },
   "properties": {
