@@ -76,9 +76,12 @@ export async function POST(
       console.log('⚠️ Could not fetch host email, using fallback')
     }
 
-    const hostFeeAmount = booking.host_fee_amount || 5000 // Default €50
+    // Use host_fee_amount from database (calculated by trigger based on booking value)
+    const hostFeeAmount = booking.host_fee_amount || 5000 // Fallback to €50 if not set
+    const pricingTier = booking.pricing_tier || 'Standard'
 
     console.log('💰 Host fee amount:', hostFeeAmount / 100, 'EUR')
+    console.log('📊 Pricing tier:', pricingTier)
 
     // Create Stripe checkout session
     console.log('🔵 Creating Stripe checkout session...')
@@ -92,7 +95,7 @@ export async function POST(
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'inhabitme Host Fee',
+              name: `inhabitme Host Fee - ${pricingTier}`,
               description: `Fee for accepting booking: ${booking.property?.title || 'Property'}`,
               images: ['https://res.cloudinary.com/dkrpgt4o5/image/upload/v1234567890/inhabitme-logo.png'],
             },

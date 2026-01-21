@@ -67,10 +67,16 @@ export async function POST(
 
     console.log('✅ Booking found:', booking.id);
     console.log('📧 Guest email:', booking.guest_email);
+    
+    // Use guest_fee_amount from database (calculated by trigger based on booking value)
+    const guestFeeAmount = booking.guest_fee_amount || booking.guest_fee || 8900 // Fallback
+    const pricingTier = booking.pricing_tier || 'Standard'
+    
     console.log('💰 Amounts:', {
       monthly_price: booking.monthly_price,
       deposit: booking.deposit_amount,
-      guest_fee: booking.guest_fee
+      guest_fee: guestFeeAmount,
+      pricing_tier: pricingTier
     });
 
     // Verify user is the guest
@@ -125,10 +131,10 @@ export async function POST(
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'inhabitme service fee',
-              description: 'Pago único por conexión',
+              name: `inhabitme service fee - ${pricingTier}`,
+              description: 'Pago único por conexión (valor basado en duración del booking)',
             },
-            unit_amount: booking.guest_fee,
+            unit_amount: guestFeeAmount,
           },
           quantity: 1,
         },
