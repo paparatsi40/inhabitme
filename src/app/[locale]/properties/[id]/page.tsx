@@ -354,10 +354,11 @@ export default function PropertyDetailPage() {
                   <p className="text-sm font-medium text-gray-700 mb-2">Solo pagas cuando confirma</p>
                   <div className="flex items-baseline gap-2 mb-2">
                     <p className="text-3xl font-bold text-purple-600">
-                      €89
+                      €79-239
                     </p>
                     <span className="text-sm text-gray-600">+ mes 1 + depósito</span>
                   </div>
+                  <p className="text-xs text-gray-600 mb-2">Fee según duración de estancia</p>
                   <div className="flex items-center gap-2 text-xs text-gray-600">
                     <CheckCircle className="h-3 w-3 text-green-600" />
                     Cero riesgo

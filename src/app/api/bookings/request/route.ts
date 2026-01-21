@@ -67,11 +67,15 @@ export async function POST(request: NextRequest) {
     // Calculate prices (in cents)
     const monthlyPrice = property.monthly_price * 100; // €1200 -> 120000
     const depositAmount = (property.deposit_amount || property.monthly_price) * 100; // Use monthly_price if deposit not set
-    const guestFee = 8900; // €89
     
-    // Host fee: €0 for Founding Hosts in 2026, otherwise €50 or €80 (Featured)
+    // Calculate fees based on duration
+    const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
+    const fees = calculateDurationFees(monthsDiff)
+    const guestFee = fees.guestFee
+    
+    // Host fee: €0 for Founding Hosts in 2026, otherwise based on duration and featured status
     // This will be verified again at payment time based on host's metadata
-    let hostFee = property.featured ? 8000 : 5000; // €80 or €50
+    let hostFee = property.featured ? fees.hostFeaturedFee : fees.hostFee
     
     // Note: Actual founding host check happens during payment
     // This is just the displayed amount
