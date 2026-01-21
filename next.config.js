@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// Updated: 2026-01-21 22:00 - Force cache invalidation for pricing updates
 
 const withNextIntl = require('next-intl/plugin')('./src/i18n/request.ts');
 
