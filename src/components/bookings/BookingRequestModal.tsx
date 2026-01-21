@@ -32,7 +32,12 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
   const months = calculateMonths();
   const totalRent = property?.price?.monthly * months || 0;
   const deposit = property?.depositAmount || property?.price?.monthly || 0;
-  const guestFee = 89;
+  
+  // Calculate guest fee based on duration
+  const { calculateDurationFees } = require('@/lib/pricing/duration-fees')
+  const fees = calculateDurationFees(months)
+  const guestFee = fees.guestFee / 100 // Convert from cents to euros for display
+  
   const totalFirstPayment = totalRent + deposit + guestFee;
 
   const handleSubmit = async (e: React.FormEvent) => {

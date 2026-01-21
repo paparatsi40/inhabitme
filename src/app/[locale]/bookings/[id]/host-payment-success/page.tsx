@@ -117,7 +117,7 @@ export default function HostPaymentSuccessPage() {
                     2
                   </span>
                   <div>
-                    <p className="font-semibold text-gray-900">Guest Paga €89</p>
+                    <p className="font-semibold text-gray-900">Guest Paga su Fee</p>
                     <p className="text-sm text-gray-600">
                       Cuando el guest complete su pago, la reserva se confirmará
                     </p>
@@ -144,7 +144,7 @@ export default function HostPaymentSuccessPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Fee de host:</span>
-                  <span className="font-semibold text-gray-900">€50.00</span>
+                  <span className="font-semibold text-gray-900">Según duración</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Estado:</span>

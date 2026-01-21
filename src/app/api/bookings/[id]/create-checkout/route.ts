@@ -67,10 +67,26 @@ export async function POST(
 
     console.log('✅ Booking found:', booking.id);
     console.log('📧 Guest email:', booking.guest_email);
+    
+    // Use guest_fee_amount from database (calculated by trigger based on booking value)
+    // If not set, calculate based on duration
+    let guestFeeAmount = booking.guest_fee_amount || booking.guest_fee
+    
+    if (!guestFeeAmount && booking.months_duration) {
+      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
+      const fees = calculateDurationFees(booking.months_duration)
+      guestFeeAmount = fees.guestFee
+    } else if (!guestFeeAmount) {
+      guestFeeAmount = 13900 // Default to 2-3 months tier if no duration
+    }
+    
+    const pricingTier = booking.pricing_tier || 'Standard'
+    
     console.log('💰 Amounts:', {
       monthly_price: booking.monthly_price,
       deposit: booking.deposit_amount,
-      guest_fee: booking.guest_fee
+      guest_fee: guestFeeAmount,
+      pricing_tier: pricingTier
     });
 
     // Verify user is the guest
@@ -125,10 +141,10 @@ export async function POST(
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'inhabitme service fee',
-              description: 'Pago único por conexión',
+              name: `inhabitme service fee - ${pricingTier}`,
+              description: 'Pago único por conexión (valor basado en duración del booking)',
             },
-            unit_amount: booking.guest_fee,
+            unit_amount: guestFeeAmount,
           },
           quantity: 1,
         },

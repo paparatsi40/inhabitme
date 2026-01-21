@@ -71,7 +71,7 @@ export function FeaturedToggle({ propertyId, initialFeatured, isFoundingHost = f
           <div className="group relative">
             <Info className="h-4 w-4 text-gray-400 cursor-help" />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-              <strong>Featured Listing:</strong> Tu propiedad aparece primero en búsquedas. Pagas €30 adicionales solo cuando cierras una reserva (€80 total vs €50 normal).
+              <strong>Featured Listing:</strong> Tu propiedad aparece primero en búsquedas. Pagas €20-40 adicionales según duración de la reserva (ejemplo: €99 vs €79 normal para 2-3 meses).
             </div>
           </div>
         )}

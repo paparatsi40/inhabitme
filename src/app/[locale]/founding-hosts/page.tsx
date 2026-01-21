@@ -234,9 +234,8 @@ export default function FoundingHostsPage() {
                 ¿Qué pasa en 2027?
               </summary>
               <p className="mt-4 text-gray-700">
-                Pricing regular: Success fee de €50 por contrato cerrado o
-                suscripción Premium de €29/mes. El badge de Founding Host se
-                mantiene pero sin beneficios económicos adicionales.
+                Pricing regular: Success fee de €49-119 (según duración) por contrato cerrado. 
+                El badge de Founding Host se mantiene pero sin beneficios económicos adicionales.
               </p>
             </details>
 
