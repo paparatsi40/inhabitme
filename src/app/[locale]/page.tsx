@@ -1,36 +1,19 @@
-'use client'
-
 import { Link } from '@/i18n/routing'
-import NextLink from 'next/link'
-import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import {
-  ArrowRight,
-  Shield,
-  FileCheck,
-  Zap,
-  Building2,
-  Check,
-  Euro,
-  MapPin,
-  Calendar,
-  Briefcase,
-  Star,
-  Wifi,
-  Monitor,
-  CheckCircle,
-  Clock,
-  Home,
-  X
-} from 'lucide-react'
-
+import { ArrowRight, Zap, Euro, MapPin, CheckCircle, Wifi, Monitor } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CityCarousel } from '@/components/hero/CityCarousel'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import { calculateSavings } from '@/lib/use-cases/calculate-savings'
-import { SavingsCalculator } from '@/components/home/SavingsCalculator'
+import { ClientNav } from '@/components/home/ClientNav'
+import { WhyInhabitmeSection, PricingComparisonSection } from '@/components/home/StaticSections'
+
+const CityCarousel = dynamic(() => import('@/components/hero/CityCarousel'), {
+  loading: () => (
+    <div className="w-full h-[500px] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl animate-pulse flex items-center justify-center">
+      <MapPin className="h-16 w-16 text-gray-400" />
+    </div>
+  ),
+  ssr: false
+})
 
 export default function HomePage() {
   const t = useTranslations('home');
@@ -40,9 +23,6 @@ export default function HomePage() {
   const tFaqSection = useTranslations('home.faqSection');
   const tCities = useTranslations('home.citiesSection');
   const tFinalCta = useTranslations('home.finalCtaSection');
-  const [months, setMonths] = useState(3)
-  const [city, setCity] = useState('madrid')
-  const savings = calculateSavings({ city, months })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -61,25 +41,7 @@ export default function HomePage() {
                 inhabitme
               </span>
             </Link>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <SignedIn>
-                <NextLink href="/en/dashboard">
-                  <Button variant="ghost" className="font-semibold">Dashboard</Button>
-                </NextLink>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-              <SignedOut>
-                <NextLink href="/sign-in">
-                  <Button variant="ghost" className="font-semibold">{tCommon('signIn')}</Button>
-                </NextLink>
-                <NextLink href="/sign-up">
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
-                    {tCommon('signUp')}
-                  </Button>
-                </NextLink>
-              </SignedOut>
-            </div>
+            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} />
           </div>
         </div>
       </nav>
@@ -146,165 +108,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {t('whyInhabitme.title')}
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto" dangerouslySetInnerHTML={{__html: t.raw('whyInhabitme.subtitle')}} />
-          </div>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            <TrustItem icon={<Wifi className="h-8 w-8 text-green-600" />} title={t('whyInhabitme.verified.title')} text={t('whyInhabitme.verified.description')} gradient="from-green-50 to-emerald-50" borderColor="border-green-200" />
-            <TrustItem icon={<Euro className="h-8 w-8 text-blue-600" />} title={t('whyInhabitme.transparent.title')} text={t('whyInhabitme.transparent.description')} gradient="from-blue-50 to-blue-100" borderColor="border-blue-200" />
-            <TrustItem icon={<Clock className="h-8 w-8 text-purple-600" />} title={t('whyInhabitme.flexible.title')} text={t('whyInhabitme.flexible.description')} gradient="from-purple-50 to-purple-100" borderColor="border-purple-200" />
-          </div>
-          <div className="mt-12 text-center">
-            <Link href="/madrid">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold">
-                {t('whyInhabitme.cta')}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {tHow('title')}
-            </h2>
-            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">{tHow('subtitle')}</p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200 rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <X className="h-6 w-6 text-red-600" />
-                </div>
-                <h3 className="text-2xl font-black text-gray-900">{tHow('otherPlatforms.title')}</h3>
-              </div>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.commission')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.commissionDesc')}</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.fees')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.feesDesc')}</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.host')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.hostDesc')}</p>
-                  </div>
-                </li>
-              </ul>
-              <div className="mt-6 pt-6 border-t-2 border-red-200">
-                <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-                <p className="text-2xl font-black text-red-600">3600 + 540 = 4140 EUR</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
-              </div>
-            </div>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                {tHow('inhabitme.badge')}
-              </div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-black text-gray-900">{tHow('inhabitme.title')}</h3>
-              </div>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.oneFee')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.oneFeeDesc')}</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.zeroCommission')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.zeroCommissionDesc')}</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.host')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.hostDesc')}</p>
-                  </div>
-                </li>
-              </ul>
-              <div className="mt-6 pt-6 border-t-2 border-green-200">
-                <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-                <p className="text-2xl font-black text-green-600">3600 + 218 = 3818 EUR</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
-            <p className="text-lg font-semibold mb-2">{tHow('savings.badge')}</p>
-            <p className="text-5xl font-black mb-2">{tHow('savings.amount')}</p>
-            <p className="text-blue-100">{tHow('savings.description')}</p>
-          </div>
-          <div className="mt-12 grid md:grid-cols-2 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-              <h4 className="text-xl font-bold text-gray-900 mb-4">{tHow('benefits.guest.title')}</h4>
-              <ul className="space-y-3 text-gray-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.guest.point1') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.guest.point2') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.guest.point3') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.guest.point4') }} />
-                </li>
-              </ul>
-            </div>
-            <div className="bg-gradient-to-br from-green-50 to-teal-50 border border-green-200 rounded-xl p-6">
-              <h4 className="text-xl font-bold text-gray-900 mb-4">{tHow('benefits.host.title')}</h4>
-              <ul className="space-y-3 text-gray-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.host.point1') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.host.point2') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.host.point3') }} />
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: tHow('benefits.host.point4') }} />
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+      <WhyInhabitmeSection t={t} />
+      <PricingComparisonSection tHow={tHow} />
 
       <section id="ciudades" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50/30">
         <div className="max-w-7xl mx-auto">
@@ -335,78 +140,9 @@ export default function HomePage() {
             <p className="text-lg text-gray-600">{tFaqSection('subtitle')}</p>
           </div>
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">1</span>
-                </div>
-                {tFaq('q1.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q1.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">2</span>
-                </div>
-                {tFaq('q2.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q2.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">3</span>
-                </div>
-                {tFaq('q3.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q3.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-orange-50 to-yellow-50 border-2 border-orange-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">4</span>
-                </div>
-                {tFaq('q4.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q4.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">5</span>
-                </div>
-                {tFaq('q5.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q5.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-rose-50 to-red-50 border-2 border-rose-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-rose-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">6</span>
-                </div>
-                {tFaq('q6.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q6.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">7</span>
-                </div>
-                {tFaq('q7.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q7.answer') }} />
-            </div>
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-2xl p-6 lg:p-8">
-              <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-sm font-bold">8</span>
-                </div>
-                {tFaq('q8.question')}
-              </h3>
-              <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw('q8.answer') }} />
-            </div>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+              <FAQItem key={num} num={num} tFaq={tFaq} />
+            ))}
           </div>
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-6">{tFaqSection('moreQuestions')}</p>
@@ -442,17 +178,27 @@ export default function HomePage() {
   )
 }
 
-function TrustItem({ icon, title, text, gradient = 'from-gray-50 to-gray-100', borderColor = 'border-gray-200' }: { icon: React.ReactNode; title: string; text: string; gradient?: string; borderColor?: string }) {
+function FAQItem({ num, tFaq }: { num: number; tFaq: any }) {
+  const colors = [
+    { bg: 'from-blue-50 to-indigo-50', border: 'border-blue-200', badge: 'bg-blue-600' },
+    { bg: 'from-green-50 to-emerald-50', border: 'border-green-200', badge: 'bg-green-600' },
+    { bg: 'from-purple-50 to-pink-50', border: 'border-purple-200', badge: 'bg-purple-600' },
+    { bg: 'from-orange-50 to-yellow-50', border: 'border-orange-200', badge: 'bg-orange-600' },
+    { bg: 'from-teal-50 to-cyan-50', border: 'border-teal-200', badge: 'bg-teal-600' },
+    { bg: 'from-rose-50 to-red-50', border: 'border-rose-200', badge: 'bg-rose-600' },
+    { bg: 'from-violet-50 to-purple-50', border: 'border-violet-200', badge: 'bg-violet-600' },
+    { bg: 'from-amber-50 to-orange-50', border: 'border-amber-200', badge: 'bg-amber-600' },
+  ]
+  const color = colors[num - 1]
   return (
-    <div className={`group relative bg-white p-6 lg:p-8 rounded-2xl shadow-sm border-2 ${borderColor} hover:shadow-xl transition-all duration-300`}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl`}></div>
-      <div className="relative">
-        <div className={`inline-flex p-4 bg-gradient-to-br ${gradient} rounded-2xl mb-5 group-hover:scale-110 transition-transform shadow-sm`}>
-          {icon}
+    <div className={`bg-gradient-to-br ${color.bg} border-2 ${color.border} rounded-2xl p-6 lg:p-8`}>
+      <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-4 flex items-center gap-3">
+        <div className={`w-8 h-8 ${color.badge} rounded-full flex items-center justify-center flex-shrink-0`}>
+          <span className="text-white text-sm font-bold">{num}</span>
         </div>
-        <h3 className="font-black text-xl lg:text-2xl mb-3 text-gray-900">{title}</h3>
-        <p className="text-gray-600 leading-relaxed text-base">{text}</p>
-      </div>
+        {tFaq(`q${num}.question`)}
+      </h3>
+      <p className="text-gray-700 leading-relaxed ml-11" dangerouslySetInnerHTML={{ __html: tFaq.raw(`q${num}.answer`) }} />
     </div>
   )
 }
