@@ -344,8 +344,8 @@ export default function HomePage() {
               {/* Example calculation */}
               <div className="mt-6 pt-6 border-t-2 border-green-200">
                 <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-                <p className="text-2xl font-black text-green-600">€3,600 + €89 = €3,689</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
+                <p className="text-2xl font-black text-green-600">€3,600 + €238 = €3,838</p>
+                <p className="text-sm text-gray-500 mt-1">Fee basado en valor (€149 guest + €89 host)</p>
               </div>
             </div>
           </div>
