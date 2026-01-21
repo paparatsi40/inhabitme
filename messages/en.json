@@ -87,11 +87,11 @@
       },
       "example": {
         "title": "Example 3 months in Madrid:",
-        "inhabitme": "Rent (€1,200/month × 3) + €238 fee (€149 guest + €89 host)"
+        "inhabitme": "Rent (€1,200/month × 3) + €218 fee (€139 guest + €79 host)"
       },
       "savings": {
         "badge": "💰 Average savings per stay",
-        "amount": "€500 - €1,200",
+        "amount": "€320 - €900",
         "description": "Depending on duration and city",
         "title": "You save €451 in this example!",
         "subtitle": "And savings increase when you rent longer"
@@ -106,7 +106,7 @@
         },
         "host": {
           "title": "🏠 Benefits for hosts",
-          "point1": "Only €50 when you close - keep almost everything",
+          "point1": "Only €49-119 based on duration - keep almost everything",
           "point2": "Attract tenants looking for fair prices",
           "point3": "Direct negotiation - you decide your conditions",
           "point4": "Simple and transparent process"

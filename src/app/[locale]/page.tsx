@@ -392,8 +392,8 @@ export default function HomePage() {
               {/* Example calculation */}
               <div className="mt-6 pt-6 border-t-2 border-green-200">
                 <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-                <p className="text-2xl font-black text-green-600">€3,600 + €238 = €3,838</p>
-                <p className="text-sm text-gray-500 mt-1">Fee basado en valor (€149 guest + €89 host)</p>
+                <p className="text-2xl font-black text-green-600">€3,600 + €218 = €3,818</p>
+                <p className="text-sm text-gray-500 mt-1">Fee basado en duración (€139 guest + €79 host para 3 meses)</p>
               </div>
             </div>
           </div>
@@ -594,7 +594,7 @@ export default function HomePage() {
                 ¿Cuánto cuesta usar inhabitme?
               </h3>
               <p className="text-gray-700 leading-relaxed ml-11">
-                <strong className="text-blue-600">Fee único basado en el valor del booking</strong> (€89-249 según duración). 
+                <strong className="text-blue-600">Fee único según duración</strong>: €79 (1 mes), €139 (2-3 meses), €189 (4-6 meses), €239 (7+ meses). 
                 Es un <strong>pago único, no mensual</strong>. Sin comisiones sobre el alquiler, 
                 sin porcentajes ocultos. Pagas una sola vez para obtener el contacto y coordinar todo directamente.
               </p>
@@ -609,8 +609,8 @@ export default function HomePage() {
                 ¿Por qué es tan barato comparado con Airbnb?
               </h3>
               <p className="text-gray-700 leading-relaxed ml-11">
-                Porque cobramos un <strong>fee único transparente</strong> basado en valor, no porcentajes sobre el alquiler. 
-                Airbnb cobra 14-20% del total. En 3 meses de €1200/mes, Airbnb cobra €500-720, inhabitme solo €238. 
+                Porque cobramos un <strong>fee único transparente</strong> basado en duración, no porcentajes sobre el alquiler. 
+                Airbnb cobra 14-20% del total. En 3 meses de €1200/mes, Airbnb cobra €500-720, inhabitme solo €218. 
                 Ahorras cientos de euros. Es un <strong>modelo más justo y transparente</strong>.
               </p>
             </div>
@@ -626,7 +626,7 @@ export default function HomePage() {
               <p className="text-gray-700 leading-relaxed ml-11">
                 <strong>Contacto directo verificado del host</strong> (email + teléfono) + 
                 <strong className="text-purple-600"> garantía de respuesta en 48h</strong> o devolución del dinero. 
-                inhabitme actúa como intermediario de confianza. El fee se calcula según el valor total del booking (€89-249), 
+                inhabitme actúa como intermediario de confianza. El fee se calcula según cuántos meses te quedas (€79-239), 
                 siendo siempre muchísimo más barato que la competencia.
               </p>
             </div>
@@ -640,9 +640,9 @@ export default function HomePage() {
                 ¿El host paga algo?
               </h3>
               <p className="text-gray-700 leading-relaxed ml-11">
-                Sí, el host paga un <strong className="text-orange-600">fee basado en el valor del booking</strong> (€50-149 regular, más si es Featured).
+                Sí, el host paga un <strong className="text-orange-600">fee según la duración</strong>: €49 (1 mes), €79 (2-3 meses), €99 (4-6 meses), €119 (7+ meses).
                 Los <strong>Founding Hosts 2026 no pagan nada</strong> (€0 fee durante todo 2026). 
-                El fee escala con el valor, siendo siempre justo. Esto asegura compromiso de ambas partes.
+                El fee escala con la duración, siendo siempre justo. Esto asegura compromiso de ambas partes.
               </p>
             </div>
 

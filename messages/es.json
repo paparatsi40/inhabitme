@@ -87,11 +87,11 @@
       },
       "example": {
         "title": "Ejemplo 3 meses en Madrid:",
-        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €238 (€149 guest + €89 host)"
+        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €218 (€139 guest + €79 host)"
       },
       "savings": {
         "badge": "💰 Ahorro promedio por estancia",
-        "amount": "€500 - €1,200",
+        "amount": "€320 - €900",
         "description": "Dependiendo de la duración y ciudad",
         "title": "¡Ahorras €451 en este ejemplo!",
         "subtitle": "Y el ahorro aumenta cuando alquilas por más tiempo"
@@ -106,7 +106,7 @@
         },
         "host": {
           "title": "🏠 Beneficios para hosts",
-          "point1": "Solo €50 cuando cierras - conservas casi todo",
+          "point1": "Solo €49-119 según duración - conservas casi todo",
           "point2": "Atrae inquilinos que buscan precios justos",
           "point3": "Negociación directa - tú decides tus condiciones",
           "point4": "Proceso simple y transparente"
