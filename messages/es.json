@@ -40,8 +40,8 @@
         "secondary": "Publicar mi espacio"
       },
       "trustSignal": "Hosts verificados · WiFi garantizado · Cero fake data",
-      "pricingBadge": "Fee basado en valor (€89-249) por reserva confirmada",
-      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Precio según duración del booking",
+      "pricingBadge": "Un solo pago (€79-239) según duración",
+      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Cuanto más tiempo, mejor precio",
       "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
     },
     "whyInhabitme": {
@@ -76,12 +76,12 @@
       "inhabitme": {
         "title": "InhabitMe",
         "badge": "MEJOR PRECIO",
-        "oneFee": "Fee basado en valor (€89-249)",
-        "oneFeeDesc": "Según duración del booking, siempre transparente",
+        "oneFee": "€79 (1 mes) · €139 (2-3 meses) · €189 (4-6 meses) · €239 (7+ meses)",
+        "oneFeeDesc": "Un solo pago según cuánto tiempo te quedas",
         "zeroCommission": "Sin comisiones mensuales",
         "zeroCommissionDesc": "El precio del alquiler es directo al host",
-        "host": "El host paga €50-149 al cerrar",
-        "hostDesc": "Fee escalonado según valor del booking",
+        "host": "El host paga €49-119 al confirmar",
+        "hostDesc": "Fee basado en duración, no en precio del alquiler",
         "fairPrice": "Precio justo garantizado",
         "fairPriceDesc": "El host no necesita inflar el precio"
       },

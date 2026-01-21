@@ -40,8 +40,8 @@
         "secondary": "List my space"
       },
       "trustSignal": "Verified hosts · WiFi guaranteed · No fake data",
-      "pricingBadge": "Value-based fee (€89-249) per confirmed booking",
-      "pricingSubtitle": "No monthly commissions · No hidden charges · Price based on booking duration",
+      "pricingBadge": "One-time payment (€79-239) based on duration",
+      "pricingSubtitle": "No monthly commissions · No hidden charges · Longer stays, better value",
       "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
     },
     "whyInhabitme": {
@@ -76,12 +76,12 @@
       "inhabitme": {
         "title": "InhabitMe",
         "badge": "BEST PRICE",
-        "oneFee": "Value-based fee (€89-249)",
-        "oneFeeDesc": "Based on booking duration, always transparent",
+        "oneFee": "€79 (1 month) · €139 (2-3 months) · €189 (4-6 months) · €239 (7+ months)",
+        "oneFeeDesc": "One payment based on how long you stay",
         "zeroCommission": "No monthly commissions",
         "zeroCommissionDesc": "Rent price goes directly to host",
-        "host": "Host pays €50-149 when closing",
-        "hostDesc": "Tiered fee based on booking value",
+        "host": "Host pays €49-119 when confirming",
+        "hostDesc": "Fee based on duration, not on rent price",
         "fairPrice": "Guaranteed fair price",
         "fairPriceDesc": "Host doesn't need to inflate the price"
       },

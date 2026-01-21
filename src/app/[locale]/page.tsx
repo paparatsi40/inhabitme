@@ -37,14 +37,62 @@ import { calculateSavings } from '@/lib/use-cases/calculate-savings'
 import { SavingsCalculator } from '@/components/home/SavingsCalculator'
 
 export default function HomePage() {
+  // MAINTENANCE MODE - Reviewing pricing structure
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700 flex items-center justify-center px-4">
+      <div className="max-w-2xl w-full text-center">
+        <div className="flex items-center justify-center gap-3 mb-8">
+          <div className="p-2 bg-white/20 backdrop-blur-lg rounded-2xl">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 30 45 L 50 30 L 70 45 L 70 70 L 30 70 Z" fill="white"/>
+              <path d="M 25 45 L 50 25 L 75 45" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              <rect x="44" y="55" width="12" height="15" fill="#2563eb" rx="1"/>
+            </svg>
+          </div>
+          <h1 className="text-4xl font-black text-white">inhabitme</h1>
+        </div>
+
+        <div className="mb-8 flex justify-center">
+          <div className="relative">
+            <div className="absolute inset-0 bg-white/20 blur-3xl rounded-full"></div>
+            <div className="relative bg-white/10 backdrop-blur-xl p-8 rounded-full border-2 border-white/20">
+              <Zap className="h-16 w-16 text-white" />
+            </div>
+          </div>
+        </div>
+
+        <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
+          Ajustes finales en progreso
+        </h2>
+        
+        <p className="text-xl text-white/90 mb-8 leading-relaxed">
+          Estamos haciendo los últimos ajustes para ofrecerte la mejor experiencia. 
+          Volveremos muy pronto.
+        </p>
+
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-6">
+          <p className="text-white/90 mb-2">¿Tienes preguntas?</p>
+          <a 
+            href="mailto:hola@inhabitme.com" 
+            className="text-white font-bold hover:underline text-lg"
+          >
+            hola@inhabitme.com
+          </a>
+        </div>
+
+        <p className="text-white/70 text-sm mt-12">
+          © 2026 InhabitMe - Volveremos pronto
+        </p>
+      </div>
+    </div>
+  )
+
+  /* ORIGINAL HOMEPAGE - Paused for pricing review
   const t = useTranslations('home');
   const tCommon = useTranslations('common');
   const tHow = useTranslations('home.howItWorks');
-  // 👉 Estado mínimo (permitido en page.tsx)
   const [months, setMonths] = useState(3)
   const [city, setCity] = useState('madrid')
-
-  // 👉 Caso de uso (no lógica local)
   const savings = calculateSavings({ city, months })
 
   return (
