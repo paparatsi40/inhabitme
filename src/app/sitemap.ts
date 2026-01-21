@@ -90,8 +90,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // URLs de propiedades (dinámicas desde Supabase)
+  // TEMPORARILY DISABLED: Supabase connection causing 59s timeout
   let propertyRoutes: MetadataRoute.Sitemap = []
 
+  // TODO: Re-enable when Supabase is active
+  /*
   try {
     // Obtener TODAS las propiedades activas de Supabase
     const allListings = await listingRepository.search({}) // Sin filtros = todas
@@ -120,6 +123,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[Sitemap] Error fetching properties:', error)
     // Si falla, continuar sin propiedades (mejor que fallar todo el sitemap)
   }
+  */
+  console.log(`[Sitemap] Skipping property URLs (Supabase disabled)`)
 
   // Combinar todas las rutas
   const allRoutes = [
