@@ -1,0 +1,4 @@
+# Force fresh build - ignore cache
+.next
+.vercel
+node_modules/.cache
