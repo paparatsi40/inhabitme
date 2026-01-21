@@ -122,7 +122,7 @@ export async function POST(
                   €${totalFirstPayment}
                 </p>
                 <p style="margin: 0; font-size: 14px; color: #666;">
-                  Incluye: Primer mes + Depósito + Fee de inhabitme (€89)
+                  Incluye: Primer mes + Depósito + Fee de inhabitme (según duración)
                 </p>
               </div>
               
