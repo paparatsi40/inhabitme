@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ClientNav } from '@/components/home/ClientNav'
 import { WhyInhabitmeSection, PricingComparisonSection } from '@/components/home/StaticSections'
 
-const CityCarousel = dynamic(() => import('@/components/hero/CityCarousel'), {
+const CityCarousel = dynamic(() => import('@/components/hero/CityCarousel').then(mod => mod.CityCarousel), {
   loading: () => (
     <div className="w-full h-[500px] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl animate-pulse flex items-center justify-center">
       <MapPin className="h-16 w-16 text-gray-400" />
