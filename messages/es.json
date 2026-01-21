@@ -40,8 +40,8 @@
         "secondary": "Publicar mi espacio"
       },
       "trustSignal": "Hosts verificados · WiFi garantizado · Cero fake data",
-      "pricingBadge": "€89 fee único por reserva confirmada",
-      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Precio transparente desde el inicio",
+      "pricingBadge": "Fee basado en valor (€89-249) por reserva confirmada",
+      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Precio según duración del booking",
       "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
     },
     "whyInhabitme": {
@@ -76,22 +76,22 @@
       "inhabitme": {
         "title": "InhabitMe",
         "badge": "MEJOR PRECIO",
-        "oneFee": "Solo €89 por reserva confirmada",
-        "oneFeeDesc": "Pagas solo cuando todo está confirmado",
+        "oneFee": "Fee basado en valor (€89-249)",
+        "oneFeeDesc": "Según duración del booking, siempre transparente",
         "zeroCommission": "Sin comisiones mensuales",
         "zeroCommissionDesc": "El precio del alquiler es directo al host",
-        "host": "El host paga €50 solo al cerrar",
-        "hostDesc": "Ambos pagan solo si la reserva se confirma",
+        "host": "El host paga €50-149 al cerrar",
+        "hostDesc": "Fee escalonado según valor del booking",
         "fairPrice": "Precio justo garantizado",
         "fairPriceDesc": "El host no necesita inflar el precio"
       },
       "example": {
         "title": "Ejemplo 3 meses en Madrid:",
-        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €89"
+        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €238 (€149 guest + €89 host)"
       },
       "savings": {
         "badge": "💰 Ahorro promedio por estancia",
-        "amount": "€450 - €1,000",
+        "amount": "€500 - €1,200",
         "description": "Dependiendo de la duración y ciudad",
         "title": "¡Ahorras €451 en este ejemplo!",
         "subtitle": "Y el ahorro aumenta cuando alquilas por más tiempo"

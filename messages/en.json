@@ -40,8 +40,8 @@
         "secondary": "List my space"
       },
       "trustSignal": "Verified hosts · WiFi guaranteed · No fake data",
-      "pricingBadge": "Only €9-19 to contact host",
-      "pricingSubtitle": "No hidden fees · No host commissions · We pass the savings to you",
+      "pricingBadge": "Value-based fee (€89-249) per confirmed booking",
+      "pricingSubtitle": "No monthly commissions · No hidden charges · Price based on booking duration",
       "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
     },
     "whyInhabitme": {
@@ -76,22 +76,22 @@
       "inhabitme": {
         "title": "InhabitMe",
         "badge": "BEST PRICE",
-        "oneFee": "Only €89 when booking confirmed",
-        "oneFeeDesc": "Pay only when everything is confirmed",
+        "oneFee": "Value-based fee (€89-249)",
+        "oneFeeDesc": "Based on booking duration, always transparent",
         "zeroCommission": "No monthly commissions",
         "zeroCommissionDesc": "Rent price goes directly to host",
-        "host": "Host pays €50 only when closing",
-        "hostDesc": "Both pay only if booking is confirmed",
+        "host": "Host pays €50-149 when closing",
+        "hostDesc": "Tiered fee based on booking value",
         "fairPrice": "Guaranteed fair price",
         "fairPriceDesc": "Host doesn't need to inflate the price"
       },
       "example": {
         "title": "Example 3 months in Madrid:",
-        "inhabitme": "Rent (€1,200/month × 3) + €89 fee"
+        "inhabitme": "Rent (€1,200/month × 3) + €238 fee (€149 guest + €89 host)"
       },
       "savings": {
         "badge": "💰 Average savings per stay",
-        "amount": "€450 - €1,000",
+        "amount": "€500 - €1,200",
         "description": "Depending on duration and city",
         "title": "You save €451 in this example!",
         "subtitle": "And savings increase when you rent longer"
