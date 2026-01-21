@@ -1,19 +1,13 @@
-import { Link } from '@/i18n/routing'
-import { useTranslations } from 'next-intl'
-import { ArrowRight, Zap, Euro, MapPin, CheckCircle, Wifi, Monitor } from 'lucide-react'
-import dynamic from 'next/dynamic'
-import { Button } from '@/components/ui/button'
-import { ClientNav } from '@/components/home/ClientNav'
-import { WhyInhabitmeSection, PricingComparisonSection } from '@/components/home/StaticSections'
+'use client'
 
-const CityCarousel = dynamic(() => import('@/components/hero/CityCarousel').then(mod => mod.CityCarousel), {
-  loading: () => (
-    <div className="w-full h-[500px] bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl animate-pulse flex items-center justify-center">
-      <MapPin className="h-16 w-16 text-gray-400" />
-    </div>
-  ),
-  ssr: false
-})
+import { Link } from '@/i18n/routing'
+import NextLink from 'next/link'
+import { useTranslations } from 'next-intl'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ArrowRight, Zap, Euro, CheckCircle, Wifi, Monitor } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { CityCarousel } from '@/components/hero/CityCarousel'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 export default function HomePage() {
   const t = useTranslations('home');
@@ -41,7 +35,25 @@ export default function HomePage() {
                 inhabitme
               </span>
             </Link>
-            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} />
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <SignedIn>
+                <NextLink href="/en/dashboard">
+                  <Button variant="ghost" className="font-semibold">Dashboard</Button>
+                </NextLink>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
+              <SignedOut>
+                <NextLink href="/sign-in">
+                  <Button variant="ghost" className="font-semibold">{tCommon('signIn')}</Button>
+                </NextLink>
+                <NextLink href="/sign-up">
+                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
+                    {tCommon('signUp')}
+                  </Button>
+                </NextLink>
+              </SignedOut>
+            </div>
           </div>
         </div>
       </nav>
