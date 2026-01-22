@@ -9,5 +9,6 @@ export const config = {
   // - Next.js internals (_next, _vercel)
   // - Static files (with extensions)
   // - Auth routes (sign-in, sign-up, auth)
-  matcher: ['/((?!api|_next|_vercel|sign-in|sign-up|auth|.*\\..*).*)']
+  // - Sitemap and robots
+  matcher: ['/((?!api|_next|_vercel|sign-in|sign-up|auth|sitemap\\.xml|robots\\.txt|.*\\..*).*)']
 };
