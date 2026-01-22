@@ -8,15 +8,8 @@ export const routing = defineRouting({
   // Default locale (English for international digital nomads)
   defaultLocale: 'en',
   
-  // Show locale in URL except for sitemap/robots
-  localePrefix: 'as-needed',
-  
-  // Paths that should bypass locale detection
-  pathnames: {
-    '/': '/',
-    '/sitemap.xml': '/sitemap.xml',
-    '/robots.txt': '/robots.txt',
-  }
+  // Show locale in URL except for sitemap/robots (handled in middleware)
+  localePrefix: 'as-needed'
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
