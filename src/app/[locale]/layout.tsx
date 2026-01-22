@@ -25,13 +25,63 @@ export async function generateMetadata({
   params: { locale: string }
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'metadata' })
+  const baseUrl = 'https://www.inhabitme.com'
+  const localeUrl = locale === 'en' ? `${baseUrl}/en` : baseUrl
 
   return {
     title: t('title'),
     description: t('description'),
+    keywords: 'medium-term rentals, coliving, digital nomads, furnished apartments, Madrid, Barcelona, Valencia, remote work',
+    authors: [{ name: 'InhabitMe' }],
+    creator: 'InhabitMe',
+    publisher: 'InhabitMe',
+    metadataBase: new URL(baseUrl),
+    alternates: {
+      canonical: localeUrl,
+      languages: {
+        'en': `${baseUrl}/en`,
+        'es': baseUrl,
+      },
+    },
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: localeUrl,
+      siteName: 'InhabitMe',
+      locale: locale === 'en' ? 'en_US' : 'es_ES',
+      type: 'website',
+      images: [
+        {
+          url: `${baseUrl}/og-image.png`,
+          width: 1200,
+          height: 630,
+          alt: 'InhabitMe - Medium-term stays',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: t('title'),
+      description: t('description'),
+      images: [`${baseUrl}/og-image.png`],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     icons: {
       icon: '/favicon.svg',
       apple: '/favicon.svg',
+    },
+    verification: {
+      google: 'your-google-verification-code', // Replace with actual code from Google Search Console
     },
   }
 }
