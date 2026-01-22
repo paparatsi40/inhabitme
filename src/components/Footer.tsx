@@ -29,7 +29,7 @@ export function Footer() {
                 inhabitme
               </span>
             </Link>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="text-sm text-gray-300 leading-relaxed">
               {t('tagline', { defaultValue: 'Tu hogar perfecto para trabajar remoto. Alojamientos verificados con WiFi rápido en las mejores ciudades.' })}
             </p>
             {/* Social Links */}
@@ -38,28 +38,28 @@ export function Footer() {
                 href="https://twitter.com/inhabitme" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-800 hover:bg-blue-600 rounded-lg transition-colors"
-                aria-label="Twitter"
+                className="p-3 bg-gray-800 hover:bg-blue-600 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Follow us on Twitter"
               >
-                <Twitter className="h-4 w-4" />
+                <Twitter className="h-5 w-5" />
               </a>
               <a 
                 href="https://instagram.com/inhabitme" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-800 hover:bg-pink-600 rounded-lg transition-colors"
-                aria-label="Instagram"
+                className="p-3 bg-gray-800 hover:bg-pink-600 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Follow us on Instagram"
               >
-                <Instagram className="h-4 w-4" />
+                <Instagram className="h-5 w-5" />
               </a>
               <a 
                 href="https://linkedin.com/company/inhabitme" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="p-2 bg-gray-800 hover:bg-blue-700 rounded-lg transition-colors"
-                aria-label="LinkedIn"
+                className="p-3 bg-gray-800 hover:bg-blue-700 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                aria-label="Follow us on LinkedIn"
               >
-                <Linkedin className="h-4 w-4" />
+                <Linkedin className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -164,12 +164,12 @@ export function Footer() {
       <div className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               © {currentYear} <span className="text-white font-semibold">inhabitme</span>. {t('rights', { defaultValue: 'Todos los derechos reservados.' })}
             </p>
             <div className="flex items-center gap-4">
               <LanguageSwitcher />
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-gray-400">
                 {t('made', { defaultValue: 'Hecho con ❤️ para nómadas digitales' })}
               </p>
             </div>

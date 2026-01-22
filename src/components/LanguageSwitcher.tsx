@@ -18,14 +18,14 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div className="relative inline-flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 hover:shadow-md transition-shadow">
-      <Globe className="h-4 w-4 text-gray-600" />
+    <div className="relative inline-flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2.5 hover:shadow-md transition-shadow min-h-[44px]">
+      <Globe className="h-5 w-5 text-gray-600" />
       <select
         value={locale}
         onChange={(e) => onSelectChange(e.target.value)}
         disabled={isPending}
         aria-label="Select language"
-        className="appearance-none bg-transparent border-none text-sm font-medium text-gray-900 cursor-pointer focus:outline-none focus:ring-0 pr-6"
+        className="appearance-none bg-transparent border-none text-sm font-medium text-gray-900 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded pr-6 min-h-[32px]"
         style={{
           backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
           backgroundRepeat: 'no-repeat',
