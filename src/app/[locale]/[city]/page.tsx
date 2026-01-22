@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { Home, ChevronRight, MapPin, TrendingUp, Building2, Wifi, CheckCircle, Euro, Clock } from 'lucide-react'
 import { ListingGrid } from '@/components/listings/ListingGrid'
@@ -176,6 +177,13 @@ const CITIES_CONFIG: Record<string, {
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const citySlug = params.city.toLowerCase()
+  
+  // Excluir rutas que NO son ciudades
+  const excludedRoutes = ['sign-in', 'sign-up', 'dashboard', 'properties', 'contact', 'faq', 'about', 'privacy', 'terms', 'cookies', 'search', 'bookings', 'host', 'leads', 'listings', 'onboarding', 'founding-host', 'founding-hosts', 'admin']
+  if (excludedRoutes.includes(citySlug)) {
+    return {}
+  }
+  
   const config = CITIES_CONFIG[citySlug]
   
   if (!config) {
@@ -248,6 +256,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CityPage({ params }: PageProps) {
   const citySlug = params.city.toLowerCase()
+  
+  // Excluir rutas que NO son ciudades (auth, etc)
+  const excludedRoutes = ['sign-in', 'sign-up', 'dashboard', 'properties', 'contact', 'faq', 'about', 'privacy', 'terms', 'cookies', 'search', 'bookings', 'host', 'leads', 'listings', 'onboarding', 'founding-host', 'founding-hosts', 'admin']
+  if (excludedRoutes.includes(citySlug)) {
+    // Esta ruta no debería ser manejada por [city]
+    notFound()
+  }
+  
   const config = CITIES_CONFIG[citySlug]
 
   // Si la ciudad no existe en la configuración, mostrar error
