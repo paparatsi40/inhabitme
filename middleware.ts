@@ -32,7 +32,8 @@ const isAuthRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   // FIRST: Skip middleware entirely for sitemap and robots
   const pathname = req.nextUrl.pathname;
-  if (pathname === '/sitemap.xml' || pathname === '/robots.txt') {
+  if (pathname === '/sitemap.xml' || pathname === '/robots.txt' || pathname.endsWith('.xml') || pathname.endsWith('.txt')) {
+    // Return immediately without any processing
     return NextResponse.next();
   }
 
@@ -101,11 +102,10 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals, static files, sitemap, and robots
-    '/((?!_next|sitemap\\.xml|robots\\.txt|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
+    // Skip Next.js internals and static files
+    // IMPORTANT: Explicitly exclude sitemap.xml and robots.txt
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-  // Exclude admin routes from locale detection
-  // but still run for auth check
 };
