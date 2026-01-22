@@ -16,20 +16,6 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname
 
-  // ✅ CLERK AUTH ROUTES — PRIMERA PRIORIDAD - Skip everything for auth routes
-  if (
-    pathname === '/sign-in' ||
-    pathname.startsWith('/sign-in/') ||
-    pathname === '/sign-up' ||
-    pathname.startsWith('/sign-up/') ||
-    pathname === '/onboarding' ||
-    pathname.startsWith('/onboarding/') ||
-    pathname === '/founding-host' ||
-    pathname.startsWith('/founding-host/')
-  ) {
-    return NextResponse.next()
-  }
-
   // ✅ SEO FILES — SALIDA TOTAL
   if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
     return NextResponse.next()
@@ -37,6 +23,16 @@ export default clerkMiddleware(async (auth, req) => {
 
   // ✅ API ROUTES — Skip i18n middleware for API routes
   if (pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
+  // ✅ NON-LOCALE AUTH ROUTES — Redirect old routes to new locale-prefixed ones
+  if (
+    pathname === '/onboarding' ||
+    pathname.startsWith('/onboarding/') ||
+    pathname === '/founding-host' ||
+    pathname.startsWith('/founding-host/')
+  ) {
     return NextResponse.next()
   }
   
@@ -53,7 +49,9 @@ export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
     const { userId } = await auth()
     if (!userId) {
-      return NextResponse.redirect(new URL('/sign-in', req.url))
+      // Redirect to sign-in with locale prefix
+      const locale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
+      return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url))
     }
   }
 
@@ -74,11 +72,10 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)  
      * - favicon.ico (favicon file)
-     * - sign-in and sign-up (Clerk auth)
-     * - onboarding and founding-host (auth related)
+     * - onboarding and founding-host (auth related, still outside [locale])
      * - api routes
      * - files with extensions (.png, .jpg, etc)
      */
-    '/((?!_next/static|_next/image|favicon.ico|sign-in|sign-up|onboarding|founding-host|api/|.*\\..*).*)' 
+    '/((?!_next/static|_next/image|favicon.ico|onboarding|founding-host|api/|.*\\..*).*)' 
   ],
 }

@@ -4,6 +4,7 @@ import { Link } from '@/i18n/routing';
 import NextLink from 'next/link';
 import { useUser, useClerk } from '@clerk/nextjs';
 import { useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
 import { Building2, User, LogOut } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -12,6 +13,12 @@ export function Navbar() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const t = useTranslations('common');
+  const pathname = usePathname();
+  
+  // Detectar locale de la URL actual
+  const currentLocale = pathname.startsWith('/es') ? 'es' : 'en';
+  const signInUrl = `/${currentLocale}/sign-in`;
+  const signUpUrl = `/${currentLocale}/sign-up`;
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -68,12 +75,12 @@ export function Navbar() {
               </>
             ) : (
               <div className="flex items-center gap-3">
-                <NextLink href="/sign-in">
+                <NextLink href={signInUrl}>
                   <Button variant="outline" size="sm">
                     {t('signIn')}
                   </Button>
                 </NextLink>
-                <NextLink href="/sign-up">
+                <NextLink href={signUpUrl}>
                   <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                     {t('signUp')}
                   </Button>

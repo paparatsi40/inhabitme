@@ -1,21 +1,14 @@
 import { SignIn } from '@clerk/nextjs';
-import { cookies, headers } from 'next/headers';
+import { useLocale } from 'next-intl';
 
 export default function SignInPage({
+  params,
   searchParams,
 }: {
+  params: { locale: string };
   searchParams: { redirect_url?: string };
 }) {
-  // Detectar locale desde cookies o headers
-  const cookieStore = cookies();
-  const headersList = headers();
-  
-  // next-intl guarda el locale en una cookie
-  const localeCookie = cookieStore.get('NEXT_LOCALE')?.value;
-  
-  // Fallback: detectar del header Accept-Language o usar 'en'
-  const locale = localeCookie || 'en';
-  
+  const locale = params.locale || 'en';
   const redirectUrl = searchParams.redirect_url || `/${locale}/dashboard`;
 
   return (
@@ -24,7 +17,7 @@ export default function SignInPage({
         <SignIn 
           fallbackRedirectUrl={redirectUrl}
           forceRedirectUrl={redirectUrl}
-          signUpUrl="/sign-up"
+          signUpUrl={`/${locale}/sign-up`}
           appearance={{
             elements: {
               rootBox: 'mx-auto',

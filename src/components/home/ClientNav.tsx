@@ -13,8 +13,10 @@ export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }
   // Detectar locale de la URL actual
   const currentLocale = pathname.startsWith('/es') ? 'es' : 'en'
   
-  // Construir URL del dashboard basado en el locale actual de la página
+  // Construir URLs basadas en el locale actual
   const dashboardUrl = `/${currentLocale}/dashboard`
+  const signInUrl = `/${currentLocale}/sign-in`
+  const signUpUrl = `/${currentLocale}/sign-up`
   
   return (
     <div className="flex items-center gap-3">
@@ -28,10 +30,10 @@ export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }
         <UserButton afterSignOutUrl="/" />
       </SignedIn>
       <SignedOut>
-        <NextLink href="/sign-in">
+        <NextLink href={signInUrl}>
           <Button variant="ghost" className="font-semibold">{signIn}</Button>
         </NextLink>
-        <NextLink href="/sign-up">
+        <NextLink href={signUpUrl}>
           <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
             {signUp}
           </Button>
