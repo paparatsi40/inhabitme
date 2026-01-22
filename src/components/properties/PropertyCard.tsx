@@ -26,14 +26,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
     ? property.monthlyPrice 
     : property.monthlyPrice.toNumber();
 
-  const mainImage = property.images[0]?.url || '/placeholder-property.jpg';
+  const mainImage = property.images[0]?.url || property.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop';
 
   return (
     <Link href={`/properties/${property.id}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
         {/* Image */}
         <div className="relative h-48 bg-gray-200">
-          {mainImage !== '/placeholder-property.jpg' ? (
+          {mainImage && !mainImage.includes('unsplash') ? (
             <img
               src={mainImage}
               alt={property.title}

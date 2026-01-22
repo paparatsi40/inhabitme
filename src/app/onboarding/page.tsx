@@ -3,7 +3,8 @@
 export const dynamic = 'force-dynamic'
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useLocale } from 'next-intl';
 import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,6 +12,7 @@ import { Building2, User, Check } from 'lucide-react';
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const locale = useLocale();
   const { user } = useUser();
   const [selectedRole, setSelectedRole] = useState<'guest' | 'host' | null>(null);
   const [isLoading, setIsLoading] = useState(false);

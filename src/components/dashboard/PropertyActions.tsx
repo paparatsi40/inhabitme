@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Eye, Calendar, Pencil, Trash2, Loader2 } from 'lucide-react'
+import { Eye, Calendar, Pencil, Trash2, Loader2, Palette } from 'lucide-react'
 import Link from 'next/link'
 
 interface PropertyActionsProps {
@@ -45,12 +45,15 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
   return (
     <div className="flex flex-wrap gap-2">
       {/* View Public */}
-      <Link href={`/properties/${propertyId}`}>
-        <Button variant="outline" size="sm" className="border-2">
-          <Eye className="h-4 w-4 mr-2" />
-          Ver Pública
-        </Button>
-      </Link>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="border-2"
+        onClick={() => window.open(`/properties/${propertyId}?v=${Date.now()}`, '_blank')}
+      >
+        <Eye className="h-4 w-4 mr-2" />
+        Ver Pública
+      </Button>
 
       {/* Availability */}
       <Link href={`/dashboard/properties/${propertyId}/availability`}>
@@ -65,6 +68,17 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
         <Button variant="outline" size="sm" className="border-2 border-green-300 text-green-700 hover:bg-green-50">
           <Pencil className="h-4 w-4 mr-2" />
           Editar
+        </Button>
+      </Link>
+
+      {/* Customize Design */}
+      <Link href={`/dashboard/properties/${propertyId}/customize`}>
+        <Button 
+          size="sm" 
+          className="border-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-sm"
+        >
+          <Palette className="h-4 w-4 mr-2" />
+          🎨 Personalizar
         </Button>
       </Link>
 

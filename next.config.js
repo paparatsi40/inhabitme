@@ -19,7 +19,7 @@ const nextConfig = {
   // Image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
-    domains: ['res.cloudinary.com', 'images.unsplash.com', 'img.clerk.com'],
+    domains: ['res.cloudinary.com', 'images.unsplash.com', 'img.clerk.com', 'agjntynuysvwgzlcdmiq.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -28,6 +28,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'img.clerk.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
       },
     ],
   },

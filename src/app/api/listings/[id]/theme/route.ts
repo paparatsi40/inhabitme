@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import { ListingTheme, validateThemeColors, THEME_PRESETS, isFoundingHostTemplate } from '@/lib/domain/listing-theme';
@@ -118,14 +119,31 @@ export async function POST(
     }
 
     const listingId = params.id;
-    const body = await request.json() as ListingTheme;
+    const body = await request.json();
+    
+    console.log('[Theme API] Received payload:', JSON.stringify(body, null, 2));
+    
+    // Validar estructura básica del payload
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+    }
+
+    // Extraer customizations si viene envuelto, y merge con advanced y background del root
+    const theme = {
+      ...(body.customizations || body),
+      // Si advanced y background vienen en el root, los usamos (tienen prioridad)
+      ...(body.advanced && { advanced: body.advanced }),
+      ...(body.background && { background: body.background }),
+    };
+    
+    console.log('[Theme API] Processing theme:', JSON.stringify(theme, null, 2));
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Verificar que el usuario es owner del listing
     const { data: listing, error: listingError } = await supabase
       .from('listings')
-      .select('host_user_id, status')
+      .select('owner_id, status')
       .eq('id', listingId)
       .single();
 
@@ -133,72 +151,55 @@ export async function POST(
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    if (listing.host_user_id !== userId) {
+    if (listing.owner_id !== userId) {
       return NextResponse.json({ error: 'Unauthorized - not listing owner' }, { status: 403 });
     }
 
-    // Verificar si el template requiere Founding Host
-    if (isFoundingHostTemplate(body.template)) {
-      const isFounding = await isFoundingHost(userId);
-      if (!isFounding) {
-        return NextResponse.json({ 
-          error: 'This template requires Founding Host status',
-          requiredTier: 'founding'
-        }, { status: 403 });
-      }
-    }
-
-    // Verificar custom background (solo Founding Host)
-    if (body.background.type === 'image') {
-      const isFounding = await isFoundingHost(userId);
-      if (!isFounding) {
-        return NextResponse.json({ 
-          error: 'Custom background requires Founding Host status',
-          requiredTier: 'founding'
-        }, { status: 403 });
-      }
-    }
+    // Todos los templates y funcionalidades están disponibles para todos los hosts
+    // (Restricciones de Founding Host eliminadas)
 
     // Validar colores
-    if (!validateThemeColors(body.colors)) {
+    if (theme.colors && !validateThemeColors(theme.colors)) {
       return NextResponse.json({ 
         error: 'Invalid color format. Use hex colors (#RRGGBB)' 
       }, { status: 400 });
     }
 
-    // Preparar datos para inserción
+    // Preparar datos para inserción con valores por defecto
     const themeData = {
       listing_id: listingId,
-      template: body.template,
+      template: theme.template || 'modern',
       
-      primary_color: body.colors.primary,
-      secondary_color: body.colors.secondary,
-      accent_color: body.colors.accent,
+      primary_color: theme.colors?.primary || '#3B82F6',
+      secondary_color: theme.colors?.secondary || '#1E293B',
+      accent_color: theme.colors?.accent || '#F59E0B',
       
-      background_type: body.background.type,
-      background_gradient_start: body.background.gradient?.start || null,
-      background_gradient_end: body.background.gradient?.end || null,
-      background_solid_color: body.background.solid || null,
-      background_image_url: body.background.image?.url || null,
-      background_overlay_opacity: body.background.image?.overlay || 0.5,
+      background_type: theme.background?.type || 'gradient',
+      background_gradient_start: theme.background?.gradient?.start || null,
+      background_gradient_end: theme.background?.gradient?.end || null,
+      background_solid_color: theme.background?.solid || null,
+      background_image_url: theme.background?.image?.url || null,
+      background_overlay_opacity: theme.background?.image?.overlay || 0.5,
       
-      header_layout: body.layout.header,
-      gallery_style: body.layout.gallery,
-      amenities_display: body.layout.amenities,
-      cta_position: body.layout.cta,
+      header_layout: theme.layout?.header || 'centered',
+      gallery_style: theme.layout?.gallery || 'grid',
+      amenities_display: theme.layout?.amenities || 'icons',
+      cta_position: theme.layout?.cta || 'floating',
       
-      font_family: body.typography.family,
-      heading_style: body.typography.headingStyle,
+      font_family: theme.typography?.family || 'inter',
+      heading_style: theme.typography?.headingStyle || 'bold',
       
-      custom_logo_url: body.advanced?.customLogo || null,
-      video_intro_url: body.advanced?.videoIntro || null,
-      host_bio_extended: body.advanced?.hostBioExtended || null,
-      host_tagline: body.advanced?.hostTagline || null,
-      show_host_badge: body.advanced?.showHostBadge ?? true,
+      custom_logo_url: theme.advanced?.customLogo || null,
+      video_intro_url: theme.advanced?.videoIntro || null,
+      host_bio_extended: theme.advanced?.hostBioExtended || null,
+      host_tagline: theme.advanced?.hostTagline || null,
+      show_host_badge: theme.advanced?.showHostBadge ?? true,
       
       is_active: true,
       updated_at: new Date().toISOString(),
     };
+    
+    console.log('[Theme API] Prepared themeData:', JSON.stringify(themeData, null, 2));
 
     // Upsert (insert o update si ya existe)
     const { data: savedTheme, error: saveError } = await supabase
@@ -211,6 +212,12 @@ export async function POST(
       console.error('Error saving theme:', saveError);
       return NextResponse.json({ error: 'Failed to save theme' }, { status: 500 });
     }
+
+    // Invalidar el caché de Next.js para que la página pública muestre el nuevo tema
+    revalidatePath(`/properties/${listingId}`);
+    revalidatePath(`/es/properties/${listingId}`);
+    revalidatePath(`/en/properties/${listingId}`);
+    console.log('[Theme API] 🔄 Cache invalidated for listing:', listingId);
 
     return NextResponse.json({
       success: true,
@@ -250,7 +257,7 @@ export async function DELETE(
     // Verificar que el usuario es owner del listing
     const { data: listing, error: listingError } = await supabase
       .from('listings')
-      .select('host_user_id')
+      .select('owner_id')
       .eq('id', listingId)
       .single();
 
@@ -258,7 +265,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    if (listing.host_user_id !== userId) {
+    if (listing.owner_id !== userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

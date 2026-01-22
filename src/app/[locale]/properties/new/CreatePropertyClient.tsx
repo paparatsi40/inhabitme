@@ -271,8 +271,16 @@ function CreatePropertyContent() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}))
-        console.error('[CreateProperty] Error del servidor:', errorData)
-        throw new Error(errorData.error || 'Error al crear la propiedad')
+        console.error('[CreateProperty] ❌ Error del servidor:', errorData)
+        console.error('[CreateProperty] ❌ Status:', res.status)
+        console.error('[CreateProperty] ❌ Error completo:', JSON.stringify(errorData, null, 2))
+        
+        // Mostrar más detalles del error
+        const errorMessage = errorData.error || 'Error al crear la propiedad'
+        const errorDetails = errorData.details ? `\n\nDetalles: ${errorData.details}` : ''
+        const errorHint = errorData.hint ? `\n\nSugerencia: ${errorData.hint}` : ''
+        
+        throw new Error(`${errorMessage}${errorDetails}${errorHint}`)
       }
 
       const data = await res.json()

@@ -2,11 +2,23 @@ import Link from 'next/link'
 import { Building2, MapPin, Wifi, Monitor, Bed, Bath } from 'lucide-react'
 
 export function PropertyCard({ property }: { property: any }) {
+  // Obtener la primera imagen o usar placeholder
+  // Las imágenes pueden ser strings directos o objetos con .url
+  const firstImage = property.images?.[0]
+  const mainImage = (typeof firstImage === 'string' ? firstImage : firstImage?.url) 
+    || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
+  
+  console.log('[PropertyCard]', property.title, 'images:', property.images, 'mainImage:', mainImage)
+  
   return (
     <Link href={`/properties/${property.id}`}>
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden cursor-pointer">
-        <div className="h-48 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-          <Building2 className="h-16 w-16 text-gray-400" />
+        <div className="relative h-48 bg-gray-200 overflow-hidden">
+          <img 
+            src={mainImage} 
+            alt={property.title}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
         </div>
 
         <div className="p-4">

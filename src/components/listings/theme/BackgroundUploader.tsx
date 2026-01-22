@@ -44,7 +44,10 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
         body: formData,
       })
 
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || 'Upload failed')
+      }
 
       const data = await res.json()
       const imageUrl = data.url
@@ -52,8 +55,9 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
       setPreview(imageUrl)
       onChange(imageUrl)
     } catch (error) {
-      console.error('Upload error:', error)
-      alert('Error al subir la imagen')
+      console.error('[BackgroundUploader] Upload error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      alert(`Error al subir la imagen: ${errorMessage}`)
     } finally {
       setUploading(false)
     }
@@ -78,13 +82,10 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
         </p>
         <div className="bg-white border-2 border-yellow-400 rounded-lg p-4">
           <p className="text-sm font-semibold text-yellow-800 mb-2">
-            🌟 Benefit Exclusivo - Founding Host 2026
+            🎨 Fondo Personalizado
           </p>
           <p className="text-sm text-gray-600">
-            Esta función está disponible solo para Founding Hosts. 
-            <a href="/founding-host" className="text-blue-600 hover:underline ml-1">
-              Más información →
-            </a>
+            Sube una imagen de fondo personalizada para hacer tu listing único.
           </p>
         </div>
       </div>

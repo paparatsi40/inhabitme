@@ -42,7 +42,7 @@ export function ListingGrid({ listings }: ListingGridProps) {
         return (
           <Link
             key={listing.id}
-            href={`/listings/${listing.id}`}
+            href={`/properties/${listing.id}`}
             className="group block rounded-lg border border-gray-200 overflow-hidden hover:shadow-xl hover:border-blue-300 transition-all duration-300 bg-white"
           >
             {/* Imagen Principal con Overlay */}

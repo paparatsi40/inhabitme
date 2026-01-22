@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useClerk, useUser } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/routing'
+import { useLocale } from 'next-intl'
 import { User, LogOut, Settings, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 
@@ -12,6 +13,7 @@ export function UserMenu() {
   const { signOut } = useClerk()
   const { user } = useUser()
   const router = useRouter()
+  const locale = useLocale()
 
   // Close dropdown when clicking outside
   useEffect(() => {

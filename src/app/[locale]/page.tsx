@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ClientNav } from '@/components/home/ClientNav'
 import {
   ArrowRight,
   Shield,
@@ -70,25 +71,7 @@ export default function HomePage() {
                 inhabitme
               </span>
             </Link>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <SignedIn>
-                <NextLink href="/en/dashboard">
-                  <Button variant="ghost" className="font-semibold">Dashboard</Button>
-                </NextLink>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-              <SignedOut>
-                <NextLink href="/sign-in">
-                  <Button variant="ghost" className="font-semibold">{tCommon('signIn')}</Button>
-                </NextLink>
-                <NextLink href="/sign-up">
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
-                    {tCommon('signUp')}
-                  </Button>
-                </NextLink>
-              </SignedOut>
-            </div>
+            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} />
           </div>
         </div>
       </nav>

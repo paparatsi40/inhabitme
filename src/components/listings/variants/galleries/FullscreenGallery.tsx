@@ -19,11 +19,11 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
   }
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length)
+    setCurrentIndex((prev) => (prev + 1) % (images?.length || 1))
   }
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    setCurrentIndex((prev) => (prev - 1 + (images?.length || 1)) % (images?.length || 1))
   }
 
   return (
@@ -41,12 +41,12 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
         
         <button className="absolute bottom-6 right-6 bg-white text-gray-900 px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-100 transition shadow-lg">
           <Maximize2 className="w-5 h-5" />
-          Ver todas las fotos ({images.length})
+          Ver todas las fotos ({images?.length || 0})
         </button>
 
         {/* Thumbnails preview */}
         <div className="absolute bottom-6 left-6 flex gap-2">
-          {images.slice(1, 4).map((image, index) => (
+          {images?.slice(1, 4).map((image, index) => (
             <div
               key={index}
               className="w-16 h-16 rounded-lg overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-110 transition"
@@ -64,9 +64,9 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
               />
             </div>
           ))}
-          {images.length > 4 && (
+          {(images?.length || 0) > 4 && (
             <div className="w-16 h-16 rounded-lg bg-black/60 text-white flex items-center justify-center text-sm font-bold border-2 border-white shadow-md">
-              +{images.length - 4}
+              +{(images?.length || 0) - 4}
             </div>
           )}
         </div>
@@ -120,7 +120,7 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
             <div className="max-w-7xl mx-auto">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide">
-                {images.map((image, index) => (
+                {images?.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentIndex(index)}
@@ -145,7 +145,7 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
 
           {/* Counter */}
           <div className="absolute top-24 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-full font-bold backdrop-blur-sm">
-            {currentIndex + 1} / {images.length}
+            {currentIndex + 1} / {images?.length || 0}
           </div>
         </div>
       )}

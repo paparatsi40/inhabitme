@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { ThemeProvider } from './theme/ThemeProvider'
 import { HeroHeader } from './variants/headers/HeroHeader'
 import { SplitHeader } from './variants/headers/SplitHeader'
@@ -12,6 +13,8 @@ import { MasonryGallery } from './variants/galleries/MasonryGallery'
 import { FullscreenGallery } from './variants/galleries/FullscreenGallery'
 import { AmenitiesDisplay } from './variants/amenities/AmenitiesDisplay'
 import { CTASection } from './variants/cta/CTASection'
+import { BookingRequestModal } from '@/components/bookings/BookingRequestModal'
+import { AskQuestionModal } from '@/components/bookings/AskQuestionModal'
 import { ListingTheme, THEME_PRESETS } from '@/lib/domain/listing-theme'
 
 interface ThemedListingPageProps {
@@ -32,8 +35,15 @@ interface ThemedListingPageProps {
 }
 
 export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
+  const [showBookingModal, setShowBookingModal] = useState(false)
+  const [showQuestionModal, setShowQuestionModal] = useState(false)
+  
   // Use provided theme or default to modern
   const activeTheme = theme || THEME_PRESETS.modern
+  
+  // Valores por defecto seguros
+  const layout = activeTheme?.layout || THEME_PRESETS.modern.layout
+  const colors = activeTheme?.colors || THEME_PRESETS.modern.colors
   
   const location = `${listing.city}, ${listing.country}`
   
@@ -44,7 +54,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
     compact: CompactHeader,
     minimal: MinimalHeader,
     fullscreen: FullscreenHeader,
-  }[activeTheme.layout.header] || HeroHeader
+  }[layout.header] || HeroHeader
   
   // Select Gallery Component
   const GalleryComponent = {
@@ -52,7 +62,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
     slider: SliderGallery,
     masonry: MasonryGallery,
     fullscreen: FullscreenGallery,
-  }[activeTheme.layout.gallery] || GridGallery
+  }[layout.gallery] || GridGallery
   
   return (
     <ThemeProvider theme={activeTheme}>
@@ -64,7 +74,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
           rating={listing.rating}
           reviewCount={listing.review_count}
           images={listing.images}
-          primaryColor={activeTheme.colors.primary}
+          primaryColor={colors.primary}
           isFeatured={listing.featured}
         />
         
@@ -73,14 +83,14 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
           <GalleryComponent
             images={listing.images}
             title={listing.title}
-            primaryColor={activeTheme.colors.primary}
+            primaryColor={colors.primary}
           />
           
           {/* Description */}
           <div className="mb-12">
             <h2 
               className="text-2xl font-bold mb-4"
-              style={{ color: activeTheme.colors.primary }}
+              style={{ color: colors.primary }}
             >
               About this place
             </h2>
@@ -94,29 +104,41 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
             <div className="mb-12">
               <h2 
                 className="text-2xl font-bold mb-6"
-                style={{ color: activeTheme.colors.primary }}
+                style={{ color: colors.primary }}
               >
                 Comodidades
               </h2>
               <AmenitiesDisplay
                 amenities={listing.amenities as unknown as Record<string, boolean | number>}
-                variant={activeTheme.layout.amenities}
-                colors={activeTheme.colors}
+                variant={layout.amenities}
+                colors={colors}
               />
             </div>
           )}
           
           {/* CTA Section */}
           <CTASection
-            variant={activeTheme.layout.cta}
-            colors={activeTheme.colors}
+            variant={layout.cta}
+            colors={colors}
             monthlyPrice={listing.monthly_price}
-            onBooking={() => {
-              // Handle booking modal or redirect
-              console.log('Book now clicked')
-            }}
+            onBooking={() => setShowBookingModal(true)}
+            onQuestion={() => setShowQuestionModal(true)}
           />
         </div>
+        
+        {/* Booking Modal */}
+        <BookingRequestModal
+          isOpen={showBookingModal}
+          onClose={() => setShowBookingModal(false)}
+          property={listing}
+        />
+        
+        {/* Question Modal */}
+        <AskQuestionModal
+          isOpen={showQuestionModal}
+          onClose={() => setShowQuestionModal(false)}
+          property={listing}
+        />
       </div>
     </ThemeProvider>
   )

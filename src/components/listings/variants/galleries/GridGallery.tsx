@@ -14,7 +14,7 @@ export function GridGallery({ images, title, primaryColor = '#2563eb' }: GridGal
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   
   // Show up to 6 images in grid
-  const displayImages = images.slice(0, 6)
+  const displayImages = images?.slice(0, 6) || []
   
   return (
     <>
@@ -25,7 +25,7 @@ export function GridGallery({ images, title, primaryColor = '#2563eb' }: GridGal
           onClick={() => setSelectedImage(displayImages[0])}
         >
           <Image
-            src={displayImages[0] || '/placeholder.jpg'}
+            src={displayImages[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'}
             alt={`${title} - Image 1`}
             fill
             className="object-cover transition-transform group-hover:scale-105"
@@ -55,7 +55,7 @@ export function GridGallery({ images, title, primaryColor = '#2563eb' }: GridGal
         ))}
         
         {/* Show more button */}
-        {images.length > 6 && (
+        {(images?.length || 0) > 6 && (
           <div className="col-span-2 md:col-span-1 relative h-[150px] md:h-[240px] rounded-xl overflow-hidden cursor-pointer">
             <Image
               src={displayImages[5]}
@@ -67,7 +67,7 @@ export function GridGallery({ images, title, primaryColor = '#2563eb' }: GridGal
               className="absolute inset-0 flex items-center justify-center text-white font-bold text-xl"
               style={{ background: `${primaryColor}CC` }}
             >
-              +{images.length - 6} more
+              +{(images?.length || 0) - 6} more
             </div>
           </div>
         )}

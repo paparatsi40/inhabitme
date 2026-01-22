@@ -6,7 +6,7 @@ import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme, TemplateId } from '@/li
 import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
-import { Check, Palette, Layout, Eye, Save, Loader2 } from 'lucide-react'
+import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
 
 export default function CustomizeListingPage() {
   const params = useParams()
@@ -21,7 +21,7 @@ export default function CustomizeListingPage() {
   const [showPreview, setShowPreview] = useState(false)
   const [customBackground, setCustomBackground] = useState<string>('')
   const [customLogo, setCustomLogo] = useState<string>('')
-  const [isFoundingHost, setIsFoundingHost] = useState(false)
+  const [isFoundingHost, setIsFoundingHost] = useState(true) // Todos los hosts tienen acceso completo
   
   // Fetch listing data
   useEffect(() => {
@@ -30,7 +30,14 @@ export default function CustomizeListingPage() {
         const res = await fetch(`/api/listings/${listingId}`)
         if (res.ok) {
           const data = await res.json()
-          setListing(data)
+          // Map API fields to component expected format
+          const mappedListing = {
+            ...data,
+            city: data.city_name,
+            country: data.city_country,
+            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
+          }
+          setListing(mappedListing)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
@@ -68,7 +75,21 @@ export default function CustomizeListingPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           template: selectedTemplate,
-          customizations: customTheme
+          customizations: customTheme,
+          // Agregar logo y background personalizados
+          advanced: {
+            customLogo: customLogo || null,
+          },
+          background: {
+            ...customTheme.background,
+            ...(customBackground && {
+              type: 'image',
+              image: {
+                url: customBackground,
+                overlay: 0.5
+              }
+            })
+          }
         })
       })
       
@@ -108,11 +129,20 @@ export default function CustomizeListingPage() {
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Customize Your Listing
-            </h1>
-            <p className="text-sm text-gray-600">{listing.title}</p>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => router.push('/dashboard/properties')}
+              className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Volver
+            </button>
+            <div className="border-l pl-4">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                Customize Your Listing
+              </h1>
+              <p className="text-sm text-gray-600">{listing.title}</p>
+            </div>
           </div>
           
           <div className="flex gap-3">

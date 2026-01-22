@@ -14,18 +14,18 @@ export function SliderGallery({ images, title, primaryColor = '#2563eb' }: Slide
   const [currentIndex, setCurrentIndex] = useState(0)
   
   const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length)
+    setCurrentIndex((prev) => (prev + 1) % (images?.length || 1))
   }
   
   const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    setCurrentIndex((prev) => (prev - 1 + (images?.length || 1)) % (images?.length || 1))
   }
   
   return (
     <div className="mb-8">
       <div className="relative h-[400px] md:h-[600px] rounded-2xl overflow-hidden bg-gray-100">
         <Image
-          src={images[currentIndex] || '/placeholder.jpg'}
+          src={images?.[currentIndex] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'}
           alt={`${title} - Image ${currentIndex + 1}`}
           fill
           className="object-cover"
@@ -33,7 +33,7 @@ export function SliderGallery({ images, title, primaryColor = '#2563eb' }: Slide
         />
         
         {/* Navigation Buttons */}
-        {images.length > 1 && (
+        {(images?.length || 0) > 1 && (
           <>
             <button
               onClick={prev}
@@ -55,14 +55,14 @@ export function SliderGallery({ images, title, primaryColor = '#2563eb' }: Slide
         
         {/* Counter */}
         <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
-          {currentIndex + 1} / {images.length}
+          {currentIndex + 1} / {images?.length || 0}
         </div>
       </div>
       
       {/* Thumbnail Strip */}
-      {images.length > 1 && (
+        {(images?.length || 0) > 1 && (
         <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-          {images.map((image, index) => (
+          {images?.map((image, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}

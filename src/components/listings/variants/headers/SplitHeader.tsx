@@ -24,7 +24,7 @@ export function SplitHeader({
   primaryColor = '#2563eb',
   isFeatured = false,
 }: SplitHeaderProps) {
-  const mainImage = images[0] || '/placeholder.jpg'
+  const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
   
   return (
     <div className="grid lg:grid-cols-2 gap-8 mb-12">

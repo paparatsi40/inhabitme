@@ -136,7 +136,7 @@ export const THEME_PRESETS: Record<TemplateId, ListingTheme> = {
       header: 'hero',
       gallery: 'masonry',
       amenities: 'badges',
-      cta: 'floating',
+      cta: 'fixed', // Cambiar a fixed para mejor visibilidad de ambos botones
     },
     typography: {
       family: 'montserrat',
@@ -277,13 +277,8 @@ export function isFoundingHostTemplate(templateId: TemplateId): boolean {
 }
 
 export function getAvailableTemplates(isFoundingHost: boolean): TemplateId[] {
-  if (isFoundingHost) {
-    return Object.keys(THEME_PRESETS) as TemplateId[]
-  }
-  
-  return Object.entries(TEMPLATE_METADATA)
-    .filter(([_, meta]) => meta.tier === 'free')
-    .map(([id]) => id as TemplateId)
+  // Todos los templates están disponibles para todos los hosts
+  return Object.keys(THEME_PRESETS) as TemplateId[]
 }
 
 export function validateThemeColors(colors: ThemeColors): boolean {
@@ -343,20 +338,23 @@ export function generateThemeStyles(theme: ListingTheme): React.CSSProperties {
   
   let backgroundStyle: React.CSSProperties = {}
   
-  if (background.type === 'gradient' && background.gradient) {
-    backgroundStyle.background = `linear-gradient(135deg, ${background.gradient.start} 0%, ${background.gradient.end} 100%)`
-  } else if (background.type === 'solid' && background.solid) {
-    backgroundStyle.backgroundColor = background.solid
-  } else if (background.type === 'image' && background.image) {
-    backgroundStyle.backgroundImage = `linear-gradient(rgba(0,0,0,${background.image.overlay}), rgba(0,0,0,${background.image.overlay})), url('${background.image.url}')`
-    backgroundStyle.backgroundSize = 'cover'
-    backgroundStyle.backgroundPosition = 'center'
+  // Protección: verificar que background existe
+  if (background && background.type) {
+    if (background.type === 'gradient' && background.gradient) {
+      backgroundStyle.background = `linear-gradient(135deg, ${background.gradient.start} 0%, ${background.gradient.end} 100%)`
+    } else if (background.type === 'solid' && background.solid) {
+      backgroundStyle.backgroundColor = background.solid
+    } else if (background.type === 'image' && background.image) {
+      backgroundStyle.backgroundImage = `linear-gradient(rgba(0,0,0,${background.image.overlay}), rgba(0,0,0,${background.image.overlay})), url('${background.image.url}')`
+      backgroundStyle.backgroundSize = 'cover'
+      backgroundStyle.backgroundPosition = 'center'
+    }
   }
   
   return {
     ...backgroundStyle,
-    '--color-primary': colors.primary,
-    '--color-secondary': colors.secondary,
-    '--color-accent': colors.accent,
+    '--color-primary': colors?.primary || '#667eea',
+    '--color-secondary': colors?.secondary || '#764ba2',
+    '--color-accent': colors?.accent || '#10b981',
   } as React.CSSProperties
 }

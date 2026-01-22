@@ -129,7 +129,7 @@ export default function FoundingHostJoinPage() {
                 founding_host_year: 2026,
                 invitation_token: token
               }}
-              afterSignUpUrl="/en/dashboard"
+              afterSignUpUrl="/dashboard"
               signInUrl="/sign-in"
             />
           </div>

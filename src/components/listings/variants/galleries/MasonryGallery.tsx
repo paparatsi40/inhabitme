@@ -19,18 +19,18 @@ export function MasonryGallery({ images, title }: MasonryGalleryProps) {
   }
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % images.length)
+    setCurrentIndex((prev) => (prev + 1) % (images?.length || 1))
   }
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    setCurrentIndex((prev) => (prev - 1 + (images?.length || 1)) % (images?.length || 1))
   }
 
   return (
     <>
       {/* Masonry Grid */}
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-        {images.map((image, index) => (
+        {images?.map((image, index) => (
           <div
             key={index}
             className="break-inside-avoid cursor-pointer group relative overflow-hidden rounded-xl"
@@ -74,7 +74,7 @@ export function MasonryGallery({ images, title }: MasonryGalleryProps) {
               className="max-w-full max-h-[90vh] object-contain"
             />
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm">
-              {currentIndex + 1} / {images.length}
+              {currentIndex + 1} / {images?.length || 0}
             </div>
           </div>
 

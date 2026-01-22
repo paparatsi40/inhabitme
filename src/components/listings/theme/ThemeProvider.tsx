@@ -26,7 +26,7 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ theme, isDefault = false, children }: ThemeProviderProps) {
   const styles = generateThemeStyles(theme)
-  const fontFamily = FONT_FAMILIES[theme.typography.family]
+  const fontFamily = FONT_FAMILIES[theme?.typography?.family || 'inter'] || FONT_FAMILIES.inter
 
   return (
     <ThemeContext.Provider value={{ theme, isDefault }}>

@@ -244,7 +244,7 @@ CREATE POLICY "Owners can update their listing themes"
   ON listing_themes FOR UPDATE
   USING (
     listing_id IN (
-      SELECT id FROM listings WHERE host_user_id = auth.uid()
+      SELECT id FROM listings WHERE owner_id = auth.uid()::text
     )
   );
 
@@ -253,7 +253,7 @@ CREATE POLICY "Owners can insert themes for their listings"
   ON listing_themes FOR INSERT
   WITH CHECK (
     listing_id IN (
-      SELECT id FROM listings WHERE host_user_id = auth.uid()
+      SELECT id FROM listings WHERE owner_id = auth.uid()::text
     )
   );
 

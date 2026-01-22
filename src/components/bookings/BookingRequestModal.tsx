@@ -30,8 +30,9 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
   };
 
   const months = calculateMonths();
-  const totalRent = property?.price?.monthly * months || 0;
-  const deposit = property?.depositAmount || property?.price?.monthly || 0;
+  const monthlyPrice = property?.monthly_price || property?.price?.monthly || 1000;
+  const totalRent = monthlyPrice * months;
+  const deposit = property?.depositAmount || monthlyPrice;
   
   // Calculate guest fee based on duration
   const { calculateDurationFees } = require('@/lib/pricing/duration-fees')
@@ -169,7 +170,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
               
               <div className="space-y-3 mb-4 bg-white/70 rounded-xl p-4">
                 <div className="flex justify-between text-gray-700">
-                  <span className="text-sm">€{property?.price?.monthly?.toLocaleString()} × {months} {months === 1 ? 'mes' : 'meses'}</span>
+                  <span className="text-sm">€{monthlyPrice.toLocaleString()} × {months} {months === 1 ? 'mes' : 'meses'}</span>
                   <span className="font-semibold">€{totalRent.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
@@ -196,7 +197,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
                 </p>
                 <p className="text-sm text-gray-600 flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Meses siguientes: paga €{property?.price?.monthly?.toLocaleString()} directo al anfitrión</span>
+                  <span>Meses siguientes: paga €{monthlyPrice.toLocaleString()} directo al anfitrión</span>
                 </p>
               </div>
             </div>

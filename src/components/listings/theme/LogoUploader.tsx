@@ -41,7 +41,10 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
         body: formData,
       })
 
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || 'Upload failed')
+      }
 
       const data = await res.json()
       const imageUrl = data.url
@@ -49,8 +52,9 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
       setPreview(imageUrl)
       onChange(imageUrl)
     } catch (error) {
-      console.error('Upload error:', error)
-      alert('Error al subir el logo')
+      console.error('[LogoUploader] Upload error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      alert(`Error al subir el logo: ${errorMessage}`)
     } finally {
       setUploading(false)
     }
@@ -75,13 +79,10 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
         </p>
         <div className="bg-white border-2 border-purple-400 rounded-lg p-4">
           <p className="text-sm font-semibold text-purple-800 mb-2">
-            🌟 Benefit Exclusivo - Founding Host 2026
+            🎨 Logo Personalizado
           </p>
           <p className="text-sm text-gray-600">
-            Esta función está disponible solo para Founding Hosts. 
-            <a href="/founding-host" className="text-blue-600 hover:underline ml-1">
-              Más información →
-            </a>
+            Sube tu logo personalizado para darle tu toque único a tu listing.
           </p>
         </div>
       </div>

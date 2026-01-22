@@ -12,23 +12,25 @@ interface CTASectionProps {
   }
   monthlyPrice: number
   onBooking: () => void
+  onQuestion?: () => void
 }
 
-export function CTASection({ variant, colors, monthlyPrice, onBooking }: CTASectionProps) {
+export function CTASection({ variant, colors, monthlyPrice, onBooking, onQuestion }: CTASectionProps) {
   switch (variant) {
     case 'fixed':
-      return <FixedCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} />
+      return <FixedCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} onQuestion={onQuestion} />
     case 'floating':
-      return <FloatingCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} />
+      return <FloatingCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} onQuestion={onQuestion} />
     case 'inline':
-      return <InlineCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} />
+      return <InlineCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} onQuestion={onQuestion} />
     default:
-      return <FixedCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} />
+      return <FixedCTA colors={colors} monthlyPrice={monthlyPrice} onBooking={onBooking} onQuestion={onQuestion} />
   }
 }
 
 // Fixed Bottom CTA
-function FixedCTA({ colors, monthlyPrice, onBooking }: any) {
+function FixedCTA({ colors, monthlyPrice, onBooking, onQuestion }: any) {
+  const price = monthlyPrice || 0
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-2xl z-40 py-4 px-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -37,30 +39,42 @@ function FixedCTA({ colors, monthlyPrice, onBooking }: any) {
             <p className="text-xs text-gray-500">Precio por mes</p>
             <p className="text-2xl font-black text-gray-900 flex items-center gap-1">
               <Euro className="w-5 h-5" />
-              {monthlyPrice.toLocaleString()}
+              {price.toLocaleString()}
             </p>
           </div>
         </div>
 
-        <button
-          onClick={onBooking}
-          className="px-8 py-4 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition flex items-center gap-2"
-          style={{
-            background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
-          }}
-        >
-          <Calendar className="w-5 h-5" />
-          Solicitar Reserva
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={onQuestion || onBooking}
+            className="px-6 py-3 rounded-xl border-2 font-semibold hover:bg-gray-50 transition flex items-center gap-2"
+            style={{ borderColor: colors.primary, color: colors.primary }}
+          >
+            <MessageSquare className="w-5 h-5" />
+            Hacer Pregunta
+          </button>
+          
+          <button
+            onClick={onBooking}
+            className="px-8 py-4 rounded-xl text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition flex items-center gap-2"
+            style={{
+              background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%)`,
+            }}
+          >
+            <Calendar className="w-5 h-5" />
+            Solicitar Reserva
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   )
 }
 
 // Floating FAB CTA
-function FloatingCTA({ colors, monthlyPrice, onBooking }: any) {
+function FloatingCTA({ colors, monthlyPrice, onBooking, onQuestion }: any) {
   const [expanded, setExpanded] = useState(false)
+  const price = monthlyPrice || 0
 
   return (
     <>
@@ -88,7 +102,7 @@ function FloatingCTA({ colors, monthlyPrice, onBooking }: any) {
               <p className="text-sm text-gray-500 mb-1">Precio por mes</p>
               <p className="text-3xl font-black text-gray-900 flex items-center gap-2">
                 <Euro className="w-6 h-6" />
-                {monthlyPrice.toLocaleString()}
+                {price.toLocaleString()}
               </p>
             </div>
 
@@ -101,6 +115,15 @@ function FloatingCTA({ colors, monthlyPrice, onBooking }: any) {
             >
               <Calendar className="w-5 h-5" />
               Solicitar Reserva
+            </button>
+
+            <button
+              onClick={onQuestion || onBooking}
+              className="w-full mt-3 py-3 rounded-xl border-2 font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"
+              style={{ borderColor: colors.primary, color: colors.primary }}
+            >
+              <MessageSquare className="w-5 h-5" />
+              Hacer Pregunta
             </button>
 
             <button
@@ -118,7 +141,8 @@ function FloatingCTA({ colors, monthlyPrice, onBooking }: any) {
 }
 
 // Inline CTA (dentro del contenido)
-function InlineCTA({ colors, monthlyPrice, onBooking }: any) {
+function InlineCTA({ colors, monthlyPrice, onBooking, onQuestion }: any) {
+  const price = monthlyPrice || 0
   return (
     <div
       className="rounded-2xl p-8 shadow-xl border-2 my-8"
@@ -138,7 +162,7 @@ function InlineCTA({ colors, monthlyPrice, onBooking }: any) {
           <div className="flex items-center gap-2">
             <Euro className="w-6 h-6" style={{ color: colors.primary }} />
             <span className="text-3xl font-black text-gray-900">
-              {monthlyPrice.toLocaleString()}
+              {price.toLocaleString()}
             </span>
             <span className="text-gray-500">/mes</span>
           </div>
@@ -158,6 +182,7 @@ function InlineCTA({ colors, monthlyPrice, onBooking }: any) {
           </button>
 
           <button
+            onClick={onQuestion || onBooking}
             className="px-8 py-3 rounded-xl border-2 font-semibold hover:bg-white/50 transition flex items-center justify-center gap-2"
             style={{ borderColor: colors.primary, color: colors.primary }}
           >

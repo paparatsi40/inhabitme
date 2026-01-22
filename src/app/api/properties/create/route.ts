@@ -72,6 +72,32 @@ export async function POST(req: NextRequest) {
 
     furnished,
 
+    // Amenities - Clima y Confort
+    hasHeating,
+    hasAc,
+    hasBalcony,
+    hasTerrace,
+
+    // Amenities - Hogar
+    hasWashingMachine,
+    hasDryer,
+    hasDishwasher,
+    hasKitchen,
+
+    // Amenities - Edificio
+    hasElevator,
+    hasParking,
+    hasDoorman,
+    floorNumber,
+
+    // Amenities - Estilo de vida
+    petsAllowed,
+    smokingAllowed,
+
+    // Amenities - Seguridad
+    hasSecuritySystem,
+    hasSafe,
+
     monthlyPrice,
     minStayMonths,
     maxStayMonths,
@@ -85,44 +111,84 @@ export async function POST(req: NextRequest) {
 
   const supabase = getSupabaseServerClient()
 
+  // 🔍 Preparar el payload de inserción
+  const insertPayload = {
+    title,
+    description,
+
+    city_name: city,
+    city_country: country,
+    neighborhood: null,
+
+    bedrooms,
+    bathrooms,
+    images,
+
+    has_desk: hasDesk,
+    has_second_monitor: hasSecondMonitor,
+    wifi_speed_mbps: wifiSpeed ?? null,
+    furnished: furnished ?? true,
+
+    // Amenities - Clima y Confort
+    has_heating: hasHeating ?? false,
+    has_ac: hasAc ?? false,
+    has_balcony: hasBalcony ?? false,
+    has_terrace: hasTerrace ?? false,
+
+    // Amenities - Hogar
+    has_washing_machine: hasWashingMachine ?? false,
+    has_dryer: hasDryer ?? false,
+    has_dishwasher: hasDishwasher ?? false,
+    has_kitchen: hasKitchen ?? false,
+
+    // Amenities - Edificio
+    has_elevator: hasElevator ?? false,
+    has_parking: hasParking ?? false,
+    has_doorman: hasDoorman ?? false,
+    floor_number: floorNumber ?? null,
+
+    // Amenities - Estilo de vida
+    pets_allowed: petsAllowed ?? false,
+    smoking_allowed: smokingAllowed ?? false,
+
+    // Amenities - Seguridad
+    has_security_system: hasSecuritySystem ?? false,
+    has_safe: hasSafe ?? false,
+
+    available_from: new Date().toISOString().split('T')[0], // Solo fecha: YYYY-MM-DD
+    available_to: null,
+
+    min_months: minStayMonths,
+    max_months: maxStayMonths,
+
+    monthly_price: monthlyPrice,
+    currency: 'EUR',
+
+    owner_id: userId,
+    status: 'active',
+  }
+
+  console.log('[API] 🔍 INSERT PAYLOAD:', JSON.stringify(insertPayload, null, 2))
+
   const { data, error } = await supabase
     .from('listings')
-    .insert({
-      title,
-      description,
-
-      city_name: city,
-      city_country: country,
-      neighborhood: null,
-
-      bedrooms,
-      bathrooms,
-      images,
-
-      has_desk: hasDesk,
-      has_second_monitor: hasSecondMonitor,
-      wifi_speed_mbps: wifiSpeed ?? null,
-      furnished: furnished ?? true,
-
-      available_from: new Date().toISOString(),
-      available_to: null,
-
-      min_months: minStayMonths,
-      max_months: maxStayMonths,
-
-      monthly_price: monthlyPrice,
-      currency: 'EUR',
-
-      owner_id: userId,
-      status: 'active',
-    })
+    .insert(insertPayload)
     .select('id')
     .single()
 
   if (error) {
     console.error('[API] ❌ Supabase insert error:', error)
+    console.error('[API] ❌ Error code:', error.code)
+    console.error('[API] ❌ Error details:', error.details)
+    console.error('[API] ❌ Error hint:', error.hint)
+    console.error('[API] ❌ Error message:', error.message)
     return NextResponse.json(
-      { error: error.message },
+      { 
+        error: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      },
       { status: 500 }
     )
   }

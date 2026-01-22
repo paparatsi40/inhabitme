@@ -22,7 +22,7 @@ export function CompactHeader({
   primaryColor = '#2563eb',
   isFeatured = false,
 }: CompactHeaderProps) {
-  const mainImage = images[0] || '/placeholder.jpg'
+  const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
   
   return (
     <div className="mb-8">

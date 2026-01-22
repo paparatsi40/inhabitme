@@ -1,17 +1,29 @@
 'use client'
 
 import NextLink from 'next/link'
+import { useLocale } from 'next-intl'
+import { usePathname } from 'next/navigation'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }) {
+  const pathname = usePathname()
+  
+  // Detectar locale de la URL actual
+  const currentLocale = pathname.startsWith('/es') ? 'es' : 'en'
+  
+  // Construir URL del dashboard basado en el locale actual de la página
+  const dashboardUrl = `/${currentLocale}/dashboard`
+  
   return (
     <div className="flex items-center gap-3">
       <LanguageSwitcher />
       <SignedIn>
-        <NextLink href="/en/dashboard">
-          <Button variant="ghost" className="font-semibold">Dashboard</Button>
+        <NextLink href={dashboardUrl}>
+          <Button variant="ghost" className="font-semibold">
+            Dashboard
+          </Button>
         </NextLink>
         <UserButton afterSignOutUrl="/" />
       </SignedIn>

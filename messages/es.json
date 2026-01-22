@@ -293,6 +293,7 @@
     "leadsPlural": "leads",
     "leadsSection": "Leads Recibidos",
     "noLeads": "Sin leads aún",
-    "contactLead": "Contactar"
+    "contactLead": "Contactar",
+    "pendingBookings": "Reservas Pendientes"
   }
 }

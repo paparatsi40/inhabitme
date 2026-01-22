@@ -44,6 +44,13 @@ export default async function DashboardPage() {
     .eq('host_id', userId)
     .eq('status', 'pending_host_approval');
   
+  // Stats de vistas
+  const { data: viewsStatsData } = await supabase
+    .rpc('get_owner_views_stats', { p_owner_id: userId })
+    .single();
+  
+  const viewsStats = viewsStatsData || { total_views: 0 };
+  
   // Obtener propiedades para mostrar
   const { data: properties } = await supabase
     .from('listings')
@@ -111,16 +118,18 @@ export default async function DashboardPage() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           
           {/* Propiedades */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-blue-100 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
-                <Building2 className="h-6 w-6 text-blue-600" />
+          <Link href="/dashboard/properties">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-blue-100 hover:shadow-lg hover:border-blue-400 transition-all cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
+                  <Building2 className="h-6 w-6 text-blue-600" />
+                </div>
+                <TrendingUp className="h-5 w-5 text-green-600" />
               </div>
-              <TrendingUp className="h-5 w-5 text-green-600" />
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('properties')}</p>
+              <p className="text-4xl font-black text-gray-900">{propertiesCount ?? 0}</p>
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('properties')}</p>
-            <p className="text-4xl font-black text-gray-900">{propertiesCount ?? 0}</p>
-          </div>
+          </Link>
 
           {/* Solicitudes de Reserva Pendientes */}
           <Link href="/host/bookings">
@@ -135,36 +144,42 @@ export default async function DashboardPage() {
                   </div>
                 ) : null}
               </div>
-              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Reservas Pendientes</p>
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('pendingBookings')}</p>
               <p className="text-4xl font-black text-gray-900">{bookingsCount ?? 0}</p>
             </div>
           </Link>
 
           {/* Leads */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-purple-100 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl">
-                <Mail className="h-6 w-6 text-purple-600" />
+          <Link href="/dashboard/properties">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-purple-100 hover:shadow-lg hover:border-purple-400 transition-all cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl">
+                  <Mail className="h-6 w-6 text-purple-600" />
+                </div>
+                {leadsCount && leadsCount > 0 ? (
+                  <CheckCircle className="h-5 w-5 text-purple-600" />
+                ) : null}
               </div>
-              {leadsCount && leadsCount > 0 ? (
-                <CheckCircle className="h-5 w-5 text-purple-600" />
-              ) : null}
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('leadsReceived')}</p>
+              <p className="text-4xl font-black text-gray-900">{leadsCount ?? 0}</p>
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('leadsReceived')}</p>
-            <p className="text-4xl font-black text-gray-900">{leadsCount ?? 0}</p>
-          </div>
+          </Link>
 
-          {/* Vistas (placeholder) */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-orange-100 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl">
-                <Eye className="h-6 w-6 text-orange-600" />
+          {/* Vistas */}
+          <Link href="/dashboard/analytics">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-orange-100 hover:shadow-lg hover:border-orange-400 transition-all cursor-pointer">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl">
+                  <Eye className="h-6 w-6 text-orange-600" />
+                </div>
+                {viewsStats.total_views > 0 ? (
+                  <TrendingUp className="h-5 w-5 text-orange-600" />
+                ) : null}
               </div>
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('views')}</p>
+              <p className="text-4xl font-black text-gray-900">{viewsStats.total_views?.toLocaleString() || 0}</p>
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('views')}</p>
-            <p className="text-4xl font-black text-gray-900">—</p>
-            <p className="text-xs text-gray-500 mt-1">{t('comingSoon')}</p>
-          </div>
+          </Link>
           
         </div>
 
