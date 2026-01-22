@@ -1,26 +1,33 @@
 -- Fix images column to be array type
 -- This allows storing multiple images instead of just one
 
--- Check current type and alter if needed
+-- Step 1: Check if column exists and is not already an array
 DO $$
 BEGIN
-    -- Try to alter column to text array
-    ALTER TABLE listings 
-    ALTER COLUMN images TYPE text[] 
-    USING CASE 
-        WHEN images IS NULL THEN NULL
-        WHEN images::text ~ '^\[.*\]$' THEN 
-            -- If it's already JSON array string, parse it
-            (SELECT array_agg(value::text) FROM json_array_elements_text(images::json))
-        ELSE 
-            -- If it's a single value, convert to array
-            ARRAY[images::text]
-    END;
-    
-    RAISE NOTICE 'Successfully converted images column to text[]';
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE NOTICE 'Column might already be text[] or error occurred: %', SQLERRM;
+    -- First, rename old column as backup
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'listings' 
+        AND column_name = 'images'
+        AND data_type != 'ARRAY'
+    ) THEN
+        ALTER TABLE listings RENAME COLUMN images TO images_old;
+        
+        -- Create new column as text array
+        ALTER TABLE listings ADD COLUMN images text[];
+        
+        -- Copy single values to array (if they exist)
+        UPDATE listings 
+        SET images = ARRAY[images_old]
+        WHERE images_old IS NOT NULL AND images_old != '';
+        
+        -- Drop old column
+        ALTER TABLE listings DROP COLUMN images_old;
+        
+        RAISE NOTICE 'Successfully converted images column to text[]';
+    ELSE
+        RAISE NOTICE 'Column is already an array or does not exist';
+    END IF;
 END $$;
 
 -- Add comment
