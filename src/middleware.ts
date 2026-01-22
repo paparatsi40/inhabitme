@@ -30,6 +30,12 @@ const isAuthRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // FIRST: Skip middleware entirely for sitemap and robots
+  const pathname = req.nextUrl.pathname;
+  if (pathname === '/sitemap.xml' || pathname === '/robots.txt') {
+    return NextResponse.next();
+  }
+
   // Check admin routes first (before any other middleware)
   if (isAdminRoute(req)) {
     console.log('[Middleware] Admin route detected:', req.url);
