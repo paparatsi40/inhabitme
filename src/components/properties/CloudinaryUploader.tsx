@@ -59,6 +59,25 @@ export function CloudinaryUploader({
           resourceType: 'image',
           clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
           maxFileSize: 5000000, // 5MB
+          sources: ['local', 'url', 'camera'],
+          showPoweredBy: false,
+          styles: {
+            palette: {
+              window: "#FFFFFF",
+              windowBorder: "#3B82F6",
+              tabIcon: "#3B82F6",
+              menuIcons: "#5A5A5A",
+              textDark: "#000000",
+              textLight: "#FFFFFF",
+              link: "#3B82F6",
+              action: "#3B82F6",
+              inactiveTabIcon: "#0E0E0E",
+              error: "#F44235",
+              inProgress: "#3B82F6",
+              complete: "#20B832",
+              sourceBg: "#F8F9FA"
+            }
+          }
         }}
       >
         {({ open }) => (
