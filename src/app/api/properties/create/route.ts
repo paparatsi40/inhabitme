@@ -79,6 +79,10 @@ export async function POST(req: NextRequest) {
     images,
   } = body
 
+  console.log('[API] 📸 Images recibidas:', images);
+  console.log('[API] 📸 Images es array?', Array.isArray(images));
+  console.log('[API] 📸 Images length:', images?.length);
+
   const supabase = getSupabaseServerClient()
 
   const { data, error } = await supabase

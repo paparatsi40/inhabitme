@@ -28,6 +28,8 @@ export function CloudinaryUploader({
     if (result.event === 'success') {
       const newUrl = result.info.secure_url;
       const updatedImages = [...images, newUrl];
+      console.log('[CloudinaryUploader] Nueva imagen subida:', newUrl);
+      console.log('[CloudinaryUploader] Array actualizado:', updatedImages);
       setImages(updatedImages);
       onImagesUploaded(updatedImages);
     }

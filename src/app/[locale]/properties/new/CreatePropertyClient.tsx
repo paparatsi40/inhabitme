@@ -256,6 +256,10 @@ function CreatePropertyContent() {
         images: formData.images,
       }
 
+      console.log('[CreateProperty] 🚀 Payload.images antes de enviar:', payload.images);
+      console.log('[CreateProperty] 🚀 Payload.images es array?', Array.isArray(payload.images));
+      console.log('[CreateProperty] 🚀 Payload.images.length:', payload.images?.length);
+
       const res = await fetch('/api/properties/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -797,7 +801,9 @@ function CreatePropertyContent() {
 
             <CloudinaryUploader
               onImagesUploaded={urls => {
+                console.log('[CreateProperty] Imágenes recibidas del uploader:', urls);
                 updateFormData({ images: urls })
+                console.log('[CreateProperty] FormData.images actualizado a:', urls);
               }}
               existingImages={formData.images}
               maxImages={10}
