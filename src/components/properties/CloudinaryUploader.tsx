@@ -25,18 +25,26 @@ export function CloudinaryUploader({
   const handleUploadSuccess = (result: any) => {
     if (result.event === 'success') {
       const newUrl = result.info.secure_url;
-      const updatedImages = [...images, newUrl];
       console.log('[CloudinaryUploader] Nueva imagen subida:', newUrl);
-      console.log('[CloudinaryUploader] Array actualizado:', updatedImages);
-      setImages(updatedImages);
-      onImagesUploaded(updatedImages);
+      
+      // CRITICAL: Use functional setState to avoid stale closure
+      setImages(prev => {
+        const updatedImages = [...prev, newUrl];
+        console.log('[CloudinaryUploader] Array actualizado:', updatedImages);
+        // Call parent callback with updated array
+        onImagesUploaded(updatedImages);
+        return updatedImages;
+      });
     }
   };
 
   const removeImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index);
-    setImages(updatedImages);
-    onImagesUploaded(updatedImages);
+    // CRITICAL: Use functional setState to avoid stale closure
+    setImages(prev => {
+      const updatedImages = prev.filter((_, i) => i !== index);
+      onImagesUploaded(updatedImages);
+      return updatedImages;
+    });
   };
 
   const setAsMain = (index: number) => {
