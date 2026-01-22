@@ -19,10 +19,8 @@ export function CloudinaryUploader({
   const [images, setImages] = useState<string[]>(existingImages);
   const [uploading, setUploading] = useState(false);
 
-  // Sincronizar con existingImages cuando cambie desde el padre
-  useEffect(() => {
-    setImages(existingImages);
-  }, [existingImages]);
+  // Note: We DON'T sync with existingImages to avoid overwriting local state
+  // The component maintains its own state and notifies parent via onImagesUploaded
 
   const handleUploadSuccess = (result: any) => {
     if (result.event === 'success') {
