@@ -55,6 +55,22 @@ const nextConfig = {
     ];
   },
 
+  // Rewrites to bypass i18n for SEO files
+  async rewrites() {
+    return [
+      {
+        source: '/robots.txt',
+        destination: '/robots.txt',
+        locale: false,
+      },
+      {
+        source: '/sitemap.xml',
+        destination: '/sitemap.xml',
+        locale: false,
+      },
+    ];
+  },
+
   // Optional: manual redirection from non-www to www (backup to Vercel redirect)
   async redirects() {
     return [
