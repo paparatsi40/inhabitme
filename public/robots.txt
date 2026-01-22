@@ -1,0 +1,19 @@
+# robots.txt for inhabitme.com
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow private/admin areas
+Disallow: /api/
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /onboarding
+Disallow: /_not-found
+
+# Disallow test pages
+Disallow: /test
+Disallow: /test-*
+
+# Sitemap location
+Sitemap: https://www.inhabitme.com/sitemap.xml
