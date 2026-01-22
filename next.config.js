@@ -55,20 +55,6 @@ const nextConfig = {
     ];
   },
 
-  // Rewrites for sitemap and robots
-  async rewrites() {
-    return [
-      {
-        source: '/sitemap.xml',
-        destination: '/api/sitemap',
-      },
-      {
-        source: '/robots.txt',
-        destination: '/api/robots',
-      },
-    ];
-  },
-
   // Optional: manual redirection from non-www to www (backup to Vercel redirect)
   async redirects() {
     return [
