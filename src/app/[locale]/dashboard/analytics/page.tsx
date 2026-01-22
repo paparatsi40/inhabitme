@@ -50,7 +50,7 @@ export default async function AnalyticsPage() {
     .rpc('get_owner_views_stats', { p_owner_id: userId })
     .single();
 
-  const stats: ViewsStats = statsData || {
+  const defaultStats: ViewsStats = {
     total_views: 0,
     unique_sessions: 0,
     views_today: 0,
@@ -58,6 +58,8 @@ export default async function AnalyticsPage() {
     views_this_month: 0,
     avg_views_per_listing: 0,
   };
+
+  const stats: ViewsStats = statsData ? (statsData as ViewsStats) : defaultStats;
 
   // Obtener vistas por propiedad
   const { data: propertiesViews } = await supabase
