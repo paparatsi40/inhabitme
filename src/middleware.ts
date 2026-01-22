@@ -65,6 +65,12 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    '/((?!_next|robots\\.txt|sitemap\\.xml|.*\\..*).*)',
+    // Match all paths except:
+    // - _next (Next.js internals)
+    // - sign-in, sign-up, onboarding, founding-host (Auth routes)
+    // - api routes
+    // - static files (files with extensions)
+    // - robots.txt, sitemap.xml
+    '/((?!_next|sign-in|sign-up|onboarding|founding-host|api|robots\\.txt|sitemap\\.xml|.*\\..*).*)',
   ],
 }
