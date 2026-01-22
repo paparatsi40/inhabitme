@@ -5,14 +5,16 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search } from 'lucide-react';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import { UserProfile } from '@clerk/nextjs';
+import { getLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProfilePage() {
   const { userId } = await auth();
+  const locale = await getLocale();
 
   if (!userId) {
-    nextRedirect('/sign-in');
+    nextRedirect(`/${locale}/sign-in`);
   }
 
   return (

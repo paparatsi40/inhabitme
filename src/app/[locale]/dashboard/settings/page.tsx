@@ -4,7 +4,7 @@ import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import { SettingsContent } from '@/components/settings/SettingsContent';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { 
   ArrowLeft, Settings, Search
 } from 'lucide-react';
@@ -14,9 +14,10 @@ export const dynamic = 'force-dynamic';
 export default async function SettingsPage() {
   const { userId } = await auth();
   const t = await getTranslations('dashboard');
+  const locale = await getLocale();
 
   if (!userId) {
-    nextRedirect('/sign-in');
+    nextRedirect(`/${locale}/sign-in`);
   }
 
   return (

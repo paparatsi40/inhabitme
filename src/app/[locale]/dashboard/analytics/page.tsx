@@ -5,7 +5,7 @@ import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserMenu } from '@/components/dashboard/UserMenu';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { 
   Eye, TrendingUp, Users, Monitor, Smartphone, 
   ArrowLeft, Calendar, BarChart3, Search
@@ -38,9 +38,10 @@ interface PropertyViewsData {
 export default async function AnalyticsPage() {
   const { userId } = await auth();
   const t = await getTranslations('dashboard');
+  const locale = await getLocale();
 
   if (!userId) {
-    nextRedirect('/sign-in');
+    nextRedirect(`/${locale}/sign-in`);
   }
 
   const supabase = getSupabaseServerClient();

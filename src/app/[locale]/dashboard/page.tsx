@@ -1,11 +1,12 @@
-import { Link, redirect } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
+import { redirect as nextRedirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { 
   Building2, Search, Calendar, Settings, User, ArrowRight, 
   Mail, TrendingUp, Eye, CheckCircle, Plus, Inbox 
@@ -16,9 +17,10 @@ export const dynamic = 'force-dynamic'
 export default async function DashboardPage() {
   const { userId } = await auth();
   const t = await getTranslations('dashboard');
+  const locale = await getLocale();
 
   if (!userId) {
-    redirect('/sign-in');
+    nextRedirect(`/${locale}/sign-in`);
   }
 
   // Obtener stats del usuario
