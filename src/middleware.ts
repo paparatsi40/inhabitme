@@ -39,25 +39,19 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Check admin routes first (before any other middleware)
   if (isAdminRoute(req)) {
-    console.log('[Middleware] Admin route detected:', req.url);
     const { userId, sessionClaims } = await auth();
-    console.log('[Middleware] User ID:', userId);
-    console.log('[Middleware] Metadata:', sessionClaims?.metadata);
-    
-    if (!userId) {
-      console.log('[Middleware] No user, redirecting to sign-in');
+
+    if (!userId || !sessionClaims) {
       // Redirect to sign-in if not authenticated
       const signInUrl = new URL('/sign-in', req.url);
       signInUrl.searchParams.set('redirect_url', req.url);
       return NextResponse.redirect(signInUrl);
     }
-    
+
     // Check if user has admin role
-    // Try different possible locations for metadata
-    const publicMetadata = (sessionClaims as any)?.public_metadata || (sessionClaims as any)?.publicMetadata || (sessionClaims as any)?.metadata;
+    // Try different possible locations for metadata (safely)
+    const publicMetadata = (sessionClaims as any)?.public_metadata ?? (sessionClaims as any)?.publicMetadata ?? (sessionClaims as any)?.metadata ?? {};
     const role = publicMetadata?.role;
-    console.log('[Middleware] Public Metadata:', publicMetadata);
-    console.log('[Middleware] Role:', role);
     
     // TEMPORARY: Hardcode your user ID as admin until Clerk token is configured
     const TEMP_ADMIN_USER_ID = 'user_37XxJQhGu4KbCylCP8ra8P8Nt0i';
@@ -104,7 +98,5 @@ export const config = {
   matcher: [
     // Skip Next.js internals and all static files (including xml, txt for sitemap/robots)
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest|xml|txt)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
   ],
 };
