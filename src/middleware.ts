@@ -16,6 +16,20 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname
 
+  // ✅ CLERK AUTH ROUTES — PRIMERA PRIORIDAD - Skip everything for auth routes
+  if (
+    pathname === '/sign-in' ||
+    pathname.startsWith('/sign-in/') ||
+    pathname === '/sign-up' ||
+    pathname.startsWith('/sign-up/') ||
+    pathname === '/onboarding' ||
+    pathname.startsWith('/onboarding/') ||
+    pathname === '/founding-host' ||
+    pathname.startsWith('/founding-host/')
+  ) {
+    return NextResponse.next()
+  }
+
   // ✅ SEO FILES — SALIDA TOTAL
   if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
     return NextResponse.next()
@@ -23,16 +37,6 @@ export default clerkMiddleware(async (auth, req) => {
 
   // ✅ API ROUTES — Skip i18n middleware for API routes
   if (pathname.startsWith('/api')) {
-    return NextResponse.next()
-  }
-
-  // ✅ CLERK AUTH ROUTES — Skip i18n middleware for Clerk routes  
-  if (
-    pathname.startsWith('/sign-in') || 
-    pathname.startsWith('/sign-up') ||
-    pathname.startsWith('/onboarding') ||
-    pathname.startsWith('/founding-host')
-  ) {
     return NextResponse.next()
   }
   
@@ -65,12 +69,16 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Match all paths except:
-    // - _next (Next.js internals)
-    // - sign-in, sign-up, onboarding, founding-host (Auth routes)
-    // - api routes
-    // - static files (files with extensions)
-    // - robots.txt, sitemap.xml
-    '/((?!_next|sign-in|sign-up|onboarding|founding-host|api|robots\\.txt|sitemap\\.xml|.*\\..*).*)',
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)  
+     * - favicon.ico (favicon file)
+     * - sign-in and sign-up (Clerk auth)
+     * - onboarding and founding-host (auth related)
+     * - api routes
+     * - files with extensions (.png, .jpg, etc)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|sign-in|sign-up|onboarding|founding-host|api/|.*\\..*).*)' 
   ],
 }
