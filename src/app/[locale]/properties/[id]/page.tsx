@@ -27,10 +27,10 @@ export default async function PropertyDetailPage({ params }: PageProps) {
     })
 
     console.log('[PropertyPage] 📊 Got', listings.length, 'listings')
-    console.log('[PropertyPage] 📋 Listing IDs:', listings.map(l => l.id))
+    console.log('[PropertyPage] 📋 Listing IDs:', listings.map((l: any) => l.id))
 
     // Buscar el listing correcto por ID
-    const listing = listings.find(l => l.id === params.id)
+    const listing = listings.find((l: any) => l.id === params.id)
 
     if (!listing) {
       console.log('[PropertyPage] ❌ Listing not found for ID:', params.id)
