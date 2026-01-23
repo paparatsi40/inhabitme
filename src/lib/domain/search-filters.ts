@@ -1,4 +1,9 @@
 export type SearchFilters = {
+  // Paginación
+  page?: number
+  limit?: number
+  listingId?: string
+  
   // Ubicación
   country?: string
   city?: string
