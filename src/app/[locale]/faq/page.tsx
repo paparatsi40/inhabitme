@@ -188,7 +188,7 @@ export default async function FAQPage() {
                   ¿Qué requisitos debe cumplir mi propiedad?
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-600">
-                  Requisitos mínimos: WiFi >50 Mbps verificado, espacio de trabajo dedicado, disponibilidad mínima de 1 mes, 
+                  Requisitos mínimos: WiFi &gt;50 Mbps verificado, espacio de trabajo dedicado, disponibilidad mínima de 1 mes, 
                   fotos de calidad, descripción completa, y precio competitivo. Propiedades con mejores amenidades reciben más reservas.
                 </AccordionContent>
               </AccordionItem>
