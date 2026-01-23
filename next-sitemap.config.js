@@ -12,7 +12,15 @@ module.exports = {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin', '/onboarding'],
+        disallow: [
+          '/api/',
+          '/admin',
+          '/admin/*',
+          '/onboarding',
+          '/_not-found',
+          '/test',
+          '/test-*',
+        ],
       },
     ],
     additionalSitemaps: [
