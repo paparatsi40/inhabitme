@@ -152,58 +152,65 @@ Funciones reutilizables para generar metadata:
 
 ## 🖼️ Imágenes Open Graph
 
-### Requisitos de Imágenes
+### ✨ Sistema de Imágenes Dinámicas
 
-- **Tamaño**: 1200x630 px (proporción 1.91:1)
-- **Formato**: JPG o PNG
-- **Peso máximo**: 1 MB
-- **Ubicación**: `/public/`
+InhabitMe utiliza **imágenes Open Graph generadas automáticamente** usando Next.js Image Response API. 
 
-### Imágenes Necesarias
+**✅ No necesitas crear imágenes manualmente** - se generan en tiempo real basadas en:
+- Ciudad (Madrid, Barcelona, Valencia)
+- Título de la página o propiedad
+- Colores y gradientes específicos por ciudad
 
-#### ✅ Existentes:
-- `/public/og-image.png` - Imagen por defecto
+### Endpoint API
 
-#### ⚠️ Pendientes (Crear):
-- `/public/og-madrid.jpg` - Imagen para Madrid
-- `/public/og-barcelona.jpg` - Imagen para Barcelona
-- `/public/og-valencia.jpg` - Imagen para Valencia
-
-### Crear Imágenes Open Graph
-
-**Opción 1: Usar herramientas online**
-- [Canva](https://www.canva.com/create/open-graph-images/)
-- [Figma con plantillas](https://www.figma.com/templates/open-graph-image/)
-
-**Opción 2: Usar el API de Open Graph de Next.js**
-```typescript
-// src/app/api/og/route.tsx
-import { ImageResponse } from 'next/og'
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const city = searchParams.get('city')
-  
-  return new ImageResponse(
-    <div style={{...}}>
-      <h1>{city}</h1>
-    </div>,
-    { width: 1200, height: 630 }
-  )
-}
+```
+GET /api/og?city={city}&title={title}&subtitle={subtitle}
 ```
 
-**Opción 3: Fotografías de ciudades**
-- Asegúrate de tener derechos de uso
-- Usa imágenes de alta calidad de cada ciudad
-- Agrega overlay con logo/texto de InhabitMe
+**Ubicación**: `src/app/api/og/route.tsx`
 
-### Testing de Imágenes
+### Imágenes Disponibles
 
+#### ✅ Generadas Automáticamente:
+- **Default**: `/api/og` - Homepage e InhabitMe general
+- **Madrid**: `/api/og?city=madrid` - Con gradiente rojo-naranja 🏛️
+- **Barcelona**: `/api/og?city=barcelona` - Con gradiente azul 🏖️
+- **Valencia**: `/api/og?city=valencia` - Con gradiente naranja-amarillo 🍊
+- **Propiedades**: `/api/og?city=madrid&title={propertyTitle}` - Dinámico por propiedad
+
+### Especificaciones
+
+- **Tamaño**: 1200x630 px (proporción 1.91:1)
+- **Formato**: PNG (generado dinámicamente)
+- **Tiempo de generación**: <100ms
+- **Caché**: Automático en edge (Vercel)
+
+### Colores por Ciudad
+
+| Ciudad | Color | Gradiente | Emoji |
+|--------|-------|-----------|-------|
+| Madrid | Rojo `#E63946` | Rojo → Naranja | 🏛️ |
+| Barcelona | Azul `#06AED5` | Azul → Azul oscuro | 🏖️ |
+| Valencia | Naranja `#F77F00` | Naranja → Amarillo | 🍊 |
+| Default | Azul `#3B82F6` | Azul → Morado | 🏠 |
+
+### Ver y Testear Imágenes
+
+#### Página de Test Interna
+Visita `/test-og` en tu navegador para ver todas las variantes:
+```
+http://localhost:3000/test-og  (desarrollo)
+https://www.inhabitme.com/test-og  (producción)
+```
+
+#### Validadores de Redes Sociales
 Verifica cómo se ven las imágenes:
 - **Facebook**: [Debugger](https://developers.facebook.com/tools/debug/)
 - **Twitter**: [Card Validator](https://cards-dev.twitter.com/validator)
 - **LinkedIn**: [Post Inspector](https://www.linkedin.com/post-inspector/)
+
+#### Guía Detallada
+Ver `OPEN_GRAPH_GUIDE.md` para documentación completa sobre Open Graph images.
 
 ---
 
@@ -357,12 +364,13 @@ NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE=tu-codigo-aqui
 
 ## 🎯 Próximos Pasos
 
-1. **Crear imágenes Open Graph** para ciudades (Madrid, Barcelona, Valencia)
+1. ✅ ~~Crear imágenes Open Graph~~ - **COMPLETADO** (generación dinámica)
 2. **Obtener y configurar** código de verificación de Google Search Console
-3. **Monitorear** métricas en Google Search Console semanalmente
-4. **Expandir** metadata a páginas adicionales (FAQ, About, etc.)
-5. **Implementar** Analytics (Google Analytics o alternativa)
-6. **Optimizar** Core Web Vitals
+3. **Testear imágenes OG** en `/test-og` y validadores de redes sociales
+4. **Monitorear** métricas en Google Search Console semanalmente
+5. **Expandir** metadata a páginas adicionales (FAQ, About, etc.)
+6. **Implementar** Analytics (Google Analytics o alternativa)
+7. **Optimizar** Core Web Vitals
 
 ---
 
