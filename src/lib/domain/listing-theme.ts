@@ -59,6 +59,10 @@ export interface ListingTheme {
   layout: ThemeLayout
   typography: ThemeTypography
   advanced?: ThemeAdvanced
+  // Direct access properties (for convenience)
+  customLogo?: string
+  videoIntro?: string
+  hostBioExtended?: string
 }
 
 // ============================================
