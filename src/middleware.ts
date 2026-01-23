@@ -2,6 +2,12 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import createMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
 import { NextResponse } from 'next/server'
+import { 
+  normalizePathname, 
+  hasMixedCase, 
+  shouldRemoveTrailingSlash,
+  getRedirectDestination 
+} from './lib/seo/url-utils'
 
 const intlMiddleware = createMiddleware(routing)
 
@@ -24,6 +30,27 @@ export default clerkMiddleware(async (auth, req) => {
   // ✅ API ROUTES — Skip i18n middleware for API routes
   if (pathname.startsWith('/api')) {
     return NextResponse.next()
+  }
+
+  // ✅ SEO: Check for legacy URL redirects
+  const redirectDestination = getRedirectDestination(pathname)
+  if (redirectDestination) {
+    const url = req.nextUrl.clone()
+    url.pathname = redirectDestination
+    return NextResponse.redirect(url, 301) // Permanent redirect
+  }
+
+  // ✅ SEO: Normalize URLs (lowercase + trailing slash)
+  const needsNormalization = hasMixedCase(pathname) || 
+                             (shouldRemoveTrailingSlash(pathname) && pathname !== '/')
+  
+  if (needsNormalization) {
+    const normalizedPath = normalizePathname(pathname)
+    if (normalizedPath !== pathname) {
+      const url = req.nextUrl.clone()
+      url.pathname = normalizedPath
+      return NextResponse.redirect(url, 301) // Permanent redirect
+    }
   }
 
   // ✅ NON-LOCALE AUTH ROUTES — Redirect old routes to new locale-prefixed ones

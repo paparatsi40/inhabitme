@@ -75,18 +75,36 @@ const nextConfig = {
     ];
   },
 
-  // Optional: manual redirection from non-www to www (backup to Vercel redirect)
+  // SEO redirects
   async redirects() {
     return [
+      // Non-www to www redirect (SEO best practice)
       {
-        source: '/',
+        source: '/:path*',
         has: [
           {
             type: 'host',
             value: 'inhabitme.com',
           },
         ],
-        destination: 'https://www.inhabitme.com',
+        destination: 'https://www.inhabitme.com/:path*',
+        permanent: true,
+      },
+      // Legacy /listings to /properties redirect
+      {
+        source: '/:locale/listings/:id',
+        destination: '/:locale/properties/:id',
+        permanent: true,
+      },
+      {
+        source: '/listings/:id',
+        destination: '/properties/:id',
+        permanent: true,
+      },
+      // Remove trailing slashes (SEO consistency)
+      {
+        source: '/:locale/:path+/',
+        destination: '/:locale/:path+',
         permanent: true,
       },
     ];
