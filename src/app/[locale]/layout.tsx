@@ -8,6 +8,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
+import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,64 +26,57 @@ export async function generateMetadata({
   params: { locale: string }
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'metadata' })
-  const baseUrl = 'https://www.inhabitme.com'
-  const localeUrl = locale === 'en' ? `${baseUrl}/en` : baseUrl
+  const localeUrl = getLocalizedUrl('', locale as 'en' | 'es')
 
   return {
     title: t('title'),
     description: t('description'),
     keywords: 'medium-term rentals, coliving, digital nomads, furnished apartments, Madrid, Barcelona, Valencia, remote work',
-    authors: [{ name: 'InhabitMe' }],
-    creator: 'InhabitMe',
-    publisher: 'InhabitMe',
-    metadataBase: new URL(baseUrl),
+    authors: [{ name: SEO_CONFIG.siteName }],
+    creator: SEO_CONFIG.siteName,
+    publisher: SEO_CONFIG.siteName,
+    metadataBase: new URL(SEO_CONFIG.baseUrl),
     alternates: {
       canonical: localeUrl,
       languages: {
-        'en': `${baseUrl}/en`,
-        'es': baseUrl,
+        'en': getLocalizedUrl('', 'en'),
+        'es': getLocalizedUrl('', 'es'),
       },
     },
     openGraph: {
       title: t('title'),
       description: t('description'),
       url: localeUrl,
-      siteName: 'InhabitMe',
+      siteName: SEO_CONFIG.siteName,
       locale: locale === 'en' ? 'en_US' : 'es_ES',
       type: 'website',
       images: [
         {
-          url: `${baseUrl}/og-image.png`,
-          width: 1200,
-          height: 630,
+          url: `${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`,
+          width: SEO_CONFIG.openGraph.imageWidth,
+          height: SEO_CONFIG.openGraph.imageHeight,
           alt: 'InhabitMe - Medium-term stays',
         },
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: SEO_CONFIG.twitter.card,
       title: t('title'),
       description: t('description'),
-      images: [`${baseUrl}/og-image.png`],
+      images: [`${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`],
+      site: SEO_CONFIG.twitter.site,
+      creator: SEO_CONFIG.twitter.creator,
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+    robots: SEO_CONFIG.robots,
     icons: {
       icon: '/favicon.svg',
       apple: '/favicon.svg',
     },
-    verification: {
-      google: 'your-google-verification-code', // Replace with actual code from Google Search Console
-    },
+    ...(SEO_CONFIG.verification.google && {
+      verification: {
+        google: SEO_CONFIG.verification.google,
+      },
+    }),
   }
 }
 

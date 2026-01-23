@@ -1,17 +1,66 @@
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import { searchListings } from '@/lib/use-cases/search-listings'
 import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { ThemedListingWrapper } from '@/components/listings/ThemedListingWrapper'
 import { ViewTracker } from '@/components/listings/ViewTracker'
 import { createClient } from '@supabase/supabase-js'
 import { THEME_PRESETS } from '@/lib/domain/listing-theme'
+import { generatePropertyMetadata } from '@/lib/seo/metadata-helpers'
 
 // Desactivar caché para esta página - siempre obtener datos frescos
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 type PageProps = {
-  params: { id: string }
+  params: { id: string; locale: string }
+}
+
+/**
+ * Generate dynamic metadata for property pages
+ */
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const listings = await searchListings({
+      page: 1,
+      limit: 1,
+      listingId: params.id,
+    })
+
+    const listing = listings.find((l: any) => l.id === params.id)
+
+    if (!listing) {
+      return {
+        title: 'Property Not Found | InhabitMe',
+        description: 'The property you are looking for could not be found.',
+      }
+    }
+
+    // Convert listing data to property format for metadata
+    const property = {
+      id: listing.id,
+      title: listing.title,
+      description: listing.description,
+      city: listing.city,
+      neighborhood: listing.neighborhood,
+      monthlyPrice: listing.monthlyPrice,
+      images: listing.images?.map((img: any) => ({
+        url: img.url || img,
+        alt: `${listing.title} - Image`,
+      })),
+    }
+
+    return generatePropertyMetadata({
+      property,
+      locale: params.locale as 'en' | 'es',
+    })
+  } catch (error) {
+    console.error('[PropertyMetadata] Error generating metadata:', error)
+    return {
+      title: 'Property | InhabitMe',
+      description: 'View this property on InhabitMe',
+    }
+  }
 }
 
 export default async function PropertyDetailPage({ params }: PageProps) {

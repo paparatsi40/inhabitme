@@ -7,6 +7,7 @@ import { listingRepository } from '@/lib/repositories/listing.repository'
 import { Button } from '@/components/ui/button'
 import { getNeighborhoodShortDescription } from '@/config/neighborhood-descriptions'
 import { CityPageClient } from './CityPageClient'
+import { generateCityMetadata } from '@/lib/seo/metadata-helpers'
 
 /* City Images - Same as home page */
 const CITY_IMAGES: Record<string, string> = {
@@ -193,65 +194,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const cityName = config.name
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://inhabitme.com'
+  const locale = (params.locale || 'es') as 'en' | 'es'
+  const neighborhoods = config.neighborhoods?.map(n => n.slug) || []
 
-  return {
-    title: `Alquiler mensual en ${cityName} | inhabitme`,
+  return generateCityMetadata({
+    cityName,
+    citySlug,
     description: config.description,
-
-    keywords: [
-      `alquiler mensual ${cityName}`,
-      `piso mensual ${cityName}`,
-      `estancias medias ${cityName}`,
-      `vivienda nómadas digitales ${cityName}`,
-      `alquiler con WiFi ${cityName}`,
-      `workspace remoto ${cityName}`,
-      `alquiler profesionales ${cityName}`,
-    ],
-
-    // OpenGraph (Facebook, LinkedIn)
-    openGraph: {
-      title: `Alquiler mensual en ${cityName} | inhabitme`,
-      description: config.description,
-      url: `${baseUrl}/${citySlug}`,
-      siteName: 'inhabitme',
-      locale: 'es_ES',
-      type: 'website',
-      images: [
-        {
-          url: `${baseUrl}/og-${citySlug}.jpg`,
-          width: 1200,
-          height: 630,
-          alt: `Alquiler mensual en ${cityName}`,
-        },
-      ],
-    },
-
-    // Twitter Card
-    twitter: {
-      card: 'summary_large_image',
-      title: `Alquiler mensual en ${cityName}`,
-      description: config.description,
-      images: [`${baseUrl}/og-${citySlug}.jpg`],
-    },
-
-    // Canonical URL
-    alternates: {
-      canonical: `${baseUrl}/${citySlug}`,
-    },
-
-    // Robots
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-  }
+    locale,
+    neighborhoods,
+  })
 }
 
 export default async function CityPage({ params }: PageProps) {
