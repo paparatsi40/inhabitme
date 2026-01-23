@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { SEO_CONFIG, getLocalizedUrl, getCityOgImage, getDefaultOgImage } from './config'
+import { SEO_CONFIG, getLocalizedUrl, getCityOgImage, getDefaultOgImage, getPropertyOgImage } from './config'
 
 type Locale = 'en' | 'es'
 
@@ -142,7 +142,7 @@ export function generatePropertyMetadata({
     ] : []),
   ]
 
-  // Use property images for Open Graph
+  // Use property images for Open Graph, or generate dynamic OG image
   const images = property.images && property.images.length > 0
     ? property.images.slice(0, 1).map(img => ({
         url: img.url,
@@ -150,7 +150,14 @@ export function generatePropertyMetadata({
         height: 630,
         alt: img.alt || property.title,
       }))
-    : undefined
+    : [
+        {
+          url: getPropertyOgImage(property.title, property.city),
+          width: 1200,
+          height: 630,
+          alt: property.title,
+        },
+      ]
 
   return generatePageMetadata({
     title,
@@ -193,10 +200,10 @@ export function generateCityMetadata({
     ...neighborhoods.map(n => `${n} ${citySlug}`),
   ]
 
-  // Try to use city-specific image, fallback to default
+  // Generate dynamic city-specific image
   const images = [
     {
-      url: getCityOgImage(citySlug),
+      url: getCityOgImage(citySlug, cityName),
       width: SEO_CONFIG.openGraph.imageWidth,
       height: SEO_CONFIG.openGraph.imageHeight,
       alt: `${cityName} - Medium-term rentals`,

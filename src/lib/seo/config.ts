@@ -101,17 +101,33 @@ export function getLocalizedUrl(path: string, locale: 'en' | 'es'): string {
 }
 
 /**
- * Generate Open Graph image URL for city pages
+ * Generate Open Graph image URL for city pages (dynamic)
  */
-export function getCityOgImage(citySlug: string): string {
-  return `${SEO_CONFIG.baseUrl}/og-${citySlug}.jpg`
+export function getCityOgImage(citySlug: string, cityName?: string): string {
+  const params = new URLSearchParams({
+    city: citySlug,
+    ...(cityName && { title: `Medium-term rentals in ${cityName}` }),
+  })
+  return `${SEO_CONFIG.baseUrl}/api/og?${params.toString()}`
+}
+
+/**
+ * Generate Open Graph image URL for property pages (dynamic)
+ */
+export function getPropertyOgImage(propertyTitle: string, city?: string): string {
+  const params = new URLSearchParams({
+    title: propertyTitle,
+    ...(city && { city: city.toLowerCase() }),
+    subtitle: 'Verified stay with workspace & fast WiFi',
+  })
+  return `${SEO_CONFIG.baseUrl}/api/og?${params.toString()}`
 }
 
 /**
  * Generate fallback Open Graph image
  */
 export function getDefaultOgImage(): string {
-  return `${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`
+  return `${SEO_CONFIG.baseUrl}/api/og`
 }
 
 /**
