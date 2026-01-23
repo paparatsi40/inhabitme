@@ -50,7 +50,9 @@ export default async function DashboardPage() {
     .rpc('get_owner_views_stats', { p_owner_id: userId })
     .single();
   
-  const viewsStats: { total_views: number } = viewsStatsData || { total_views: 0 };
+  const viewsStats = {
+    total_views: (viewsStatsData as any)?.total_views || 0
+  };
   
   // Obtener propiedades para mostrar
   const { data: properties } = await supabase
