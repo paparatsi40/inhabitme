@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+// UTF-8 clean file - redeploy trigger
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { Home, ChevronRight, MapPin, Building2 } from 'lucide-react'
