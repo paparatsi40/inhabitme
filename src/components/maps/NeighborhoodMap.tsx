@@ -90,9 +90,9 @@ const NEIGHBORHOOD_COORDS: Record<string, Record<string, { lat: number; lng: num
 
 export function NeighborhoodMap({ city, neighborhood, className = '' }: NeighborhoodMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
-  const mapInstanceRef = useRef<google.maps.Map | null>(null)
-  const markerRef = useRef<google.maps.Marker | null>(null)
-  const circleRef = useRef<google.maps.Circle | null>(null)
+  const mapInstanceRef = useRef<any>(null)
+  const markerRef = useRef<any>(null)
+  const circleRef = useRef<any>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
