@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
 import { ClerkProvider } from '@clerk/nextjs'
@@ -19,18 +19,23 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+type LocaleParams = Promise<{ locale: string }>
+
 export async function generateMetadata({
-  params: { locale }
+  params,
 }: {
-  params: { locale: string }
+  params: LocaleParams
 }): Promise<Metadata> {
+  const { locale } = await params
+
   const t = await getTranslations({ locale, namespace: 'metadata' })
   const localeUrl = getLocalizedUrl('', locale as 'en' | 'es')
 
   return {
     title: t('title'),
     description: t('description'),
-    keywords: 'medium-term rentals, coliving, digital nomads, furnished apartments, Madrid, Barcelona, Valencia, remote work',
+    keywords:
+      'medium-term rentals, coliving, digital nomads, furnished apartments, Madrid, Barcelona, Valencia, remote work',
     authors: [{ name: SEO_CONFIG.siteName }],
     creator: SEO_CONFIG.siteName,
     publisher: SEO_CONFIG.siteName,
@@ -38,8 +43,8 @@ export async function generateMetadata({
     alternates: {
       canonical: localeUrl,
       languages: {
-        'en': getLocalizedUrl('', 'en'),
-        'es': getLocalizedUrl('', 'es'),
+        en: getLocalizedUrl('', 'en'),
+        es: getLocalizedUrl('', 'es'),
       },
     },
     openGraph: {
@@ -81,11 +86,13 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
-  params: { locale }
+  params,
 }: {
   children: React.ReactNode
-  params: { locale: string }
+  params: LocaleParams
 }) {
+  const { locale } = await params
+
   // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound()
@@ -98,9 +105,7 @@ export default async function LocaleLayout({
     <ClerkProvider>
       <NextIntlClientProvider messages={messages}>
         <div className="flex flex-col min-h-screen">
-          <main className="flex-grow">
-            {children}
-          </main>
+          <main className="flex-grow">{children}</main>
           <Footer />
         </div>
       </NextIntlClientProvider>
