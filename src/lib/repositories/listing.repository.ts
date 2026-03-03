@@ -110,5 +110,35 @@ export const listingRepository = {
     }
 
     return mapRowToListing(data)
+  },
+
+  async getAll(): Promise<Listing[]> {
+    const supabase = getSupabaseServerClient()
+
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('[listingRepository.getAll] Error:', error)
+      throw error
+    }
+
+    return (data ?? []).map(mapRowToListing)
+  },
+
+  async delete(id: string): Promise<void> {
+    const supabase = getSupabaseServerClient()
+
+    const { error } = await supabase
+      .from('listings')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('[listingRepository.delete] Error:', error)
+      throw error
+    }
   }
 }

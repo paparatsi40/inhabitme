@@ -1,6 +1,6 @@
 import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import { Users, Home } from 'lucide-react';
+import { Users, Home, Building2 } from 'lucide-react';
 
 export default function AdminLayout({
   children,
@@ -27,6 +27,12 @@ export default function AdminLayout({
                   className="text-gray-600 hover:text-gray-900 font-medium"
                 >
                   Founding Hosts
+                </Link>
+                <Link 
+                  href="/admin/listings"
+                  className="text-gray-600 hover:text-gray-900 font-medium"
+                >
+                  Listings
                 </Link>
               </nav>
             </div>

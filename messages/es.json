@@ -31,7 +31,7 @@
       "subtitle": "Encuentra el espacio perfecto para <strong>vivir y trabajar</strong>.<br/>Sin comisiones absurdas. Sin sorpresas.",
       "badge": "Estancias medias sin intermediarios",
       "features": {
-        "wifi": "WiFi >50 Mbps verificado",
+        "wifi": "Internet para trabajo remoto",
         "workspace": "Espacio de trabajo",
         "transparent": "Precio transparente"
       },
@@ -39,7 +39,7 @@
         "primary": "Ver propiedades",
         "secondary": "Publicar mi espacio"
       },
-      "trustSignal": "Hosts verificados · WiFi garantizado · Cero fake data",
+      "trustSignal": "Hosts verificados · Listo para trabajo remoto · Cero fake data",
       "pricingBadge": "Un solo pago (€79-239) según duración",
       "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Cuanto más tiempo, mejor precio",
       "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
@@ -87,7 +87,8 @@
       },
       "example": {
         "title": "Ejemplo 3 meses en Madrid:",
-        "inhabitme": "Alquiler (€1,200/mes × 3) + fee €218 (€139 guest + €79 host)"
+        "otherPlatform": "Alquiler (€1,200/mes × 3) + €540 comisión (15% fee)",
+        "inhabitme": "Alquiler (€1,200/mes × 3) + €218 fee (€139 guest + €79 host)"
       },
       "savings": {
         "badge": "💰 Ahorro promedio por estancia",
@@ -173,7 +174,7 @@
       },
       "q5": {
         "question": "¿El WiFi está realmente verificado?",
-        "answer": "Sí. Todas las propiedades garantizan WiFi >50 Mbps, verificado y apto para trabajo remoto. No aceptamos propiedades sin buen internet."
+        "answer": "Todos los anuncios deben tener internet confiable adecuado para trabajo remoto. Los requisitos específicos de velocidad deben confirmarse directamente con el host antes de reservar."
       },
       "q6": {
         "question": "¿Qué pasa con las cancelaciones?",
@@ -237,8 +238,52 @@
     "notifyMe": "Avísame cuando haya propiedades",
     "properties": "{count} propiedades disponibles"
   },
+  "cityPage": {
+    "breadcrumbHome": "Inicio",
+    "staysBadge": "Estancias de 1 a 12 meses",
+    "heroTitle": "Vive y trabaja en {city}",
+    "heroSubtitle": "Espacios diseñados para nómadas digitales y profesionales remotos",
+    "properties": "Propiedades",
+    "from": "Desde",
+    "perMonth": "/mes",
+    "verifiedWifi": "WiFi confiable",
+    "noBureaucracy": "Sin burocracia",
+    "clearPrice": "Precio claro",
+    "viewProperties": "Ver {count} propiedad",
+    "viewPropertiesPlural": "Ver {count} propiedades",
+    "whyChooseTitle": "¿Por qué elegir {city}?",
+    "whyChooseSubtitle": "Espacios diseñados específicamente para estancias medias y trabajo remoto",
+    "wifiTitle": "WiFi confiable y escritorio",
+    "wifiDesc": "Todas las propiedades incluyen WiFi de alta velocidad, escritorio dedicado y ambiente tranquilo. 100% listo para trabajar.",
+    "priceTitle": "Precio claro, sin sorpresas",
+    "priceDesc": "Precio mensual todo incluido. Sin tarifas ocultas, sin cargos sorpresa. Sabes exactamente cuánto pagas desde el día 1.",
+    "flexibilityTitle": "De 1 a 12 meses, tú decides",
+    "flexibilityDesc": "Estancias medias pensadas para movilidad profesional. Sin compromisos eternos, sin burocracia compleja.",
+    "verifiedProperties": "{count} propiedades verificadas",
+    "verifiedPropertiesIn": "en {city}",
+    "exploreNeighborhoodsTitle": "Explora barrios en {city}",
+    "exploreNeighborhoodsSubtitle": "Cada barrio tiene su propia personalidad y comunidad",
+    "neighborhoodsCount": "{count} barrios",
+    "explore": "Explorar",
+    "proTip": "Consejo pro",
+    "proTipText": "Cada barrio de {city} tiene su vibe única. Haz click para ver qué hace especial a cada zona y encuentra tu match perfecto.",
+    "availableProperties": "✨ Propiedades Disponibles",
+    "propertiesCountTitle": "{count} propiedad en {city}",
+    "propertiesCountTitlePlural": "{count} propiedades en {city}",
+    "verifiedWifiSubtitle": "Todas con internet adecuado para trabajo remoto",
+    "averagePrice": "Precio medio",
+    "cityNotFound": "Ciudad no encontrada",
+    "cityNotFoundDesc": "No encontramos la ciudad \"{city}\"",
+    "backToHome": "Volver al inicio",
+    "alternativeCitiesTitle": "Ciudades alternativas con propiedades",
+    "alternativeCitiesSubtitle": "Explora estos destinos con propiedades verificadas",
+    "noPropertiesTitle": "Próximamente en {city}",
+    "noPropertiesDesc": "Estamos trabajando para traerte las mejores opciones de alquiler mensual en {city}. ¡Regístrate para ser el primero en saberlo!",
+    "notifyMeButton": "Avísame cuando haya propiedades",
+    "exploreOtherCities": "Explora otras ciudades con propiedades"
+  },
   "footer": {
-    "tagline": "Tu hogar perfecto para trabajar remoto. Alojamientos verificados con WiFi rápido en las mejores ciudades.",
+    "tagline": "Tu hogar perfecto para trabajar remoto. Alojamientos listos para trabajo remoto en las mejores ciudades.",
     "product": "Producto",
     "search": "Buscar alojamiento",
     "cities": {

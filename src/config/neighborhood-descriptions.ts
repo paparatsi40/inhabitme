@@ -107,6 +107,15 @@ export const NEIGHBORHOOD_DESCRIPTIONS: Record<string, Record<string, string>> =
     envigado: "Municipio adyacente con ambiente más tranquilo y tradicional. Parques hermosos y vida familiar. Precios más accesibles. Ideal para quienes buscan calidad de vida a mejor precio.",
     sabaneta: "El 'pueblo' dentro de la ciudad. Más económico, con parque central tradicional y ambiente local genuino. Bien conectado por metro. Perfecto para presupuestos ajustados que buscan autenticidad.",
   },
+
+  austin: {
+    mueller: "Desarrollo urbano sostenible y planificado. Nuevo epicentro tech de Austin con cercanía a Tesla Giga Texas. Parques, mercados locales y comunidad verde. Ideal para profesionales tech y familias que valoran sostenibilidad.",
+    zilker: "Vida al aire libre junto a Lady Bird Lake. Zilker Park, senderos para correr y ambiente activo. Perfecto para deportistas y amantes de la naturaleza que trabajan remote. Cercanía al centro y vibe auténtica.",
+    "barton-hills": "Barrio residencial tranquilo entre Zilker y el centro. Vibe local, buenos colegios y casas con jardín. Ideal para familias y profesionales que buscan calidad de vida sin alejarse del trabajo.",
+    domain: "El 'segundo downtown' de Austin. Tech hub con Apple, Oracle y Meta cercanos. Shopping, restaurantes y vida corporativa. Perfecto para empleados tech que buscan comodidad y acceso a amenities.",
+    "east-austin": "Barrio en plena gentrificación, auténtico y artístico. Music venues, food trucks y comunidad creativa. Precios más accesibles con alto potencial de valorización. Ideal para millennials y creativos.",
+    tarrytown: "El barrio más exclusivo de Austin. Casas señoriales, cercanía a UT y estabilidad premium. Ideal para ejecutivos, profesores universitarios y médicos que buscan exclusividad y tradición.",
+  },
 }
 
 // Descripciones cortas para cards (max 80 caracteres)
@@ -181,6 +190,15 @@ export const NEIGHBORHOOD_SHORT_DESCRIPTIONS: Record<string, Record<string, stri
     laureles: "Residencial y equilibrado",
     envigado: "Tranquilo y familiar",
     sabaneta: "Tradicional y económico",
+  },
+
+  austin: {
+    mueller: "Tech y sostenible",
+    zilker: "Al aire libre y trendy",
+    "barton-hills": "Residencial y tranquilo",
+    domain: "Corporativo y moderno",
+    "east-austin": "Creativo y emergente",
+    tarrytown: "Premium y exclusivo",
   },
 }
 

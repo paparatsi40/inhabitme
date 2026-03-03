@@ -31,7 +31,7 @@
       "subtitle": "Find the perfect space to <strong>live and work</strong>.<br/>No absurd commissions. No surprises.",
       "badge": "Medium-term stays without intermediaries",
       "features": {
-        "wifi": "WiFi >50 Mbps verified",
+        "wifi": "Internet for remote work",
         "workspace": "Workspace included",
         "transparent": "Transparent pricing"
       },
@@ -39,7 +39,7 @@
         "primary": "View properties",
         "secondary": "List my space"
       },
-      "trustSignal": "Verified hosts · WiFi guaranteed · No fake data",
+      "trustSignal": "Verified hosts · Remote-work ready · No fake data",
       "pricingBadge": "One-time payment (€79-239) based on duration",
       "pricingSubtitle": "No monthly commissions · No hidden charges · Longer stays, better value",
       "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
@@ -87,6 +87,7 @@
       },
       "example": {
         "title": "Example 3 months in Madrid:",
+        "otherPlatform": "Rent (€1,200/month × 3) + €540 commission (15% fee)",
         "inhabitme": "Rent (€1,200/month × 3) + €218 fee (€139 guest + €79 host)"
       },
       "savings": {
@@ -173,7 +174,7 @@
       },
       "q5": {
         "question": "Is WiFi really verified?",
-        "answer": "Yes. All properties guarantee >50 Mbps WiFi, verified and suitable for remote work. We don't accept properties without good internet."
+        "answer": "All listings are required to have reliable internet suitable for remote work. Specific speed requirements should be confirmed directly with the host before booking."
       },
       "q6": {
         "question": "What about cancellations?",
@@ -237,8 +238,52 @@
     "notifyMe": "Notify me when there are properties",
     "properties": "{count} properties available"
   },
+  "cityPage": {
+    "breadcrumbHome": "Home",
+    "staysBadge": "Stays from 1 to 12 months",
+    "heroTitle": "Live and work in {city}",
+    "heroSubtitle": "Spaces designed for digital nomads and remote professionals",
+    "properties": "Properties",
+    "from": "From",
+    "perMonth": "/month",
+    "verifiedWifi": "Reliable WiFi",
+    "noBureaucracy": "No bureaucracy",
+    "clearPrice": "Clear price",
+    "viewProperties": "View {count} property",
+    "viewPropertiesPlural": "View {count} properties",
+    "whyChooseTitle": "Why choose {city}?",
+    "whyChooseSubtitle": "Spaces designed specifically for medium-term stays and remote work",
+    "wifiTitle": "Reliable WiFi and desk",
+    "wifiDesc": "All properties include high-speed WiFi, dedicated desk and quiet environment. 100% ready to work.",
+    "priceTitle": "Clear price, no surprises",
+    "priceDesc": "All-inclusive monthly price. No hidden fees, no surprise charges. You know exactly what you pay from day 1.",
+    "flexibilityTitle": "From 1 to 12 months, you decide",
+    "flexibilityDesc": "Medium-term stays designed for professional mobility. No endless commitments, no complex bureaucracy.",
+    "verifiedProperties": "{count} verified properties",
+    "verifiedPropertiesIn": "in {city}",
+    "exploreNeighborhoodsTitle": "Explore neighborhoods in {city}",
+    "exploreNeighborhoodsSubtitle": "Each neighborhood has its own personality and community",
+    "neighborhoodsCount": "{count} neighborhoods",
+    "explore": "Explore",
+    "proTip": "Pro tip",
+    "proTipText": "Each neighborhood in {city} has its unique vibe. Click to see what makes each area special and find your perfect match.",
+    "availableProperties": "✨ Available Properties",
+    "propertiesCountTitle": "{count} property in {city}",
+    "propertiesCountTitlePlural": "{count} properties in {city}",
+    "verifiedWifiSubtitle": "All with internet suitable for remote work",
+    "averagePrice": "Average price",
+    "cityNotFound": "City not found",
+    "cityNotFoundDesc": "We couldn't find the city \"{city}\"",
+    "backToHome": "Back to home",
+    "alternativeCitiesTitle": "Alternative cities with properties",
+    "alternativeCitiesSubtitle": "Explore these destinations with verified properties",
+    "noPropertiesTitle": "Coming soon to {city}",
+    "noPropertiesDesc": "We're working to bring you the best medium-term rental options in {city}. Register to be the first to know!",
+    "notifyMeButton": "Notify me when there are properties",
+    "exploreOtherCities": "Explore other cities with properties"
+  },
   "footer": {
-    "tagline": "Your perfect home for remote work. Verified accommodations with fast WiFi in the best cities.",
+    "tagline": "Your perfect home for remote work. Remote-work ready accommodations in the best cities.",
     "product": "Product",
     "search": "Search accommodation",
     "cities": {

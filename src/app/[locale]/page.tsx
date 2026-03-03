@@ -204,7 +204,7 @@ export default function HomePage() {
               <div className="mt-6 pt-6 border-t-2 border-red-200">
                 <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
                 <p className="text-2xl font-black text-red-600">3600 + 540 = 4140 EUR</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
+                <p className="text-sm text-gray-500 mt-1">{tHow('example.otherPlatform')}</p>
               </div>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">
@@ -315,6 +315,7 @@ export default function HomePage() {
             <CityCard slug="medellin" name="Medellin" subtitle="Eterna primavera" price="450 EUR" gradient="from-emerald-600 to-green-700" hoverBorder="hover:border-emerald-400" textColor="text-emerald-600" />
             <CityCard slug="porto" name="Porto" subtitle="Vino y autenticidad" price="650 EUR" gradient="from-indigo-600 to-purple-700" hoverBorder="hover:border-indigo-400" textColor="text-indigo-600" />
             <CityCard slug="sevilla" name="Sevilla" subtitle="Sol y flamenco" price="600 EUR" gradient="from-amber-600 to-orange-700" hoverBorder="hover:border-amber-400" textColor="text-amber-600" />
+            <CityCard slug="austin" name="Austin" subtitle="Tech hub de Texas" price="$1,200 USD" gradient="from-red-600 to-orange-700" hoverBorder="hover:border-red-400" textColor="text-red-600" />
           </div>
         </div>
       </section>
@@ -461,6 +462,7 @@ const CITY_IMAGES: Record<string, string> = {
   'medellin': 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
   'porto': 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=600&fit=crop&q=80',
   'sevilla': 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop&q=80',
+  'austin': 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=800&h=600&fit=crop&q=80',
 }
 
 function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColor }: { slug: string; name: string; subtitle: string; price: string; gradient: string; hoverBorder: string; textColor: string }) {

@@ -15,9 +15,24 @@ const CITIES = [
     subtitle: 'Mar y Modernismo'
   },
   { 
+    name: 'Valencia', 
+    image: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&h=600&fit=crop&q=80',
+    subtitle: 'Playa y calidad de vida'
+  },
+  { 
+    name: 'Sevilla', 
+    image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop&q=80',
+    subtitle: 'Sol y flamenco'
+  },
+  { 
     name: 'Lisboa', 
     image: 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop&q=80',
     subtitle: 'Fiscalidad favorable'
+  },
+  { 
+    name: 'Porto', 
+    image: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=600&fit=crop&q=80',
+    subtitle: 'Vino y autenticidad'
   },
   { 
     name: 'Buenos Aires', 
@@ -33,6 +48,11 @@ const CITIES = [
     name: 'Medellín', 
     image: 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
     subtitle: 'Eterna primavera'
+  },
+  { 
+    name: 'Austin', 
+    image: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=800&h=600&fit=crop&q=80',
+    subtitle: 'Tech hub de Texas'
   },
 ]
 
@@ -91,7 +111,7 @@ export function CityCarousel() {
             <p className="text-xs text-gray-600 font-semibold">Propiedades</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-purple-600">9</p>
+            <p className="text-2xl font-black text-purple-600">10</p>
             <p className="text-xs text-gray-600 font-semibold">Ciudades</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">

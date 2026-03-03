@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { getNeighborhoodShortDescription } from '@/config/neighborhood-descriptions'
 import { CityPageClient } from './CityPageClient'
 import { generateCityMetadata } from '@/lib/seo/metadata-helpers'
+import { getTranslations } from 'next-intl/server'
 
 /* City Images - Same as home page */
 const CITY_IMAGES: Record<string, string> = {
@@ -20,6 +21,7 @@ const CITY_IMAGES: Record<string, string> = {
   'ciudad-de-mexico': 'https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=800&h=600&fit=crop&q=80',
   'buenos-aires': 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800&h=600&fit=crop&q=80',
   'medellin': 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
+  'austin': 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=800&h=600&fit=crop&q=80',
 }
 
 /* Alternative cities recommendations */
@@ -38,6 +40,11 @@ const CITY_ALTERNATIVES: Record<string, Array<{ name: string; slug: string; dist
     { name: 'Ciudad de México', slug: 'ciudad-de-mexico', highlight: 'Capital digital de LatAm, más opciones de alojamiento' },
     { name: 'Buenos Aires', slug: 'buenos-aires', highlight: 'Gran comunidad de nómadas, cultura vibrante' },
     { name: 'Barcelona', slug: 'barcelona', highlight: 'Si buscas Europa con buen clima' },
+  ],
+  'austin': [
+    { name: 'Ciudad de México', slug: 'ciudad-de-mexico', highlight: 'Capital digital de LatAm, alternativa más económica' },
+    { name: 'Madrid', slug: 'madrid', distance: 'Vuelo directo', highlight: 'Hub europeo con gran comunidad de nómadas' },
+    { name: 'Barcelona', slug: 'barcelona', highlight: 'Tech hub europeo con playa' },
   ],
   // Default para ciudades sin alternativas específicas
   'default': [
@@ -171,6 +178,18 @@ const CITIES_CONFIG: Record<string, {
     ],
     description: 'Porto: segunda ciudad de Portugal con escena tech creciente. Alojamientos verificados con WiFi rápido para estancias medias.',
   },
+  austin: {
+    name: 'Austin',
+    neighborhoods: [
+      { name: 'Mueller', slug: 'mueller' },
+      { name: 'Zilker', slug: 'zilker' },
+      { name: 'Barton Hills', slug: 'barton-hills' },
+      { name: 'The Domain', slug: 'domain' },
+      { name: 'East Austin', slug: 'east-austin' },
+      { name: 'Tarrytown', slug: 'tarrytown' },
+    ],
+    description: 'Austin, Texas: capital tech del Lone Star State. Alojamientos diseñados para estancias de 1-12 meses, ideal para profesionales remotos y empleados de Tesla, Apple y Oracle. WiFi verificado y workspaces dedicados.',
+  },
 }
 
 /**
@@ -208,6 +227,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CityPage({ params }: PageProps) {
   const citySlug = params.city.toLowerCase()
+  const locale = params.locale || 'en'
+  
+  // Cargar traducciones
+  const t = await getTranslations({ locale, namespace: 'cityPage' })
   
   // Excluir rutas que NO son ciudades (auth, etc)
   const excludedRoutes = ['sign-in', 'sign-up', 'dashboard', 'properties', 'contact', 'faq', 'about', 'privacy', 'terms', 'cookies', 'search', 'bookings', 'host', 'leads', 'listings', 'onboarding', 'founding-host', 'founding-hosts', 'admin']
@@ -225,13 +248,13 @@ export default async function CityPage({ params }: PageProps) {
         <div className="text-center py-20">
           <MapPin className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-4">
-            Ciudad no encontrada
+            {t('cityNotFound')}
           </h1>
           <p className="text-gray-600 mb-6">
-            No encontramos la ciudad &quot;{params.city}&quot;
+            {t('cityNotFoundDesc', { city: params.city })}
           </p>
           <Link href="/">
-            <Button>Volver al inicio</Button>
+            <Button>{t('backToHome')}</Button>
           </Link>
         </div>
       </main>
@@ -273,7 +296,7 @@ export default async function CityPage({ params }: PageProps) {
               className="hover:text-blue-600 transition-colors flex items-center gap-1 font-medium"
             >
               <Home className="h-4 w-4" />
-              Inicio
+              {t('breadcrumbHome')}
             </Link>
             <ChevronRight className="h-4 w-4" />
             <span className="text-gray-900 font-semibold">{cityName}</span>
@@ -292,17 +315,20 @@ export default async function CityPage({ params }: PageProps) {
                   {/* Badge contextual mejorado */}
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full text-sm font-bold mb-4 lg:mb-6 shadow-sm">
                     <CheckCircle className="h-4 w-4" />
-                    Estancias de 1 a 12 meses
+                    {t('staysBadge')}
                   </div>
                   
                   {/* Typography GRANDE y impactante */}
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 lg:mb-6 leading-tight bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                    Vive y trabaja en {cityName}
+                    {t('heroTitle', { city: cityName })}
                   </h1>
                   
                   {/* Subheadline emocional */}
                   <p className="text-xl lg:text-2xl text-gray-700 font-medium mb-6 lg:mb-8 leading-relaxed">
-                    Espacios diseñados para <span className="text-blue-600 font-bold">nómadas digitales</span> y <span className="text-purple-600 font-bold">profesionales remotos</span>
+                    {t('heroSubtitle', { 
+                      digitalNomads: <span className="text-blue-600 font-bold">digital nomads</span>,
+                      remoteProfessionals: <span className="text-purple-600 font-bold">remote professionals</span>
+                    })}
                   </p>
 
                   {/* Stats DESTACADAS - Cards premium */}
@@ -311,7 +337,7 @@ export default async function CityPage({ params }: PageProps) {
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border-2 border-blue-200">
                         <div className="flex items-center gap-2 mb-1">
                           <MapPin className="h-5 w-5 text-blue-600" />
-                          <span className="text-sm font-medium text-gray-600">Propiedades</span>
+                          <span className="text-sm font-medium text-gray-600">{t('properties')}</span>
                         </div>
                         <span className="text-3xl font-black text-gray-900">{listingsCount}</span>
                       </div>
@@ -320,12 +346,12 @@ export default async function CityPage({ params }: PageProps) {
                         <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-4 rounded-xl border-2 border-green-200">
                           <div className="flex items-center gap-2 mb-1">
                             <TrendingUp className="h-5 w-5 text-green-600" />
-                            <span className="text-sm font-medium text-gray-600">Desde</span>
+                            <span className="text-sm font-medium text-gray-600">{t('from')}</span>
                           </div>
                           <span className="text-3xl font-black text-gray-900">
                             €{minPrice.toLocaleString()}
                           </span>
-                          <span className="text-sm text-gray-600 font-medium">/mes</span>
+                          <span className="text-sm text-gray-600 font-medium">{t('perMonth')}</span>
                         </div>
                       )}
                     </div>
@@ -335,15 +361,15 @@ export default async function CityPage({ params }: PageProps) {
                   <div className="flex flex-wrap gap-2.5 mb-6">
                     <div className="flex items-center gap-2 bg-gradient-to-r from-green-50 to-green-100 px-4 py-2.5 rounded-xl border border-green-200">
                       <Wifi className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-bold text-gray-900">WiFi verificado</span>
+                      <span className="text-sm font-bold text-gray-900">{t('verifiedWifi')}</span>
                     </div>
                     <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-blue-100 px-4 py-2.5 rounded-xl border border-blue-200">
                       <Clock className="h-5 w-5 text-blue-600" />
-                      <span className="text-sm font-bold text-gray-900">Sin burocracia</span>
+                      <span className="text-sm font-bold text-gray-900">{t('noBureaucracy')}</span>
                     </div>
                     <div className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-purple-100 px-4 py-2.5 rounded-xl border border-purple-200">
                       <Euro className="h-5 w-5 text-purple-600" />
-                      <span className="text-sm font-bold text-gray-900">Precio claro</span>
+                      <span className="text-sm font-bold text-gray-900">{t('clearPrice')}</span>
                     </div>
                   </div>
                   
@@ -351,7 +377,10 @@ export default async function CityPage({ params }: PageProps) {
                   {listingsCount > 0 && (
                     <div className="pt-2">
                       <a href="#propiedades" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
-                        Ver {listingsCount} propiedad{listingsCount > 1 ? 'es' : ''}
+                        {listingsCount === 1 
+                          ? t('viewProperties', { count: listingsCount })
+                          : t('viewPropertiesPlural', { count: listingsCount })
+                        }
                         <ChevronRight className="h-5 w-5" />
                       </a>
                     </div>
@@ -370,7 +399,7 @@ export default async function CityPage({ params }: PageProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 lg:pb-12 text-white">
                         <p className="text-3xl lg:text-4xl font-black drop-shadow-lg">{cityName}</p>
-                        <p className="text-base lg:text-lg opacity-95 mt-2 font-medium drop-shadow-md">Tu próximo hogar</p>
+                        <p className="text-base lg:text-lg opacity-95 mt-2 font-medium drop-shadow-md">Your next home</p>
                       </div>
                     </>
                   ) : (
@@ -380,7 +409,7 @@ export default async function CityPage({ params }: PageProps) {
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                         <Building2 className="h-20 w-20 lg:h-24 lg:w-24 mb-4 opacity-90" />
                         <p className="text-2xl lg:text-3xl font-bold">{cityName}</p>
-                        <p className="text-sm lg:text-base opacity-90 mt-2">Tu próximo hogar</p>
+                        <p className="text-sm lg:text-base opacity-90 mt-2">Your next home</p>
                       </div>
                     </>
                   )}
@@ -393,10 +422,10 @@ export default async function CityPage({ params }: PageProps) {
           <section className="mb-12 lg:mb-16">
             <div className="text-center mb-10">
               <h2 className="text-3xl lg:text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ¿Por qué elegir {cityName}?
+                {t('whyChooseTitle', { city: cityName })}
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Espacios diseñados específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>
+                {t('whyChooseSubtitle')}
               </p>
             </div>
 
@@ -407,11 +436,10 @@ export default async function CityPage({ params }: PageProps) {
                   <Wifi className="h-8 w-8 text-blue-600" />
                 </div>
                 <h3 className="font-black text-xl mb-3 text-gray-900">
-                  WiFi verificado y escritorio
+                  {t('wifiTitle')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Todas las propiedades incluyen <strong className="text-gray-900">WiFi de alta velocidad</strong>, 
-                  escritorio dedicado y ambiente tranquilo. <strong className="text-blue-600">100% listo para trabajar</strong>.
+                  {t('wifiDesc')}
                 </p>
               </div>
 
@@ -421,11 +449,10 @@ export default async function CityPage({ params }: PageProps) {
                   <Euro className="h-8 w-8 text-green-600" />
                 </div>
                 <h3 className="font-black text-xl mb-3 text-gray-900">
-                  Precio claro, sin sorpresas
+                  {t('priceTitle')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Precio mensual todo incluido. <strong className="text-gray-900">Sin tarifas ocultas</strong>, sin comisiones sorpresa. 
-                  Sabes exactamente cuánto pagas desde el día 1.
+                  {t('priceDesc')}
                 </p>
               </div>
 
@@ -435,11 +462,10 @@ export default async function CityPage({ params }: PageProps) {
                   <Clock className="h-8 w-8 text-purple-600" />
                 </div>
                 <h3 className="font-black text-xl mb-3 text-gray-900">
-                  De 1 a 12 meses, tú decides
+                  {t('flexibilityTitle')}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Estancias medias pensadas para <strong className="text-gray-900">movilidad profesional</strong>. 
-                  Sin compromisos eternos, <strong className="text-purple-600">sin burocracia compleja</strong>.
+                  {t('flexibilityDesc')}
                 </p>
               </div>
             </div>
@@ -448,8 +474,8 @@ export default async function CityPage({ params }: PageProps) {
             <div className="mt-8 text-center">
               <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
                 <CheckCircle className="h-5 w-5 text-green-600" />
-                <span className="font-bold text-gray-900">{listingsCount} propiedades verificadas</span>
-                <span className="text-gray-600">en {cityName}</span>
+                <span className="font-bold text-gray-900">{t('verifiedProperties', { count: listingsCount })}</span>
+                <span className="text-gray-600">{t('verifiedPropertiesIn', { city: cityName })}</span>
               </div>
             </div>
           </section>
@@ -460,16 +486,16 @@ export default async function CityPage({ params }: PageProps) {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 lg:mb-10">
                 <div className="mb-4 lg:mb-0">
                   <h2 className="text-3xl lg:text-4xl font-black mb-3 bg-gradient-to-r from-gray-900 to-blue-900 bg-clip-text text-transparent">
-                    Explora barrios en {cityName}
+                    {t('exploreNeighborhoodsTitle', { city: cityName })}
                   </h2>
                   <p className="text-lg text-gray-600">
-                    Cada barrio tiene su propia <strong>personalidad</strong> y <strong>comunidad</strong>
+                    {t('exploreNeighborhoodsSubtitle')}
                   </p>
                 </div>
                 <div className="inline-flex items-center gap-2 px-5 py-3 bg-white border-2 border-blue-200 rounded-xl shadow-sm">
                   <MapPin className="h-5 w-5 text-blue-600" />
                   <span className="font-bold text-gray-900">{neighborhoods.length}</span>
-                  <span className="text-gray-600">barrios</span>
+                  <span className="text-gray-600">{t('neighborhoodsCount', { count: neighborhoods.length })}</span>
                 </div>
               </div>
 
@@ -501,7 +527,7 @@ export default async function CityPage({ params }: PageProps) {
                           </p>
                         )}
                         <div className="flex items-center gap-2 text-sm text-blue-600 group-hover:text-blue-700 font-medium transition-colors pl-11">
-                          <span>Explorar</span>
+                          <span>{t('explore')}</span>
                           <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
@@ -515,8 +541,7 @@ export default async function CityPage({ params }: PageProps) {
                 <p className="text-sm text-gray-700 flex items-start gap-3">
                   <span className="text-2xl">💡</span>
                   <span>
-                    <strong className="text-gray-900">Consejo pro:</strong> Cada barrio de {cityName} tiene su vibe única. 
-                    Haz click para ver <strong>qué hace especial</strong> a cada zona y encuentra tu match perfecto.
+                    <strong className="text-gray-900">{t('proTip')}:</strong> {t('proTipText', { city: cityName })}
                   </span>
                 </p>
               </div>
@@ -530,7 +555,7 @@ export default async function CityPage({ params }: PageProps) {
               <div className="flex items-center gap-4 mb-10">
                 <div className="h-1 flex-1 bg-gradient-to-r from-transparent via-blue-300 to-transparent rounded-full"></div>
                 <div className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl text-base font-black shadow-lg">
-                  ✨ Propiedades Disponibles
+                  {t('availableProperties')}
                 </div>
                 <div className="h-1 flex-1 bg-gradient-to-r from-transparent via-purple-300 to-transparent rounded-full"></div>
               </div>
@@ -538,19 +563,22 @@ export default async function CityPage({ params }: PageProps) {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                 <div>
                   <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">
-                    {listingsCount} propiedad{listingsCount > 1 ? 'es' : ''} en {cityName}
+                    {listingsCount === 1 
+                      ? t('propertiesCountTitle', { count: listingsCount, city: cityName })
+                      : t('propertiesCountTitlePlural', { count: listingsCount, city: cityName })
+                    }
                   </h2>
                   <p className="text-base text-gray-600 flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-600" />
-                    Todas con WiFi verificado y listas para trabajar
+                    {t('verifiedWifiSubtitle')}
                   </p>
                 </div>
                 
                 {/* Badge precio medio mejorado */}
                 {avgPrice > 0 && (
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 px-5 py-3 rounded-2xl shadow-sm">
-                    <p className="text-xs text-green-700 font-bold uppercase tracking-wide mb-1">Precio medio</p>
-                    <p className="text-2xl font-black text-green-800">€{avgPrice.toLocaleString()}<span className="text-base font-medium">/mes</span></p>
+                    <p className="text-xs text-green-700 font-bold uppercase tracking-wide mb-1">{t('averagePrice')}</p>
+                    <p className="text-2xl font-black text-green-800">€{avgPrice.toLocaleString()}<span className="text-base font-medium">{t('perMonth')}</span></p>
                   </div>
                 )}
               </div>
@@ -567,6 +595,7 @@ export default async function CityPage({ params }: PageProps) {
                 properties: 0,
                 priceFrom: alt.slug === 'madrid' ? 800 : alt.slug === 'barcelona' ? 900 : alt.slug === 'valencia' ? 700 : alt.slug === 'lisboa' ? 750 : alt.slug === 'ciudad-de-mexico' ? 500 : alt.slug === 'buenos-aires' ? 400 : 750,
               }))}
+              t={t}
             />
           )}
           

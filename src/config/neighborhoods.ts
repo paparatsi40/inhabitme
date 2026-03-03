@@ -332,6 +332,40 @@ export const NEIGHBORHOOD_RELATIONS: NeighborhoodRelations = {
       { slug: 'cedofeita', name: 'Cedofeita', description: 'Bohemio' },
     ],
   },
+
+  // AUSTIN, TEXAS
+  austin: {
+    mueller: [
+      { slug: 'east-austin', name: 'East Austin', description: 'Creativo y emergente' },
+      { slug: 'domain', name: 'The Domain', description: 'Tech hub corporativo' },
+      { slug: 'zilker', name: 'Zilker', description: 'Verde y trendy' },
+    ],
+    zilker: [
+      { slug: 'barton-hills', name: 'Barton Hills', description: 'Residencial y tranquilo' },
+      { slug: 'mueller', name: 'Mueller', description: 'Sostenible y moderno' },
+      { slug: 'tarrytown', name: 'Tarrytown', description: 'Premium y exclusivo' },
+    ],
+    'barton-hills': [
+      { slug: 'zilker', name: 'Zilker', description: 'Vibrante y al aire libre' },
+      { slug: 'tarrytown', name: 'Tarrytown', description: 'Elegante' },
+      { slug: 'mueller', name: 'Mueller', description: 'Innovador' },
+    ],
+    domain: [
+      { slug: 'mueller', name: 'Mueller', description: 'Cerca de Tesla y tech' },
+      { slug: 'tarrytown', name: 'Tarrytown', description: 'Residencial' },
+      { slug: 'east-austin', name: 'East Austin', description: 'Artístico' },
+    ],
+    'east-austin': [
+      { slug: 'mueller', name: 'Mueller', description: 'Planificado y verde' },
+      { slug: 'zilker', name: 'Zilker', description: 'Cerca del centro' },
+      { slug: 'domain', name: 'The Domain', description: 'Segundo centro urbano' },
+    ],
+    tarrytown: [
+      { slug: 'zilker', name: 'Zilker', description: 'Cerca de Lady Bird Lake' },
+      { slug: 'barton-hills', name: 'Barton Hills', description: 'Tranquilo' },
+      { slug: 'domain', name: 'The Domain', description: 'Corporativo' },
+    ],
+  },
 }
 
 /**

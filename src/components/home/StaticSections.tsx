@@ -109,7 +109,7 @@ export function PricingComparisonSection({ tHow }: { tHow: any }) {
             <div className="mt-6 pt-6 border-t-2 border-red-200">
               <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
               <p className="text-2xl font-black text-red-600">3600 + 540 = 4140 EUR</p>
-              <p className="text-sm text-gray-500 mt-1">{tHow('example.other')}</p>
+              <p className="text-sm text-gray-500 mt-1">{tHow('example.otherPlatform')}</p>
             </div>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">

@@ -9,7 +9,7 @@ interface NeighborhoodMapProps {
   className?: string
 }
 
-// Coordenadas de barrios conocidos (puedes expandir esto)
+// Coordenadas de barrios conocidos
 const NEIGHBORHOOD_COORDS: Record<string, Record<string, { lat: number; lng: number; zoom: number }>> = {
   madrid: {
     malasana: { lat: 40.4259, lng: -3.7047, zoom: 15 },
@@ -34,22 +34,77 @@ const NEIGHBORHOOD_COORDS: Record<string, Record<string, { lat: number; lng: num
     benimaclet: { lat: 39.4855, lng: -0.3520, zoom: 15 },
     centro: { lat: 39.4699, lng: -0.3763, zoom: 14 },
   },
+  austin: {
+    mueller: { lat: 30.3048, lng: -97.6998, zoom: 15 },
+    zilker: { lat: 30.2544, lng: -97.7856, zoom: 15 },
+    'barton-hills': { lat: 30.2637, lng: -97.8037, zoom: 15 },
+    domain: { lat: 30.4008, lng: -97.7265, zoom: 15 },
+    'east-austin': { lat: 30.2645, lng: -97.7106, zoom: 14 },
+    tarrytown: { lat: 30.3012, lng: -97.7604, zoom: 15 },
+  },
+  sevilla: {
+    triana: { lat: 37.3857, lng: -5.9984, zoom: 15 },
+    centro: { lat: 37.3891, lng: -5.9845, zoom: 15 },
+    nervion: { lat: 37.3801, lng: -5.9732, zoom: 15 },
+    macarena: { lat: 37.4015, lng: -5.9866, zoom: 15 },
+    alameda: { lat: 37.3966, lng: -5.9935, zoom: 15 },
+  },
+  lisboa: {
+    baixa: { lat: 38.7078, lng: -9.1366, zoom: 15 },
+    chiado: { lat: 38.7106, lng: -9.1423, zoom: 15 },
+    alfama: { lat: 38.7123, lng: -9.1305, zoom: 15 },
+    'bairro-alto': { lat: 38.7108, lng: -9.1453, zoom: 15 },
+    'principe-real': { lat: 38.7139, lng: -9.1532, zoom: 15 },
+    santos: { lat: 38.7067, lng: -9.1563, zoom: 15 },
+    estrela: { lat: 38.7102, lng: -9.1618, zoom: 15 },
+  },
+  porto: {
+    ribeira: { lat: 41.1406, lng: -8.6119, zoom: 16 },
+    cedofeita: { lat: 41.1485, lng: -8.6158, zoom: 15 },
+    boavista: { lat: 41.1575, lng: -8.6296, zoom: 15 },
+    foz: { lat: 41.1726, lng: -8.6843, zoom: 15 },
+  },
+  'ciudad-de-mexico': {
+    condesa: { lat: 19.4123, lng: -99.1773, zoom: 15 },
+    'roma-norte': { lat: 19.4208, lng: -99.1604, zoom: 15 },
+    polanco: { lat: 19.4326, lng: -99.1945, zoom: 15 },
+    juarez: { lat: 19.4259, lng: -99.1526, zoom: 15 },
+    'del-valle': { lat: 19.3923, lng: -99.1734, zoom: 15 },
+    coyoacan: { lat: 19.3502, lng: -99.1621, zoom: 15 },
+    'san-miguel-chapultepec': { lat: 19.4062, lng: -99.1857, zoom: 15 },
+  },
+  'buenos-aires': {
+    palermo: { lat: -34.5883, lng: -58.3930, zoom: 14 },
+    recoleta: { lat: -34.5887, lng: -58.3924, zoom: 15 },
+    'san-telmo': { lat: -34.6209, lng: -58.3708, zoom: 16 },
+    belgrano: { lat: -34.5624, lng: -58.4622, zoom: 14 },
+    caballito: { lat: -34.6165, lng: -58.4351, zoom: 15 },
+  },
+  medellin: {
+    'el-poblado': { lat: 6.2102, lng: -75.5665, zoom: 15 },
+    laureles: { lat: 6.2447, lng: -75.6053, zoom: 15 },
+    envigado: { lat: 6.1667, lng: -75.5833, zoom: 15 },
+    sabaneta: { lat: 6.1506, lng: -75.6166, zoom: 15 },
+  },
 }
 
 export function NeighborhoodMap({ city, neighborhood, className = '' }: NeighborhoodMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
+  const mapInstanceRef = useRef<google.maps.Map | null>(null)
+  const markerRef = useRef<google.maps.Marker | null>(null)
+  const circleRef = useRef<google.maps.Circle | null>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Efecto para cargar Google Maps (solo una vez)
   useEffect(() => {
     const loadGoogleMaps = async () => {
-      // Verificar si ya está cargado
+      // Si ya está cargado, no hacer nada
       if (window.google?.maps) {
-        initMap()
+        setMapLoaded(true)
         return
       }
 
-      // Cargar Google Maps
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
       if (!apiKey) {
@@ -65,7 +120,6 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
         script.defer = true
         script.onload = () => {
           setMapLoaded(true)
-          initMap()
         }
         script.onerror = () => {
           setError('Error al cargar el mapa')
@@ -77,21 +131,26 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
       }
     }
 
-    const initMap = () => {
-      if (!mapRef.current || !window.google?.maps) return
+    loadGoogleMaps()
+  }, []) // Solo se ejecuta al montar
 
-      const citySlug = city.toLowerCase()
-      const neighborhoodSlug = neighborhood.toLowerCase()
-      
-      // Obtener coordenadas del barrio
-      const coords = NEIGHBORHOOD_COORDS[citySlug]?.[neighborhoodSlug] || {
-        lat: 40.4168,
-        lng: -3.7038,
-        zoom: 13,
-      }
+  // Efecto para inicializar/actualizar el mapa cuando cambian city/neighborhood
+  useEffect(() => {
+    if (!mapLoaded || !mapRef.current || !window.google?.maps) return
 
-      // Crear mapa
-      const map = new window.google.maps.Map(mapRef.current, {
+    const citySlug = city.toLowerCase()
+    const neighborhoodSlug = neighborhood.toLowerCase()
+
+    // Obtener coordenadas del barrio
+    const coords = NEIGHBORHOOD_COORDS[citySlug]?.[neighborhoodSlug] || {
+      lat: 40.4168,
+      lng: -3.7038,
+      zoom: 13,
+    }
+
+    // Si el mapa no existe, crearlo
+    if (!mapInstanceRef.current) {
+      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
         center: { lat: coords.lat, lng: coords.lng },
         zoom: coords.zoom,
         styles: [
@@ -107,37 +166,59 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
         streetViewControl: false,
         fullscreenControl: true,
       })
-
-      // Añadir marcador en el centro del barrio
-      new window.google.maps.Marker({
-        position: { lat: coords.lat, lng: coords.lng },
-        map: map,
-        title: neighborhood,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: '#8B5CF6',
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 3,
-        },
-      })
-
-      // Círculo semi-transparente para mostrar el área aproximada
-      new window.google.maps.Circle({
-        center: { lat: coords.lat, lng: coords.lng },
-        radius: 500, // 500 metros de radio
-        map: map,
-        fillColor: '#8B5CF6',
-        fillOpacity: 0.1,
-        strokeColor: '#8B5CF6',
-        strokeOpacity: 0.3,
-        strokeWeight: 2,
-      })
+    } else {
+      // Si ya existe, solo mover el centro y cambiar zoom
+      mapInstanceRef.current.setCenter({ lat: coords.lat, lng: coords.lng })
+      mapInstanceRef.current.setZoom(coords.zoom)
     }
 
-    loadGoogleMaps()
-  }, [city, neighborhood])
+    // Limpiar marcador anterior si existe
+    if (markerRef.current) {
+      markerRef.current.setMap(null)
+    }
+
+    // Crear nuevo marcador
+    markerRef.current = new window.google.maps.Marker({
+      position: { lat: coords.lat, lng: coords.lng },
+      map: mapInstanceRef.current,
+      title: neighborhood,
+      icon: {
+        path: window.google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: '#8B5CF6',
+        fillOpacity: 1,
+        strokeColor: '#ffffff',
+        strokeWeight: 3,
+      },
+    })
+
+    // Limpiar círculo anterior si existe
+    if (circleRef.current) {
+      circleRef.current.setMap(null)
+    }
+
+    // Crear nuevo círculo
+    circleRef.current = new window.google.maps.Circle({
+      center: { lat: coords.lat, lng: coords.lng },
+      radius: 500,
+      map: mapInstanceRef.current,
+      fillColor: '#8B5CF6',
+      fillOpacity: 0.1,
+      strokeColor: '#8B5CF6',
+      strokeOpacity: 0.3,
+      strokeWeight: 2,
+    })
+
+    // Cleanup al desmontar
+    return () => {
+      if (markerRef.current) {
+        markerRef.current.setMap(null)
+      }
+      if (circleRef.current) {
+        circleRef.current.setMap(null)
+      }
+    }
+  }, [city, neighborhood, mapLoaded])
 
   if (error) {
     return (
@@ -177,6 +258,6 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
 // Tipos para TypeScript
 declare global {
   interface Window {
-    google: any
+    google: typeof google
   }
 }

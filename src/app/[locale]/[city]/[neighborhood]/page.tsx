@@ -126,6 +126,17 @@ const CITIES_CONFIG: Record<string, {
       { name: 'Sabaneta', slug: 'sabaneta' },
     ],
   },
+  austin: {
+    name: 'Austin',
+    neighborhoods: [
+      { name: 'Mueller', slug: 'mueller' },
+      { name: 'Zilker', slug: 'zilker' },
+      { name: 'Barton Hills', slug: 'barton-hills' },
+      { name: 'The Domain', slug: 'domain' },
+      { name: 'East Austin', slug: 'east-austin' },
+      { name: 'Tarrytown', slug: 'tarrytown' },
+    ],
+  },
 }
 
 /**
@@ -336,8 +347,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 {/* Visual - 2 cols con MAPA REAL */}
                 <div className="lg:col-span-2 relative">
                   <NeighborhoodMap 
-                    city={cityName}
-                    neighborhood={neighborhoodName}
+                    city={citySlug}
+                    neighborhood={neighborhoodSlug}
                     className="h-64 lg:h-full min-h-[300px]"
                   />
                   

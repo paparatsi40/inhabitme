@@ -70,6 +70,20 @@ export const SEO_LOCATIONS: CitySeo[] = [
       // { slug: 'raval', name: 'El Raval', indexable: false }, // ejemplo de noindex editorial
     ],
   },
+  {
+    slug: 'austin',
+    name: 'Austin',
+    country: 'US',
+    indexable: true,
+    neighborhoods: [
+      { slug: 'mueller', name: 'Mueller', indexable: true },
+      { slug: 'zilker', name: 'Zilker', indexable: true },
+      { slug: 'barton-hills', name: 'Barton Hills', indexable: true },
+      { slug: 'domain', name: 'The Domain', indexable: true },
+      { slug: 'east-austin', name: 'East Austin', indexable: true },
+      { slug: 'tarrytown', name: 'Tarrytown', indexable: true },
+    ],
+  },
 ]
 
 /** Helpers (sin acoplar a Next) */
