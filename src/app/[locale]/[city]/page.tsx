@@ -60,6 +60,7 @@ export const revalidate = 60
 type PageProps = {
   params: {
     city: string
+    locale: string
   }
 }
 
