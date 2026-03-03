@@ -326,10 +326,7 @@ export default async function CityPage({ params }: PageProps) {
                   
                   {/* Subheadline emocional */}
                   <p className="text-xl lg:text-2xl text-gray-700 font-medium mb-6 lg:mb-8 leading-relaxed">
-                    {t('heroSubtitle', { 
-                      digitalNomads: <span className="text-blue-600 font-bold">digital nomads</span>,
-                      remoteProfessionals: <span className="text-purple-600 font-bold">remote professionals</span>
-                    })}
+                    Spaces designed for <span className="text-blue-600 font-bold">digital nomads</span> and <span className="text-purple-600 font-bold">remote professionals</span>
                   </p>
 
                   {/* Stats DESTACADAS - Cards premium */}
