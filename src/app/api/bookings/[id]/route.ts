@@ -1,84 +1,81 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { clerkClient } from '@clerk/nextjs/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
+import { clerkClient } from '@clerk/nextjs/server'
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 type Ctx = { params: Promise<{ id: string }> }
 
 export async function GET(request: NextRequest, { params }: Ctx) {
-  const { id } = await params
-  // ... usa id en vez de params.id
-}
   try {
-    const { userId } = await auth();
-    
+    const { userId } = await auth()
+
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const bookingId = params.id;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const { id: bookingId } = await params
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 })
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
 
     // Get booking with all details
     const { data: booking, error } = await supabase
       .from('bookings')
       .select('*')
       .eq('id', bookingId)
-      .single();
+      .single()
 
     if (error || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
     }
 
     // Verify user is either host or guest
     if (booking.host_id !== userId && booking.guest_id !== userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     // Enrich with guest info from Clerk
-    let guestInfo = null;
+    let guestInfo: null | { name: string; email?: string; imageUrl?: string } = null
     try {
-      const client = await clerkClient();
-      const guestUser = await client.users.getUser(booking.guest_id);
+      const client = await clerkClient()
+      const guestUser = await client.users.getUser(booking.guest_id)
       guestInfo = {
         name: `${guestUser.firstName || ''} ${guestUser.lastName || ''}`.trim() || 'Usuario',
         email: guestUser.emailAddresses[0]?.emailAddress,
-        imageUrl: guestUser.imageUrl
-      };
-    } catch (error) {
-      console.error('Error fetching guest info:', error);
+        imageUrl: guestUser.imageUrl,
+      }
+    } catch (err) {
+      console.error('Error fetching guest info:', err)
     }
 
     // Enrich with host info from Clerk (if user is guest)
-    let hostInfo = null;
+    let hostInfo: null | { name: string; email?: string; imageUrl?: string } = null
     if (userId === booking.guest_id) {
       try {
-        const client = await clerkClient();
-        const hostUser = await client.users.getUser(booking.host_id);
+        const client = await clerkClient()
+        const hostUser = await client.users.getUser(booking.host_id)
         hostInfo = {
           name: `${hostUser.firstName || ''} ${hostUser.lastName || ''}`.trim() || 'Anfitrión',
           email: hostUser.emailAddresses[0]?.emailAddress,
-          imageUrl: hostUser.imageUrl
-        };
-      } catch (error) {
-        console.error('Error fetching host info:', error);
+          imageUrl: hostUser.imageUrl,
+        }
+      } catch (err) {
+        console.error('Error fetching host info:', err)
       }
     }
 
     return NextResponse.json({
       ...booking,
       guest: guestInfo,
-      host: hostInfo
-    });
-
+      host: hostInfo,
+    })
   } catch (error) {
-    console.error('Get booking error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Get booking error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
