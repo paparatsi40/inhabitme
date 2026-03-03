@@ -25,6 +25,18 @@ interface CityPageClientProps {
 
 export function CityPageClient({ cityName, citySlug, neighborhoods, alternatives, t }: CityPageClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  
+  // Safe translation function with fallback
+  const safeT = (key: string, params?: any) => {
+    if (t && typeof t === 'function') {
+      try {
+        return t(key, params)
+      } catch (e) {
+        return key
+      }
+    }
+    return key
+  }
 
   return (
     <>
