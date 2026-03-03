@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
-import { AuthProvider } from '@/contexts/AuthContext'
 import { ClerkProvider } from '@clerk/nextjs'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
@@ -96,15 +95,15 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <NextIntlClientProvider messages={messages}>
-      <AuthProvider>
+    <ClerkProvider>
+      <NextIntlClientProvider messages={messages}>
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
             {children}
           </main>
           <Footer />
         </div>
-      </AuthProvider>
-    </NextIntlClientProvider>
+      </NextIntlClientProvider>
+    </ClerkProvider>
   )
 }

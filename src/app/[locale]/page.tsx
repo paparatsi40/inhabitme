@@ -1,7 +1,5 @@
 'use client'
 
-// Deployment trigger update
-
 import { Link } from '@/i18n/routing'
 import NextLink from 'next/link'
 import Image from 'next/image'
