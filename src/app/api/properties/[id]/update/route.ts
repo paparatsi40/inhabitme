@@ -7,9 +7,11 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+type Ctx = { params: Promise<{ id: string }> }
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: Ctx
 ) {
   try {
     const { userId } = await auth()
@@ -17,7 +19,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const listingId = params.id
+    const { id } = await params
+    const listingId = id
     const body = await request.json()
 
     // Verify ownership
