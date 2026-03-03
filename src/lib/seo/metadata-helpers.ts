@@ -168,7 +168,7 @@ export function generatePropertyMetadata({
     path: `properties/${property.id}`,
     keywords,
     images,
-    type: 'product',
+    type: 'article',
   })
 }
 
