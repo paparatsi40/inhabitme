@@ -3,7 +3,7 @@ import Stripe from 'stripe'
 import { getLeadPriceInCents, getLeadPrice } from '@/lib/pricing/lead-pricing'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
+  apiVersion: '2026-02-25.clover',
 })
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
