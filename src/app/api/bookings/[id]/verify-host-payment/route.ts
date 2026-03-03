@@ -3,6 +3,8 @@ import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
+type Ctx = { params: Promise<{ id: string }> }
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-12-15.clover',
 })
@@ -12,18 +14,19 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: Ctx) {
   try {
     const { userId } = await auth()
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const bookingId = params.id
+    const { id: bookingId } = await params
     const { sessionId } = await request.json()
+
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Booking ID required' }, { status: 400 })
+    }
 
     if (!sessionId) {
       return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
@@ -58,7 +61,7 @@ export async function POST(
         host_payment_status: 'paid',
         host_payment_intent_id: session.payment_intent as string,
         host_paid_at: new Date().toISOString(),
-        status: 'pending_guest_payment', // Update status to waiting for guest
+        status: 'pending_guest_payment', // waiting for guest
       })
       .eq('id', bookingId)
 
@@ -67,17 +70,14 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to update booking' }, { status: 500 })
     }
 
-    // TODO: Send email to guest notifying they can pay
-
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      message: 'Host payment verified'
+      message: 'Host payment verified',
     })
-
   } catch (error: any) {
     console.error('Verification error:', error)
     return NextResponse.json(
-      { error: error.message || 'Verification failed' },
+      { error: error?.message || 'Verification failed' },
       { status: 500 }
     )
   }
