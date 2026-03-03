@@ -10,10 +10,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Ctx = { params: Promise<{ id: string }> }
+
+export async function POST(request: NextRequest, { params }: Ctx) {
+  const { id: bookingId } = await params
+  // ... resto igual, usando bookingId
+}
   try {
     const { userId } = await auth();
     
