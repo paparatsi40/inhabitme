@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     const { userId } = await auth();
 
     // Obtener headers
-    const headersList = headers();
+    const headersList = await headers();
     const userAgent = headersList.get('user-agent') || 'unknown';
     const forwarded = headersList.get('x-forwarded-for');
     const realIp = headersList.get('x-real-ip');
