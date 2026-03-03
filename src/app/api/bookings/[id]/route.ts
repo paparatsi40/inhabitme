@@ -6,10 +6,12 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Ctx = { params: Promise<{ id: string }> }
+
+export async function GET(request: NextRequest, { params }: Ctx) {
+  const { id } = await params
+  // ... usa id en vez de params.id
+}
   try {
     const { userId } = await auth();
     
