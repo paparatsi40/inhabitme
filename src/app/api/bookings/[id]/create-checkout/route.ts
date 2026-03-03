@@ -10,7 +10,7 @@ if (!stripeKey) {
 }
 
 const stripe = new Stripe(stripeKey!, {
-  apiVersion: '2025-12-15.clover',
+  apiVersion: '2026-02-25.clover',
 });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
