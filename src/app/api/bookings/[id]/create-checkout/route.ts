@@ -16,10 +16,12 @@ const stripe = new Stripe(stripeKey!, {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Ctx = { params: Promise<{ id: string }> }
+
+export async function POST(request: NextRequest, { params }: Ctx) {
+  const { id } = await params
+  // ... y reemplaza TODOS los "params.id" por "id"
+}
   try {
     console.log('🔥 CREATE CHECKOUT CALLED');
     console.log('🔥 Booking ID:', params.id);
