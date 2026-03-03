@@ -3,6 +3,8 @@ import { SEO_CONFIG, getLocalizedUrl, getCityOgImage, getDefaultOgImage, getProp
 
 type Locale = 'en' | 'es'
 
+type OGType = 'website' | 'article'
+
 interface GenerateMetadataOptions {
   title: string
   description: string
@@ -15,7 +17,7 @@ interface GenerateMetadataOptions {
     height?: number
     alt?: string
   }>
-  type?: 'website' | 'article' | 'product'
+  type?: OGType
   publishedTime?: string
   modifiedTime?: string
   authors?: string[]
