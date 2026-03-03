@@ -16,18 +16,17 @@ const stripe = new Stripe(stripeKey!, {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-type Ctx = { params: Promise<{ id: string }> }
+type Ctx = { params: Promise<{ id: string }> };
 
 export async function POST(request: NextRequest, { params }: Ctx) {
-  const { id } = await params
-  // ... y reemplaza TODOS los "params.id" por "id"
-}
   try {
     console.log('🔥 CREATE CHECKOUT CALLED');
-    console.log('🔥 Booking ID:', params.id);
-    
+
+    const { id: bookingId } = await params;
+    console.log('🔥 Booking ID:', bookingId);
+
     const { userId } = await auth();
-    
+
     if (!userId) {
       console.log('❌ Unauthorized - no userId');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -35,11 +34,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     console.log('✅ User authenticated:', userId);
 
-    const bookingId = params.id;
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 });
+    }
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     console.log('🔍 Fetching booking from DB...');
-    
+
     // Get booking
     const { data: booking, error: fetchError } = await supabase
       .from('bookings')
@@ -65,30 +67,30 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     }
 
     // Add property to booking object
-    booking.property = property;
+    (booking as any).property = property;
 
     console.log('✅ Booking found:', booking.id);
     console.log('📧 Guest email:', booking.guest_email);
-    
+
     // Use guest_fee_amount from database (calculated by trigger based on booking value)
     // If not set, calculate based on duration
-    let guestFeeAmount = booking.guest_fee_amount || booking.guest_fee
-    
+    let guestFeeAmount = booking.guest_fee_amount || booking.guest_fee;
+
     if (!guestFeeAmount && booking.months_duration) {
-      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
-      const fees = calculateDurationFees(booking.months_duration)
-      guestFeeAmount = fees.guestFee
+      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees');
+      const fees = calculateDurationFees(booking.months_duration);
+      guestFeeAmount = fees.guestFee;
     } else if (!guestFeeAmount) {
-      guestFeeAmount = 13900 // Default to 2-3 months tier if no duration
+      guestFeeAmount = 13900; // Default to 2-3 months tier if no duration
     }
-    
-    const pricingTier = booking.pricing_tier || 'Standard'
-    
+
+    const pricingTier = booking.pricing_tier || 'Standard';
+
     console.log('💰 Amounts:', {
       monthly_price: booking.monthly_price,
       deposit: booking.deposit_amount,
       guest_fee: guestFeeAmount,
-      pricing_tier: pricingTier
+      pricing_tier: pricingTier,
     });
 
     // Verify user is the guest
@@ -121,7 +123,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: `Primer mes - ${booking.property.title}`,
+              name: `Primer mes - ${property.title}`,
               description: `${booking.check_in} - ${booking.check_out}`,
             },
             unit_amount: booking.monthly_price,
@@ -161,20 +163,23 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     console.log('✅ Stripe session created:', session.id);
     console.log('🔗 Checkout URL:', session.url);
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       sessionId: session.id,
       url: session.url,
     });
-
   } catch (error: any) {
     console.error('❌ Checkout creation error:', error);
     console.error('❌ Error name:', error?.name);
     console.error('❌ Error message:', error?.message);
     console.error('❌ Error stack:', error?.stack);
-    return NextResponse.json({ 
-      error: 'Failed to create checkout',
-      details: error?.message 
-    }, { status: 500 });
+
+    return NextResponse.json(
+      {
+        error: 'Failed to create checkout',
+        details: error?.message,
+      },
+      { status: 500 }
+    );
   }
 }
