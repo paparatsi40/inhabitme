@@ -3,20 +3,19 @@ import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { auth } from '@clerk/nextjs/server';
 import { headers } from 'next/headers';
 
+type Ctx = { params: Promise<{ id: string }> };
+
 /**
  * POST /api/listings/[id]/views
  * Registra una vista de un listing
  */
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: Ctx) {
   try {
-    const listingId = params.id;
+    const { id: listingId } = await params;
 
     // Obtener información de la request
     const body = await req.json().catch(() => ({}));
-    const { sessionId, referrer } = body;
+    const { sessionId, referrer } = body as { sessionId?: string; referrer?: string };
 
     // Obtener user ID si está autenticado
     const { userId } = await auth();
@@ -58,7 +57,6 @@ export async function POST(
       viewId: data,
       message: 'View recorded successfully',
     });
-
   } catch (error) {
     console.error('[Views API] Unexpected error:', error);
     return NextResponse.json(
@@ -73,19 +71,19 @@ export async function POST(
  */
 function detectDeviceType(userAgent: string): 'mobile' | 'tablet' | 'desktop' | 'unknown' {
   const ua = userAgent.toLowerCase();
-  
+
   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobile))/i.test(ua)) {
     return 'tablet';
   }
-  
+
   if (/mobile|iphone|ipod|android|blackberry|opera mini|opera mobi|iemobile|windows phone/i.test(ua)) {
     return 'mobile';
   }
-  
+
   if (/mozilla|chrome|safari|firefox|opera|msie|trident/i.test(ua)) {
     return 'desktop';
   }
-  
+
   return 'unknown';
 }
 
