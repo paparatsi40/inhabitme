@@ -1,11 +1,5 @@
-import dynamic from 'next/dynamic';
-
-// Importar dinámicamente para evitar SSR
-const OnboardingClient = dynamic(
-  () => import('@/components/onboarding/OnboardingClient'),
-  { ssr: false }
-);
+import OnboardingClientPage from './OnboardingClientPage'
 
 export default function OnboardingPage() {
-  return <OnboardingClient />;
+  return <OnboardingClientPage />
 }
