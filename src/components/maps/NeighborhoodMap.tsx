@@ -258,6 +258,6 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
 // Tipos para TypeScript
 declare global {
   interface Window {
-    google: typeof google
+    google: any
   }
 }
