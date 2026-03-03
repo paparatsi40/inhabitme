@@ -14,7 +14,7 @@ export async function PUT(
   const { id } = await params
   // ... resto igual
 }
-) {
+ {
   try {
     const { userId } = await auth()
     
