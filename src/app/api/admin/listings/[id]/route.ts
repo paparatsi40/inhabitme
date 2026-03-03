@@ -5,16 +5,16 @@ import { listingRepository } from '@/lib/repositories/listing.repository'
 // DELETE /api/admin/listings/[id] - Delete a listing (admin only)
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { userId } = await auth()
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     if (!id) {
       return NextResponse.json(
@@ -24,7 +24,7 @@ export async function DELETE(
     }
 
     await listingRepository.delete(id)
-    
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[API] Error deleting listing:', error)
