@@ -12,12 +12,11 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type Ctx = { params: Promise<{ id: string }> }
+
+export async function POST(request: NextRequest, { params }: Ctx) {
   console.log('🔥 HOST CHECKOUT CALLED')
-  
+
   try {
     const { userId } = await auth()
     if (!userId) {
@@ -26,9 +25,13 @@ export async function POST(
     }
 
     console.log('✅ User authenticated:', userId)
-    
-    const bookingId = params.id
+
+    const { id: bookingId } = await params
     console.log('📍 Booking ID:', bookingId)
+
+    if (!bookingId) {
+      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 })
+    }
 
     // Get booking
     const { data: booking, error: bookingError } = await supabase
@@ -60,9 +63,9 @@ export async function POST(
 
     if (booking.host_payment_status === 'waived') {
       console.log('✅ Payment waived (Founding Host)')
-      return NextResponse.json({ 
+      return NextResponse.json({
         message: 'Payment waived for Founding Host',
-        waived: true 
+        waived: true,
       })
     }
 
@@ -73,14 +76,14 @@ export async function POST(
       const user = await client.users.getUser(userId)
       hostEmail = user.emailAddresses[0]?.emailAddress || hostEmail
       console.log('✅ Host email:', hostEmail)
-    } catch (err) {
+    } catch {
       console.log('⚠️ Could not fetch host email, using fallback')
     }
 
     // Use host_fee_amount from database (calculated by trigger based on booking value)
     // If not set, calculate based on duration and featured status
     let hostFeeAmount = booking.host_fee_amount
-    
+
     if (!hostFeeAmount && booking.months_duration) {
       const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
       const fees = calculateDurationFees(booking.months_duration)
@@ -88,7 +91,7 @@ export async function POST(
     } else if (!hostFeeAmount) {
       hostFeeAmount = 7900 // Default to 2-3 months tier if no duration
     }
-    
+
     const pricingTier = booking.pricing_tier || 'Standard'
 
     console.log('💰 Host fee amount:', hostFeeAmount / 100, 'EUR')
@@ -96,7 +99,7 @@ export async function POST(
 
     // Create Stripe checkout session
     console.log('🔵 Creating Stripe checkout session...')
-    
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
@@ -108,7 +111,9 @@ export async function POST(
             product_data: {
               name: `inhabitme Host Fee - ${pricingTier}`,
               description: `Fee for accepting booking: ${booking.property?.title || 'Property'}`,
-              images: ['https://res.cloudinary.com/dkrpgt4o5/image/upload/v1234567890/inhabitme-logo.png'],
+              images: [
+                'https://res.cloudinary.com/dkrpgt4o5/image/upload/v1234567890/inhabitme-logo.png',
+              ],
             },
             unit_amount: hostFeeAmount,
           },
@@ -127,16 +132,15 @@ export async function POST(
     console.log('✅ Stripe session created:', session.id)
     console.log('🔗 Checkout URL:', session.url)
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       sessionId: session.id,
       url: session.url,
     })
-
   } catch (error: any) {
     console.error('❌ Host checkout error:', error)
-    console.error('Stack:', error.stack)
+    console.error('Stack:', error?.stack)
     return NextResponse.json(
-      { error: error.message || 'Failed to create checkout' },
+      { error: error?.message || 'Failed to create checkout' },
       { status: 500 }
     )
   }
