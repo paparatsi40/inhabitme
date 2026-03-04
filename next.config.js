@@ -81,14 +81,6 @@ const nextConfig = {
   // SEO redirects
   async redirects() {
     return [
-      // Non-www to www redirect (SEO best practice)
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "inhabitme.com" }],
-        destination: "https://www.inhabitme.com/:path*",
-        permanent: true,
-      },
-
       // Legacy /listings to /properties redirect
       {
         source: "/:locale/listings/:id",
