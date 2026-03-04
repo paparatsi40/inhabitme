@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// Root page that redirects to default locale
 export default function RootPage() {
+  // Detect locale from browser or use default
   redirect('/en');
 }
