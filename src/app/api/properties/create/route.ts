@@ -5,6 +5,22 @@ import { revalidatePath } from 'next/cache'
 import { notifyWaitlist, getWaitlistCount } from '@/lib/email/send-waitlist-notification'
 
 export async function POST(req: NextRequest) {
+  try {
+    return await handleCreateProperty(req)
+  } catch (error: any) {
+    console.error('[API] 🔥 Uncaught error in POST handler:', error)
+    return NextResponse.json(
+      { 
+        error: 'Internal server error',
+        message: error?.message || 'Unknown error',
+        stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined,
+      },
+      { status: 500 }
+    )
+  }
+}
+
+async function handleCreateProperty(req: NextRequest) {
   let userId: string | null = null
 
   try {

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +42,7 @@ type Step =
 function CreatePropertyContent() {
   const router = useRouter()
   const { isLoaded, isSignedIn } = useUser()
+  const t = useTranslations('propertyForm')
 
   const [currentStep, setCurrentStep] = useState<Step>('basic')
   const [submitting, setSubmitting] = useState(false)
@@ -58,51 +60,45 @@ function CreatePropertyContent() {
     neighborhood: '',
     address: '',
 
-    hasDesk: true,
-    wifiSpeed: 100,
-    hasSecondMonitor: false,
-    furnished: true,
+    hasDedicatedDesk: true,
+    wifiSpeed: 50,
 
-    // Amenities - Clima y Confort
     hasHeating: false,
     hasAc: false,
     hasBalcony: false,
     hasTerrace: false,
 
-    // Amenities - Hogar
     hasWashingMachine: false,
     hasDryer: false,
     hasDishwasher: false,
-    hasKitchen: true,
+    hasKitchen: false,
 
-    // Amenities - Edificio
     hasElevator: false,
     hasParking: false,
     hasDoorman: false,
     floorNumber: undefined as number | undefined,
 
-    // Amenities - Estilo de vida
     petsAllowed: false,
     smokingAllowed: false,
 
-    // Amenities - Seguridad
     hasSecuritySystem: false,
     hasSafe: false,
 
-    monthlyPrice: 1000,
-    minStayMonths: 1,
-    maxStayMonths: 6,
+    pricePerNight: 50,
+    pricePerWeek: 300,
+    pricePerMonth: 800,
+    currency: 'EUR',
 
     images: [] as string[],
   })
 
   const steps: { id: Step; title: string; icon: any }[] = [
     { id: 'basic', title: 'Información Básica', icon: Home },
-    { id: 'location', title: 'Ubicación', icon: MapPin },
-    { id: 'workspace', title: 'Workspace', icon: Wifi },
-    { id: 'amenities', title: 'Comodidades', icon: Check },
-    { id: 'pricing', title: 'Precios', icon: Euro },
-    { id: 'images', title: 'Fotos', icon: ImageIcon },
+    { id: 'location', title: t('steps.location'), icon: MapPin },
+    { id: 'workspace', title: t('steps.workspace'), icon: Wifi },
+    { id: 'amenities', title: t('amenities'), icon: Check },
+    { id: 'pricing', title: t('steps.pricing'), icon: Euro },
+    { id: 'images', title: t('steps.images'), icon: ImageIcon },
     { id: 'preview', title: 'Revisar', icon: Check },
   ]
 
@@ -116,222 +112,172 @@ function CreatePropertyContent() {
     }
   }, [isLoaded, isSignedIn, router])
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-      </div>
-    )
-  }
-
-  if (!isSignedIn) return null
-
   const updateFormData = (updates: Partial<typeof formData>) => {
     setFormData(prev => ({ ...prev, ...updates }))
-    setError('')
-  }
-
-  const validateStep = () => {
-    setError('')
-
-    switch (currentStep) {
-      case 'basic':
-        if (!formData.title || formData.title.length < 10) {
-          setError('El título debe tener al menos 10 caracteres')
-          return false
-        }
-        if (!formData.description || formData.description.length < 50) {
-          setError('La descripción debe tener al menos 50 caracteres')
-          return false
-        }
-        if (formData.bedrooms < 1) {
-          setError('Debe tener al menos 1 habitación')
-          return false
-        }
-        if (formData.bathrooms < 1) {
-          setError('Debe tener al menos 1 baño')
-          return false
-        }
-        break
-
-      case 'location':
-        if (!formData.city) {
-          setError('La ciudad es obligatoria')
-          return false
-        }
-        if (!formData.address) {
-          setError('La dirección es obligatoria')
-          return false
-        }
-        break
-
-      case 'workspace':
-        if (formData.wifiSpeed < 10) {
-          setError('La velocidad WiFi debe ser al menos 10 Mbps')
-          return false
-        }
-        break
-
-      case 'pricing':
-        if (formData.monthlyPrice < 100) {
-          setError('El precio mensual debe ser al menos €100')
-          return false
-        }
-        if (formData.minStayMonths < 1) {
-          setError('La estancia mínima debe ser al menos 1 mes')
-          return false
-        }
-        if (formData.maxStayMonths < formData.minStayMonths) {
-          setError('La estancia máxima debe ser mayor o igual a la mínima')
-          return false
-        }
-        break
-
-      case 'images':
-        if (formData.images.length === 0) {
-          setError('Debes subir al menos una imagen')
-          return false
-        }
-        break
-    }
-
-    return true
   }
 
   const nextStep = () => {
-    if (validateStep() && currentStepIndex < steps.length - 1) {
+    if (currentStepIndex < steps.length - 1) {
       setCurrentStep(steps[currentStepIndex + 1].id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const prevStep = () => {
-    if (!isFirstStep) {
+    if (currentStepIndex > 0) {
       setCurrentStep(steps[currentStepIndex - 1].id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
+  const handleImagesUploaded = (images: string[]) => {
+    updateFormData({ images })
+  }
+
   const handleSubmit = async () => {
-    if (!validateStep()) return
+    if (!isSignedIn) {
+      setError('Debes iniciar sesión para publicar')
+      return
+    }
 
     setSubmitting(true)
     setError('')
 
     try {
-      console.log('[CreateProperty] Enviando payload:', formData)
-
-      const payload = {
-        title: formData.title,
-        description: formData.description,
-        bedrooms: formData.bedrooms,
-        bathrooms: formData.bathrooms,
-        country: formData.country,
-        city: formData.city,
-        neighborhood: formData.neighborhood || null,
-        address: formData.address,
-        hasDesk: formData.hasDesk,
-        hasSecondMonitor: formData.hasSecondMonitor,
-        wifiSpeed: formData.wifiSpeed,
-        furnished: formData.furnished,
-        // Amenities
-        hasHeating: formData.hasHeating,
-        hasAc: formData.hasAc,
-        hasBalcony: formData.hasBalcony,
-        hasTerrace: formData.hasTerrace,
-        hasWashingMachine: formData.hasWashingMachine,
-        hasDryer: formData.hasDryer,
-        hasDishwasher: formData.hasDishwasher,
-        hasKitchen: formData.hasKitchen,
-        hasElevator: formData.hasElevator,
-        hasParking: formData.hasParking,
-        hasDoorman: formData.hasDoorman,
-        floorNumber: formData.floorNumber || null,
-        petsAllowed: formData.petsAllowed,
-        smokingAllowed: formData.smokingAllowed,
-        hasSecuritySystem: formData.hasSecuritySystem,
-        hasSafe: formData.hasSafe,
-        // Pricing
-        monthlyPrice: formData.monthlyPrice,
-        minStayMonths: formData.minStayMonths,
-        maxStayMonths: formData.maxStayMonths,
-        images: formData.images,
+      const submitData = {
+        ...formData,
+        floorNumber: formData.floorNumber ?? null,
+        amenities: {
+          hasDesk: formData.hasDedicatedDesk,
+          hasWifi: formData.wifiSpeed >= 10,
+          wifiSpeed: formData.wifiSpeed,
+          hasHeating: formData.hasHeating,
+          hasAc: formData.hasAc,
+          hasBalcony: formData.hasBalcony,
+          hasTerrace: formData.hasTerrace,
+          hasWashingMachine: formData.hasWashingMachine,
+          hasDryer: formData.hasDryer,
+          hasDishwasher: formData.hasDishwasher,
+          hasKitchen: formData.hasKitchen,
+          hasElevator: formData.hasElevator,
+          hasParking: formData.hasParking,
+          hasDoorman: formData.hasDoorman,
+          floorNumber: formData.floorNumber ?? null,
+          petsAllowed: formData.petsAllowed,
+          smokingAllowed: formData.smokingAllowed,
+          hasSecuritySystem: formData.hasSecuritySystem,
+          hasSafe: formData.hasSafe,
+        },
       }
 
-      console.log('[CreateProperty] 🚀 Payload.images antes de enviar:', payload.images);
-      console.log('[CreateProperty] 🚀 Payload.images es array?', Array.isArray(payload.images));
-      console.log('[CreateProperty] 🚀 Payload.images.length:', payload.images?.length);
+      console.log('[CreateProperty] Sending data:', submitData)
 
       const res = await fetch('/api/properties/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(payload),
+        body: JSON.stringify(submitData),
       })
 
-      console.log('[CreateProperty] Respuesta status:', res.status)
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}))
-        console.error('[CreateProperty] ❌ Error del servidor:', errorData)
-        console.error('[CreateProperty] ❌ Status:', res.status)
-        console.error('[CreateProperty] ❌ Error completo:', JSON.stringify(errorData, null, 2))
-        
-        // Mostrar más detalles del error
-        const errorMessage = errorData.error || 'Error al crear la propiedad'
-        const errorDetails = errorData.details ? `\n\nDetalles: ${errorData.details}` : ''
-        const errorHint = errorData.hint ? `\n\nSugerencia: ${errorData.hint}` : ''
-        
-        throw new Error(`${errorMessage}${errorDetails}${errorHint}`)
+      let responseData: any = {}
+      try {
+        const responseText = await res.clone().text()
+        console.log('[CreateProperty] Response text:', responseText.substring(0, 500))
+        if (responseText) {
+          responseData = await res.json()
+        }
+      } catch (e) {
+        console.error('[CreateProperty] Failed to parse JSON response:', e)
+        const text = await res.text()
+        console.log('[CreateProperty] Raw response:', text.substring(0, 500))
+        setError('Error del servidor: respuesta no válida')
+        return
       }
 
-      const data = await res.json()
-      console.log('[CreateProperty] Propiedad creada exitosamente:', data)
+      if (res.status === 401) {
+        console.error('[CreateProperty] ❌ Usuario no autenticado - redirigiendo a login')
+        window.location.href = '/en/sign-in'
+        return
+      }
 
+      if (!res.ok) {
+        console.error('[CreateProperty] ❌ Error del servidor:', responseData)
+        setError(responseData?.error || `Error del servidor: ${responseData?.message || 'Error desconocido'}`)
+        return
+      }
+
+      console.log('[CreateProperty] ✅ Propiedad creada:', responseData)
       setSuccess(true)
+
       setTimeout(() => {
         router.push('/dashboard')
       }, 1500)
     } catch (err: any) {
-      console.error('[CreateProperty] Error capturado:', err)
-      setError(err.message)
+      console.error('[CreateProperty] ❌ Error:', err)
+      setError('Error de conexión. Intenta de nuevo.')
     } finally {
       setSubmitting(false)
     }
   }
 
+  if (!isLoaded) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
+  if (success) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <Check className="h-8 w-8 text-green-600" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">¡Propiedad publicada! 🎉</h2>
+        <p className="text-gray-600">Redirigiendo a tu dashboard...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
-            <ArrowLeft className="h-4 w-4" />
-            Cancelar
-          </Link>
-          <h1 className="text-xl font-bold">Publicar Propiedad</h1>
-          <div className="w-20" />
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Progress Indicator */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
+            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+            <h1 className="text-2xl font-bold">{t('publishProperty')}</h1>
+            <div className="w-5" />
+          </div>
+
+          {/* Progress */}
+          <div className="flex items-center justify-center mb-4">
             {steps.map((step, idx) => (
               <div key={step.id} className="flex items-center">
                 <div
-                  className={`
-                    flex items-center justify-center w-10 h-10 rounded-full border-2
-                    ${idx <= currentStepIndex
-                      ? 'bg-blue-600 border-blue-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-400'
-                    }
-                  `}
+                  className={`flex flex-col items-center ${
+                    idx <= currentStepIndex ? 'text-blue-600' : 'text-gray-400'
+                  }`}
                 >
-                  {idx < currentStepIndex ? (
-                    <Check className="h-5 w-5" />
-                  ) : (
-                    <span className="text-sm font-semibold">{idx + 1}</span>
-                  )}
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      idx < currentStepIndex
+                        ? 'bg-blue-600 text-white'
+                        : idx === currentStepIndex
+                          ? 'bg-blue-100 text-blue-600 border-2 border-blue-600'
+                          : 'bg-gray-100 text-gray-400'
+                    }`}
+                  >
+                    {idx < currentStepIndex ? (
+                      <Check className="h-5 w-5" />
+                    ) : (
+                      <step.icon className="h-5 w-5" />
+                    )}
+                  </div>
+                  <span className="text-xs mt-1 font-medium">{step.title}</span>
                 </div>
                 {idx < steps.length - 1 && (
                   <div
@@ -344,7 +290,7 @@ function CreatePropertyContent() {
             ))}
           </div>
           <p className="text-center text-sm text-gray-600">
-            Paso {currentStepIndex + 1} de {steps.length}: {steps[currentStepIndex].title}
+            {t('step')} {currentStepIndex + 1} {t('of')} {steps.length}: {steps[currentStepIndex].title}
           </p>
         </div>
 
@@ -357,76 +303,64 @@ function CreatePropertyContent() {
           </Card>
         )}
 
-        {success && (
-          <Card className="mb-6 border-green-200 bg-green-50">
-            <CardContent className="pt-6">
-              <p className="text-green-600 font-medium">
-                ✅ ¡Propiedad creada con éxito! Redirigiendo...
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* BASIC STEP */}
+        {/* Form Content */}
+        {/* BASIC INFO STEP */}
         {currentStep === 'basic' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-3 mb-6">
-              <Home className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Información Básica</h2>
-            </div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Home className="h-5 w-5 text-blue-600" />
+              {t('basicInfo')}
+            </h2>
 
-            <div>
-              <Label htmlFor="title">Título de la propiedad *</Label>
-              <Input
-                id="title"
-                placeholder="Ej: Apartamento céntrico con WiFi rápido"
-                value={formData.title}
-                onChange={e => updateFormData({ title: e.target.value })}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Mínimo 10 caracteres ({formData.title.length}/10)
-              </p>
-            </div>
-
-            <div>
-              <Label htmlFor="description">Descripción *</Label>
-              <Textarea
-                id="description"
-                placeholder="Describe tu propiedad en detalle..."
-                value={formData.description}
-                onChange={e => updateFormData({ description: e.target.value })}
-                rows={6}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Mínimo 50 caracteres ({formData.description.length}/50)
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="bedrooms">Habitaciones *</Label>
+                <Label htmlFor="title">{t('propertyTitle')} *</Label>
                 <Input
-                  id="bedrooms"
-                  type="number"
-                  min={1}
-                  value={formData.bedrooms}
-                  onChange={e => updateFormData({ bedrooms: parseInt(e.target.value) || 1 })}
+                  id="title"
+                  placeholder={t('placeholderTitle')}
+                  value={formData.title}
+                  onChange={e => updateFormData({ title: e.target.value })}
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="bathrooms">Baños *</Label>
-                <Input
-                  id="bathrooms"
-                  type="number"
-                  min={1}
-                  value={formData.bathrooms}
-                  onChange={e => updateFormData({ bathrooms: parseInt(e.target.value) || 1 })}
+                <Label htmlFor="description">{t('propertyDescription')} *</Label>
+                <Textarea
+                  id="description"
+                  placeholder={t('placeholderDescription')}
+                  value={formData.description}
+                  onChange={e => updateFormData({ description: e.target.value })}
                   className="mt-1"
+                  rows={5}
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="bedrooms">{t('bedroomsLabel')} *</Label>
+                  <Input
+                    id="bedrooms"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={formData.bedrooms}
+                    onChange={e => updateFormData({ bedrooms: parseInt(e.target.value) || 1 })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bathrooms">{t('bathroomsLabel')} *</Label>
+                  <Input
+                    id="bathrooms"
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={formData.bathrooms}
+                    onChange={e => updateFormData({ bathrooms: parseInt(e.target.value) || 1 })}
+                    className="mt-1"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -435,56 +369,55 @@ function CreatePropertyContent() {
         {/* LOCATION STEP */}
         {currentStep === 'location' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-3 mb-6">
-              <MapPin className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Ubicación</h2>
-            </div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-blue-600" />
+              {t('location')}
+            </h2>
 
-            <div>
-              <Label htmlFor="country">País</Label>
-              <Input
-                id="country"
-                value={formData.country}
-                onChange={e => updateFormData({ country: e.target.value })}
-                className="mt-1"
-              />
-            </div>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="country">{t('country')} *</Label>
+                <Input
+                  id="country"
+                  value={formData.country}
+                  onChange={e => updateFormData({ country: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="city">Ciudad *</Label>
-              <Input
-                id="city"
-                placeholder="Ej: Madrid, Barcelona, Valencia..."
-                value={formData.city}
-                onChange={e => updateFormData({ city: e.target.value })}
-                className="mt-1"
-              />
-            </div>
+              <div>
+                <Label htmlFor="city">{t('city')} *</Label>
+                <Input
+                  id="city"
+                  placeholder="Ej: Madrid"
+                  value={formData.city}
+                  onChange={e => updateFormData({ city: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="neighborhood">Barrio</Label>
-              <Input
-                id="neighborhood"
-                placeholder="Ej: Malasaña, Eixample, El Carmen..."
-                value={formData.neighborhood}
-                onChange={e => updateFormData({ neighborhood: e.target.value })}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">Opcional</p>
-            </div>
+              <div>
+                <Label htmlFor="neighborhood">{t('neighborhood')}</Label>
+                <Input
+                  id="neighborhood"
+                  placeholder="Ej: Malasaña"
+                  value={formData.neighborhood}
+                  onChange={e => updateFormData({ neighborhood: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="address">Dirección *</Label>
-              <Input
-                id="address"
-                placeholder="Calle, número, piso..."
-                value={formData.address}
-                onChange={e => updateFormData({ address: e.target.value })}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                No se mostrará públicamente hasta que reserves
-              </p>
+              <div>
+                <Label htmlFor="address">{t('address')} *</Label>
+                <Textarea
+                  id="address"
+                  placeholder={t('placeholderAddress')}
+                  value={formData.address}
+                  onChange={e => updateFormData({ address: e.target.value })}
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -492,59 +425,37 @@ function CreatePropertyContent() {
         {/* WORKSPACE STEP */}
         {currentStep === 'workspace' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-3 mb-6">
-              <Wifi className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Espacio de Trabajo</h2>
-            </div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Monitor className="h-5 w-5 text-blue-600" />
+              {t('workspaceDigital')}
+            </h2>
 
             <div className="space-y-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 bg-blue-50 p-4 rounded-lg">
                 <Checkbox
-                  id="hasDesk"
-                  checked={formData.hasDesk}
-                  onCheckedChange={checked => updateFormData({ hasDesk: checked as boolean })}
+                  id="hasDedicatedDesk"
+                  checked={formData.hasDedicatedDesk}
+                  onCheckedChange={checked => updateFormData({ hasDedicatedDesk: checked as boolean })}
                 />
-                <Label htmlFor="hasDesk" className="cursor-pointer">
-                  Escritorio dedicado
+                <Label htmlFor="hasDedicatedDesk" className="cursor-pointer font-medium">
+                  {t('dedicatedDesk')}
                 </Label>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="hasSecondMonitor"
-                  checked={formData.hasSecondMonitor}
-                  onCheckedChange={checked => updateFormData({ hasSecondMonitor: checked as boolean })}
+              <div>
+                <Label htmlFor="wifiSpeed">{t('wifiSpeed')} *</Label>
+                <Input
+                  id="wifiSpeed"
+                  type="number"
+                  min={10}
+                  value={formData.wifiSpeed}
+                  onChange={e => updateFormData({ wifiSpeed: parseInt(e.target.value) || 0 })}
+                  className="mt-1"
                 />
-                <Label htmlFor="hasSecondMonitor" className="cursor-pointer">
-                  Monitor adicional disponible
-                </Label>
+                <p className="text-xs text-gray-500 mt-1">
+                  {t('minWifi')}
+                </p>
               </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="furnished"
-                  checked={formData.furnished}
-                  onCheckedChange={checked => updateFormData({ furnished: checked as boolean })}
-                />
-                <Label htmlFor="furnished" className="cursor-pointer">
-                  Amueblado
-                </Label>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="wifiSpeed">Velocidad WiFi (Mbps) *</Label>
-              <Input
-                id="wifiSpeed"
-                type="number"
-                min={10}
-                value={formData.wifiSpeed}
-                onChange={e => updateFormData({ wifiSpeed: parseInt(e.target.value) || 0 })}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Mínimo 10 Mbps. Recomendado: 50+ Mbps para videollamadas
-              </p>
             </div>
           </div>
         )}
@@ -554,13 +465,13 @@ function CreatePropertyContent() {
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
             <div className="flex items-center gap-3 mb-6">
               <Zap className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Comodidades</h2>
-              <p className="text-sm text-gray-500">Marca todas las que apliquen</p>
+              <h2 className="text-2xl font-bold">{t('amenities')}</h2>
+              <p className="text-sm text-gray-500">{t('checkAllThatApply')}</p>
             </div>
 
-            {/* Clima y Confort */}
+            {/* Climate & Comfort */}
             <div>
-              <h3 className="font-semibold text-lg mb-3">🌡️ Clima y Confort</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('climateComfort')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -568,7 +479,7 @@ function CreatePropertyContent() {
                     checked={formData.hasHeating}
                     onCheckedChange={checked => updateFormData({ hasHeating: checked as boolean })}
                   />
-                  <Label htmlFor="hasHeating" className="cursor-pointer">Calefacción</Label>
+                  <Label htmlFor="hasHeating" className="cursor-pointer">{t('heating')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -576,7 +487,7 @@ function CreatePropertyContent() {
                     checked={formData.hasAc}
                     onCheckedChange={checked => updateFormData({ hasAc: checked as boolean })}
                   />
-                  <Label htmlFor="hasAc" className="cursor-pointer">Aire Acondicionado</Label>
+                  <Label htmlFor="hasAc" className="cursor-pointer">{t('airConditioning')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -597,9 +508,9 @@ function CreatePropertyContent() {
               </div>
             </div>
 
-            {/* Hogar y Comodidades */}
+            {/* Home & Amenities */}
             <div>
-              <h3 className="font-semibold text-lg mb-3">🏠 Hogar y Comodidades</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('homeAmenities')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -607,7 +518,7 @@ function CreatePropertyContent() {
                     checked={formData.hasWashingMachine}
                     onCheckedChange={checked => updateFormData({ hasWashingMachine: checked as boolean })}
                   />
-                  <Label htmlFor="hasWashingMachine" className="cursor-pointer">Lavadora</Label>
+                  <Label htmlFor="hasWashingMachine" className="cursor-pointer">{t('washer')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -615,7 +526,7 @@ function CreatePropertyContent() {
                     checked={formData.hasDryer}
                     onCheckedChange={checked => updateFormData({ hasDryer: checked as boolean })}
                   />
-                  <Label htmlFor="hasDryer" className="cursor-pointer">Secadora</Label>
+                  <Label htmlFor="hasDryer" className="cursor-pointer">{t('dryer')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -623,7 +534,7 @@ function CreatePropertyContent() {
                     checked={formData.hasDishwasher}
                     onCheckedChange={checked => updateFormData({ hasDishwasher: checked as boolean })}
                   />
-                  <Label htmlFor="hasDishwasher" className="cursor-pointer">Lavavajillas</Label>
+                  <Label htmlFor="hasDishwasher" className="cursor-pointer">{t('dishwasher')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -631,14 +542,14 @@ function CreatePropertyContent() {
                     checked={formData.hasKitchen}
                     onCheckedChange={checked => updateFormData({ hasKitchen: checked as boolean })}
                   />
-                  <Label htmlFor="hasKitchen" className="cursor-pointer">Cocina Completa</Label>
+                  <Label htmlFor="hasKitchen" className="cursor-pointer">{t('fullyEquippedKitchen')}</Label>
                 </div>
               </div>
             </div>
 
-            {/* Edificio y Accesibilidad */}
+            {/* Building & Accessibility */}
             <div>
-              <h3 className="font-semibold text-lg mb-3">🏢 Edificio y Accesibilidad</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('buildingAccessibility')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -646,7 +557,7 @@ function CreatePropertyContent() {
                     checked={formData.hasElevator}
                     onCheckedChange={checked => updateFormData({ hasElevator: checked as boolean })}
                   />
-                  <Label htmlFor="hasElevator" className="cursor-pointer">Ascensor</Label>
+                  <Label htmlFor="hasElevator" className="cursor-pointer">{t('elevator')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -654,7 +565,7 @@ function CreatePropertyContent() {
                     checked={formData.hasParking}
                     onCheckedChange={checked => updateFormData({ hasParking: checked as boolean })}
                   />
-                  <Label htmlFor="hasParking" className="cursor-pointer">Parking/Garaje</Label>
+                  <Label htmlFor="hasParking" className="cursor-pointer">{t('parking')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -662,16 +573,16 @@ function CreatePropertyContent() {
                     checked={formData.hasDoorman}
                     onCheckedChange={checked => updateFormData({ hasDoorman: checked as boolean })}
                   />
-                  <Label htmlFor="hasDoorman" className="cursor-pointer">Portero/Conserje</Label>
+                  <Label htmlFor="hasDoorman" className="cursor-pointer">{t('concierge')}</Label>
                 </div>
                 <div>
-                  <Label htmlFor="floorNumber" className="text-sm">Número de Piso (opcional)</Label>
+                  <Label htmlFor="floorNumber" className="text-sm">{t('floorNumberLabel')}</Label>
                   <Input
                     id="floorNumber"
                     type="number"
                     min={0}
                     max={50}
-                    placeholder="Ej: 3"
+                    placeholder={t('floorNumberPlaceholder')}
                     value={formData.floorNumber || ''}
                     onChange={e => updateFormData({ floorNumber: e.target.value ? parseInt(e.target.value) : undefined })}
                     className="mt-1"
@@ -680,9 +591,9 @@ function CreatePropertyContent() {
               </div>
             </div>
 
-            {/* Estilo de Vida */}
+            {/* Lifestyle */}
             <div>
-              <h3 className="font-semibold text-lg mb-3">🐾 Estilo de Vida</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('lifestyle')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -690,7 +601,7 @@ function CreatePropertyContent() {
                     checked={formData.petsAllowed}
                     onCheckedChange={checked => updateFormData({ petsAllowed: checked as boolean })}
                   />
-                  <Label htmlFor="petsAllowed" className="cursor-pointer">Se Permiten Mascotas</Label>
+                  <Label htmlFor="petsAllowed" className="cursor-pointer">{t('petFriendly')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -698,14 +609,14 @@ function CreatePropertyContent() {
                     checked={formData.smokingAllowed}
                     onCheckedChange={checked => updateFormData({ smokingAllowed: checked as boolean })}
                   />
-                  <Label htmlFor="smokingAllowed" className="cursor-pointer">Se Permite Fumar</Label>
+                  <Label htmlFor="smokingAllowed" className="cursor-pointer">{t('smokingAllowed')}</Label>
                 </div>
               </div>
             </div>
 
-            {/* Seguridad */}
+            {/* Security */}
             <div>
-              <h3 className="font-semibold text-lg mb-3">🔒 Seguridad</h3>
+              <h3 className="font-semibold text-lg mb-3">{t('security')}</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -713,7 +624,7 @@ function CreatePropertyContent() {
                     checked={formData.hasSecuritySystem}
                     onCheckedChange={checked => updateFormData({ hasSecuritySystem: checked as boolean })}
                   />
-                  <Label htmlFor="hasSecuritySystem" className="cursor-pointer">Sistema de Seguridad</Label>
+                  <Label htmlFor="hasSecuritySystem" className="cursor-pointer">{t('securitySystem')}</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -721,7 +632,7 @@ function CreatePropertyContent() {
                     checked={formData.hasSafe}
                     onCheckedChange={checked => updateFormData({ hasSafe: checked as boolean })}
                   />
-                  <Label htmlFor="hasSafe" className="cursor-pointer">Caja Fuerte</Label>
+                  <Label htmlFor="hasSafe" className="cursor-pointer">{t('safe')}</Label>
                 </div>
               </div>
             </div>
@@ -731,179 +642,127 @@ function CreatePropertyContent() {
         {/* PRICING STEP */}
         {currentStep === 'pricing' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-3 mb-6">
-              <Euro className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Precios</h2>
-            </div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Euro className="h-5 w-5 text-blue-600" />
+              {t('pricingTitle')}
+            </h2>
 
-            <div>
-              <Label htmlFor="monthlyPrice">Precio mensual (€) *</Label>
-              <Input
-                id="monthlyPrice"
-                type="number"
-                min={100}
-                value={formData.monthlyPrice}
-                onChange={e => updateFormData({ monthlyPrice: parseInt(e.target.value) || 0 })}
-                className="mt-1"
-              />
-              <p className="text-xs text-gray-500 mt-1">Mínimo €100</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="minStayMonths">Estancia mínima (meses) *</Label>
-                <Input
-                  id="minStayMonths"
-                  type="number"
-                  min={1}
-                  max={12}
-                  value={formData.minStayMonths}
-                  onChange={e => updateFormData({ minStayMonths: parseInt(e.target.value) || 1 })}
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="maxStayMonths">Estancia máxima (meses) *</Label>
-                <Input
-                  id="maxStayMonths"
-                  type="number"
-                  min={1}
-                  max={12}
-                  value={formData.maxStayMonths}
-                  onChange={e => updateFormData({ maxStayMonths: parseInt(e.target.value) || 1 })}
-                  className="mt-1"
-                />
-              </div>
-            </div>
-
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="pt-6">
-                <p className="text-sm font-medium text-blue-900 mb-2">Estimación de ingresos</p>
-                <div className="space-y-1 text-sm text-blue-800">
-                  <p>
-                    Estancia mínima ({formData.minStayMonths} meses):{' '}
-                    <span className="font-bold">
-                      €{(formData.monthlyPrice * formData.minStayMonths).toLocaleString()}
-                    </span>
-                  </p>
-                  <p>
-                    Estancia máxima ({formData.maxStayMonths} meses):{' '}
-                    <span className="font-bold">
-                      €{(formData.monthlyPrice * formData.maxStayMonths).toLocaleString()}
-                    </span>
-                  </p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="pricePerNight">{t('pricePerNight')} *</Label>
+                  <Input
+                    id="pricePerNight"
+                    type="number"
+                    min={1}
+                    value={formData.pricePerNight}
+                    onChange={e => updateFormData({ pricePerNight: parseInt(e.target.value) || 0 })}
+                    className="mt-1"
+                  />
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <Label htmlFor="pricePerWeek">{t('pricePerWeek')} *</Label>
+                  <Input
+                    id="pricePerWeek"
+                    type="number"
+                    min={1}
+                    value={formData.pricePerWeek}
+                    onChange={e => updateFormData({ pricePerWeek: parseInt(e.target.value) || 0 })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="pricePerMonth">{t('pricePerMonth')} *</Label>
+                  <Input
+                    id="pricePerMonth"
+                    type="number"
+                    min={1}
+                    value={formData.pricePerMonth}
+                    onChange={e => updateFormData({ pricePerMonth: parseInt(e.target.value) || 0 })}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-yellow-50 p-4 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  {t('priceTip')}
+                </p>
+              </div>
+            </div>
           </div>
         )}
 
         {/* IMAGES STEP */}
         {currentStep === 'images' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <div className="flex items-center gap-3 mb-6">
-              <ImageIcon className="h-6 w-6 text-blue-600" />
-              <h2 className="text-2xl font-bold">Fotos</h2>
-            </div>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <ImageIcon className="h-5 w-5 text-blue-600" />
+              {t('photos')}
+            </h2>
 
             <CloudinaryUploader
-              onImagesUploaded={urls => {
-                console.log('[CreateProperty] Imágenes recibidas del uploader:', urls);
-                updateFormData({ images: urls })
-                console.log('[CreateProperty] FormData.images actualizado a:', urls);
-              }}
+              onImagesUploaded={handleImagesUploaded}
               existingImages={formData.images}
               maxImages={10}
             />
 
-            <p className="text-sm text-gray-500">
-              {formData.images.length === 0
-                ? 'Sube al menos 1 imagen de tu propiedad'
-                : `${formData.images.length} imagen(es) subida(s)`}
-            </p>
+            {formData.images.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium mb-2">{t('uploadedPhotos')}</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {formData.images.map((url, idx) => (
+                    <img
+                      key={idx}
+                      src={url}
+                      alt={`${t('photos')} ${idx + 1}`}
+                      className="w-full h-32 object-cover rounded"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
         {/* PREVIEW STEP */}
         {currentStep === 'preview' && (
           <div className="space-y-6 bg-white p-6 rounded-lg shadow">
-            <h2 className="text-2xl font-bold mb-6">Revisar Propiedad</h2>
-
-            <Card className="bg-yellow-50 border-yellow-200 mb-6">
-              <CardContent className="pt-6">
-                <p className="text-sm text-yellow-800">
-                  ⚠️ Revisa toda la información antes de publicar. Podrás editarla después.
-                </p>
-              </CardContent>
-            </Card>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Check className="h-5 w-5 text-blue-600" />
+              {t('review')}
+            </h2>
 
             <div className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Información Básica</h3>
-                <div className="bg-gray-50 p-4 rounded space-y-2 text-sm">
-                  <p><span className="font-medium">Título:</span> {formData.title}</p>
-                  <p><span className="font-medium">Descripción:</span> {formData.description}</p>
-                  <p>
-                    <span className="font-medium">Habitaciones:</span> {formData.bedrooms} |{' '}
-                    <span className="font-medium">Baños:</span> {formData.bathrooms}
-                  </p>
+              <p className="text-gray-600">
+                {t('reviewDescription')}
+              </p>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <strong>{t('titleLabel')}:</strong> {formData.title}
+                </div>
+                <div>
+                  <strong>{t('location')}:</strong> {formData.city}, {formData.country}
+                </div>
+                <div>
+                  <strong>{t('bedroomsLabel')}:</strong> {formData.bedrooms} | <strong>{t('bathroomsLabel')}:</strong>{' '}
+                  {formData.bathrooms}
+                </div>
+                <div>
+                  <strong>{t('wifiLabel')}:</strong> {formData.wifiSpeed} Mbps
+                </div>
+                <div>
+                  <strong>{t('priceMonthLabel')}:</strong> {formData.pricePerMonth} EUR
+                </div>
+                <div>
+                  <strong>{t('photosLabel')}:</strong> {formData.images.length}
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Ubicación</h3>
-                <div className="bg-gray-50 p-4 rounded space-y-2 text-sm">
-                  <p><span className="font-medium">País:</span> {formData.country}</p>
-                  <p><span className="font-medium">Ciudad:</span> {formData.city}</p>
-                  {formData.neighborhood && (
-                    <p><span className="font-medium">Barrio:</span> {formData.neighborhood}</p>
-                  )}
-                  <p><span className="font-medium">Dirección:</span> {formData.address}</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Workspace</h3>
-                <div className="bg-gray-50 p-4 rounded space-y-2 text-sm">
-                  <p><span className="font-medium">Escritorio:</span> {formData.hasDesk ? '✅ Sí' : '❌ No'}</p>
-                  <p>
-                    <span className="font-medium">Monitor adicional:</span>{' '}
-                    {formData.hasSecondMonitor ? '✅ Sí' : '❌ No'}
-                  </p>
-                  <p><span className="font-medium">Amueblado:</span> {formData.furnished ? '✅ Sí' : '❌ No'}</p>
-                  <p><span className="font-medium">WiFi:</span> {formData.wifiSpeed} Mbps</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">Precios</h3>
-                <div className="bg-gray-50 p-4 rounded space-y-2 text-sm">
-                  <p><span className="font-medium">Precio mensual:</span> €{formData.monthlyPrice}</p>
-                  <p>
-                    <span className="font-medium">Estancia:</span> {formData.minStayMonths} - {formData.maxStayMonths} meses
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-gray-700 mb-2">
-                  Imágenes ({formData.images.length})
-                </h3>
-                {formData.images.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-4">
-                    {formData.images.map((url, idx) => (
-                      <img
-                        key={idx}
-                        src={url}
-                        alt={`Imagen ${idx + 1}`}
-                        className="w-full h-32 object-cover rounded"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-sm">No hay imágenes</p>
-                )}
+              <div className="border-t pt-4">
+                <strong>{t('descriptionLabel')}:</strong>
+                <p className="mt-2 text-gray-600">{formData.description}</p>
               </div>
             </div>
           </div>
@@ -918,7 +777,7 @@ function CreatePropertyContent() {
             className="min-w-[120px]"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Anterior
+            {t('previous')}
           </Button>
 
           {isLastStep ? (
@@ -930,15 +789,15 @@ function CreatePropertyContent() {
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Publicando...
+                  {t('submitting')}
                 </>
               ) : (
-                'Publicar Propiedad'
+                t('publishProperty')
               )}
             </Button>
           ) : (
             <Button onClick={nextStep} disabled={submitting} className="min-w-[120px]">
-              Siguiente
+              {t('next')}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           )}

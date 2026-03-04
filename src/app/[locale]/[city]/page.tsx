@@ -1,87 +1,70 @@
 import { Metadata } from 'next'
-// UTF-8 clean file - redeploy trigger
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/routing'
-import { Home, ChevronRight, MapPin, Building2 } from 'lucide-react'
+import { Home, ChevronRight, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getTranslations } from 'next-intl/server'
-
-const CITIES_CONFIG: Record<string, { name: string; description: string }> = {
-  madrid: { 
-    name: 'Madrid', 
-    description: 'Descubre Madrid: alojamientos verificados para estancias de 1-12 meses.'
-  },
-  barcelona: { 
-    name: 'Barcelona', 
-    description: 'Explora Barcelona: viviendas verificadas para estancias medias.'
-  },
-  valencia: { 
-    name: 'Valencia', 
-    description: 'Descubre Valencia: alojamientos para profesionales remotos.'
-  },
-  sevilla: { 
-    name: 'Sevilla', 
-    description: 'Alquiler mensual en Sevilla: viviendas con WiFi rapido.'
-  },
-  'ciudad-de-mexico': { 
-    name: 'Ciudad de Mexico', 
-    description: 'CDMX para nómadas digitales: alojamientos verificados.'
-  },
-  'buenos-aires': { 
-    name: 'Buenos Aires', 
-    description: 'Buenos Aires para remotos: departamentos con WiFi verificado.'
-  },
-  medellin: { 
-    name: 'Medellin', 
-    description: 'Medellin: capital digital de Colombia.'
-  },
-  lisboa: { 
-    name: 'Lisboa', 
-    description: 'Lisboa para nómadas: alojamientos en barrios auténticos.'
-  },
-  porto: { 
-    name: 'Porto', 
-    description: 'Porto: segunda ciudad de Portugal con escena tech creciente.'
-  },
-  austin: { 
-    name: 'Austin', 
-    description: 'Austin, Texas: capital tech del Lone Star State.'
-  },
-}
+import { CityPageClient } from './CityPageClient'
+import { CityPageWithListings } from './CityPageWithListings'
+import { CITIES, getCityBySlug } from '@/config/cities'
+import { listingRepository } from '@/lib/repositories/listing.repository'
 
 type PageProps = {
-  params: {
-    city: string
-    locale: string
-  }
+  params: Promise<{
+    city?: string
+    locale?: string
+  }>
+}
+
+function requireParam(value: unknown): string {
+  if (typeof value !== 'string' || !value.trim()) notFound()
+  return value
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const citySlug = params.city.toLowerCase()
-  const config = CITIES_CONFIG[citySlug]
-  
-  if (!config) {
+  const resolvedParams = await params
+  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
+  const city = getCityBySlug(citySlug)
+
+  if (!city) {
     return { title: 'Ciudad no encontrada | inhabitme' }
   }
 
   return {
-    title: `Vive en ${config.name} | inhabitme`,
-    description: config.description,
+    title: `Vive en ${city.name} | inhabitme`,
+    description: city.description,
   }
 }
 
 export default async function CityPage({ params }: PageProps) {
-  const citySlug = params.city.toLowerCase()
-  const locale = params.locale || 'es'
+  const resolvedParams = await params
+  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
+  const locale = typeof resolvedParams?.locale === 'string' && resolvedParams.locale.trim() ? resolvedParams.locale : 'es'
+
+  const city = getCityBySlug(citySlug)
+  if (!city) notFound()
+
   const t = await getTranslations({ locale, namespace: 'cityPage' })
-  
-  const config = CITIES_CONFIG[citySlug]
+  const cityName = city.name
 
-  if (!config) {
-    notFound()
-  }
+  // Get neighborhoods for this city
+  const neighborhoods = city.neighborhoods || []
 
-  const cityName = config.name
+  // Buscar propiedades reales en esta ciudad
+  const listings = await listingRepository.search({ city: cityName })
+  const hasListings = listings && listings.length > 0
+
+  // Get alternative cities (other cities with properties)
+  const alternatives = CITIES
+    .filter((c) => c.slug !== citySlug)
+    .slice(0, 3)
+    .map((c) => ({
+      name: c.name,
+      slug: c.slug,
+      properties: Math.floor(Math.random() * 50) + 20, // Placeholder
+      priceFrom: Math.floor(Math.random() * 500) + 800,
+      highlight: c.description.slice(0, 50) + '...',
+    }))
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -96,7 +79,7 @@ export default async function CityPage({ params }: PageProps) {
           <span className="text-gray-900 font-semibold">{cityName}</span>
         </nav>
       </div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Hero */}
         <header className="mb-12">
@@ -104,13 +87,13 @@ export default async function CityPage({ params }: PageProps) {
             <div className="grid lg:grid-cols-5 gap-0">
               <div className="lg:col-span-3 p-6 sm:p-8 lg:p-12">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-4 lg:mb-6 leading-tight bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                  {t('heroTitle', { city: cityName }) || `Vive en ${cityName}`}
+                  {t('heroTitle', { city: cityName })}
                 </h1>
                 <p className="text-xl lg:text-2xl text-gray-700 font-medium mb-6 lg:mb-8 leading-relaxed">
-                  Espacios disenados para <span className="text-blue-600 font-bold">nómadas digitales</span>
+                  {t('heroSubtitle')}
                 </p>
                 <Link href="/">
-                  <Button>Volver al inicio</Button>
+                  <Button>{t('backToHome')}</Button>
                 </Link>
               </div>
 
@@ -124,21 +107,22 @@ export default async function CityPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* Content */}
-        <section className="text-center py-16">
-          <div className="inline-flex p-8 bg-white rounded-3xl shadow-xl mb-8">
-            <MapPin className="h-16 w-16 text-blue-600" />
-          </div>
-          <h2 className="text-3xl lg:text-4xl font-black mb-4">
-            Próximamente en {cityName}
-          </h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Estamos trabajando para traerte las mejores opciones de alquiler mensual en {cityName}.
-          </p>
-          <Link href="/">
-            <Button size="lg">Explorar otras ciudades</Button>
-          </Link>
-        </section>
+        {/* Neighborhoods Section - Client Component */}
+        {hasListings ? (
+          <CityPageWithListings
+            cityName={cityName}
+            citySlug={citySlug}
+            listings={listings}
+            neighborhoods={neighborhoods}
+          />
+        ) : (
+          <CityPageClient
+            cityName={cityName}
+            citySlug={citySlug}
+            neighborhoods={neighborhoods}
+            alternatives={alternatives}
+          />
+        )}
       </div>
     </main>
   )

@@ -1,6 +1,6 @@
 /**
  * Configuración de barrios relacionados para interlinking SEO
- * 
+ *
  * Estrategia:
  * - Barrios geográficamente cercanos
  * - Barrios con vibe/pricing similar
@@ -143,24 +143,6 @@ export const CITY_NEIGHBORHOODS: Record<string, CityNeighborhoods> = {
       { name: 'Tarrytown', slug: 'tarrytown' },
     ],
   },
-}
-
-export function getCityConfig(citySlug: string): CityNeighborhoods | undefined {
-  return CITY_NEIGHBORHOODS[citySlug.toLowerCase()]
-}
-
-export function getNeighborhoodConfig(
-  citySlug: string,
-  neighborhoodSlug: string
-): NeighborhoodRef | undefined {
-  const city = getCityConfig(citySlug)
-  return city?.neighborhoods.find((n) => n.slug === neighborhoodSlug.toLowerCase())
-}
-
-export function getAllCityNeighborhoodParams(): Array<{ city: string; neighborhood: string }> {
-  return Object.values(CITY_NEIGHBORHOODS).flatMap((city) =>
-    city.neighborhoods.map((n) => ({ city: city.slug, neighborhood: n.slug }))
-  )
 }
 
 type NeighborhoodRelations = {
@@ -519,14 +501,54 @@ export const NEIGHBORHOOD_RELATIONS: NeighborhoodRelations = {
 }
 
 /**
- * Obtiene barrios relacionados para un barrio específico
+ * Obtiene la configuración de ciudad (safe)
+ */
+export function getCityConfig(citySlug: unknown): CityNeighborhoods | undefined {
+  if (typeof citySlug !== 'string' || !citySlug.trim()) return undefined
+  return CITY_NEIGHBORHOODS[citySlug.toLowerCase()]
+}
+
+/**
+ * Obtiene la configuración de barrio (safe)
+ */
+export function getNeighborhoodConfig(
+  citySlug: unknown,
+  neighborhoodSlug: unknown
+): NeighborhoodRef | undefined {
+  const city = getCityConfig(citySlug)
+  if (!city) return undefined
+
+  if (typeof neighborhoodSlug !== 'string' || !neighborhoodSlug.trim()) return undefined
+  const neighborhoodLower = neighborhoodSlug.toLowerCase()
+
+  return city.neighborhoods.find((n) => n.slug === neighborhoodLower)
+}
+
+export function getAllCityNeighborhoodParams(): Array<{ locale: string; city: string; neighborhood: string }> {
+  const locales = ['en', 'es']
+  return Object.values(CITY_NEIGHBORHOODS).flatMap((city) =>
+    city.neighborhoods.flatMap((n) =>
+      locales.map((locale) => ({
+        locale,
+        city: city.slug,
+        neighborhood: n.slug,
+      }))
+    )
+  )
+}
+
+/**
+ * Obtiene barrios relacionados para un barrio específico (safe)
  */
 export function getRelatedNeighborhoods(
-  city: string,
-  neighborhood: string
+  city: unknown,
+  neighborhood: unknown
 ): RelatedNeighborhood[] {
+  if (typeof city !== 'string' || !city.trim()) return []
+  if (typeof neighborhood !== 'string' || !neighborhood.trim()) return []
+
   const cityLower = city.toLowerCase()
   const neighborhoodLower = neighborhood.toLowerCase()
-  
+
   return NEIGHBORHOOD_RELATIONS[cityLower]?.[neighborhoodLower] || []
 }

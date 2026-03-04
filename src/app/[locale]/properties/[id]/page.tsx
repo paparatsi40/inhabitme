@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
-import { searchListings } from '@/lib/use-cases/search-listings'
 import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { ThemedListingWrapper } from '@/components/listings/ThemedListingWrapper'
 import { ViewTracker } from '@/components/listings/ViewTracker'
-import { createClient } from '@supabase/supabase-js'
+import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { THEME_PRESETS } from '@/lib/domain/listing-theme'
 import { generatePropertyMetadata } from '@/lib/seo/metadata-helpers'
 
@@ -13,21 +12,51 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 type PageProps = {
-  params: { id: string; locale: string }
+  params: Promise<{ id: string; locale: string }>
+}
+
+async function getListingById(id: string) {
+  console.log('[PropertyPage] 🔍 getListingById called with ID:', id)
+  
+  try {
+    const supabase = getSupabaseServerClient()
+    console.log('[PropertyPage] ✅ Supabase client created')
+    
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .eq('status', 'active')
+      .single()
+    
+    console.log('[PropertyPage] 📊 Query result - data:', data ? 'found' : 'null', 'error:', error)
+    
+    if (error) {
+      console.error('[PropertyPage] ❌ Supabase error:', JSON.stringify(error, null, 2))
+      return null
+    }
+    
+    if (!data) {
+      console.log('[PropertyPage] ❌ No data found for ID:', id)
+      return null
+    }
+    
+    console.log('[PropertyPage] ✅ Found listing:', data.title)
+    return data
+  } catch (err: any) {
+    console.error('[PropertyPage] 🔥 Exception in getListingById:', err?.message || err)
+    return null
+  }
 }
 
 /**
  * Generate dynamic metadata for property pages
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id, locale } = await params
+  
   try {
-    const listings = await searchListings({
-      page: 1,
-      limit: 1,
-      listingId: params.id,
-    })
-
-    const listing = listings.find((l: any) => l.id === params.id)
+    const listing = await getListingById(id)
 
     if (!listing) {
       return {
@@ -41,18 +70,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       id: listing.id,
       title: listing.title,
       description: listing.description,
-      city: listing.city,
-      neighborhood: listing.neighborhood,
-      monthlyPrice: listing.monthlyPrice,
-      images: listing.images?.map((img: any) => ({
-        url: img.url || img,
+      city: listing.city_name,
+      neighborhood: listing.neighborhood || undefined,
+      monthlyPrice: listing.monthly_price,
+      images: (listing.images || []).map((img: any) => ({
+        url: typeof img === 'string' ? img : img.url,
         alt: `${listing.title} - Image`,
       })),
     }
 
     return generatePropertyMetadata({
       property,
-      locale: params.locale as 'en' | 'es',
+      locale: locale as 'en' | 'es',
     })
   } catch (error) {
     console.error('[PropertyMetadata] Error generating metadata:', error)
@@ -64,41 +93,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PropertyDetailPage({ params }: PageProps) {
-  console.log('[PropertyPage] 🔍 Loading property ID:', params.id)
+  const { id } = await params
+  console.log('[PropertyPage] 🔍 Loading property ID:', id)
   
   try {
-    // Buscar el listing específico
-    console.log('[PropertyPage] 📡 Calling searchListings...')
-    const listings = await searchListings({
-      page: 1,
-      limit: 1,
-      listingId: params.id,
-    })
-
-    console.log('[PropertyPage] 📊 Got', listings.length, 'listings')
-    console.log('[PropertyPage] 📋 Listing IDs:', listings.map((l: any) => l.id))
-
-    // Buscar el listing correcto por ID
-    const listing = listings.find((l: any) => l.id === params.id)
+    // Obtener el listing directamente de Supabase
+    const listing = await getListingById(id)
 
     if (!listing) {
-      console.log('[PropertyPage] ❌ Listing not found for ID:', params.id)
+      console.log('[PropertyPage] ❌ Listing not found for ID:', id)
       notFound()
     }
     
     console.log('[PropertyPage] ✅ Found listing:', listing.title)
 
-    // Crear cliente de Supabase
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    // Crear cliente de Supabase para tema
+    const supabase = getSupabaseServerClient()
 
     // Obtener el tema del listing (si existe)
     const { data: themeData } = await supabase
       .from('listing_themes')
       .select('*')
-      .eq('listing_id', params.id)
+      .eq('listing_id', id)
       .single()
 
     // Transformar datos planos de DB a estructura anidada que espera el código
@@ -144,7 +160,7 @@ export default async function PropertyDetailPage({ params }: PageProps) {
 
     return (
       <ThemedListingWrapper theme={theme}>
-        <ViewTracker listingId={params.id} />
+        <ViewTracker listingId={id} />
         <ThemedListingPage listing={listing} theme={theme} />
       </ThemedListingWrapper>
     )

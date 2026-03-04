@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
-import { properties, users } from '@/db/schema';
-import { eq, and, gte, lte, ilike } from 'drizzle-orm';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   try {
+    console.log('[API /api/properties/search] Request received');
+    
     const { searchParams } = new URL(request.url);
     
     const country = searchParams.get('country');
@@ -16,69 +16,90 @@ export async function GET(request: Request) {
     const bedrooms = searchParams.get('bedrooms') ? parseInt(searchParams.get('bedrooms')!) : undefined;
     const minWifiSpeed = searchParams.get('minWifiSpeed') ? parseInt(searchParams.get('minWifiSpeed')!) : undefined;
 
-    // Build conditions
-    const conditions = [
-      eq(properties.status, 'ACTIVE')
-    ];
+    console.log('[API /api/properties/search] Filters:', { country, city, minPrice, maxPrice, bedrooms, minWifiSpeed });
 
+    console.log('[API /api/properties/search] Creating Supabase client...');
+    const supabase = getSupabaseServerClient();
+    console.log('[API /api/properties/search] Supabase client created');
+    
+    // Start query
+    console.log('[API /api/properties/search] Starting query...');
+    let query = supabase.from('listings').select('*');
+
+    // Apply filters
     if (country) {
-      conditions.push(ilike(properties.country, `%${country}%`));
+      query = query.ilike('city_country', `%${country}%`);
     }
 
     if (city) {
-      conditions.push(ilike(properties.city, `%${city}%`));
+      query = query.ilike('city_name', `%${city}%`);
     }
 
     if (minPrice) {
-      conditions.push(gte(properties.monthlyPrice, minPrice.toString()));
+      query = query.gte('monthly_price', minPrice);
     }
 
     if (maxPrice) {
-      conditions.push(lte(properties.monthlyPrice, maxPrice.toString()));
+      query = query.lte('monthly_price', maxPrice);
     }
 
     if (bedrooms) {
-      conditions.push(gte(properties.bedrooms, bedrooms));
+      query = query.gte('bedrooms', bedrooms);
     }
 
     if (minWifiSpeed) {
-      conditions.push(gte(properties.wifiSpeed, minWifiSpeed));
+      query = query.gte('wifi_speed_mbps', minWifiSpeed);
     }
 
-    // Query with Drizzle
-    const results = await db
-      .select({
-        id: properties.id,
-        title: properties.title,
-        description: properties.description,
-        city: properties.city,
-        country: properties.country,
-        address: properties.address,
-        monthlyPrice: properties.monthlyPrice,
-        depositAmount: properties.depositAmount,
-        bedrooms: properties.bedrooms,
-        bathrooms: properties.bathrooms,
-        hasDesk: properties.hasDesk,
-        wifiSpeed: properties.wifiSpeed,
-        wifiVerified: properties.wifiVerified,
-        hasSecondMonitor: properties.hasSecondMonitor,
-        isVerified: properties.isVerified,
-        status: properties.status,
-        host: {
-          id: users.id,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          imageUrl: users.imageUrl,
-        }
-      })
-      .from(properties)
-      .leftJoin(users, eq(properties.hostId, users.id))
-      .where(and(...conditions))
-      .orderBy(properties.createdAt);
+    // Execute query
+    console.log('[API /api/properties/search] Executing query...');
+    const { data, error } = await query
+      .order('created_at', { ascending: false });
 
-    return NextResponse.json(results);
-  } catch (error) {
-    console.error('Error searching properties:', error);
-    return NextResponse.json({ error: 'Failed to search properties' }, { status: 500 });
+    if (error) {
+      console.error('[API /api/properties/search] Supabase error:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    console.log('[API /api/properties/search] Query successful, rows:', data?.length || 0);
+
+    // Filter active listings in memory (case-insensitive)
+    const activeListings = (data || []).filter((listing: any) => 
+      listing.status?.toLowerCase() === 'active'
+    );
+
+    console.log('[API /api/properties/search] Active listings:', activeListings.length);
+
+    // Mapear al formato esperado por el frontend
+    const listings = activeListings.map((listing: any) => ({
+      id: listing.id,
+      title: listing.title,
+      description: listing.description,
+      city: { name: listing.city_name, country: listing.city_country },
+      neighborhood: listing.neighborhood ? { name: listing.neighborhood } : undefined,
+      bedrooms: listing.bedrooms,
+      bathrooms: listing.bathrooms,
+      amenities: {
+        wifiSpeedMbps: listing.wifi_speed_mbps,
+        hasDesk: listing.has_desk,
+        hasSecondMonitor: listing.has_second_monitor,
+        furnished: listing.furnished
+      },
+      price: { monthly: listing.monthly_price, currency: listing.currency },
+      images: listing.images || [],
+      ownerId: listing.owner_id,
+      status: listing.status,
+      createdAt: listing.created_at
+    }));
+
+    // Retornar en formato {data: ...} como espera el cliente
+    return NextResponse.json({ data: listings });
+  } catch (error: any) {
+    console.error('[API /api/properties/search] Caught error:', error);
+    console.error('[API /api/properties/search] Error stack:', error?.stack);
+    return NextResponse.json({ 
+      error: error.message || 'Failed to search properties',
+      stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined 
+    }, { status: 500 });
   }
 }

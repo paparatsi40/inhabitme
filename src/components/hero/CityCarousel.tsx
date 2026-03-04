@@ -2,59 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { CheckCircle } from 'lucide-react'
-
-const CITIES = [
-  { 
-    name: 'Madrid', 
-    image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Capital de España'
-  },
-  { 
-    name: 'Barcelona', 
-    image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Mar y Modernismo'
-  },
-  { 
-    name: 'Valencia', 
-    image: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Playa y calidad de vida'
-  },
-  { 
-    name: 'Sevilla', 
-    image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Sol y flamenco'
-  },
-  { 
-    name: 'Lisboa', 
-    image: 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Fiscalidad favorable'
-  },
-  { 
-    name: 'Porto', 
-    image: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Vino y autenticidad'
-  },
-  { 
-    name: 'Buenos Aires', 
-    image: 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Cultura y tango'
-  },
-  { 
-    name: 'Ciudad de México', 
-    image: 'https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Capital digital de LatAm'
-  },
-  { 
-    name: 'Medellín', 
-    image: 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Eterna primavera'
-  },
-  { 
-    name: 'Austin', 
-    image: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=800&h=600&fit=crop&q=80',
-    subtitle: 'Tech hub de Texas'
-  },
-]
+import { CITIES } from '@/config/cities'
 
 export function CityCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)

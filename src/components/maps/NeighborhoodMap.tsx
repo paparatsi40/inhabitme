@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { MapPin } from 'lucide-react'
+import { loadGoogleMaps } from '@/lib/maps/google-maps-loader'
 
 interface NeighborhoodMapProps {
   city: string
@@ -98,13 +99,7 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
 
   // Efecto para cargar Google Maps (solo una vez)
   useEffect(() => {
-    const loadGoogleMaps = async () => {
-      // Si ya está cargado, no hacer nada
-      if (window.google?.maps) {
-        setMapLoaded(true)
-        return
-      }
-
+    const loadMap = async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 
       if (!apiKey) {
@@ -114,25 +109,16 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
       }
 
       try {
-        const script = document.createElement('script')
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
-        script.async = true
-        script.defer = true
-        script.onload = () => {
-          setMapLoaded(true)
-        }
-        script.onerror = () => {
-          setError('Error al cargar el mapa')
-        }
-        document.head.appendChild(script)
+        await loadGoogleMaps(apiKey)
+        setMapLoaded(true)
       } catch (err) {
         console.error('[Map] Error loading Google Maps:', err)
         setError('Error al cargar el mapa')
       }
     }
 
-    loadGoogleMaps()
-  }, []) // Solo se ejecuta al montar
+    loadMap()
+  }, [])
 
   // Efecto para inicializar/actualizar el mapa cuando cambian city/neighborhood
   useEffect(() => {

@@ -12,6 +12,7 @@ interface FullscreenGalleryProps {
 export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const altText = title || 'Property image'
 
   const openGallery = (index: number) => {
     setCurrentIndex(index)
@@ -32,7 +33,7 @@ export function FullscreenGallery({ images, title }: FullscreenGalleryProps) {
       <div className="relative h-[70vh] cursor-pointer group" onClick={() => openGallery(0)}>
         <Image
           src={images[0]}
-          alt={title}
+          alt={altText}
           fill
           className="object-cover"
           priority

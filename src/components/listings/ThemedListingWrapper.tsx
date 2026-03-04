@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Share2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { Link } from '@/i18n/routing'
 import { ListingTheme } from '@/lib/domain/listing-theme'
 
 interface ThemedListingWrapperProps {
@@ -16,20 +17,36 @@ export function ThemedListingWrapper({ children, theme }: ThemedListingWrapperPr
   const primaryColor = theme?.colors?.primary || '#667eea'
   const customLogo = theme?.customLogo
 
+  const handleBack = () => {
+    // Intentar volver al historial anterior
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back()
+      return true
+    }
+    return false
+  }
+
   return (
     <div className="min-h-screen">
       {/* Minimal Header - Floating y semi-transparente */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-          {/* Back Button */}
-          <button
-            onClick={() => router.back()}
+          {/* Back Button - Intenta historial primero, si falla usa Link */}
+          <Link
+            href="/dashboard"
+            onClick={(e) => {
+              const wentBack = handleBack()
+              if (wentBack) {
+                e.preventDefault() // Cancelar navegación si router.back() funcionó
+              }
+              // Si no fue atrás, dejar que Link navegue a /dashboard
+            }}
             className="flex items-center gap-2 px-3 py-2 text-gray-700 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-all"
             style={{ color: primaryColor }}
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline font-medium">Volver</span>
-          </button>
+          </Link>
 
           {/* Logo/Brand - Centro (personalizado o default) */}
           <div className="absolute left-1/2 transform -translate-x-1/2">

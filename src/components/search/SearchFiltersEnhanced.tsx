@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { SearchFilters as SearchFiltersType } from '@/lib/domain/search-filters'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export type SearchFiltersProps = {
   filters: SearchFiltersType
@@ -19,6 +20,7 @@ export function SearchFiltersEnhanced({
   onApply,
   onClear
 }: SearchFiltersProps) {
+  const t = useTranslations('searchFilters')
   const [showAdvanced, setShowAdvanced] = useState(false)
   const hasActiveFilters = Object.values(filters).some(Boolean)
 
@@ -58,7 +60,7 @@ export function SearchFiltersEnhanced({
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {/* Ciudad */}
           <div>
-            <label className="block text-sm font-medium mb-2">Ciudad</label>
+            <label className="block text-sm font-medium mb-2">{t('city')}</label>
             <input
               value={filters.city ?? ''}
               onChange={(e) => updateFilter('city', e.target.value)}
@@ -69,13 +71,13 @@ export function SearchFiltersEnhanced({
 
           {/* Barrio */}
           <div>
-            <label className="block text-sm font-medium mb-2">Barrio</label>
+            <label className="block text-sm font-medium mb-2">{t('neighborhood')}</label>
             <select
               value={filters.neighborhood ?? ''}
               onChange={(e) => updateFilter('neighborhood', e.target.value)}
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
-              <option value="">Todos</option>
+              <option value="">{t('all')}</option>
               {filters.city === 'Madrid' && (
                 <>
                   <option value="Malasaña">Malasaña</option>
@@ -89,7 +91,7 @@ export function SearchFiltersEnhanced({
 
           {/* Precio mínimo */}
           <div>
-            <label className="block text-sm font-medium mb-2">Precio mín. (€)</label>
+            <label className="block text-sm font-medium mb-2">{t('minPrice')}</label>
             <input
               type="number"
               value={filters.minPrice ?? ''}
@@ -101,7 +103,7 @@ export function SearchFiltersEnhanced({
 
           {/* Precio máximo */}
           <div>
-            <label className="block text-sm font-medium mb-2">Precio máx. (€)</label>
+            <label className="block text-sm font-medium mb-2">{t('maxPrice')}</label>
             <input
               type="number"
               value={filters.maxPrice ?? ''}
@@ -113,13 +115,13 @@ export function SearchFiltersEnhanced({
 
           {/* Habitaciones */}
           <div>
-            <label className="block text-sm font-medium mb-2">Habitaciones</label>
+            <label className="block text-sm font-medium mb-2">{t('bedrooms')}</label>
             <select
               value={filters.bedrooms ?? ''}
               onChange={(e) => updateFilter('bedrooms', e.target.value ? Number(e.target.value) : undefined)}
               className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             >
-              <option value="">Todas</option>
+              <option value="">{t('allRooms')}</option>
               <option value="1">1+</option>
               <option value="2">2+</option>
               <option value="3">3+</option>
@@ -136,7 +138,7 @@ export function SearchFiltersEnhanced({
             className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition"
           >
             {showAdvanced ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            Amenities y Filtros Avanzados
+            {t('amenitiesAndAdvanced')}
             {amenitiesCount > 0 && (
               <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
                 {amenitiesCount}

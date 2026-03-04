@@ -23,6 +23,7 @@ export function CompactHeader({
   isFeatured = false,
 }: CompactHeaderProps) {
   const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
+  const altText = title || 'Property image'
   
   return (
     <div className="mb-8">
@@ -30,7 +31,7 @@ export function CompactHeader({
       <div className="relative h-[250px] rounded-xl overflow-hidden mb-6">
         <Image
           src={mainImage}
-          alt={title}
+          alt={altText}
           fill
           className="object-cover"
           priority

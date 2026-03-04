@@ -1,6 +1,9 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import { Bed, Bath, Wifi, Check, Image as ImageIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { Listing } from '@/lib/domain/listing'
 
 type ListingGridProps = {
@@ -8,6 +11,8 @@ type ListingGridProps = {
 }
 
 export function ListingGrid({ listings }: ListingGridProps) {
+  const t = useTranslations('listings')
+
   // Empty state mejorado
   if (!listings || listings.length === 0) {
     return (
@@ -16,10 +21,10 @@ export function ListingGrid({ listings }: ListingGridProps) {
           <ImageIcon className="h-12 w-12 text-gray-400" />
         </div>
         <h3 className="text-xl font-semibold text-gray-800 mb-2">
-          No se encontraron propiedades
+          {t('noPropertiesFound')}
         </h3>
         <p className="text-gray-500">
-          Intenta ajustar tus filtros de búsqueda
+          {t('adjustFilters')}
         </p>
       </div>
     )
@@ -28,16 +33,20 @@ export function ListingGrid({ listings }: ListingGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {listings.map((listing) => {
-        // Acceder a campos anidados del dominio
-        const mainImage = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop' // TODO: añadir images al tipo Listing
-        const hasWorkspace = listing.amenities.hasDesk || listing.amenities.hasSecondMonitor
-        const wifiSpeed = listing.amenities.wifiSpeedMbps
-        const monthlyPrice = listing.price.monthly
-        const cityName = listing.city.name
-        const cityCountry = listing.city.country
+        // Acceder a campos anidados del dominio con valores por defecto
+        const mainImage = (listing.images && listing.images[0]) || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
+        const amenities = listing.amenities || {}
+        const hasWorkspace = amenities.hasDesk || amenities.hasSecondMonitor
+        const wifiSpeed = amenities.wifiSpeedMbps
+        const price = listing.price || {}
+        const monthlyPrice = price.monthly
+        const city = listing.city || {}
+        const cityName = city.name
+        const cityCountry = city.country
         const neighborhoodName = listing.neighborhood?.name
-        const minMonths = listing.availability.minMonths
-        const maxMonths = listing.availability.maxMonths
+        const availability = listing.availability || {}
+        const minMonths = availability.minMonths
+        const maxMonths = availability.maxMonths
 
         return (
           <Link

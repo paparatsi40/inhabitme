@@ -12,9 +12,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import { UserMenu } from '@/components/dashboard/UserMenu'
 import { PropertyActions } from '@/components/dashboard/PropertyActions'
 import { FeaturedToggle } from '@/components/dashboard/FeaturedToggle'
+import { getTranslations } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 
 export default async function MyPropertiesPage() {
   const { userId } = await auth()
+  const locale = await getLocale()
+  const t = await getTranslations({ locale, namespace: 'dashboard' })
 
   if (!userId) {
     redirect('/sign-in')
@@ -76,14 +80,14 @@ export default async function MyPropertiesPage() {
               <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl">
                 <Building2 className="h-6 w-6 text-blue-600" />
               </div>
-              <h1 className="text-xl font-black">Mis Propiedades</h1>
+              <h1 className="text-xl font-black">{t('myPropertiesTitle')}</h1>
             </div>
 
             <div className="flex items-center gap-3">
               <Link href="/properties/new">
                 <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold">
                   <Plus className="h-4 w-4 mr-2" />
-                  Nueva
+                  {t('newProperty')}
                 </Button>
               </Link>
               <UserMenu />
@@ -102,7 +106,7 @@ export default async function MyPropertiesPage() {
               <div className="p-2 bg-blue-100 rounded-lg">
                 <Building2 className="h-5 w-5 text-blue-600" />
               </div>
-              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Propiedades</span>
+              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('propertiesCount')}</span>
             </div>
             <p className="text-3xl font-black text-gray-900">{propertiesCount}</p>
           </div>
@@ -112,7 +116,7 @@ export default async function MyPropertiesPage() {
               <div className="p-2 bg-green-100 rounded-lg">
                 <Mail className="h-5 w-5 text-green-600" />
               </div>
-              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Leads Totales</span>
+              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('totalLeads')}</span>
             </div>
             <p className="text-3xl font-black text-gray-900">{totalLeads}</p>
           </div>
@@ -122,7 +126,7 @@ export default async function MyPropertiesPage() {
               <div className="p-2 bg-purple-100 rounded-lg">
                 <Euro className="h-5 w-5 text-purple-600" />
               </div>
-              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Ingresos</span>
+              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('income')}</span>
             </div>
             <p className="text-3xl font-black text-gray-900">€{totalLeads * 15}</p>
           </div>
@@ -136,15 +140,15 @@ export default async function MyPropertiesPage() {
               <Building2 className="h-16 w-16 text-gray-400" />
             </div>
             <h3 className="text-2xl font-black mb-3 text-gray-900">
-              Aún no tienes propiedades
+              {t('noPropertiesYet')}
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Publica tu primera propiedad y empieza a recibir leads de profesionales remotos
+              {t('publishFirstProperty')}
             </p>
             <Link href="/properties/new">
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-lg">
                 <Plus className="h-5 w-5 mr-2" />
-                Publicar Mi Primera Propiedad
+                {t('publishFirstButton')}
               </Button>
             </Link>
           </div>

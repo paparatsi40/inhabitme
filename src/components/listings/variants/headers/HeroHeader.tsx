@@ -25,13 +25,14 @@ export function HeroHeader({
   wifiSpeed
 }: HeroHeaderProps) {
   const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
+  const altText = title || 'Property image'
 
   return (
     <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
       {/* Background Image */}
       <Image
         src={mainImage}
-        alt={title}
+        alt={altText}
         fill
         priority
         className="object-cover"

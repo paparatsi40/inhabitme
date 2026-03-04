@@ -63,10 +63,13 @@ export default function SearchClient() {
     async function runSearch() {
       setLoading(true)
       try {
+        console.log('[SearchClient] Starting search with filters:', filters)
         const data = await searchListings(filters)
+        console.log('[SearchClient] Received data:', data)
+        console.log('[SearchClient] Data length:', data?.length)
         setResults(data)
       } catch (error) {
-        console.error('Search failed', error)
+        console.error('[SearchClient] Search failed', error)
         setResults([])
       } finally {
         setLoading(false)

@@ -15,16 +15,23 @@ export async function searchListings(filters: SearchFilters) {
     ? '' // En el cliente, usar URL relativa
     : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; // En el servidor, usar URL absoluta
   
-  const url = `${baseUrl}/api/listings/search?${params.toString()}`;
+  const url = `${baseUrl}/api/properties/search?${params.toString()}`;
+  
+  console.log('[searchListings] Fetching URL:', url);
 
   // Llamar a la API route
   const response = await fetch(url);
   
+  console.log('[searchListings] Response status:', response.status);
+  
   if (!response.ok) {
-    console.error('Search API error:', response.statusText);
+    console.error('[searchListings] API error:', response.statusText);
     return [];
   }
 
   const result = await response.json();
+  console.log('[searchListings] Response data:', result);
+  console.log('[searchListings] result.data:', result.data);
+  console.log('[searchListings] result.data length:', result.data?.length);
   return result.data || [];
 }

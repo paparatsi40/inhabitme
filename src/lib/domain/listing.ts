@@ -51,6 +51,8 @@ export type Listing = {
   amenities: ListingAmenities
   availability: ListingAvailability
   price: ListingPrice
+  
+  images?: string[]
 
   ownerId: string
   status: ListingStatus

@@ -1,10 +1,20 @@
 import { redirect as nextRedirect } from 'next/navigation';
 
-export default function PropertyDetailPage({ 
+type PageProps = {
+  params: Promise<{ id: string; locale: string }>
+}
+
+export default async function PropertyDetailPage({ 
   params 
-}: { 
-  params: { id: string; locale: string } 
-}) {
+}: PageProps) {
+  const { id, locale } = await params
+  
+  // Validar que tenemos los valores necesarios
+  if (!id || !locale) {
+    console.error('[DashboardProperty] Missing params:', { id, locale })
+    nextRedirect('/en/dashboard')
+  }
+  
   // Redirigir a la página pública de la propiedad con locale
-  nextRedirect(`/${params.locale}/properties/${params.id}`);
+  nextRedirect(`/${locale}/properties/${id}`);
 }

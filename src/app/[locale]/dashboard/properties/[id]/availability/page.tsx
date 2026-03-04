@@ -13,12 +13,11 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  params: {
-    id: string
-  }
+  params: Promise<{ id: string }>
 }
 
 export default async function PropertyAvailabilityPage({ params }: PageProps) {
+  const { id } = await params
   const { userId } = await auth()
   
   if (!userId) {
@@ -31,7 +30,7 @@ export default async function PropertyAvailabilityPage({ params }: PageProps) {
   const { data: listing, error } = await supabase
     .from('listings')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !listing) {
@@ -44,8 +43,8 @@ export default async function PropertyAvailabilityPage({ params }: PageProps) {
   }
 
   // Obtener periodos y estadísticas
-  const periods = await getListingPeriods(params.id)
-  const stats = await getOccupancyStats(params.id)
+  const periods = await getListingPeriods(id)
+  const stats = await getOccupancyStats(id)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
@@ -118,7 +117,7 @@ export default async function PropertyAvailabilityPage({ params }: PageProps) {
 
         {/* Availability Manager Component */}
         <AvailabilityManager
-          listingId={params.id}
+          listingId={id}
           initialPeriods={periods}
         />
       </main>

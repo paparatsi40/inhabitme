@@ -10,12 +10,11 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  params: {
-    id: string
-  }
+  params: Promise<{ id: string }>
 }
 
 export default async function EditPropertyPage({ params }: PageProps) {
+  const { id } = await params
   const { userId } = await auth()
   
   if (!userId) {
@@ -28,7 +27,7 @@ export default async function EditPropertyPage({ params }: PageProps) {
   const { data: listing, error } = await supabase
     .from('listings')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !listing) {

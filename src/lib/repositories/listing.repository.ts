@@ -47,6 +47,8 @@ function mapRowToListing(row: any): Listing {
       currency: row.currency
     },
 
+    images: row.images,
+
     ownerId: row.owner_id,
     status: row.status,
 

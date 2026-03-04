@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseBrowserClient } from '@/lib/supabase/client';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
 
 // Mapear los datos de la DB al formato del dominio
 function mapRowToListing(row: any) {
@@ -112,8 +112,9 @@ export async function GET(request: NextRequest) {
   };
 
   try {
-    const supabase = getSupabaseBrowserClient();
-    let query = supabase.from('listings').select('*').eq('status', 'active');
+    const supabase = getSupabaseServerClient();
+    // Usar ilike para status (case-insensitive) o filtrar después
+    let query = supabase.from('listings').select('*');
 
     // Aplicar filtros de ubicación
     if (filters.city) {
@@ -240,8 +241,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    // Filtrar solo propiedades activas (case-insensitive) en memoria
+    const activeListings = (data || []).filter((listing: any) => 
+      listing.status?.toLowerCase() === 'active'
+    );
+
+    console.log('[API /api/listings/search] Total listings:', data?.length, 'Active listings:', activeListings.length);
+
     // Transformar los datos al formato del dominio
-    const listings = (data || []).map(mapRowToListing);
+    const listings = activeListings.map(mapRowToListing);
 
     return NextResponse.json({ data: listings });
   } catch (error: any) {

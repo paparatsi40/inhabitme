@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { CldUploadWidget } from 'next-cloudinary';
 import { Upload, X, Image as ImageIcon, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,102 +17,99 @@ export function CloudinaryUploader({
   maxImages = 10 
 }: CloudinaryUploaderProps) {
   const [images, setImages] = useState<string[]>(existingImages);
-  const [uploading, setUploading] = useState(false);
+  const isFirstRender = useRef(true);
 
-  // Note: We DON'T sync with existingImages to avoid overwriting local state
-  // The component maintains its own state and notifies parent via onImagesUploaded
+  // Sync with parent when existingImages change (on mount/reset)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setImages(existingImages);
+  }, [existingImages]);
 
-  const handleUploadSuccess = (result: any) => {
+  // Notify parent AFTER render completes (not during)
+  useEffect(() => {
+    // Small timeout to ensure we're outside of render phase
+    const timeoutId = setTimeout(() => {
+      onImagesUploaded(images);
+    }, 0);
+    return () => clearTimeout(timeoutId);
+  }, [images, onImagesUploaded]);
+
+  const handleSuccess = useCallback((result: any) => {
     if (result.event === 'success') {
       const newUrl = result.info.secure_url;
-      console.log('[CloudinaryUploader] Nueva imagen subida:', newUrl);
-      
-      // CRITICAL: Use functional setState to avoid stale closure
-      setImages(prev => {
-        const updatedImages = [...prev, newUrl];
-        console.log('[CloudinaryUploader] Array actualizado:', updatedImages);
-        // Call parent callback with updated array
-        onImagesUploaded(updatedImages);
-        return updatedImages;
-      });
+      setImages(prev => [...prev, newUrl]);
     }
-  };
+  }, []);
 
-  const removeImage = (index: number) => {
-    // CRITICAL: Use functional setState to avoid stale closure
+  const removeImage = useCallback((index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const setAsMain = useCallback((index: number) => {
     setImages(prev => {
-      const updatedImages = prev.filter((_, i) => i !== index);
-      onImagesUploaded(updatedImages);
-      return updatedImages;
+      const updated = [...prev];
+      const [main] = updated.splice(index, 1);
+      updated.unshift(main);
+      return updated;
     });
-  };
+  }, []);
 
-  const setAsMain = (index: number) => {
-    const updatedImages = [...images];
-    const [mainImage] = updatedImages.splice(index, 1);
-    updatedImages.unshift(mainImage);
-    setImages(updatedImages);
-    onImagesUploaded(updatedImages);
-  };
+  const remainingSlots = maxImages - images.length;
 
   return (
     <div className="space-y-4">
-      {/* Upload Widget */}
-      <CldUploadWidget
-        uploadPreset="inhabitme_properties"
-        onSuccess={handleUploadSuccess}
-        options={{
-          maxFiles: maxImages - images.length,
-          multiple: true,
-          resourceType: 'image',
-          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
-          maxFileSize: 5000000, // 5MB
-          sources: ['local', 'url', 'camera'],
-          showPoweredBy: false,
-          styles: {
-            palette: {
-              window: "#FFFFFF",
-              windowBorder: "#3B82F6",
-              tabIcon: "#3B82F6",
-              menuIcons: "#5A5A5A",
-              textDark: "#000000",
-              textLight: "#FFFFFF",
-              link: "#3B82F6",
-              action: "#3B82F6",
-              inactiveTabIcon: "#0E0E0E",
-              error: "#F44235",
-              inProgress: "#3B82F6",
-              complete: "#20B832",
-              sourceBg: "#F8F9FA"
-            }
-          }
-        }}
-      >
-        {({ open }) => (
-          <div 
-            onClick={() => images.length < maxImages && open()}
-            className={`border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer ${
-              images.length >= maxImages ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-          >
-            <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-lg font-medium text-gray-700 mb-2">
-              {uploading ? 'Subiendo...' : 'Haz click para subir imágenes'}
-            </p>
-            <p className="text-sm text-gray-500">
-              JPG, PNG, WebP hasta 5MB (máximo {maxImages} imágenes)
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
-              {images.length}/{maxImages} imágenes subidas
-            </p>
-            <p className="text-xs text-blue-600 mt-2 font-medium">
-              ⚡ Powered by Cloudinary - Optimización automática
-            </p>
-          </div>
-        )}
-      </CldUploadWidget>
+      {remainingSlots > 0 ? (
+        <CldUploadWidget
+          uploadPreset="inhabitme_properties"
+          onSuccess={handleSuccess}
+          options={{
+            maxFiles: remainingSlots,
+            multiple: remainingSlots > 1,
+            resourceType: 'image',
+            clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
+            maxFileSize: 5000000,
+          }}
+        >
+          {({ open }) => {
+            const safeOpen = () => {
+              if (typeof open === 'function') {
+                open();
+              } else {
+                console.error('[Cloudinary] Widget not initialized');
+              }
+            };
 
-      {/* Image Preview Grid */}
+            return (
+              <button
+                type="button"
+                onClick={safeOpen}
+                className="w-full border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer"
+              >
+                <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-lg font-medium text-gray-700 mb-2">
+                  Haz click para subir imágenes
+                </p>
+                <p className="text-sm text-gray-500">
+                  JPG, PNG, WebP hasta 5MB (máximo {maxImages} imágenes)
+                </p>
+                <p className="text-xs text-gray-400 mt-2">
+                  {images.length}/{maxImages} imágenes subidas
+                </p>
+              </button>
+            );
+          }}
+        </CldUploadWidget>
+      ) : (
+        <div className="border-2 border-gray-200 rounded-lg p-8 text-center opacity-50">
+          <p className="text-lg font-medium text-gray-700">
+            Límite de {maxImages} imágenes alcanzado
+          </p>
+        </div>
+      )}
+
       {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((url, index) => (
@@ -126,7 +123,6 @@ export function CloudinaryUploader({
                 className="w-full h-full object-cover"
               />
               
-              {/* Main Image Badge */}
               {index === 0 && (
                 <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded font-medium flex items-center gap-1">
                   <Check className="h-3 w-3" />
@@ -134,13 +130,11 @@ export function CloudinaryUploader({
                 </div>
               )}
 
-              {/* Cloudinary Badge */}
-              <div className="absolute bottom-2 left-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+              <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                 Optimizada ⚡
               </div>
 
-              {/* Actions Overlay */}
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center gap-2">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-opacity flex items-center justify-center gap-2">
                 {index !== 0 && (
                   <Button
                     size="sm"
@@ -162,24 +156,6 @@ export function CloudinaryUploader({
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Info & Tips */}
-      {images.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-start gap-2">
-            <ImageIcon className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div className="text-sm text-blue-900">
-              <p className="font-medium mb-1">✨ Ventajas de Cloudinary:</p>
-              <ul className="list-disc list-inside space-y-1 text-blue-700">
-                <li>Optimización automática de tamaño y calidad</li>
-                <li>Conversión a formatos modernos (WebP)</li>
-                <li>CDN global ultra-rápido</li>
-                <li>Lazy loading automático</li>
-              </ul>
-            </div>
-          </div>
         </div>
       )}
     </div>

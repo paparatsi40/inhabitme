@@ -30,6 +30,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CityCarousel } from '@/components/hero/CityCarousel'
+import { CITIES } from '@/config/cities'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { calculateSavings } from '@/lib/use-cases/calculate-savings'
 import { SavingsCalculator } from '@/components/home/SavingsCalculator'
@@ -306,15 +307,18 @@ export default function HomePage() {
             <p className="text-lg text-gray-600">{tCities('subtitle')}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <CityCard slug="madrid" name="Madrid" subtitle="Capital de Espana" price="800 EUR" gradient="from-blue-600 to-blue-800" hoverBorder="hover:border-blue-400" textColor="text-blue-600" />
-            <CityCard slug="barcelona" name="Barcelona" subtitle="Mar y Modernismo" price="900 EUR" gradient="from-purple-600 to-purple-800" hoverBorder="hover:border-purple-400" textColor="text-purple-600" />
-            <CityCard slug="valencia" name="Valencia" subtitle="Playa y calidad de vida" price="700 EUR" gradient="from-green-600 to-emerald-800" hoverBorder="hover:border-green-400" textColor="text-green-600" />
-            <CityCard slug="lisboa" name="Lisboa" subtitle="Fiscalidad favorable" price="750 EUR" gradient="from-yellow-600 to-orange-700" hoverBorder="hover:border-orange-400" textColor="text-orange-600" />
-            <CityCard slug="ciudad-de-mexico" name="Ciudad de Mexico" subtitle="Capital digital de LatAm" price="500 EUR" gradient="from-pink-600 to-red-700" hoverBorder="hover:border-pink-400" textColor="text-pink-600" />
-            <CityCard slug="buenos-aires" name="Buenos Aires" subtitle="Cultura y tango" price="400 EUR" gradient="from-cyan-600 to-blue-700" hoverBorder="hover:border-cyan-400" textColor="text-cyan-600" />
-            <CityCard slug="medellin" name="Medellin" subtitle="Eterna primavera" price="450 EUR" gradient="from-emerald-600 to-green-700" hoverBorder="hover:border-emerald-400" textColor="text-emerald-600" />
-            <CityCard slug="porto" name="Porto" subtitle="Vino y autenticidad" price="650 EUR" gradient="from-indigo-600 to-purple-700" hoverBorder="hover:border-indigo-400" textColor="text-indigo-600" />
-            <CityCard slug="sevilla" name="Sevilla" subtitle="Sol y flamenco" price="600 EUR" gradient="from-amber-600 to-orange-700" hoverBorder="hover:border-amber-400" textColor="text-amber-600" />
+            {CITIES.map((city) => (
+              <CityCard
+                key={city.slug}
+                slug={city.slug}
+                name={city.name}
+                subtitle={city.subtitle}
+                price={city.price}
+                gradient={city.gradient}
+                hoverBorder={city.hoverBorder}
+                textColor={city.textColor}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -451,20 +455,9 @@ function TrustItem({ icon, title, text, gradient = 'from-gray-50 to-gray-100', b
   )
 }
 
-const CITY_IMAGES: Record<string, string> = {
-  'madrid': 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=600&fit=crop&q=80',
-  'barcelona': 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&h=600&fit=crop&q=80',
-  'valencia': 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&h=600&fit=crop&q=80',
-  'lisboa': 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop&q=80',
-  'ciudad-de-mexico': 'https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=800&h=600&fit=crop&q=80',
-  'buenos-aires': 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800&h=600&fit=crop&q=80',
-  'medellin': 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
-  'porto': 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=600&fit=crop&q=80',
-  'sevilla': 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop&q=80',
-}
-
 function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColor }: { slug: string; name: string; subtitle: string; price: string; gradient: string; hoverBorder: string; textColor: string }) {
-  const imageUrl = CITY_IMAGES[slug]
+  const city = CITIES.find(c => c.slug === slug)
+  const imageUrl = city?.image
   return (
     <Link href={`/${slug}`} className={`group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-gray-200 ${hoverBorder}`}>
       <div className="aspect-[4/3] relative overflow-hidden">

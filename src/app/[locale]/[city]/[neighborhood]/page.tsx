@@ -26,25 +26,29 @@ import {
 } from '@/config/neighborhoods'
 import { getFAQs } from '@/config/faqs'
 import { NeighborhoodMap } from '@/components/maps/NeighborhoodMap'
-import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
+import { getTranslations, getLocale } from 'next-intl/server'
+import { CITIES, getCityBySlug } from '@/config/cities'
 
 // ISR con revalidación cada 60 segundos
 export const revalidate = 60
 
 type PageProps = {
-  params: {
-    city: string
-    neighborhood: string
-  }
+  params: Promise<{
+    city?: string
+    neighborhood?: string
+  }>
 }
 
 /**
  * Normaliza slug a nombre (slug to title case)
  */
 function slugToName(slug: string): string {
-  return slug
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (char) => char.toUpperCase())
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
+function requireParam(value: unknown): string {
+  if (typeof value !== 'string' || !value.trim()) notFound()
+  return value
 }
 
 /**
@@ -58,8 +62,9 @@ export async function generateStaticParams() {
  * Metadata dinámica por barrio
  */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const citySlug = params.city.toLowerCase()
-  const neighborhoodSlug = params.neighborhood.toLowerCase()
+  const resolvedParams = await params
+  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
+  const neighborhoodSlug = requireParam(resolvedParams?.neighborhood).toLowerCase()
 
   const cityConfig = getCityConfig(citySlug)
   if (!cityConfig) {
@@ -75,7 +80,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `Alquiler mensual en ${neighborhoodName}, ${cityName} | inhabitme`,
     description: `Descubre ${neighborhoodName}, ${cityName}: alojamientos verificados para estancias de 1-12 meses. Viviendas con WiFi rápido, escritorio dedicado y espacios de trabajo. Ideal para nómadas digitales y profesionales remotos.`,
-
     keywords: [
       `alquiler mensual ${neighborhoodName}`,
       `alquiler ${neighborhoodName} ${cityName}`,
@@ -84,7 +88,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       'vivienda nómadas digitales',
       'alquiler con WiFi',
     ],
-
     openGraph: {
       title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
       description: `Alojamientos verificados en ${neighborhoodName} con workspace dedicado, WiFi rápido y precios claros. Estancias de 1-12 meses.`,
@@ -93,16 +96,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       locale: 'es_ES',
       type: 'website',
     },
-
     twitter: {
       card: 'summary_large_image',
       title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
     },
-
     alternates: {
       canonical: `${baseUrl}/${citySlug}/${neighborhoodSlug}`,
     },
-
     robots: {
       index: true,
       follow: true,
@@ -111,8 +111,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function NeighborhoodPage({ params }: PageProps) {
-  const citySlug = params.city.toLowerCase()
-  const neighborhoodSlug = params.neighborhood.toLowerCase()
+  const resolvedParams = await params
+  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
+  const neighborhoodSlug = requireParam(resolvedParams?.neighborhood).toLowerCase()
+  const locale = await getLocale()
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
@@ -124,6 +126,12 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const cityName = cityConfig.name
   const neighborhoodName = neighborhood.name
 
+  // Get translation for neighborhood description
+  const t = await getTranslations({ locale, namespace: 'neighborhoods' })
+  const tPage = await getTranslations({ locale, namespace: 'neighborhoodPage' })
+  const neighborhoodDescription = t(`${citySlug}.${neighborhoodSlug}` as any) || 
+    `${neighborhoodName} is one of the neighborhoods that best represents life in ${cityName}. Perfect for stays from 1 to 12 months, ideal for digital nomads seeking balance between comfort, connectivity, and quality of life.`
+
   // Buscar listings
   const listings = await listingRepository.search({
     city: cityName,
@@ -133,9 +141,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   // Calcular stats
   const listingsCount = listings?.length || 0
   const minPrice =
-    listings && listings.length > 0
-      ? Math.min(...listings.map((l) => l.price.monthly))
-      : 0
+    listings && listings.length > 0 ? Math.min(...listings.map((l) => l.price.monthly)) : 0
 
   return (
     <>
@@ -146,7 +152,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             <nav className="py-3 flex items-center gap-2 text-sm text-gray-600" aria-label="Breadcrumb">
               <Link href="/" className="hover:text-blue-600 transition-colors flex items-center gap-1 font-medium">
                 <Home className="h-4 w-4" />
-                Inicio
+                {tPage('breadcrumbHome')}
               </Link>
               <ChevronRight className="h-4 w-4" />
               <Link
@@ -155,7 +161,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
               >
                 <span>{cityName}</span>
                 <span className="hidden sm:inline text-xs text-gray-500 group-hover:text-blue-600 transition-colors">
-                  (ver todos los barrios)
+                  ({tPage('viewAllNeighborhoods')})
                 </span>
               </Link>
               <ChevronRight className="h-4 w-4" />
@@ -185,7 +191,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   {/* Description ÚNICA por barrio */}
                   <p className="text-lg lg:text-xl text-gray-700 mb-6 leading-relaxed">
                     <strong className="text-gray-900">{neighborhoodName}:</strong>{' '}
-                    {getNeighborhoodDescription(citySlug, neighborhoodSlug, cityName, neighborhoodName)}
+                    {neighborhoodDescription}
                   </p>
 
                   {/* CTA Comparar - NUEVO */}
@@ -229,7 +235,11 @@ export default async function NeighborhoodPage({ params }: PageProps) {
 
                 {/* Visual - 2 cols con MAPA REAL */}
                 <div className="lg:col-span-2 relative">
-                  <NeighborhoodMap city={citySlug} neighborhood={neighborhoodSlug} className="h-64 lg:h-full min-h-[300px]" />
+                  <NeighborhoodMap
+                    city={citySlug}
+                    neighborhood={neighborhoodSlug}
+                    className="h-64 lg:h-full min-h-[300px]"
+                  />
 
                   {/* Floating badge */}
                   {listingsCount > 0 && (
@@ -305,8 +315,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     Propiedades en {neighborhoodName}
                   </h2>
                   <p className="text-gray-600">
-                    {listingsCount} alojamiento{listingsCount > 1 ? 's' : ''} verificado{listingsCount > 1 ? 's' : ''}{' '}
-                    con workspace dedicado
+                    {listingsCount} alojamiento{listingsCount > 1 ? 's' : ''} verificado
+                    {listingsCount > 1 ? 's' : ''} con workspace dedicado
                   </p>
                 </div>
                 {minPrice > 0 && (
@@ -331,7 +341,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {(() => {
             const relatedNeighborhoods = getRelatedNeighborhoods(citySlug, neighborhoodSlug)
-
             if (relatedNeighborhoods.length === 0) return null
 
             return (
@@ -380,7 +389,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   ))}
                 </div>
 
-                {/* CTA Premium */}
                 <div className="mt-12 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 rounded-3xl p-8 lg:p-12 text-center text-white shadow-2xl relative overflow-hidden">
                   <div className="absolute inset-0 bg-black/10"></div>
                   <div className="relative">
@@ -446,7 +454,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 </Link>
               </div>
 
-              {/* Barrios relacionados chips */}
               <div className="pt-8 border-t border-white/20">
                 <p className="text-base text-white/80 mb-6 font-medium">Mientras tanto, explora estos barrios cercanos:</p>
                 <div className="flex flex-wrap gap-3 justify-center">
@@ -513,11 +520,14 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   ))}
                 </div>
 
-                {/* Trust signal PREMIUM */}
                 <div className="mt-10 bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-200 rounded-2xl p-8 text-center">
                   <CheckCircle className="h-10 w-10 text-blue-600 mx-auto mb-4" />
-                  <p className="text-lg font-bold text-gray-900 mb-2">¿Más preguntas sobre alquilar en {neighborhoodName}?</p>
-                  <p className="text-gray-600">Contáctanos y te ayudamos a encontrar tu espacio ideal para vivir y trabajar</p>
+                  <p className="text-lg font-bold text-gray-900 mb-2">
+                    ¿Más preguntas sobre alquilar en {neighborhoodName}?
+                  </p>
+                  <p className="text-gray-600">
+                    Contáctanos y te ayudamos a encontrar tu espacio ideal para vivir y trabajar
+                  </p>
                 </div>
               </section>
             )

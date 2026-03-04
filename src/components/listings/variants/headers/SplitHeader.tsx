@@ -25,6 +25,7 @@ export function SplitHeader({
   isFeatured = false,
 }: SplitHeaderProps) {
   const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
+  const altText = title || 'Property image'
   
   return (
     <div className="grid lg:grid-cols-2 gap-8 mb-12">
@@ -32,7 +33,7 @@ export function SplitHeader({
       <div className="relative h-[400px] lg:h-[600px] rounded-2xl overflow-hidden">
         <Image
           src={mainImage}
-          alt={title}
+          alt={altText}
           fill
           className="object-cover"
           priority
