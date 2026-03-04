@@ -13,6 +13,156 @@ export interface RelatedNeighborhood {
   description?: string
 }
 
+// --- SSOT de ciudades + barrios (para rutas /[city]/[neighborhood]) ---
+
+export type NeighborhoodRef = { slug: string; name: string }
+
+export type CityNeighborhoods = {
+  slug: string
+  name: string
+  neighborhoods: NeighborhoodRef[]
+}
+
+export const CITY_NEIGHBORHOODS: Record<string, CityNeighborhoods> = {
+  madrid: {
+    slug: 'madrid',
+    name: 'Madrid',
+    neighborhoods: [
+      { name: 'Malasaña', slug: 'malasana' },
+      { name: 'Chamberí', slug: 'chamberi' },
+      { name: 'Salamanca', slug: 'salamanca' },
+      { name: 'Chueca', slug: 'chueca' },
+      { name: 'Lavapiés', slug: 'lavapies' },
+      { name: 'Retiro', slug: 'retiro' },
+      { name: 'Centro', slug: 'centro' },
+      { name: 'Las Letras', slug: 'las-letras' },
+      { name: 'Huertas', slug: 'huertas' },
+      { name: 'Justicia', slug: 'justicia' },
+      { name: 'Sol', slug: 'sol' },
+      { name: 'Gran Vía', slug: 'gran-via' },
+      { name: 'Argüelles', slug: 'arguelles' },
+      { name: 'Moncloa', slug: 'moncloa' },
+      { name: 'Tetuán', slug: 'tetuan' },
+      { name: 'Prosperidad', slug: 'prosperidad' },
+    ],
+  },
+  barcelona: {
+    slug: 'barcelona',
+    name: 'Barcelona',
+    neighborhoods: [
+      { name: 'Gracia', slug: 'gracia' },
+      { name: 'Eixample', slug: 'eixample' },
+      { name: 'Gótico', slug: 'gotico' },
+      { name: 'Born', slug: 'born' },
+      { name: 'Raval', slug: 'raval' },
+      { name: 'Poblenou', slug: 'poblenou' },
+    ],
+  },
+  valencia: {
+    slug: 'valencia',
+    name: 'Valencia',
+    neighborhoods: [
+      { name: 'Ruzafa', slug: 'ruzafa' },
+      { name: 'El Carmen', slug: 'el-carmen' },
+      { name: 'Benimaclet', slug: 'benimaclet' },
+      { name: 'Centro', slug: 'centro' },
+    ],
+  },
+  sevilla: {
+    slug: 'sevilla',
+    name: 'Sevilla',
+    neighborhoods: [
+      { name: 'Triana', slug: 'triana' },
+      { name: 'Centro', slug: 'centro' },
+      { name: 'Nervión', slug: 'nervion' },
+      { name: 'Macarena', slug: 'macarena' },
+    ],
+  },
+  lisboa: {
+    slug: 'lisboa',
+    name: 'Lisboa',
+    neighborhoods: [
+      { name: 'Baixa', slug: 'baixa' },
+      { name: 'Chiado', slug: 'chiado' },
+      { name: 'Alfama', slug: 'alfama' },
+      { name: 'Bairro Alto', slug: 'bairro-alto' },
+      { name: 'Príncipe Real', slug: 'principe-real' },
+    ],
+  },
+  porto: {
+    slug: 'porto',
+    name: 'Porto',
+    neighborhoods: [
+      { name: 'Ribeira', slug: 'ribeira' },
+      { name: 'Cedofeita', slug: 'cedofeita' },
+      { name: 'Boavista', slug: 'boavista' },
+      { name: 'Foz', slug: 'foz' },
+    ],
+  },
+  'ciudad-de-mexico': {
+    slug: 'ciudad-de-mexico',
+    name: 'Ciudad de México',
+    neighborhoods: [
+      { name: 'Condesa', slug: 'condesa' },
+      { name: 'Roma Norte', slug: 'roma-norte' },
+      { name: 'Polanco', slug: 'polanco' },
+      { name: 'Coyoacán', slug: 'coyoacan' },
+      { name: 'Santa Fe', slug: 'santa-fe' },
+    ],
+  },
+  'buenos-aires': {
+    slug: 'buenos-aires',
+    name: 'Buenos Aires',
+    neighborhoods: [
+      { name: 'Palermo', slug: 'palermo' },
+      { name: 'Recoleta', slug: 'recoleta' },
+      { name: 'San Telmo', slug: 'san-telmo' },
+      { name: 'Belgrano', slug: 'belgrano' },
+      { name: 'Puerto Madero', slug: 'puerto-madero' },
+    ],
+  },
+  medellin: {
+    slug: 'medellin',
+    name: 'Medellín',
+    neighborhoods: [
+      { name: 'El Poblado', slug: 'el-poblado' },
+      { name: 'Laureles', slug: 'laureles' },
+      { name: 'Envigado', slug: 'envigado' },
+      { name: 'Sabaneta', slug: 'sabaneta' },
+    ],
+  },
+  austin: {
+    slug: 'austin',
+    name: 'Austin',
+    neighborhoods: [
+      { name: 'Mueller', slug: 'mueller' },
+      { name: 'Zilker', slug: 'zilker' },
+      { name: 'Barton Hills', slug: 'barton-hills' },
+      { name: 'The Domain', slug: 'domain' },
+      { name: 'East Austin', slug: 'east-austin' },
+      { name: 'Tarrytown', slug: 'tarrytown' },
+    ],
+  },
+}
+
+export function getCityConfig(citySlug: string): CityNeighborhoods | undefined {
+  return CITY_NEIGHBORHOODS[citySlug.toLowerCase()]
+}
+
+export function getNeighborhoodConfig(
+  citySlug: string,
+  neighborhoodSlug: string
+): NeighborhoodRef | undefined {
+  const city = getCityConfig(citySlug)
+  return city?.neighborhoods.find((n) => n.slug === neighborhoodSlug.toLowerCase())
+}
+
+export function getAllCityNeighborhoodParams(): Array<{ city: string; neighborhood: string }> {
+  return Object.values(CITY_NEIGHBORHOODS).flatMap((city) =>
+    city.neighborhoods.map((n) => ({ city: city.slug, neighborhood: n.slug }))
+  )
+}
+
 type NeighborhoodRelations = {
   [city: string]: {
     [neighborhood: string]: RelatedNeighborhood[]
