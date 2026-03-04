@@ -22,7 +22,7 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
 
-  // Handle root path - redirect to default locale
+  // Handle root path - redirect to /en (no locale detection to avoid loops)
   if (pathname === "/") {
     const url = req.nextUrl.clone();
     url.pathname = "/en";
