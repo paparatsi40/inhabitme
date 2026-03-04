@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
+  apiVersion: '2026-02-25.clover',
 })
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
@@ -14,7 +14,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
-  const signature = headers().get('stripe-signature')!
+  const signature = (await headers()).get('stripe-signature')!
 
   let event: Stripe.Event
 
