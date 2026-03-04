@@ -8,11 +8,8 @@ export const routing = defineRouting({
   // Default locale (English for international digital nomads)
   defaultLocale: 'en',
   
-  // Show locale prefix when needed
-  localePrefix: 'as-needed',
-  
-  // Disable automatic locale detection to avoid loops
-  localeDetection: false
+  // Always show locale prefix - let next-intl handle root
+  localePrefix: 'always',
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
