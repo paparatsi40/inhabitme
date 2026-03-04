@@ -5,7 +5,7 @@ import { sendLeadNotificationEmails } from '@/lib/email/send-lead-notification'
 import { getHostInfo } from '@/lib/clerk/getHostInfo'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-12-15.clover',
+  apiVersion: '2026-02-25.clover',
 })
 
 export async function GET(req: NextRequest) {
