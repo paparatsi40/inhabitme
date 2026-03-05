@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Link } from '@/i18n/routing'
 import {
   Home,
@@ -26,56 +26,49 @@ import {
 } from '@/config/neighborhoods'
 import { getFAQs } from '@/config/faqs'
 import { NeighborhoodMap } from '@/components/maps/NeighborhoodMap'
-import { getTranslations, getLocale } from 'next-intl/server'
-import { CITIES, getCityBySlug } from '@/config/cities'
+import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
 
 // ISR con revalidación cada 60 segundos
 export const revalidate = 60
 
 type PageProps = {
-  params: Promise<{
-    city?: string
-    neighborhood?: string
-  }>
+  params: {
+    locale: string
+    city: string
+    neighborhood: string
+  }
 }
 
-/**
- * Normaliza slug a nombre (slug to title case)
- */
+function safeLower(input: unknown): string {
+  return typeof input === 'string' ? input.toLowerCase() : ''
+}
+
+/** Normaliza slug a nombre (slug to title case) */
 function slugToName(slug: string): string {
   return slug.replace(/-/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase())
 }
 
-function requireParam(value: unknown): string {
-  if (typeof value !== 'string' || !value.trim()) notFound()
-  return value
-}
-
-/**
- * Genera todos los params estáticos para pre-renderizar páginas
- */
+/** Genera todos los params estáticos para pre-renderizar páginas */
 export async function generateStaticParams() {
+  // Importante: esto solo devuelve city+neighborhood (Next inferirá locale en runtime con next-intl)
   return getAllCityNeighborhoodParams()
 }
 
-/**
- * Metadata dinámica por barrio
- */
+/** Metadata dinámica por barrio */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const resolvedParams = await params
-  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
-  const neighborhoodSlug = requireParam(resolvedParams?.neighborhood).toLowerCase()
+  const locale = safeLower(params?.locale) || 'en'
+  const citySlug = safeLower(params?.city)
+  const neighborhoodSlug = safeLower(params?.neighborhood)
 
   const cityConfig = getCityConfig(citySlug)
-  if (!cityConfig) {
-    return { title: 'Barrio no encontrado | inhabitme' }
-  }
+  if (!cityConfig) return { title: 'Barrio no encontrado | inhabitme' }
 
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
   const cityName = cityConfig.name
   const neighborhoodName = neighborhood?.name || slugToName(neighborhoodSlug)
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://inhabitme.com'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
+  const canonical = `${baseUrl}/${locale}/${citySlug}/${neighborhoodSlug}`
 
   return {
     title: `Alquiler mensual en ${neighborhoodName}, ${cityName} | inhabitme`,
@@ -91,46 +84,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
       description: `Alojamientos verificados en ${neighborhoodName} con workspace dedicado, WiFi rápido y precios claros. Estancias de 1-12 meses.`,
-      url: `${baseUrl}/${citySlug}/${neighborhoodSlug}`,
+      url: canonical,
       siteName: 'inhabitme',
-      locale: 'es_ES',
+      locale: locale === 'es' ? 'es_ES' : 'en_US',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
     },
-    alternates: {
-      canonical: `${baseUrl}/${citySlug}/${neighborhoodSlug}`,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    alternates: { canonical },
+    robots: { index: true, follow: true },
   }
 }
 
 export default async function NeighborhoodPage({ params }: PageProps) {
-  const resolvedParams = await params
-  const citySlug = requireParam(resolvedParams?.city).toLowerCase()
-  const neighborhoodSlug = requireParam(resolvedParams?.neighborhood).toLowerCase()
-  const locale = await getLocale()
+  const locale = safeLower(params?.locale) || 'en'
+  const citySlug = safeLower(params?.city)
+  const neighborhoodSlug = safeLower(params?.neighborhood)
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
 
-  if (!cityConfig || !neighborhood) {
-    notFound()
-  }
+  if (!cityConfig || !neighborhood) notFound()
 
   const cityName = cityConfig.name
   const neighborhoodName = neighborhood.name
-
-  // Get translation for neighborhood description
-  const t = await getTranslations({ locale, namespace: 'neighborhoods' })
-  const tPage = await getTranslations({ locale, namespace: 'neighborhoodPage' })
-  const neighborhoodDescription = t(`${citySlug}.${neighborhoodSlug}` as any) || 
-    `${neighborhoodName} is one of the neighborhoods that best represents life in ${cityName}. Perfect for stays from 1 to 12 months, ideal for digital nomads seeking balance between comfort, connectivity, and quality of life.`
 
   // Buscar listings
   const listings = await listingRepository.search({
@@ -146,13 +125,13 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   return (
     <>
       <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
-        {/* Breadcrumbs PREMIUM con micro-copy */}
+        {/* Breadcrumbs */}
         <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="py-3 flex items-center gap-2 text-sm text-gray-600" aria-label="Breadcrumb">
               <Link href="/" className="hover:text-blue-600 transition-colors flex items-center gap-1 font-medium">
                 <Home className="h-4 w-4" />
-                {tPage('breadcrumbHome')}
+                Inicio
               </Link>
               <ChevronRight className="h-4 w-4" />
               <Link
@@ -161,7 +140,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
               >
                 <span>{cityName}</span>
                 <span className="hidden sm:inline text-xs text-gray-500 group-hover:text-blue-600 transition-colors">
-                  ({tPage('viewAllNeighborhoods')})
+                  (ver todos los barrios)
                 </span>
               </Link>
               <ChevronRight className="h-4 w-4" />
@@ -171,30 +150,25 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          {/* Hero PREMIUM */}
+          {/* Hero */}
           <header className="mb-12">
             <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-200">
               <div className="grid lg:grid-cols-5 gap-8">
-                {/* Content - 3 cols */}
                 <div className="lg:col-span-3">
-                  {/* Badge */}
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 border-2 border-blue-200 text-blue-700 rounded-2xl text-sm font-bold mb-6">
                     <MapPin className="h-4 w-4" />
                     {neighborhoodName}, {cityName}
                   </div>
 
-                  {/* Title */}
                   <h1 className="text-4xl lg:text-6xl font-black mb-6 leading-tight bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
                     Vive en {neighborhoodName}
                   </h1>
 
-                  {/* Description ÚNICA por barrio */}
                   <p className="text-lg lg:text-xl text-gray-700 mb-6 leading-relaxed">
                     <strong className="text-gray-900">{neighborhoodName}:</strong>{' '}
-                    {neighborhoodDescription}
+                    {getNeighborhoodDescription(citySlug, neighborhoodSlug, cityName, neighborhoodName)}
                   </p>
 
-                  {/* CTA Comparar - NUEVO */}
                   <div className="mb-8">
                     <Link
                       href={`/${citySlug}`}
@@ -208,7 +182,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     </Link>
                   </div>
 
-                  {/* Stats */}
                   {listingsCount > 0 && (
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border-2 border-blue-200">
@@ -233,7 +206,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   )}
                 </div>
 
-                {/* Visual - 2 cols con MAPA REAL */}
                 <div className="lg:col-span-2 relative">
                   <NeighborhoodMap
                     city={citySlug}
@@ -241,7 +213,6 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     className="h-64 lg:h-full min-h-[300px]"
                   />
 
-                  {/* Floating badge */}
                   {listingsCount > 0 && (
                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg z-10">
                       <p className="text-sm font-bold text-gray-900">{listingsCount} propiedades</p>
@@ -252,7 +223,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             </div>
           </header>
 
-          {/* Lifestyle Signals - NUEVO */}
+          {/* Lifestyle Signals */}
           <section className="mb-12">
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
               <h2 className="text-2xl font-black mb-6 text-gray-900">Por qué vivir en {neighborhoodName}</h2>
@@ -300,13 +271,13 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* Listings PREMIUM */}
+          {/* Listings */}
           {listingsCount > 0 ? (
             <section>
               <div className="flex items-center gap-2 mb-2">
-                <div className="h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-                <div className="h-1 w-1 bg-purple-600 rounded-full"></div>
-                <div className="h-1 w-1 bg-purple-400 rounded-full"></div>
+                <div className="h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full" />
+                <div className="h-1 w-1 bg-purple-600 rounded-full" />
+                <div className="h-1 w-1 bg-purple-400 rounded-full" />
               </div>
 
               <div className="flex items-center justify-between mb-8">
@@ -315,10 +286,11 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     Propiedades en {neighborhoodName}
                   </h2>
                   <p className="text-gray-600">
-                    {listingsCount} alojamiento{listingsCount > 1 ? 's' : ''} verificado
-                    {listingsCount > 1 ? 's' : ''} con workspace dedicado
+                    {listingsCount} alojamiento{listingsCount > 1 ? 's' : ''} verificado{listingsCount > 1 ? 's' : ''}{' '}
+                    con workspace dedicado
                   </p>
                 </div>
+
                 {minPrice > 0 && (
                   <div className="hidden sm:block bg-gradient-to-br from-green-50 to-emerald-100 px-6 py-3 rounded-xl border-2 border-green-200">
                     <p className="text-sm font-medium text-gray-600 mb-1">Precio medio</p>
@@ -336,7 +308,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         </div>
       </main>
 
-      {/* BARRIOS RELACIONADOS PREMIUM */}
+      {/* Related neighborhoods */}
       <div className="bg-gradient-to-br from-purple-50/50 via-white to-blue-50/50 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {(() => {
@@ -346,9 +318,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             return (
               <section>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"></div>
-                  <div className="h-1 w-1 bg-blue-600 rounded-full"></div>
-                  <div className="h-1 w-1 bg-blue-400 rounded-full"></div>
+                  <div className="h-1 w-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full" />
+                  <div className="h-1 w-1 bg-blue-600 rounded-full" />
+                  <div className="h-1 w-1 bg-blue-400 rounded-full" />
                 </div>
 
                 <div className="mb-10">
@@ -365,8 +337,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                       href={`/${citySlug}/${related.slug}`}
                       className="group relative bg-white p-6 rounded-2xl border-2 border-gray-200 hover:border-purple-500 hover:shadow-2xl transition-all duration-300"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
                       <div className="relative">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
@@ -390,7 +361,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 </div>
 
                 <div className="mt-12 bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 rounded-3xl p-8 lg:p-12 text-center text-white shadow-2xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="absolute inset-0 bg-black/10" />
                   <div className="relative">
                     <Building2 className="h-12 w-12 mx-auto mb-4 opacity-90" />
                     <h3 className="text-2xl lg:text-3xl font-black mb-4">¿Buscas otras opciones en {cityName}?</h3>
@@ -415,11 +386,11 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Empty state PREMIUM */}
+      {/* Empty state */}
       {listingsCount === 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           <section className="text-center py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700 rounded-3xl shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-black/10" />
 
             <div className="relative max-w-3xl mx-auto px-6">
               <div className="inline-flex p-8 bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl mb-8">
@@ -442,6 +413,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   <CheckCircle className="mr-2 h-5 w-5" />
                   Notificarme cuando haya propiedades
                 </Button>
+
                 <Link href={`/${citySlug}`}>
                   <Button
                     variant="outline"
@@ -476,7 +448,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         </div>
       )}
 
-      {/* FAQS PREMIUM */}
+      {/* FAQ */}
       <div className="bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {(() => {
@@ -485,9 +457,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             return (
               <section>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full"></div>
-                  <div className="h-1 w-1 bg-purple-600 rounded-full"></div>
-                  <div className="h-1 w-1 bg-purple-400 rounded-full"></div>
+                  <div className="h-1 w-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full" />
+                  <div className="h-1 w-1 bg-purple-600 rounded-full" />
+                  <div className="h-1 w-1 bg-purple-400 rounded-full" />
                 </div>
 
                 <div className="flex items-center gap-4 mb-10">
@@ -525,9 +497,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   <p className="text-lg font-bold text-gray-900 mb-2">
                     ¿Más preguntas sobre alquilar en {neighborhoodName}?
                   </p>
-                  <p className="text-gray-600">
-                    Contáctanos y te ayudamos a encontrar tu espacio ideal para vivir y trabajar
-                  </p>
+                  <p className="text-gray-600">Contáctanos y te ayudamos a encontrar tu espacio ideal para vivir y trabajar</p>
                 </div>
               </section>
             )
@@ -535,7 +505,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* FAQ SCHEMA.ORG */}
+      {/* FAQ Schema.org */}
       {(() => {
         const faqs = getFAQs(cityName, neighborhoodName)
 
@@ -572,19 +542,19 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Inicio',
-                item: 'https://inhabitme.com',
+                item: `https://www.inhabitme.com/${locale}`,
               },
               {
                 '@type': 'ListItem',
                 position: 2,
                 name: cityName,
-                item: `https://inhabitme.com/${citySlug}`,
+                item: `https://www.inhabitme.com/${locale}/${citySlug}`,
               },
               {
                 '@type': 'ListItem',
                 position: 3,
                 name: neighborhoodName,
-                item: `https://inhabitme.com/${citySlug}/${neighborhoodSlug}`,
+                item: `https://www.inhabitme.com/${locale}/${citySlug}/${neighborhoodSlug}`,
               },
             ],
           }),
