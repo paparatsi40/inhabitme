@@ -59,7 +59,9 @@ export default clerkMiddleware(async (auth, req) => {
     pathname === "/onboarding" ||
     pathname.startsWith("/onboarding/") ||
     pathname === "/founding-host" ||
-    pathname.startsWith("/founding-host/")
+    pathname.startsWith("/founding-host/") ||
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/")
   ) {
     return NextResponse.next();
   }
