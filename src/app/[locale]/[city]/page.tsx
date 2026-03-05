@@ -5,6 +5,7 @@ import { Home, ChevronRight, MapPin, Building2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getTranslations } from 'next-intl/server'
 import { getCityConfig } from '@/config/neighborhoods'
+import { routing } from '@/i18n/routing'
 
 const CITIES_CONFIG: Record<string, { name: string; description: string }> = {
   madrid: {
@@ -47,6 +48,15 @@ const CITIES_CONFIG: Record<string, { name: string; description: string }> = {
     name: 'Austin',
     description: 'Austin, Texas: capital tech del Lone Star State.',
   },
+}
+
+export function generateStaticParams() {
+  return routing.locales.flatMap((locale) =>
+    Object.keys(CITIES_CONFIG).map((city) => ({
+      locale,
+      city,
+    }))
+  )
 }
 
 type PageProps = {
