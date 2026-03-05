@@ -23,14 +23,18 @@ export default async function DashboardPage() {
     nextRedirect(`/${locale}/sign-in`);
   }
 
+  console.log('[Dashboard] userId:', userId);
+
   // Obtener stats del usuario
   const supabase = getSupabaseServerClient();
   
   // Count de propiedades
-  const { count: propertiesCount } = await supabase
+  const { count: propertiesCount, error: countError } = await supabase
     .from('listings')
     .select('*', { count: 'exact', head: true })
     .eq('owner_id', userId);
+  
+  console.log('[Dashboard] propertiesCount:', propertiesCount, 'error:', countError);
   
   // Count de leads recibidos
   const { count: leadsCount } = await supabase
