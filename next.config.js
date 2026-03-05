@@ -81,13 +81,6 @@ const nextConfig = {
   // SEO redirects
   async redirects() {
     return [
-      // Root path redirect (before next-intl middleware)
-      {
-        source: "/",
-        destination: "/en",
-        permanent: false,
-      },
-
       // Legacy /listings to /properties redirect
       {
         source: "/:locale/listings/:id",
