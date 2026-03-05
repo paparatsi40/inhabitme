@@ -474,6 +474,7 @@
     "selectCity": "Select a city",
     "selectNeighborhood": "Select a neighborhood",
     "selectCityFirst": "Select a city first",
+    "selectCountryFirst": "Select a country first",
     "noNeighborhoods": "No neighborhoods available",
     "address": "Full Address",
     "placeholderAddress": "Street, number, floor, zip code...",

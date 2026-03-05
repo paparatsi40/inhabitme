@@ -93,10 +93,12 @@ function CreatePropertyContent() {
     images: [] as string[],
   })
 
-  // Obtener ciudades disponibles (ordenadas alfabéticamente)
+  // Obtener ciudades disponibles filtradas por país (ordenadas alfabéticamente)
   const availableCities = useMemo(() => {
-    return [...CITIES].sort((a, b) => a.name.localeCompare(b.name))
-  }, [])
+    if (!formData.country) return []
+    return CITIES.filter(c => c.country === formData.country)
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }, [formData.country])
 
   // Obtener barrios de la ciudad seleccionada
   const availableNeighborhoods = useMemo(() => {
@@ -133,6 +135,17 @@ function CreatePropertyContent() {
   }, [isLoaded, isSignedIn, router])
 
   const updateFormData = (updates: Partial<typeof formData>) => {
+    // Si cambia el país, resetear ciudad y barrio
+    if ('country' in updates && updates.country !== formData.country) {
+      setFormData(prev => ({ 
+        ...prev, 
+        ...updates,
+        city: '',
+        neighborhood: '' 
+      }))
+      return
+    }
+    
     // Si cambia la ciudad, resetear el barrio
     if ('city' in updates && updates.city !== formData.city) {
       setFormData(prev => ({ 
@@ -427,11 +440,14 @@ function CreatePropertyContent() {
                   id="city"
                   value={formData.city}
                   onChange={e => updateFormData({ city: e.target.value })}
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white mt-1"
+                  disabled={!formData.country}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white mt-1 disabled:bg-gray-100 disabled:text-gray-400"
                 >
-                  <option value="">{t('selectCity')}</option>
+                  <option value="">
+                    {formData.country ? t('selectCity') : t('selectCountryFirst')}
+                  </option>
                   {availableCities.map(city => (
-                    <option key={city.name} value={city.name}>{city.name} ({city.country})</option>
+                    <option key={city.name} value={city.name}>{city.name}</option>
                   ))}
                 </select>
               </div>

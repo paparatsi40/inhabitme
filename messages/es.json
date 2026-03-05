@@ -474,6 +474,7 @@
     "selectCity": "Selecciona una ciudad",
     "selectNeighborhood": "Selecciona un barrio",
     "selectCityFirst": "Selecciona una ciudad primero",
+    "selectCountryFirst": "Selecciona un país primero",
     "noNeighborhoods": "No hay barrios disponibles",
     "address": "Dirección Completa",
     "placeholderAddress": "Calle, número, piso, código postal...",
