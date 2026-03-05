@@ -209,7 +209,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">
-              <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+              <div className="absolute top-4 right-4 bg-green-700 text-white px-3 py-1 rounded-full text-xs font-bold">
                 {tHow('inhabitme.badge')}
               </div>
               <div className="flex items-center gap-3 mb-6">
