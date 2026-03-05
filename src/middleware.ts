@@ -17,6 +17,8 @@ const isProtectedRoute = createRouteMatcher([
   "/:locale/bookings(.*)",
   "/:locale/host/bookings(.*)",
   "/onboarding(.*)",
+  "/admin(.*)",
+  "/api/admin(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -27,8 +29,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // API routes
-  if (pathname.startsWith("/api")) {
+  // API routes - only skip non-admin API routes
+  if (pathname.startsWith("/api") && !pathname.startsWith("/api/admin")) {
     return NextResponse.next();
   }
 
@@ -59,9 +61,7 @@ export default clerkMiddleware(async (auth, req) => {
     pathname === "/onboarding" ||
     pathname.startsWith("/onboarding/") ||
     pathname === "/founding-host" ||
-    pathname.startsWith("/founding-host/") ||
-    pathname === "/admin" ||
-    pathname.startsWith("/admin/")
+    pathname.startsWith("/founding-host/")
   ) {
     return NextResponse.next();
   }
@@ -84,7 +84,11 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // next-intl
+  // next-intl - Skip for /admin routes to avoid locale prefix
+  if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin")) {
+    return NextResponse.next();
+  }
+
   try {
     return intlMiddleware(req);
   } catch (error) {
