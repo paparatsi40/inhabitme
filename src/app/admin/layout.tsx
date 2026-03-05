@@ -45,7 +45,7 @@ export default function AdminLayout({
                 <Home className="w-4 h-4" />
                 <span className="hidden sm:inline">Ver Sitio</span>
               </Link>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton signOutUrl="/" />
             </div>
           </div>
         </div>

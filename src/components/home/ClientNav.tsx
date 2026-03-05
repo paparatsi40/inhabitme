@@ -27,7 +27,7 @@ export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }
             Dashboard
           </Button>
         </NextLink>
-        <UserButton afterSignOutUrl="/" />
+        <UserButton signOutUrl="/" />
       </SignedIn>
       <SignedOut>
         <NextLink href={signInUrl}>
