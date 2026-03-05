@@ -100,6 +100,7 @@ export default clerkMiddleware(async (auth, req) => {
 export const config = {
   matcher: [
     "/",
+    "/api/admin/:path*",
     "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
   ],
 };
