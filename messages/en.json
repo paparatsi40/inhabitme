@@ -48,8 +48,8 @@
       "title": "Why inhabitme?",
       "subtitle": "Designed specifically for <strong>medium-term stays</strong> and <strong>remote work</strong>",
       "verified": {
-        "title": "100% Verified for work",
-        "description": "WiFi >50 Mbps measured, dedicated desk and quiet environment. Every property passes verification."
+        "title": "Work-Ready Guarantee",
+        "description": "Hosts guarantee high-speed WiFi, dedicated workspace and quiet environment. All properties are ready for remote work and study."
       },
       "transparent": {
         "title": "Clear pricing, no surprises",
@@ -254,7 +254,7 @@
     "whyChooseTitle": "Why choose {city}?",
     "whyChooseSubtitle": "Spaces designed specifically for medium-term stays and remote work",
     "wifiTitle": "Reliable WiFi and desk",
-    "wifiDesc": "All properties include high-speed WiFi, dedicated desk and quiet environment. 100% ready to work.",
+    "wifiDesc": "All properties include high-speed WiFi, dedicated workspace and quiet environment. Hosts guarantee work-ready conditions.",
     "priceTitle": "Clear price, no surprises",
     "priceDesc": "All-inclusive monthly price. No hidden fees, no surprise charges. You know exactly what you pay from day 1.",
     "flexibilityTitle": "From 1 to 12 months, you decide",
@@ -514,8 +514,8 @@
     "from": "From",
     "perMonth": "/month",
     "whyLive": "Why live in",
-    "wifiVerified": "WiFi Verified",
-    "wifiDescription": "All properties with fast connection",
+    "wifiVerified": "High-Speed WiFi",
+    "wifiDescription": "Hosts guarantee fast connection for work",
     "coworking": "Cafés & Coworking",
     "coworkingDescription": "Spaces to work nearby",
     "wellConnected": "Well Connected",

@@ -48,8 +48,8 @@
       "title": "¿Por qué inhabitme?",
       "subtitle": "Diseñado específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>",
       "verified": {
-        "title": "100% Verificado para trabajar",
-        "description": "WiFi >50 Mbps medido, escritorio dedicado y ambiente tranquilo. Cada propiedad pasa verificación."
+        "title": "Listo para trabajar",
+        "description": "Los hosts garantizan WiFi de alta velocidad, espacio de trabajo dedicado y ambiente tranquilo. Todas las propiedades están preparadas para trabajo remoto y estudio."
       },
       "transparent": {
         "title": "Precio claro, sin sorpresas",
@@ -254,7 +254,7 @@
     "whyChooseTitle": "¿Por qué elegir {city}?",
     "whyChooseSubtitle": "Espacios diseñados específicamente para estancias medias y trabajo remoto",
     "wifiTitle": "WiFi confiable y escritorio",
-    "wifiDesc": "Todas las propiedades incluyen WiFi de alta velocidad, escritorio dedicado y ambiente tranquilo. 100% listo para trabajar.",
+    "wifiDesc": "Todas las propiedades incluyen WiFi de alta velocidad, espacio de trabajo dedicado y ambiente tranquilo. Los hosts garantizan condiciones listas para trabajar.",
     "priceTitle": "Precio claro, sin sorpresas",
     "priceDesc": "Precio mensual todo incluido. Sin tarifas ocultas, sin cargos sorpresa. Sabes exactamente cuánto pagas desde el día 1.",
     "flexibilityTitle": "De 1 a 12 meses, tú decides",
@@ -514,8 +514,8 @@
     "from": "Desde",
     "perMonth": "/mes",
     "whyLive": "Por qué vivir en",
-    "wifiVerified": "WiFi Verificado",
-    "wifiDescription": "Todas las propiedades con conexión rápida",
+    "wifiVerified": "WiFi de Alta Velocidad",
+    "wifiDescription": "Los hosts garantizan conexión rápida para trabajar",
     "coworking": "Cafés & Coworking",
     "coworkingDescription": "Espacios para trabajar cerca",
     "wellConnected": "Bien Conectado",
