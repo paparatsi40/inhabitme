@@ -60,10 +60,10 @@ export function generateStaticParams() {
 }
 
 type PageProps = {
-  params: {
+  params: Promise<{
     locale: string
     city: string
-  }
+  }>
 }
 
 function safeLower(input: unknown): string {
@@ -71,8 +71,9 @@ function safeLower(input: unknown): string {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const locale = safeLower(params?.locale) || 'en'
-  const citySlug = safeLower(params?.city)
+  const { locale, city } = await params
+  const localeSafe = safeLower(locale) || 'en'
+  const citySlug = safeLower(city)
 
   const config = CITIES_CONFIG[citySlug]
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
@@ -81,7 +82,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: 'Ciudad no encontrada | inhabitme' }
   }
 
-  const canonical = `${baseUrl}/${locale}/${citySlug}`
+  const canonical = `${baseUrl}/${localeSafe}/${citySlug}`
 
   return {
     title: `Vive en ${config.name} | inhabitme`,
@@ -92,7 +93,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: config.description,
       url: canonical,
       siteName: 'inhabitme',
-      locale: locale === 'es' ? 'es_ES' : 'en_US',
+      locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
       type: 'website',
     },
     robots: { index: true, follow: true },
@@ -100,10 +101,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CityPage({ params }: PageProps) {
-  const locale = safeLower(params?.locale) || 'en'
-  const citySlug = safeLower(params?.city)
+  const { locale, city } = await params
+  const localeSafe = safeLower(locale) || 'en'
+  const citySlug = safeLower(city)
 
-  const t = await getTranslations({ locale, namespace: 'cityPage' })
+  const t = await getTranslations({ locale: localeSafe, namespace: 'cityPage' })
 
   // Prioridad: config “bonita” para copy, pero usamos SSOT para barrios
   const config = CITIES_CONFIG[citySlug]
