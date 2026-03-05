@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
 
@@ -27,10 +28,15 @@ export function CityCarousel() {
                 index === currentIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img
+              <Image
                 src={city.image}
                 alt={city.name}
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority={index === 0}
+                fetchPriority={index === currentIndex ? "high" : "low"}
+                loading={index === 0 ? "eager" : "lazy"}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
               
