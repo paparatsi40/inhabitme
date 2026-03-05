@@ -11,12 +11,13 @@ export async function GET(request: Request) {
     
     const country = searchParams.get('country');
     const city = searchParams.get('city');
+    const neighborhood = searchParams.get('neighborhood');
     const minPrice = searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')!) : undefined;
     const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : undefined;
     const bedrooms = searchParams.get('bedrooms') ? parseInt(searchParams.get('bedrooms')!) : undefined;
     const minWifiSpeed = searchParams.get('minWifiSpeed') ? parseInt(searchParams.get('minWifiSpeed')!) : undefined;
 
-    console.log('[API /api/properties/search] Filters:', { country, city, minPrice, maxPrice, bedrooms, minWifiSpeed });
+    console.log('[API /api/properties/search] Filters:', { country, city, neighborhood, minPrice, maxPrice, bedrooms, minWifiSpeed });
 
     console.log('[API /api/properties/search] Creating Supabase client...');
     const supabase = getSupabaseServerClient();
@@ -33,6 +34,10 @@ export async function GET(request: Request) {
 
     if (city) {
       query = query.ilike('city_name', `%${city}%`);
+    }
+
+    if (neighborhood) {
+      query = query.ilike('neighborhood', `%${neighborhood}%`);
     }
 
     if (minPrice) {
