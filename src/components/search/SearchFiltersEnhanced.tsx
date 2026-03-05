@@ -25,14 +25,18 @@ export function SearchFiltersEnhanced({
   const [showAdvanced, setShowAdvanced] = useState(false)
   const hasActiveFilters = Object.values(filters).some(Boolean)
 
-  // Obtener ciudades disponibles
-  const availableCities = useMemo(() => CITIES.map(city => city.name), [])
+  // Obtener ciudades disponibles (ordenadas alfabéticamente)
+  const availableCities = useMemo(() => {
+    return [...CITIES].sort((a, b) => a.name.localeCompare(b.name)).map(city => city.name)
+  }, [])
 
   // Obtener barrios de la ciudad seleccionada
   const availableNeighborhoods = useMemo(() => {
     if (!filters.city) return []
     const cityConfig = CITIES.find(c => c.name === filters.city)
-    return cityConfig?.neighborhoods || []
+    if (!cityConfig) return []
+    // Ordenar barrios alfabéticamente
+    return [...cityConfig.neighborhoods].sort((a, b) => a.name.localeCompare(b.name))
   }, [filters.city])
 
   // Contador de amenities seleccionadas
