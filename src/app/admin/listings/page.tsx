@@ -232,7 +232,7 @@ export default function AdminListingsPage() {
                         </span>
                       </div>
                       <p className="text-xs text-gray-400 mt-2">
-                        ID: {listing.id} • Created: {new Date(listing.createdAt).toLocaleDateString()}
+                        ID: {listing.id} • Owner: <span className="font-mono text-blue-600">{listing.ownerId}</span> • Created: {new Date(listing.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
