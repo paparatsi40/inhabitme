@@ -17,8 +17,6 @@ const isProtectedRoute = createRouteMatcher([
   "/:locale/bookings(.*)",
   "/:locale/host/bookings(.*)",
   "/onboarding(.*)",
-  "/admin(.*)",
-  "/api/admin(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -29,8 +27,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // API routes - only skip non-admin API routes
-  if (pathname.startsWith("/api") && !pathname.startsWith("/api/admin")) {
+  // API routes
+  if (pathname.startsWith("/api")) {
     return NextResponse.next();
   }
 
@@ -84,11 +82,7 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // next-intl - Skip for /admin routes to avoid locale prefix
-  if (pathname === "/admin" || pathname.startsWith("/admin/") || pathname.startsWith("/api/admin")) {
-    return NextResponse.next();
-  }
-
+  // next-intl
   try {
     return intlMiddleware(req);
   } catch (error) {
@@ -100,7 +94,6 @@ export default clerkMiddleware(async (auth, req) => {
 export const config = {
   matcher: [
     "/",
-    "/api/admin/:path*",
     "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
   ],
 };
