@@ -115,23 +115,24 @@ export default function FoundingHostJoinPage() {
 
           {/* SignUp component */}
           <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
-            <SignUp 
-              routing="hash"
-              appearance={{
-                elements: {
-                  formButtonPrimary: 'bg-blue-600 hover:bg-blue-700',
-                  footerActionLink: 'text-blue-600 hover:text-blue-700'
-                }
-              }}
-              unsafeMetadata={{
-                role: 'founding_host',
-                founding_host_number: invitationData.foundingHostNumber,
-                founding_host_year: 2026,
-                invitation_token: token
-              }}
-              afterSignUpUrl="/dashboard"
-              signInUrl="/sign-in"
-            />
+                          <SignUp 
+                routing="hash"
+                appearance={{
+                  elements: {
+                    formButtonPrimary: 'bg-blue-600 hover:bg-blue-700',
+                    footerActionLink: 'text-blue-600 hover:text-blue-700'
+                  }
+                }}
+                unsafeMetadata={{
+                  role: 'founding_host',
+                  founding_host_number: invitationData.foundingHostNumber,
+                  founding_host_year: 2026,
+                  invitation_token: token
+                }}
+                fallbackRedirectUrl="/dashboard"
+                forceRedirectUrl="/dashboard"
+                signInUrl="/sign-in"
+              />
           </div>
         </div>
       </div>
