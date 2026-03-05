@@ -41,7 +41,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&h=600&fit=crop&q=80',
     gradient: 'from-blue-600 to-blue-800',
     hoverBorder: 'hover:border-blue-400',
-    textColor: 'text-blue-600',
+    textColor: 'text-blue-700',
     description: 'Descubre Madrid: alojamientos verificados para estancias de 1-12 meses.',
     indexable: true,
     neighborhoods: [
@@ -73,7 +73,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=800&h=600&fit=crop&q=80',
     gradient: 'from-purple-600 to-purple-800',
     hoverBorder: 'hover:border-purple-400',
-    textColor: 'text-purple-600',
+    textColor: 'text-purple-700',
     description: 'Explora Barcelona: viviendas verificadas para estancias medias.',
     indexable: true,
     neighborhoods: [
@@ -95,7 +95,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=800&h=600&fit=crop&q=80',
     gradient: 'from-green-600 to-emerald-800',
     hoverBorder: 'hover:border-green-400',
-    textColor: 'text-green-600',
+    textColor: 'text-green-700',
     description: 'Descubre Valencia: alojamientos para profesionales remotos.',
     indexable: true,
     neighborhoods: [
@@ -115,7 +115,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=800&h=600&fit=crop&q=80',
     gradient: 'from-amber-600 to-orange-700',
     hoverBorder: 'hover:border-amber-400',
-    textColor: 'text-amber-600',
+    textColor: 'text-amber-700',
     description: 'Alquiler mensual en Sevilla: viviendas con WiFi rapido.',
     indexable: true,
     neighborhoods: [
@@ -136,7 +136,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&h=600&fit=crop&q=80',
     gradient: 'from-yellow-600 to-orange-700',
     hoverBorder: 'hover:border-orange-400',
-    textColor: 'text-orange-600',
+    textColor: 'text-orange-700',
     description: 'Lisboa para nómadas: alojamientos en barrios auténticos.',
     indexable: true,
     neighborhoods: [
@@ -159,7 +159,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800&h=600&fit=crop&q=80',
     gradient: 'from-indigo-600 to-purple-700',
     hoverBorder: 'hover:border-indigo-400',
-    textColor: 'text-indigo-600',
+    textColor: 'text-indigo-700',
     description: 'Porto: segunda ciudad de Portugal con escena tech creciente.',
     indexable: true,
     neighborhoods: [
@@ -179,7 +179,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1585464231875-d9ef1f5ad396?w=800&h=600&fit=crop&q=80',
     gradient: 'from-pink-600 to-red-700',
     hoverBorder: 'hover:border-pink-400',
-    textColor: 'text-pink-600',
+    textColor: 'text-pink-700',
     description: 'CDMX para nómadas digitales: alojamientos verificados.',
     indexable: true,
     neighborhoods: [
@@ -203,7 +203,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800&h=600&fit=crop&q=80',
     gradient: 'from-cyan-600 to-blue-700',
     hoverBorder: 'hover:border-cyan-400',
-    textColor: 'text-cyan-600',
+    textColor: 'text-cyan-700',
     description: 'Buenos Aires para remotos: departamentos con WiFi verificado.',
     indexable: true,
     neighborhoods: [
@@ -225,7 +225,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1568632234157-ce7aecd03d0d?w=800&h=600&fit=crop&q=80',
     gradient: 'from-emerald-600 to-green-700',
     hoverBorder: 'hover:border-emerald-400',
-    textColor: 'text-emerald-600',
+    textColor: 'text-emerald-700',
     description: 'Medellin: capital digital de Colombia.',
     indexable: true,
     neighborhoods: [
@@ -245,7 +245,7 @@ export const CITIES: CityConfig[] = [
     image: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=800&h=600&fit=crop&q=80',
     gradient: 'from-orange-600 to-red-700',
     hoverBorder: 'hover:border-orange-400',
-    textColor: 'text-orange-600',
+    textColor: 'text-orange-700',
     description: 'Austin, Texas: capital tech del Lone Star State.',
     indexable: true,
     neighborhoods: [

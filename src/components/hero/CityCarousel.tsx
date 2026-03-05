@@ -55,34 +55,34 @@ export function CityCarousel() {
         {/* Stats overlay */}
         <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3 z-10">
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-blue-600">150+</p>
-            <p className="text-xs text-gray-600 font-semibold">Propiedades</p>
+            <p className="text-2xl font-black text-blue-700">150+</p>
+            <p className="text-xs text-gray-700 font-semibold">Propiedades</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-purple-600">10</p>
-            <p className="text-xs text-gray-600 font-semibold">Ciudades</p>
+            <p className="text-2xl font-black text-purple-700">10</p>
+            <p className="text-xs text-gray-700 font-semibold">Ciudades</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-green-600">100%</p>
-            <p className="text-xs text-gray-600 font-semibold">Verificado</p>
+            <p className="text-2xl font-black text-green-700">100%</p>
+            <p className="text-xs text-gray-700 font-semibold">Verificado</p>
           </div>
         </div>
 
-        {/* Indicadores de progreso (dots) */}
-        <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-2 z-10">
+        {/* Indicadores de progreso (dots) - Fixed touch targets */}
+        <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`rounded-full transition-all min-w-[48px] min-h-[48px] flex items-center justify-center p-3 ${
+              className={`flex items-center justify-center rounded-full transition-all min-w-[48px] min-h-[48px] p-2 ${
                 index === currentIndex 
-                  ? 'bg-white' 
+                  ? 'bg-white shadow-md' 
                   : 'bg-white/50 hover:bg-white/70'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             >
               <span className={`block h-2 rounded-full transition-all ${
-                index === currentIndex ? 'w-8' : 'w-2'
+                index === currentIndex ? 'w-6 bg-gray-800' : 'w-2 bg-gray-600'
               }`} />
             </button>
           ))}
