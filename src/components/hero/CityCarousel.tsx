@@ -74,13 +74,17 @@ export function CityCarousel() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all ${
+              className={`rounded-full transition-all min-w-[48px] min-h-[48px] flex items-center justify-center p-3 ${
                 index === currentIndex 
-                  ? 'w-8 bg-white' 
-                  : 'w-2 bg-white/50 hover:bg-white/70'
+                  ? 'bg-white' 
+                  : 'bg-white/50 hover:bg-white/70'
               }`}
               aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              <span className={`block h-2 rounded-full transition-all ${
+                index === currentIndex ? 'w-8' : 'w-2'
+              }`} />
+            </button>
           ))}
         </div>
       </div>

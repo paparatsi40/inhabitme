@@ -17,12 +17,17 @@ export async function searchListings(filters: SearchFilters) {
   
   const url = `${baseUrl}/api/properties/search?${params.toString()}`;
   
-  console.log('[searchListings] Fetching URL:', url);
+  // Debug logging only in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[searchListings] Fetching URL:', url);
+  }
 
   // Llamar a la API route
   const response = await fetch(url);
   
-  console.log('[searchListings] Response status:', response.status);
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[searchListings] Response status:', response.status);
+  }
   
   if (!response.ok) {
     console.error('[searchListings] API error:', response.statusText);
@@ -30,8 +35,11 @@ export async function searchListings(filters: SearchFilters) {
   }
 
   const result = await response.json();
-  console.log('[searchListings] Response data:', result);
-  console.log('[searchListings] result.data:', result.data);
-  console.log('[searchListings] result.data length:', result.data?.length);
+  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[searchListings] Response data:', result);
+    console.log('[searchListings] result.data:', result.data);
+    console.log('[searchListings] result.data length:', result.data?.length);
+  }
   return result.data || [];
 }

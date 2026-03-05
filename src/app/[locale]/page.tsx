@@ -89,7 +89,7 @@ export default function HomePage() {
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 lg:mb-8 leading-[1.1]">
                 {t('hero.title')}
                 <br />
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 bg-clip-text text-transparent drop-shadow-sm">
                   {t('hero.titleHighlight')}
                 </span>
               </h1>
@@ -130,7 +130,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-base text-gray-700 ml-13">{t('hero.pricingSubtitle')}</p>
               </div>
-              <p className="text-sm text-gray-600 mt-6 flex items-center gap-2">
+              <p className="text-sm text-gray-700 mt-6 flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 {t('hero.joinMessage')}
               </p>
@@ -143,10 +143,10 @@ export default function HomePage() {
       <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent drop-shadow-sm">
               {t('whyInhabitme.title')}
             </h2>
-            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto" dangerouslySetInnerHTML={{__html: t.raw('whyInhabitme.subtitle')}} />
+            <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto" dangerouslySetInnerHTML={{__html: t.raw('whyInhabitme.subtitle')}} />
           </div>
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             <TrustItem icon={<Wifi className="h-8 w-8 text-green-600" />} title={t('whyInhabitme.verified.title')} text={t('whyInhabitme.verified.description')} gradient="from-green-50 to-emerald-50" borderColor="border-green-200" />
@@ -169,7 +169,7 @@ export default function HomePage() {
             <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {tHow('title')}
             </h2>
-            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">{tHow('subtitle')}</p>
+            <p className="text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto">{tHow('subtitle')}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 mb-12">
             <div className="bg-gradient-to-br from-red-50 to-orange-50 border-2 border-red-200 rounded-2xl p-8">
@@ -184,28 +184,28 @@ export default function HomePage() {
                   <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.commission')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.commissionDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('otherPlatforms.commissionDesc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.fees')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.feesDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('otherPlatforms.feesDesc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <X className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('otherPlatforms.host')}</p>
-                    <p className="text-base text-gray-600">{tHow('otherPlatforms.hostDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('otherPlatforms.hostDesc')}</p>
                   </div>
                 </li>
               </ul>
               <div className="mt-6 pt-6 border-t-2 border-red-200">
-                <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
+                <p className="text-base text-gray-700 mb-2">{tHow('example.title')}</p>
                 <p className="text-2xl font-black text-red-600">3600 + 540 = 4140 EUR</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
+                <p className="text-sm text-gray-600 mt-1">{tHow('example.inhabitme')}</p>
               </div>
             </div>
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">
@@ -223,28 +223,28 @@ export default function HomePage() {
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.oneFee')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.oneFeeDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('inhabitme.oneFeeDesc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.zeroCommission')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.zeroCommissionDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('inhabitme.zeroCommissionDesc')}</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-lg font-semibold text-gray-900">{tHow('inhabitme.host')}</p>
-                    <p className="text-base text-gray-600">{tHow('inhabitme.hostDesc')}</p>
+                    <p className="text-base text-gray-700">{tHow('inhabitme.hostDesc')}</p>
                   </div>
                 </li>
               </ul>
               <div className="mt-6 pt-6 border-t-2 border-green-200">
-                <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
+                <p className="text-base text-gray-700 mb-2">{tHow('example.title')}</p>
                 <p className="text-2xl font-black text-green-600">3600 + 218 = 3818 EUR</p>
-                <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
+                <p className="text-sm text-gray-600 mt-1">{tHow('example.inhabitme')}</p>
               </div>
             </div>
           </div>
@@ -304,7 +304,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-black mb-4">{tCities('title')}</h2>
-            <p className="text-lg text-gray-600">{tCities('subtitle')}</p>
+            <p className="text-lg text-gray-700">{tCities('subtitle')}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {CITIES.map((city) => (
@@ -329,7 +329,7 @@ export default function HomePage() {
             <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {tFaqSection('title')}
             </h2>
-            <p className="text-lg text-gray-600">{tFaqSection('subtitle')}</p>
+            <p className="text-lg text-gray-700">{tFaqSection('subtitle')}</p>
           </div>
           <div className="space-y-6">
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 lg:p-8">
@@ -406,7 +406,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-12 text-center">
-            <p className="text-gray-600 mb-6">{tFaqSection('moreQuestions')}</p>
+            <p className="text-gray-700 mb-6">{tFaqSection('moreQuestions')}</p>
             <a href="mailto:hola@inhabitme.com" className="inline-block">
               <Button size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold">
                 {tFaqSection('contactSupport')}
@@ -449,7 +449,7 @@ function TrustItem({ icon, title, text, gradient = 'from-gray-50 to-gray-100', b
           {icon}
         </div>
         <h3 className="font-black text-xl lg:text-2xl mb-3 text-gray-900">{title}</h3>
-        <p className="text-gray-600 leading-relaxed text-base">{text}</p>
+        <p className="text-gray-700 leading-relaxed text-base">{text}</p>
       </div>
     </div>
   )
@@ -482,7 +482,7 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
       </div>
       <div className="p-5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-600">From {price}/month</span>
+          <span className="text-sm font-semibold text-gray-700">From {price}/month</span>
           <span className={`text-sm font-bold ${textColor} group-hover:translate-x-1 transition-transform inline-flex items-center gap-1`}>
             View properties <ArrowRight className="h-4 w-4" />
           </span>

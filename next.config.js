@@ -55,8 +55,17 @@ const nextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "origin-when-cross-origin" },
 
-          // Optional: basic CSP (enable only if you’ve verified all external scripts/fonts/images)
-          // { key: 'Content-Security-Policy', value: "default-src 'self'; img-src *; object-src 'none';" },
+          // Permissions Policy for better security
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+
+          // Content Security Policy - enabled for Best Practices score
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.accounts.dev https://js.stripe.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src * blob: data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; object-src 'none'; media-src 'self'; worker-src 'self'; frame-ancestors 'self'; upgrade-insecure-requests;",
+          },
         ],
       },
     ];
