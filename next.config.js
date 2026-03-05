@@ -100,9 +100,9 @@ const nextConfig = {
         permanent: true,
       },
 
-      // Remove trailing slashes (SEO consistency)
+      // Remove trailing slashes (SEO consistency) — EXCLUDE "/"
       {
-        source: "/:path*/",
+        source: "/:path+/",
         destination: "/:path*",
         permanent: true,
       },
