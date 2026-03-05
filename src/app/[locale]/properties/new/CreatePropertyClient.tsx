@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
@@ -29,6 +29,7 @@ import {
 } from 'lucide-react'
 
 import { CloudinaryUploader } from '@/components/properties/CloudinaryUploader'
+import { CITIES } from '@/config/cities'
 
 type Step =
   | 'basic'
@@ -92,6 +93,25 @@ function CreatePropertyContent() {
     images: [] as string[],
   })
 
+  // Obtener ciudades disponibles (ordenadas alfabéticamente)
+  const availableCities = useMemo(() => {
+    return [...CITIES].sort((a, b) => a.name.localeCompare(b.name))
+  }, [])
+
+  // Obtener barrios de la ciudad seleccionada
+  const availableNeighborhoods = useMemo(() => {
+    if (!formData.city) return []
+    const cityConfig = CITIES.find(c => c.name === formData.city)
+    if (!cityConfig) return []
+    return [...cityConfig.neighborhoods].sort((a, b) => a.name.localeCompare(b.name))
+  }, [formData.city])
+
+  // Lista de países disponibles
+  const availableCountries = useMemo(() => {
+    const countries = new Set(CITIES.map(c => c.country))
+    return Array.from(countries).sort()
+  }, [])
+
   const steps: { id: Step; title: string; icon: any }[] = [
     { id: 'basic', title: 'Información Básica', icon: Home },
     { id: 'location', title: t('steps.location'), icon: MapPin },
@@ -113,6 +133,16 @@ function CreatePropertyContent() {
   }, [isLoaded, isSignedIn, router])
 
   const updateFormData = (updates: Partial<typeof formData>) => {
+    // Si cambia la ciudad, resetear el barrio
+    if ('city' in updates && updates.city !== formData.city) {
+      setFormData(prev => ({ 
+        ...prev, 
+        ...updates,
+        neighborhood: '' 
+      }))
+      return
+    }
+    
     setFormData(prev => ({ ...prev, ...updates }))
   }
 
@@ -375,36 +405,57 @@ function CreatePropertyContent() {
             </h2>
 
             <div className="space-y-4">
+              {/* Country */}
               <div>
                 <Label htmlFor="country">{t('country')} *</Label>
-                <Input
+                <select
                   id="country"
                   value={formData.country}
                   onChange={e => updateFormData({ country: e.target.value })}
-                  className="mt-1"
-                />
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white mt-1"
+                >
+                  {availableCountries.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </select>
               </div>
 
+              {/* City */}
               <div>
                 <Label htmlFor="city">{t('city')} *</Label>
-                <Input
+                <select
                   id="city"
-                  placeholder="Ej: Madrid"
                   value={formData.city}
                   onChange={e => updateFormData({ city: e.target.value })}
-                  className="mt-1"
-                />
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white mt-1"
+                >
+                  <option value="">{t('selectCity')}</option>
+                  {availableCities.map(city => (
+                    <option key={city.name} value={city.name}>{city.name} ({city.country})</option>
+                  ))}
+                </select>
               </div>
 
+              {/* Neighborhood */}
               <div>
-                <Label htmlFor="neighborhood">{t('neighborhood')}</Label>
-                <Input
+                <Label htmlFor="neighborhood">{t('neighborhood')} *</Label>
+                <select
                   id="neighborhood"
-                  placeholder="Ej: Malasaña"
                   value={formData.neighborhood}
                   onChange={e => updateFormData({ neighborhood: e.target.value })}
-                  className="mt-1"
-                />
+                  disabled={!formData.city || availableNeighborhoods.length === 0}
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white mt-1 disabled:bg-gray-100 disabled:text-gray-400"
+                >
+                  <option value="">
+                    {formData.city 
+                      ? (availableNeighborhoods.length > 0 ? t('selectNeighborhood') : t('noNeighborhoods'))
+                      : t('selectCityFirst')
+                    }
+                  </option>
+                  {availableNeighborhoods.map(neighborhood => (
+                    <option key={neighborhood.slug} value={neighborhood.name}>{neighborhood.name}</option>
+                  ))}
+                </select>
               </div>
 
               <div>
