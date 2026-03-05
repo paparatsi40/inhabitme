@@ -60,6 +60,7 @@ async function handleCreateProperty(req: NextRequest) {
   }
 
   console.log('[API] ✅ User authenticated:', userId)
+  console.log('[API] Will create property with owner_id:', userId)
 
   let body: any
   try {
@@ -244,5 +245,7 @@ async function handleCreateProperty(req: NextRequest) {
   return NextResponse.json({
     success: true,
     id: data.id,
+    ownerId: userId,
+    debug: { ownerId: userId }
   })
 }
