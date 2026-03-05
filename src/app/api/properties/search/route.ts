@@ -40,6 +40,8 @@ export async function GET(request: Request) {
       query = query.ilike('neighborhood', `%${neighborhood}%`);
     }
 
+    console.log('[API /api/properties/search] Query with neighborhood:', neighborhood);
+
     if (minPrice) {
       query = query.gte('monthly_price', minPrice);
     }
@@ -67,6 +69,16 @@ export async function GET(request: Request) {
     }
 
     console.log('[API /api/properties/search] Query successful, rows:', data?.length || 0);
+    
+    // Debug: Log neighborhoods found
+    if (data && data.length > 0) {
+      const neighborhoods = data.map((l: any) => ({ 
+        id: l.id, 
+        neighborhood: l.neighborhood, 
+        city: l.city_name 
+      }));
+      console.log('[API /api/properties/search] Neighborhoods in results:', neighborhoods);
+    }
 
     // Filter active listings in memory (case-insensitive)
     const activeListings = (data || []).filter((listing: any) => 
