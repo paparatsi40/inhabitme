@@ -80,6 +80,7 @@ async function handleCreateProperty(req: NextRequest) {
 
     country,
     city,
+    neighborhood,
     address,
 
     hasDesk,
@@ -134,7 +135,7 @@ async function handleCreateProperty(req: NextRequest) {
 
     city_name: city,
     city_country: country,
-    neighborhood: null,
+    neighborhood: neighborhood || null,
 
     bedrooms,
     bathrooms,
