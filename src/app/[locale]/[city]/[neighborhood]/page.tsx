@@ -56,10 +56,10 @@ export async function generateStaticParams() {
 
 /** Metadata dinámica por barrio */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale, city, neighborhood } = await params
+  const { locale, city, neighborhood: neighborhoodSlugRaw } = await params
   const localeSafe = safeLower(locale) || 'en'
   const citySlug = safeLower(city)
-  const neighborhoodSlug = safeLower(neighborhood)
+  const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
 
   const cityConfig = getCityConfig(citySlug)
   if (!cityConfig) return { title: 'Barrio no encontrado | inhabitme' }
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const neighborhoodName = neighborhood?.name || slugToName(neighborhoodSlug)
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
-  const canonical = `${baseUrl}/${locale}/${citySlug}/${neighborhoodSlug}`
+  const canonical = `${baseUrl}/${localeSafe}/${citySlug}/${neighborhoodSlug}`
 
   return {
     title: `Alquiler mensual en ${neighborhoodName}, ${cityName} | inhabitme`,
@@ -100,10 +100,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function NeighborhoodPage({ params }: PageProps) {
-  const { locale, city, neighborhood } = await params
+  const { locale, city, neighborhood: neighborhoodSlugRaw } = await params
   const localeSafe = safeLower(locale) || 'en'
   const citySlug = safeLower(city)
-  const neighborhoodSlug = safeLower(neighborhood)
+  const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
