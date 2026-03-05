@@ -32,11 +32,11 @@ import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
 export const revalidate = 60
 
 type PageProps = {
-  params: {
+  params: Promise<{
     locale: string
     city: string
     neighborhood: string
-  }
+  }>
 }
 
 function safeLower(input: unknown): string {
@@ -56,9 +56,10 @@ export async function generateStaticParams() {
 
 /** Metadata dinámica por barrio */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const locale = safeLower(params?.locale) || 'en'
-  const citySlug = safeLower(params?.city)
-  const neighborhoodSlug = safeLower(params?.neighborhood)
+  const { locale, city, neighborhood } = await params
+  const localeSafe = safeLower(locale) || 'en'
+  const citySlug = safeLower(city)
+  const neighborhoodSlug = safeLower(neighborhood)
 
   const cityConfig = getCityConfig(citySlug)
   if (!cityConfig) return { title: 'Barrio no encontrado | inhabitme' }
@@ -86,7 +87,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: `Alojamientos verificados en ${neighborhoodName} con workspace dedicado, WiFi rápido y precios claros. Estancias de 1-12 meses.`,
       url: canonical,
       siteName: 'inhabitme',
-      locale: locale === 'es' ? 'es_ES' : 'en_US',
+      locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
       type: 'website',
     },
     twitter: {
@@ -99,9 +100,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function NeighborhoodPage({ params }: PageProps) {
-  const locale = safeLower(params?.locale) || 'en'
-  const citySlug = safeLower(params?.city)
-  const neighborhoodSlug = safeLower(params?.neighborhood)
+  const { locale, city, neighborhood } = await params
+  const localeSafe = safeLower(locale) || 'en'
+  const citySlug = safeLower(city)
+  const neighborhoodSlug = safeLower(neighborhood)
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
@@ -542,19 +544,19 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Inicio',
-                item: `https://www.inhabitme.com/${locale}`,
+                item: `https://www.inhabitme.com/${localeSafe}`,
               },
               {
                 '@type': 'ListItem',
                 position: 2,
                 name: cityName,
-                item: `https://www.inhabitme.com/${locale}/${citySlug}`,
+                item: `https://www.inhabitme.com/${localeSafe}/${citySlug}`,
               },
               {
                 '@type': 'ListItem',
                 position: 3,
                 name: neighborhoodName,
-                item: `https://www.inhabitme.com/${locale}/${citySlug}/${neighborhoodSlug}`,
+                item: `https://www.inhabitme.com/${localeSafe}/${citySlug}/${neighborhoodSlug}`,
               },
             ],
           }),
