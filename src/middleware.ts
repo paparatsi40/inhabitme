@@ -22,13 +22,6 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
 
-  // Root path - redirect to /en before next-intl
-  if (pathname === "/") {
-    const url = req.nextUrl.clone();
-    url.pathname = "/en";
-    return NextResponse.redirect(url, 302);
-  }
-
   // SEO files
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
     return NextResponse.next();
