@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, X, ChevronDown, ChevronUp } from 'lucide-react'
 import { SearchFilters as SearchFiltersType } from '@/lib/domain/search-filters'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
+import { CITIES } from '@/config/cities'
 
 export type SearchFiltersProps = {
   filters: SearchFiltersType
@@ -23,6 +24,16 @@ export function SearchFiltersEnhanced({
   const t = useTranslations('searchFilters')
   const [showAdvanced, setShowAdvanced] = useState(false)
   const hasActiveFilters = Object.values(filters).some(Boolean)
+
+  // Obtener ciudades disponibles
+  const availableCities = useMemo(() => CITIES.map(city => city.name), [])
+
+  // Obtener barrios de la ciudad seleccionada
+  const availableNeighborhoods = useMemo(() => {
+    if (!filters.city) return []
+    const cityConfig = CITIES.find(c => c.name === filters.city)
+    return cityConfig?.neighborhoods || []
+  }, [filters.city])
 
   // Contador de amenities seleccionadas
   const amenitiesCount = [
@@ -47,6 +58,16 @@ export function SearchFiltersEnhanced({
   ].filter(Boolean).length
 
   const updateFilter = (key: keyof SearchFiltersType, value: any) => {
+    // Si cambia la ciudad, resetear el barrio
+    if (key === 'city' && value !== filters.city) {
+      onChange({
+        ...filters,
+        city: value || undefined,
+        neighborhood: undefined
+      })
+      return
+    }
+
     onChange({
       ...filters,
       [key]: value || undefined
@@ -61,12 +82,16 @@ export function SearchFiltersEnhanced({
           {/* Ciudad */}
           <div>
             <label className="block text-sm font-medium mb-2">{t('city')}</label>
-            <input
+            <select
               value={filters.city ?? ''}
               onChange={(e) => updateFilter('city', e.target.value)}
-              placeholder="Madrid"
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-            />
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+            >
+              <option value="">{t('allCities')}</option>
+              {availableCities.map((cityName) => (
+                <option key={cityName} value={cityName}>{cityName}</option>
+              ))}
+            </select>
           </div>
 
           {/* Barrio */}
@@ -75,17 +100,13 @@ export function SearchFiltersEnhanced({
             <select
               value={filters.neighborhood ?? ''}
               onChange={(e) => updateFilter('neighborhood', e.target.value)}
-              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              disabled={!filters.city || availableNeighborhoods.length === 0}
+              className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white disabled:bg-gray-100 disabled:text-gray-400"
             >
-              <option value="">{t('all')}</option>
-              {filters.city === 'Madrid' && (
-                <>
-                  <option value="Malasaña">Malasaña</option>
-                  <option value="Chamberí">Chamberí</option>
-                  <option value="Salamanca">Salamanca</option>
-                  <option value="Chueca">Chueca</option>
-                </>
-              )}
+              <option value="">{filters.city ? t('allNeighborhoods') : t('selectCityFirst')}</option>
+              {availableNeighborhoods.map((neighborhood) => (
+                <option key={neighborhood.slug} value={neighborhood.name}>{neighborhood.name}</option>
+              ))}
             </select>
           </div>
 
