@@ -81,6 +81,13 @@ const nextConfig = {
   // SEO redirects
   async redirects() {
     return [
+      // Root -> default locale
+      {
+        source: "/",
+        destination: "/en",
+        permanent: false,
+      },
+
       // Legacy /listings to /properties redirect
       {
         source: "/:locale/listings/:id",
