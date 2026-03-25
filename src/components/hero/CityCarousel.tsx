@@ -61,23 +61,23 @@ export function CityCarousel() {
         </div>
 
         {/* Stats overlay */}
-        <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3 z-10">
+        <div className="absolute bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-xl font-black text-blue-700">{t('stats.propertiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold">{t('stats.propertiesLabel')}</p>
+            <p className="text-base sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.propertiesLabel')}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-purple-700">{t('stats.citiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold">{t('stats.citiesLabel')}</p>
+            <p className="text-xl sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.citiesLabel')}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-green-700">{t('stats.verifiedValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold">{t('stats.verifiedLabel')}</p>
+            <p className="text-xl sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.verifiedLabel')}</p>
           </div>
         </div>
 
         {/* Indicadores de progreso (dots) - Fixed touch targets */}
-        <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
+        <div className="absolute bottom-24 sm:bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
