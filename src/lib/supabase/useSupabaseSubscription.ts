@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { RealtimeChannel } from '@supabase/supabase-js'
 import { getSupabaseBrowserClientWithRealtime } from './client'
 
-interface UseSupabaseSubscriptionOptions {
+export interface UseSupabaseSubscriptionOptions {
   channelName: string
   event?: '*' | 'INSERT' | 'UPDATE' | 'DELETE'
   schema?: string
