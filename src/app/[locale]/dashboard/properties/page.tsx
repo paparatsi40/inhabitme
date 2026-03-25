@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { 
   Building2, ArrowLeft, Plus, Eye, Pencil, Mail, TrendingUp, 
-  CheckCircle, Clock, TrendingUp, Calendar, Trash2 
+  CheckCircle, Clock, Calendar, Trash2 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
