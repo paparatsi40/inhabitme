@@ -41,11 +41,34 @@ export default async function MyPropertiesPage() {
   console.log('[MyProperties] ownerIds used for queries:', ownerIds)
   
   // Primero obtener solo las propiedades (sin joins)
-  const { data: properties, error: propertiesError } = await supabase
+  let properties: any[] = []
+
+  const { data: exactProperties, error: propertiesError } = await supabase
     .from('listings')
     .select('*')
     .in('owner_id', ownerIds)
     .order('created_at', { ascending: false })
+
+  properties = exactProperties ?? []
+
+  // Fallback tolerante para datos legacy con owner_id inconsistente
+  if (properties.length === 0) {
+    const ilikeConditions = ownerIds.map((id) => `owner_id.ilike.%${id}%`).join(',')
+    if (ilikeConditions) {
+      const { data: fuzzyProperties, error: fuzzyError } = await supabase
+        .from('listings')
+        .select('*')
+        .or(ilikeConditions)
+        .order('created_at', { ascending: false })
+
+      if (fuzzyError) {
+        console.error('[MyProperties] fuzzy owner query error:', fuzzyError)
+      } else if (fuzzyProperties?.length) {
+        console.log('[MyProperties] recovered properties via fuzzy owner match:', fuzzyProperties.length)
+        properties = fuzzyProperties
+      }
+    }
+  }
 
   // DEBUG: Logging para ver qué está pasando
   console.log('[MyProperties] userId:', userId)

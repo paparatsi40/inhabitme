@@ -41,19 +41,52 @@ export default async function DashboardPage() {
   const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
-  // Count de propiedades
-  const { count: propertiesCount, error: countError } = await supabase
+  // Obtener propiedades del owner (exact match), con fallback tolerante para datos legacy inconsistentes
+  let ownedProperties: any[] = []
+  const { data: exactProperties, error: exactPropertiesError } = await supabase
     .from('listings')
-    .select('*', { count: 'exact', head: true })
-    .in('owner_id', ownerIds);
-  
-  console.log('[Dashboard] propertiesCount:', propertiesCount, 'error:', countError);
-  
+    .select('*')
+    .in('owner_id', ownerIds)
+    .order('created_at', { ascending: false })
+
+  if (exactPropertiesError) {
+    console.error('[Dashboard] exact owner query error:', exactPropertiesError)
+  }
+
+  ownedProperties = exactProperties ?? []
+
+  if (ownedProperties.length === 0) {
+    const ilikeConditions = ownerIds.map((id) => `owner_id.ilike.%${id}%`).join(',')
+    if (ilikeConditions) {
+      const { data: fuzzyProperties, error: fuzzyError } = await supabase
+        .from('listings')
+        .select('*')
+        .or(ilikeConditions)
+        .order('created_at', { ascending: false })
+
+      if (fuzzyError) {
+        console.error('[Dashboard] fuzzy owner query error:', fuzzyError)
+      } else if (fuzzyProperties?.length) {
+        console.log('[Dashboard] recovered properties via fuzzy owner match:', fuzzyProperties.length)
+        ownedProperties = fuzzyProperties
+      }
+    }
+  }
+
+  const propertiesCount = ownedProperties.length
+  console.log('[Dashboard] propertiesCount:', propertiesCount)
+
+  const ownedListingIds = ownedProperties.map((p: any) => p.id)
+
   // Count de leads recibidos
-  const { count: leadsCount } = await supabase
-    .from('property_leads')
-    .select('*, listings!inner(*)', { count: 'exact', head: true })
-    .in('listings.owner_id', ownerIds);
+  let leadsCount = 0
+  if (ownedListingIds.length > 0) {
+    const { count } = await supabase
+      .from('property_leads')
+      .select('*', { count: 'exact', head: true })
+      .in('listing_id', ownedListingIds)
+    leadsCount = count ?? 0
+  }
   
   // Count de bookings pendientes como host
   const { count: bookingsCount } = await supabase
@@ -63,8 +96,9 @@ export default async function DashboardPage() {
     .eq('status', 'pending_host_approval');
   
   // Stats de vistas
+  const viewsOwnerIds = Array.from(new Set([...ownerIds, ...ownedProperties.map((p: any) => p.owner_id).filter(Boolean)]))
   const viewsStatsResults = await Promise.all(
-    ownerIds.map((ownerId) =>
+    viewsOwnerIds.map((ownerId) =>
       supabase
         .rpc('get_owner_views_stats', { p_owner_id: ownerId })
         .single()
@@ -80,12 +114,7 @@ export default async function DashboardPage() {
   };
   
   // Obtener propiedades para mostrar
-  const { data: properties } = await supabase
-    .from('listings')
-    .select('*')
-    .in('owner_id', ownerIds)
-    .order('created_at', { ascending: false })
-    .limit(3);
+  const properties = ownedProperties.slice(0, 3)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
