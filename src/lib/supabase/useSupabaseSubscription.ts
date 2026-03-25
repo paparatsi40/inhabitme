@@ -84,7 +84,7 @@ export function useSupabaseSubscription({
         
         // Suscribirse con timeout para evitar bloqueos
         const timeoutId = setTimeout(() => {
-          if (channelRef.current?.state === 'connecting') {
+          if (channelRef.current) {
             console.warn('[SupabaseSubscription] Connection timeout, cleaning up')
             cleanup()
           }
