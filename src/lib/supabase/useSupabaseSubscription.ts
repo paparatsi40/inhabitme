@@ -70,8 +70,8 @@ export function useSupabaseSubscription({
         if (table) config.table = table
         if (filter) config.filter = filter
         
-        channel = channel.on(
-          'postgres_changes' as const,
+        channel = (channel as any).on(
+          'postgres_changes',
           config,
           (payload: unknown) => {
             if (isActive) {
