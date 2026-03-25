@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/routing';
 import { redirect as nextRedirect } from 'next/navigation';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,6 +17,8 @@ export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
   const { userId } = await auth();
+  const user = await currentUser()
+  const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? null
   const t = await getTranslations('dashboard');
   const locale = await getLocale();
 
@@ -31,14 +33,30 @@ export default async function DashboardPage() {
 
   // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
   let legacyUserId: string | null = null
+  let canonicalClerkId: string | null = null
+
   const { data: legacyUserRow } = await supabase
     .from('User')
-    .select('id')
+    .select('id, clerkId, email')
     .eq('clerkId', userId)
     .maybeSingle()
-  legacyUserId = (legacyUserRow as any)?.id ?? null
 
-  const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
+  if (legacyUserRow) {
+    legacyUserId = (legacyUserRow as any)?.id ?? null
+    canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
+  } else if (userEmail) {
+    // Fallback por email para casos donde Clerk userId cambia entre entornos/instancias
+    const { data: legacyUserByEmail } = await supabase
+      .from('User')
+      .select('id, clerkId, email')
+      .eq('email', userEmail)
+      .maybeSingle()
+
+    legacyUserId = (legacyUserByEmail as any)?.id ?? null
+    canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
+  }
+
+  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
   // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy

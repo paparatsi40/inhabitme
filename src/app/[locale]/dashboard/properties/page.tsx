@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { Link } from '@/i18n/routing'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
@@ -18,6 +18,8 @@ import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency'
 
 export default async function MyPropertiesPage() {
   const { userId } = await auth()
+  const user = await currentUser()
+  const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? null
   const locale = await getLocale()
   const t = await getTranslations({ locale, namespace: 'dashboard' })
 
@@ -30,14 +32,30 @@ export default async function MyPropertiesPage() {
 
   // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
   let legacyUserId: string | null = null
+  let canonicalClerkId: string | null = null
+
   const { data: legacyUserRow } = await supabase
     .from('User')
-    .select('id')
+    .select('id, clerkId, email')
     .eq('clerkId', userId)
     .maybeSingle()
-  legacyUserId = (legacyUserRow as any)?.id ?? null
 
-  const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
+  if (legacyUserRow) {
+    legacyUserId = (legacyUserRow as any)?.id ?? null
+    canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
+  } else if (userEmail) {
+    // Fallback por email para casos donde Clerk userId cambia entre entornos/instancias
+    const { data: legacyUserByEmail } = await supabase
+      .from('User')
+      .select('id, clerkId, email')
+      .eq('email', userEmail)
+      .maybeSingle()
+
+    legacyUserId = (legacyUserByEmail as any)?.id ?? null
+    canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
+  }
+
+  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
   console.log('[MyProperties] ownerIds used for queries:', ownerIds)
   
   // Primero obtener solo las propiedades (sin joins)
