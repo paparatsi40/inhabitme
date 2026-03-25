@@ -28,12 +28,24 @@ export default async function DashboardPage() {
 
   // Obtener stats del usuario
   const supabase = getSupabaseServerClient();
+
+  // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
+  let legacyUserId: string | null = null
+  const { data: legacyUserRow } = await supabase
+    .from('User')
+    .select('id')
+    .eq('clerkId', userId)
+    .maybeSingle()
+  legacyUserId = (legacyUserRow as any)?.id ?? null
+
+  const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
+  console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
   // Count de propiedades
   const { count: propertiesCount, error: countError } = await supabase
     .from('listings')
     .select('*', { count: 'exact', head: true })
-    .eq('owner_id', userId);
+    .in('owner_id', ownerIds);
   
   console.log('[Dashboard] propertiesCount:', propertiesCount, 'error:', countError);
   
@@ -41,7 +53,7 @@ export default async function DashboardPage() {
   const { count: leadsCount } = await supabase
     .from('property_leads')
     .select('*, listings!inner(*)', { count: 'exact', head: true })
-    .eq('listings.owner_id', userId);
+    .in('listings.owner_id', ownerIds);
   
   // Count de bookings pendientes como host
   const { count: bookingsCount } = await supabase
@@ -51,19 +63,27 @@ export default async function DashboardPage() {
     .eq('status', 'pending_host_approval');
   
   // Stats de vistas
-  const { data: viewsStatsData } = await supabase
-    .rpc('get_owner_views_stats', { p_owner_id: userId })
-    .single();
+  const viewsStatsResults = await Promise.all(
+    ownerIds.map((ownerId) =>
+      supabase
+        .rpc('get_owner_views_stats', { p_owner_id: ownerId })
+        .single()
+    )
+  )
+  const totalViews = viewsStatsResults.reduce((sum, result) => {
+    const views = Number((result.data as any)?.total_views || 0)
+    return sum + (Number.isFinite(views) ? views : 0)
+  }, 0)
   
   const viewsStats = {
-    total_views: (viewsStatsData as any)?.total_views || 0
+    total_views: totalViews
   };
   
   // Obtener propiedades para mostrar
   const { data: properties } = await supabase
     .from('listings')
     .select('*')
-    .eq('owner_id', userId)
+    .in('owner_id', ownerIds)
     .order('created_at', { ascending: false })
     .limit(3);
 

@@ -27,12 +27,24 @@ export default async function MyPropertiesPage() {
 
   // Obtener propiedades del usuario con leads
   const supabase = getSupabaseServerClient()
+
+  // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
+  let legacyUserId: string | null = null
+  const { data: legacyUserRow } = await supabase
+    .from('User')
+    .select('id')
+    .eq('clerkId', userId)
+    .maybeSingle()
+  legacyUserId = (legacyUserRow as any)?.id ?? null
+
+  const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
+  console.log('[MyProperties] ownerIds used for queries:', ownerIds)
   
   // Primero obtener solo las propiedades (sin joins)
   const { data: properties, error: propertiesError } = await supabase
     .from('listings')
     .select('*')
-    .eq('owner_id', userId)
+    .in('owner_id', ownerIds)
     .order('created_at', { ascending: false })
 
   // DEBUG: Logging para ver qué está pasando
