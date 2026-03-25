@@ -41,7 +41,7 @@ export default async function DashboardPage() {
   const ownerIds = Array.from(new Set([userId, legacyUserId].filter(Boolean) as string[]))
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
-  // Obtener propiedades del owner (exact match), con fallback tolerante para datos legacy inconsistentes
+  // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy
   let ownedProperties: any[] = []
   const { data: exactProperties, error: exactPropertiesError } = await supabase
     .from('listings')
@@ -55,20 +55,33 @@ export default async function DashboardPage() {
 
   ownedProperties = exactProperties ?? []
 
+  // Fallback final: reconciliar contra campos legacy comunes
   if (ownedProperties.length === 0) {
-    const ilikeConditions = ownerIds.map((id) => `owner_id.ilike.%${id}%`).join(',')
-    if (ilikeConditions) {
-      const { data: fuzzyProperties, error: fuzzyError } = await supabase
-        .from('listings')
-        .select('*')
-        .or(ilikeConditions)
-        .order('created_at', { ascending: false })
+    const { data: allListings, error: allListingsError } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false })
 
-      if (fuzzyError) {
-        console.error('[Dashboard] fuzzy owner query error:', fuzzyError)
-      } else if (fuzzyProperties?.length) {
-        console.log('[Dashboard] recovered properties via fuzzy owner match:', fuzzyProperties.length)
-        ownedProperties = fuzzyProperties
+    if (allListingsError) {
+      console.error('[Dashboard] fallback all listings query error:', allListingsError)
+    } else {
+      const ownerSet = new Set(ownerIds.map((v) => String(v)))
+      ownedProperties = (allListings ?? []).filter((listing: any) => {
+        const candidates = [
+          listing.owner_id,
+          listing.host_user_id,
+          listing.created_by,
+          listing.user_id,
+          listing.clerk_id,
+        ]
+          .filter(Boolean)
+          .map((v: any) => String(v))
+
+        return candidates.some((value) => ownerSet.has(value))
+      })
+
+      if (ownedProperties.length > 0) {
+        console.log('[Dashboard] recovered properties via legacy field reconciliation:', ownedProperties.length)
       }
     }
   }

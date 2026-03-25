@@ -51,21 +51,33 @@ export default async function MyPropertiesPage() {
 
   properties = exactProperties ?? []
 
-  // Fallback tolerante para datos legacy con owner_id inconsistente
+  // Fallback final: reconciliar contra campos legacy comunes
   if (properties.length === 0) {
-    const ilikeConditions = ownerIds.map((id) => `owner_id.ilike.%${id}%`).join(',')
-    if (ilikeConditions) {
-      const { data: fuzzyProperties, error: fuzzyError } = await supabase
-        .from('listings')
-        .select('*')
-        .or(ilikeConditions)
-        .order('created_at', { ascending: false })
+    const { data: allListings, error: allListingsError } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false })
 
-      if (fuzzyError) {
-        console.error('[MyProperties] fuzzy owner query error:', fuzzyError)
-      } else if (fuzzyProperties?.length) {
-        console.log('[MyProperties] recovered properties via fuzzy owner match:', fuzzyProperties.length)
-        properties = fuzzyProperties
+    if (allListingsError) {
+      console.error('[MyProperties] fallback all listings query error:', allListingsError)
+    } else {
+      const ownerSet = new Set(ownerIds.map((v) => String(v)))
+      properties = (allListings ?? []).filter((listing: any) => {
+        const candidates = [
+          listing.owner_id,
+          listing.host_user_id,
+          listing.created_by,
+          listing.user_id,
+          listing.clerk_id,
+        ]
+          .filter(Boolean)
+          .map((v: any) => String(v))
+
+        return candidates.some((value) => ownerSet.has(value))
+      })
+
+      if (properties.length > 0) {
+        console.log('[MyProperties] recovered properties via legacy field reconciliation:', properties.length)
       }
     }
   }
