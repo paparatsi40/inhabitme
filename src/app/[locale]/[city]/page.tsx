@@ -1,58 +1,16 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { Link } from '@/i18n/routing'
-import { Home, ChevronRight, MapPin, Building2 } from 'lucide-react'
+import { Home, ChevronRight, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getTranslations } from 'next-intl/server'
-import { getCityConfig } from '@/config/neighborhoods'
+import { getCityBySlug, getAllCitySlugs } from '@/config/cities'
 import { routing } from '@/i18n/routing'
-
-const CITIES_CONFIG: Record<string, { name: string; description: string }> = {
-  madrid: {
-    name: 'Madrid',
-    description: 'Descubre Madrid: alojamientos verificados para estancias de 1-12 meses.',
-  },
-  barcelona: {
-    name: 'Barcelona',
-    description: 'Explora Barcelona: viviendas verificadas para estancias medias.',
-  },
-  valencia: {
-    name: 'Valencia',
-    description: 'Descubre Valencia: alojamientos para profesionales remotos.',
-  },
-  sevilla: {
-    name: 'Sevilla',
-    description: 'Alquiler mensual en Sevilla: viviendas con WiFi rapido.',
-  },
-  'ciudad-de-mexico': {
-    name: 'Ciudad de Mexico',
-    description: 'CDMX para nómadas digitales: alojamientos verificados.',
-  },
-  'buenos-aires': {
-    name: 'Buenos Aires',
-    description: 'Buenos Aires para remotos: departamentos con WiFi verificado.',
-  },
-  medellin: {
-    name: 'Medellin',
-    description: 'Medellin: capital digital de Colombia.',
-  },
-  lisboa: {
-    name: 'Lisboa',
-    description: 'Lisboa para nómadas: alojamientos en barrios auténticos.',
-  },
-  porto: {
-    name: 'Porto',
-    description: 'Porto: segunda ciudad de Portugal con escena tech creciente.',
-  },
-  austin: {
-    name: 'Austin',
-    description: 'Austin, Texas: capital tech del Lone Star State.',
-  },
-}
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
-    Object.keys(CITIES_CONFIG).map((city) => ({
+    getAllCitySlugs().map((city) => ({
       locale,
       city,
     }))
@@ -75,22 +33,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const localeSafe = safeLower(locale) || 'en'
   const citySlug = safeLower(city)
 
-  const config = CITIES_CONFIG[citySlug]
+  const cityConfig = getCityBySlug(citySlug)
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
 
-  if (!config) {
+  if (!cityConfig) {
     return { title: 'Ciudad no encontrada | inhabitme' }
   }
 
   const canonical = `${baseUrl}/${localeSafe}/${citySlug}`
 
   return {
-    title: `Vive en ${config.name} | inhabitme`,
-    description: config.description,
+    title: `Vive en ${cityConfig.name} | inhabitme`,
+    description: cityConfig.description,
     alternates: { canonical },
     openGraph: {
-      title: `Vive en ${config.name} | inhabitme`,
-      description: config.description,
+      title: `Vive en ${cityConfig.name} | inhabitme`,
+      description: cityConfig.description,
       url: canonical,
       siteName: 'inhabitme',
       locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
@@ -107,16 +65,14 @@ export default async function CityPage({ params }: PageProps) {
 
   const t = await getTranslations({ locale: localeSafe, namespace: 'cityPage' })
 
-  // Prioridad: config “bonita” para copy, pero usamos SSOT para barrios
-  const config = CITIES_CONFIG[citySlug]
-  const citySSOT = getCityConfig(citySlug)
+  const cityConfig = getCityBySlug(citySlug)
 
-  if (!config || !citySSOT) {
+  if (!cityConfig) {
     notFound()
   }
 
-  const cityName = config.name
-  const neighborhoods = citySSOT.neighborhoods
+  const cityName = cityConfig.name
+  const neighborhoods = cityConfig.neighborhoods
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -155,10 +111,18 @@ export default async function CityPage({ params }: PageProps) {
                 </div>
               </div>
 
-              <div className="lg:col-span-2 relative h-64 sm:h-80 lg:h-auto overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700">
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                  <Building2 className="h-20 w-20 mb-4 opacity-90" />
-                  <p className="text-3xl font-black">{cityName}</p>
+              <div className="lg:col-span-2 relative h-64 sm:h-80 lg:h-auto overflow-hidden">
+                <Image
+                  src={cityConfig.image}
+                  alt={cityName}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+                <div className="absolute bottom-5 left-5 right-5">
+                  <p className="text-white text-2xl sm:text-3xl font-black drop-shadow-lg">{cityName}</p>
                 </div>
               </div>
             </div>
