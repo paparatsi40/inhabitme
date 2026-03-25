@@ -90,12 +90,8 @@ export function useSupabaseSubscription({
           }
         }, 10000)
         
-        const status = await channel.subscribe()
+        await channel.subscribe()
         clearTimeout(timeoutId)
-        
-        if (status === 'CHANNEL_ERROR' && isActive && onError) {
-          onError(new Error('Failed to subscribe to channel'))
-        }
       } catch (error) {
         if (isActive && onError) {
           onError(error instanceof Error ? error : new Error(String(error)))
