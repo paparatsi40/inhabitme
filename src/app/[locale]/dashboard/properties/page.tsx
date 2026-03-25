@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { 
   Building2, ArrowLeft, Plus, Eye, Pencil, Mail, TrendingUp, 
-  CheckCircle, Clock, Euro, Calendar, Trash2 
+  CheckCircle, Clock, TrendingUp, Calendar, Trash2 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -66,6 +66,14 @@ export default async function MyPropertiesPage() {
   const propertiesCount = propertiesWithLeads?.length ?? 0
   const totalLeads = propertiesWithLeads?.reduce((sum, p) => sum + (p.property_leads?.length || 0), 0) || 0
 
+  const defaultCurrency = locale === 'en' ? 'USD' : 'EUR'
+  const defaultMoneyLocale = locale === 'en' ? 'en-US' : 'es-ES'
+  const totalRevenue = totalLeads * 15
+  const totalRevenueFormatted = new Intl.NumberFormat(defaultMoneyLocale, {
+    style: 'currency',
+    currency: defaultCurrency,
+  }).format(totalRevenue)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
       {/* Header PREMIUM */}
@@ -125,11 +133,11 @@ export default async function MyPropertiesPage() {
           <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-purple-100">
             <div className="flex items-center gap-3 mb-2">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <Euro className="h-5 w-5 text-purple-600" />
+                <TrendingUp className="h-5 w-5 text-purple-600" />
               </div>
               <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('income')}</span>
             </div>
-            <p className="text-3xl font-black text-gray-900">{new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalLeads * 15)}</p>
+            <p className="text-3xl font-black text-gray-900">{totalRevenueFormatted}</p>
           </div>
         </div>
 
@@ -225,7 +233,7 @@ export default async function MyPropertiesPage() {
                           {/* Stats mini */}
                           <div className="flex items-center gap-4 mt-4">
                             <div className="flex items-center gap-2">
-                              <Euro className="h-4 w-4 text-gray-400" />
+                              <TrendingUp className="h-4 w-4 text-gray-400" />
                               <span className="text-lg font-bold text-gray-900">{monthlyPriceFormatted}</span>
                               <span className="text-sm text-gray-500">/mes</span>
                             </div>
