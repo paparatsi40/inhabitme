@@ -62,17 +62,17 @@ export function CityCarousel() {
 
         {/* Stats overlay */}
         <div className="absolute bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
             <p className="text-base sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.propertiesLabel')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
             <p className="text-xl sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.citiesLabel')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
             <p className="text-xl sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight">{t('stats.verifiedLabel')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
           </div>
         </div>
 
