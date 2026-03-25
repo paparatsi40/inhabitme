@@ -195,7 +195,7 @@ export function PropertyForm({ clerkId }: PropertyFormProps) {
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="monthlyPrice">Precio mensual (€) *</Label>
+              <Label htmlFor="monthlyPrice">Precio mensual (EUR/USD) *</Label>
               <Input
                 id="monthlyPrice"
                 type="number"
@@ -207,7 +207,7 @@ export function PropertyForm({ clerkId }: PropertyFormProps) {
             </div>
 
             <div>
-              <Label htmlFor="depositAmount">Depósito (€) *</Label>
+              <Label htmlFor="depositAmount">Depósito (EUR/USD) *</Label>
               <Input
                 id="depositAmount"
                 type="number"

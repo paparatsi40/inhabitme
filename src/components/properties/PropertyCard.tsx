@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Wifi, Monitor, Bed, Bath, CheckCircle2 } from 'lucide-react';
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
 interface PropertyCardProps {
   property: {
@@ -28,6 +29,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
 
   const mainImage = property.images[0]?.url || property.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop';
   const imageUrl = typeof mainImage === 'string' ? mainImage : (mainImage as any)?.url || mainImage;
+  const currency = normalizeCurrency((property as any).currency ?? getCurrencyFromLocation(property.country, property.city));
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
+  const monthlyPriceFormatted = new Intl.NumberFormat(locale, { style: 'currency', currency }).format(Number(price || 0));
 
   return (
     <Link href={`/properties/${property.id}`}>
@@ -97,7 +101,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
             <div className="flex items-baseline justify-between">
               <div>
                 <span className="text-2xl font-bold text-blue-600">
-                  €{price.toLocaleString()}
+                  {monthlyPriceFormatted}
                 </span>
                 <span className="text-gray-600 text-sm ml-1">/mes</span>
               </div>

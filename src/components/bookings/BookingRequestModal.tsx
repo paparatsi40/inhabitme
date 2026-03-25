@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X, Calendar, Euro, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
 interface BookingRequestModalProps {
   isOpen: boolean;
@@ -33,6 +34,13 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
   const monthlyPrice = property?.monthly_price || property?.price?.monthly || 1000;
   const totalRent = monthlyPrice * months;
   const deposit = property?.depositAmount || monthlyPrice;
+  const currency = normalizeCurrency(
+    property?.currency ??
+    property?.price?.currency ??
+    getCurrencyFromLocation(property?.country, property?.city)
+  );
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
+  const formatMoney = (amount: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
   
   // Calculate guest fee based on duration
   const { calculateDurationFees } = require('@/lib/pricing/duration-fees')
@@ -171,22 +179,22 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
               <div className="space-y-3 mb-4 bg-white/70 rounded-xl p-4">
                 <div className="flex justify-between text-gray-700">
                   <span className="text-sm">€{monthlyPrice.toLocaleString()} × {months} {months === 1 ? 'mes' : 'meses'}</span>
-                  <span className="font-semibold">€{totalRent.toLocaleString()}</span>
+                  <span className="font-semibold">{formatMoney(totalRent)}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span className="text-sm">Depósito (reembolsable)</span>
-                  <span className="font-semibold">€{deposit.toLocaleString()}</span>
+                  <span className="font-semibold">{formatMoney(deposit)}</span>
                 </div>
                 <div className="flex justify-between text-gray-700">
                   <span className="text-sm flex items-center gap-1">
                     <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-xs">inhabitme</span>
                     service fee
                   </span>
-                  <span className="font-semibold">€{guestFee}</span>
+                  <span className="font-semibold">{formatMoney(guestFee)}</span>
                 </div>
                 <div className="border-t-2 border-purple-300 pt-3 flex justify-between text-xl font-bold">
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Total a Pagar HOY</span>
-                  <span className="text-gray-900">€{totalFirstPayment.toLocaleString()}</span>
+                  <span className="text-gray-900">{formatMoney(totalFirstPayment)}</span>
                 </div>
               </div>
 
@@ -197,7 +205,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
                 </p>
                 <p className="text-sm text-gray-600 flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>Meses siguientes: paga €{monthlyPrice.toLocaleString()} directo al anfitrión</span>
+                  <span>Meses siguientes: paga {formatMoney(monthlyPrice)} directo al anfitrión</span>
                 </p>
               </div>
             </div>

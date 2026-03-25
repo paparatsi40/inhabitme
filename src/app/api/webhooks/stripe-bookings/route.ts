@@ -3,6 +3,7 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import { formatMoneyFromMinor, normalizeCurrency } from '@/lib/currency'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
@@ -44,7 +45,8 @@ export async function POST(request: NextRequest) {
         })
 
         const bookingId = session.metadata?.booking_id
-        const paymentType = session.metadata?.payment_type // 'guest' or 'host'
+        const paymentTypeRaw = session.metadata?.payment_type || session.metadata?.type
+        const paymentType = paymentTypeRaw === 'guest_payment' ? 'guest' : paymentTypeRaw === 'host_payment' || paymentTypeRaw === 'host_fee' ? 'host' : paymentTypeRaw // normalized
 
         if (!bookingId || !paymentType) {
           console.error('Missing metadata:', session.metadata)
@@ -65,15 +67,19 @@ export async function POST(request: NextRequest) {
 
         if (paymentType === 'guest') {
           console.log('✅ Guest payment completed')
+          const bookingCurrency = normalizeCurrency(session.metadata?.currency || booking.currency)
           
           // Update booking status to confirmed
           const { error: updateError } = await supabase
             .from('bookings')
             .update({
-              status: 'confirmed',
+              status: booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
+                ? 'confirmed'
+                : 'pending_host_payment',
               guest_payment_status: 'paid',
-              guest_payment_date: new Date().toISOString(),
-              guest_stripe_session_id: session.id,
+              guest_paid_at: new Date().toISOString(),
+              guest_payment_intent_id: (session.payment_intent as string) || null,
+              currency: bookingCurrency,
               updated_at: new Date().toISOString(),
             })
             .eq('id', bookingId)
@@ -91,14 +97,16 @@ export async function POST(request: NextRequest) {
 
         } else if (paymentType === 'host') {
           console.log('✅ Host payment completed')
+          const bookingCurrency = normalizeCurrency(session.metadata?.currency || booking.currency)
 
           // Update booking with host payment info
           const { error: updateError } = await supabase
             .from('bookings')
             .update({
               host_payment_status: 'paid',
-              host_payment_date: new Date().toISOString(),
-              host_stripe_session_id: session.id,
+              host_paid_at: new Date().toISOString(),
+              host_payment_intent_id: (session.payment_intent as string) || null,
+              currency: bookingCurrency,
               updated_at: new Date().toISOString(),
             })
             .eq('id', bookingId)
@@ -261,7 +269,9 @@ async function sendGuestPaymentEmail(booking: any) {
       day: 'numeric',
     })
 
-    const totalAmount = (booking.guest_fee / 100).toFixed(2)
+    const currency = normalizeCurrency(booking.currency)
+    const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+    const totalAmount = formatMoneyFromMinor((booking.guest_fee_amount || booking.guest_fee || 0), currency, locale)
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
@@ -287,7 +297,7 @@ async function sendGuestPaymentEmail(booking: any) {
               <h3 style="color: #1f2937; margin-top: 0; font-size: 18px;">📋 Detalles de la Reserva</h3>
               <p style="margin: 8px 0; color: #4b5563;"><strong>Check-in:</strong> ${checkInDate}</p>
               <p style="margin: 8px 0; color: #4b5563;"><strong>Duración:</strong> ${booking.months_duration} ${booking.months_duration === 1 ? 'mes' : 'meses'}</p>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Service fee:</strong> €${totalAmount}</p>
+              <p style="margin: 8px 0; color: #4b5563;"><strong>Service fee:</strong> ${totalAmount}</p>
             </div>
 
             <div style="text-align: center; margin: 30px 0;">

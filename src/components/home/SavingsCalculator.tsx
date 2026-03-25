@@ -1,6 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getCurrencyFromLocation } from '@/lib/currency'
 
 type Props = {
   city: string
@@ -21,6 +22,10 @@ export function SavingsCalculator({
   onCityChange,
   onMonthsChange
 }: Props) {
+  const currency = getCurrencyFromLocation(undefined, city)
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatAmount = (value: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value)
+
   return (
     <Card className="relative border-2">
       <CardHeader>
@@ -62,21 +67,21 @@ export function SavingsCalculator({
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Airbnb tradicional</span>
             <span className="font-semibold text-gray-400 line-through">
-              €{savings.airbnb.toLocaleString()}
+              {formatAmount(savings.airbnb)}
             </span>
           </div>
 
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">inhabitme</span>
             <span className="font-bold text-blue-600">
-              €{savings.inhabitme.toLocaleString()}
+              {formatAmount(savings.inhabitme)}
             </span>
           </div>
 
           <div className="flex justify-between items-center pt-3 border-t border-green-100 bg-green-50 -mx-6 px-6 py-3 rounded-lg">
             <span className="font-bold text-green-800">Te ahorras</span>
             <span className="font-bold text-2xl text-green-600">
-              €{savings.savings.toLocaleString()}
+              {formatAmount(savings.savings)}
             </span>
           </div>
         </div>

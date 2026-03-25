@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import Stripe from 'stripe';
+import { normalizeCurrency, toStripeCurrency } from '@/lib/currency';
 
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 
@@ -85,6 +86,8 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     }
 
     const pricingTier = booking.pricing_tier || 'Standard';
+    const bookingCurrency = normalizeCurrency(booking.currency)
+    const stripeCurrency = toStripeCurrency(bookingCurrency)
 
     console.log('💰 Amounts:', {
       monthly_price: booking.monthly_price,
@@ -116,12 +119,14 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       metadata: {
         booking_id: bookingId,
         guest_id: userId,
-        type: 'guest_payment',
+        payment_type: 'guest',
+        currency: bookingCurrency,
+        type: 'guest_payment', // legacy compatibility
       },
       line_items: [
         {
           price_data: {
-            currency: 'eur',
+            currency: stripeCurrency,
             product_data: {
               name: `Primer mes - ${property.title}`,
               description: `${booking.check_in} - ${booking.check_out}`,
@@ -132,7 +137,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         },
         {
           price_data: {
-            currency: 'eur',
+            currency: stripeCurrency,
             product_data: {
               name: 'Depósito',
               description: 'Reembolsable al final de la estancia',
@@ -143,7 +148,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         },
         {
           price_data: {
-            currency: 'eur',
+            currency: stripeCurrency,
             product_data: {
               name: `inhabitme service fee - ${pricingTier}`,
               description: 'Pago único por conexión (valor basado en duración del booking)',

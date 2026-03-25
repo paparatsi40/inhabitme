@@ -44,6 +44,17 @@
       "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Cuanto más tiempo, mejor precio",
       "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
     },
+    "heroCarousel": {
+      "wifiBadge": "✓ WiFi >50 Mbps",
+      "stats": {
+        "propertiesValue": "Cada día más",
+        "propertiesLabel": "propiedades",
+        "citiesValue": "10",
+        "citiesLabel": "ciudades",
+        "verifiedValue": "100%",
+        "verifiedLabel": "verificado"
+      }
+    },
     "whyInhabitme": {
       "title": "¿Por qué inhabitme?",
       "subtitle": "Diseñado específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>",
@@ -88,7 +99,9 @@
       "example": {
         "title": "Ejemplo 3 meses en Madrid:",
         "otherPlatform": "Alquiler (€1,200/mes × 3) + €540 comisión (15% fee)",
-        "inhabitme": "Alquiler (€1,200/mes × 3) + €218 fee (€139 guest + €79 host)"
+        "otherPlatformTotal": "3600 + 540 = 4140 EUR",
+        "inhabitme": "Alquiler (€1,200/mes × 3) + €218 fee (€139 guest + €79 host)",
+        "inhabitmeTotal": "3600 + 218 = 3818 EUR"
       },
       "savings": {
         "badge": "💰 Ahorro promedio por estancia",

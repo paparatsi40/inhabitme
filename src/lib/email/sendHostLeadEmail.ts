@@ -32,7 +32,7 @@ Neighborhood: ${input.neighborhood ?? '-'}
 Move-in date: ${input.startDate}
 
 Lead quality score: ${input.score}
-Price to receive the guest’s contact details: €${price}
+Price to receive the guest’s contact details: ${price}
 
 To proceed, simply reply to this email or complete the payment here:
 👉 [STRIPE PAYMENT LINK]

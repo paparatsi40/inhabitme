@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
+import { useTranslations } from 'next-intl'
 
 export function CityCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const t = useTranslations('home.heroCarousel')
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,16 +63,16 @@ export function CityCarousel() {
         {/* Stats overlay */}
         <div className="absolute bottom-6 left-6 right-6 grid grid-cols-3 gap-3 z-10">
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-blue-700">150+</p>
-            <p className="text-xs text-gray-700 font-semibold">Propiedades</p>
+            <p className="text-xl font-black text-blue-700">{t('stats.propertiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold">{t('stats.propertiesLabel')}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-purple-700">10</p>
-            <p className="text-xs text-gray-700 font-semibold">Ciudades</p>
+            <p className="text-2xl font-black text-purple-700">{t('stats.citiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold">{t('stats.citiesLabel')}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg">
-            <p className="text-2xl font-black text-green-700">100%</p>
-            <p className="text-xs text-gray-700 font-semibold">Verificado</p>
+            <p className="text-2xl font-black text-green-700">{t('stats.verifiedValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold">{t('stats.verifiedLabel')}</p>
           </div>
         </div>
 
@@ -97,7 +99,7 @@ export function CityCarousel() {
 
       {/* Floating badge */}
       <div className="absolute -top-4 -right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-5 py-3 rounded-2xl shadow-xl font-bold text-sm rotate-3 z-20">
-        ✓ WiFi &gt;50 Mbps
+        {t('wifiBadge')}
       </div>
     </div>
   )

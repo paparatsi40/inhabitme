@@ -40,9 +40,20 @@
         "secondary": "List my space"
       },
       "trustSignal": "Verified hosts · Remote-work ready · No fake data",
-      "pricingBadge": "One-time payment (€79-239) based on duration",
+      "pricingBadge": "One-time payment ($79-239) based on duration",
       "pricingSubtitle": "No monthly commissions · No hidden charges · Longer stays, better value",
       "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
+    },
+    "heroCarousel": {
+      "wifiBadge": "✓ WiFi >50 Mbps",
+      "stats": {
+        "propertiesValue": "Growing every day",
+        "propertiesLabel": "properties",
+        "citiesValue": "10",
+        "citiesLabel": "cities",
+        "verifiedValue": "100%",
+        "verifiedLabel": "verified"
+      }
     },
     "whyInhabitme": {
       "title": "Why inhabitme?",
@@ -68,7 +79,7 @@
         "title": "Other platforms",
         "commission": "15-20% commissions",
         "commissionDesc": "On the total rental price",
-        "fees": "Hidden fees up to €500",
+        "fees": "Hidden fees up to $500",
         "feesDesc": "You discover the real cost at the end",
         "host": "Host pays commission",
         "hostDesc": "Results in higher prices for you"
@@ -76,25 +87,27 @@
       "inhabitme": {
         "title": "InhabitMe",
         "badge": "BEST PRICE",
-        "oneFee": "€79 (1 month) · €139 (2-3 months) · €189 (4-6 months) · €239 (7+ months)",
+        "oneFee": "$79 (1 month) · $139 (2-3 months) · $189 (4-6 months) · $239 (7+ months)",
         "oneFeeDesc": "One payment based on how long you stay",
         "zeroCommission": "No monthly commissions",
         "zeroCommissionDesc": "Rent price goes directly to host",
-        "host": "Host pays €49-119 when confirming",
+        "host": "Host pays $49-119 when confirming",
         "hostDesc": "Fee based on duration, not on rent price",
         "fairPrice": "Guaranteed fair price",
         "fairPriceDesc": "Host doesn't need to inflate the price"
       },
       "example": {
-        "title": "Example 3 months in Madrid:",
-        "otherPlatform": "Rent (€1,200/month × 3) + €540 commission (15% fee)",
-        "inhabitme": "Rent (€1,200/month × 3) + €218 fee (€139 guest + €79 host)"
+        "title": "Example 3 months in Austin:",
+        "otherPlatformTotal": "3600 + 540 = 4140 USD",
+        "inhabitmeTotal": "3600 + 218 = 3818 USD",
+        "otherPlatform": "Rent ($1,200/month × 3) + $540 commission (15% fee)",
+        "inhabitme": "Rent ($1,200/month × 3) + $218 fee ($139 guest + $79 host)"
       },
       "savings": {
         "badge": "💰 Average savings per stay",
-        "amount": "€320 - €900",
+        "amount": "$320 - $900",
         "description": "Depending on duration and city",
-        "title": "You save €322 in this example!",
+        "title": "You save $322 in this example!",
         "subtitle": "And savings increase when you rent longer"
       },
       "benefits": {
@@ -107,7 +120,7 @@
         },
         "host": {
           "title": "🏠 Benefits for hosts",
-          "point1": "Only €49-119 based on duration - keep almost everything",
+          "point1": "Only $49-119 based on duration - keep almost everything",
           "point2": "Attract tenants looking for fair prices",
           "point3": "Direct negotiation - you decide your conditions",
           "point4": "Simple and transparent process"
@@ -119,50 +132,50 @@
       "subtitle": "Live and work in Europe and Latin America",
       "madrid": {
         "subtitle": "Capital of Spain",
-        "from": "From €800/month"
+        "from": "From $800/month"
       },
       "barcelona": {
         "subtitle": "Sea and Modernism",
-        "from": "From €900/month"
+        "from": "From $900/month"
       },
       "valencia": {
         "subtitle": "Beach and quality of life",
-        "from": "From €700/month"
+        "from": "From $700/month"
       },
       "sevilla": {
         "subtitle": "Sun and flamenco",
-        "from": "From €600/month"
+        "from": "From $600/month"
       },
       "lisboa": {
         "subtitle": "Favorable taxation",
-        "from": "From €750/month"
+        "from": "From $750/month"
       },
       "porto": {
         "subtitle": "Wine and authenticity",
-        "from": "From €650/month"
+        "from": "From $650/month"
       },
       "mexico": {
         "subtitle": "Digital capital of LatAm",
-        "from": "From €500/month"
+        "from": "From $500/month"
       },
       "buenosaires": {
         "subtitle": "Culture and tango",
-        "from": "From €400/month"
+        "from": "From $400/month"
       },
       "medellin": {
         "subtitle": "Eternal spring",
-        "from": "From €450/month"
+        "from": "From $450/month"
       }
     },
     "faq": {
       "title": "Frequently asked questions",
       "q1": {
         "question": "How much does inhabitme cost?",
-        "answer": "<strong class=\"text-blue-600\">€79-239 one-time fee for the tenant</strong> based on stay duration. It's a <strong>one-time payment, not monthly</strong>. No commissions on rent, no hidden percentages. You pay once to get the contact and coordinate everything directly."
+        "answer": "<strong class=\"text-blue-600\">$79-239 one-time fee for the tenant</strong> based on stay duration. It's a <strong>one-time payment, not monthly</strong>. No commissions on rent, no hidden percentages. You pay once to get the contact and coordinate everything directly."
       },
       "q2": {
         "question": "Why is it so cheap compared to Airbnb?",
-        "answer": "Because we charge a <strong>transparent flat fee</strong> (€79-239 based on duration), not percentages on rent. Airbnb charges 14-20% of the total. For 3 months at €1200/month, Airbnb charges €500-720. inhabitme only €139. You save hundreds of euros. It's a <strong>fairer and more transparent model</strong>."
+        "answer": "Because we charge a <strong>transparent flat fee</strong> ($79-239 based on duration), not percentages on rent. Airbnb charges 14-20% of the total. For 3 months at $1200/month, Airbnb charges $500-720. inhabitme only $139. You save hundreds of dollars. It's a <strong>fairer and more transparent model</strong>."
       },
       "q3": {
         "question": "What exactly do I get for this fee?",
@@ -170,7 +183,7 @@
       },
       "q4": {
         "question": "Does the host pay anything?",
-        "answer": "Yes, the host pays <strong class=\"text-orange-600\">€49-119 when accepting a request</strong> (based on stay duration). <strong>Founding Hosts 2026 pay nothing</strong> (€0 fee throughout 2026). This ensures commitment from both parties and allows inhabitme to operate sustainably."
+        "answer": "Yes, the host pays <strong class=\"text-orange-600\">$49-119 when accepting a request</strong> (based on stay duration). <strong>Founding Hosts 2026 pay nothing</strong> ($0 fee throughout 2026). This ensures commitment from both parties and allows inhabitme to operate sustainably."
       },
       "q5": {
         "question": "Is WiFi really verified?",
@@ -228,7 +241,7 @@
     "available": "Available",
     "rented": "Rented",
     "viewMore": "View more properties",
-    "unlockContact": "Unlock contact for €{price}"
+    "unlockContact": "Unlock contact for ${price}"
   },
   "cities": {
     "exploreProperties": "Explore properties in {city}",
@@ -483,9 +496,9 @@
     "wifiSpeed": "WiFi Speed (Mbps)",
     "minWifi": "Minimum 10 Mbps. Recommended: 50+ Mbps for video calls",
     "pricingTitle": "Prices",
-    "pricePerNight": "Price per night (EUR)",
-    "pricePerWeek": "Price per week (EUR)",
-    "pricePerMonth": "Price per month (EUR)",
+    "pricePerNight": "Price per night (USD)",
+    "pricePerWeek": "Price per week (USD)",
+    "pricePerMonth": "Price per month (USD)",
     "priceTip": "Tip: Offering discounts for long stays increases your bookings. Weekly/monthly prices are usually 10-25% cheaper than accumulated daily prices.",
     "photos": "Photos",
     "uploadedPhotos": "Uploaded photos:",
@@ -554,8 +567,8 @@
     "allCities": "All cities",
     "allNeighborhoods": "All neighborhoods",
     "selectCityFirst": "Select a city first",
-    "minPrice": "Min price (€)",
-    "maxPrice": "Max price (€)",
+    "minPrice": "Min price ($)",
+    "maxPrice": "Max price ($)",
     "bedrooms": "Bedrooms",
     "allRooms": "All",
     "amenitiesAndAdvanced": "Amenities & Advanced Filters",

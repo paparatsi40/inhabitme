@@ -31,7 +31,7 @@ export async function sendInternalLeadAlert(input: InternalLeadAlertInput) {
 NEW AVAILABILITY REQUEST
 
 Lead score: ${input.label} (${input.score})
-${billable ? `💰 Billable lead: €${price}` : '❄️ Not billable'}
+${billable ? `💰 Billable lead: ${price}` : '❄️ Not billable'}
 
 Listing ID: ${input.listingId}
 City: ${input.city}

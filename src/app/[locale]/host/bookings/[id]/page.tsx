@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { CheckCircle, XCircle, Calendar, Euro, User, MessageSquare, Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { normalizeCurrency } from '@/lib/currency';
 
 // Helper function to format dates without timezone issues
 const formatDateSafe = (dateString: string, options: Intl.DateTimeFormatOptions) => {
@@ -110,7 +111,7 @@ export default function HostBookingDetailPage() {
         });
 
         if (res.ok) {
-          alert('✅ ¡Solicitud aceptada! (Founding Host - €0 fee)\n\nEl huésped recibirá un email para proceder con el pago.');
+          alert(`✅ ¡Solicitud aceptada! (Founding Host - ${formatMajor(0)} fee)\n\nEl huésped recibirá un email para proceder con el pago.`);
           router.push('/host/bookings');
         } else {
           alert('Error al aceptar la solicitud');
@@ -193,6 +194,9 @@ export default function HostBookingDetailPage() {
   const depositAmount = booking.deposit_amount / 100;
   const totalRent = monthlyPrice * booking.months_duration;
   const hostFee = booking.host_fee / 100;
+  const currency = normalizeCurrency(booking.currency)
+  const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMajor = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(amount || 0)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -251,10 +255,10 @@ export default function HostBookingDetailPage() {
             <div className="bg-purple-50 border-2 border-purple-400 rounded-xl p-6">
               <h2 className="text-2xl font-black text-purple-900 mb-2">Es tu turno de pagar</h2>
               <p className="text-purple-800">
-                El huésped ya pagó. Ahora paga tu fee de €{hostFee} para confirmar.
+                El huésped ya pagó. Ahora paga tu fee de {formatMajor(hostFee)} para confirmar.
               </p>
               <button className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700">
-                Pagar €{hostFee}
+                Pagar {formatMajor(hostFee)}
               </button>
             </div>
           )}
@@ -339,7 +343,7 @@ export default function HostBookingDetailPage() {
             </div>
             <div>
               <span className="text-sm text-gray-600">Precio mensual:</span>
-              <p className="font-bold text-lg text-green-600">€{monthlyPrice}/mes</p>
+              <p className="font-bold text-lg text-green-600">{formatMajor(monthlyPrice)}/mes</p>
             </div>
           </div>
         </div>
@@ -354,22 +358,22 @@ export default function HostBookingDetailPage() {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-700">Alquiler total ({booking.months_duration} meses):</span>
-              <span className="font-bold">€{totalRent}</span>
+              <span className="font-bold">{formatMajor(totalRent)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-700">Depósito:</span>
-              <span className="font-bold">€{depositAmount}</span>
+              <span className="font-bold">{formatMajor(depositAmount)}</span>
             </div>
             <div className="flex justify-between pt-3 border-t-2">
               <span className="font-bold">Recibirás (primer pago):</span>
-              <span className="font-bold text-green-600 text-xl">€{monthlyPrice + depositAmount}</span>
+              <span className="font-bold text-green-600 text-xl">{formatMajor(monthlyPrice + depositAmount)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Tu fee de inhabitme:</span>
               {isFoundingHost ? (
-                <span className="text-green-600 font-bold">€0 (Founding Host 2026 🏆)</span>
+                <span className="text-green-600 font-bold">{formatMajor(0)} (Founding Host 2026 🏆)</span>
               ) : (
-                <span className="text-gray-600">-€{hostFee}</span>
+                <span className="text-gray-600">-{formatMajor(hostFee)}</span>
               )}
             </div>
           </div>
@@ -383,7 +387,7 @@ export default function HostBookingDetailPage() {
           ) : (
             <div className="mt-4 bg-blue-50 rounded-lg p-4">
               <p className="text-sm text-blue-800">
-                💡 <strong>Nota:</strong> inhabitme retiene tu fee (€{hostFee}) del primer pago. Los meses restantes los cobra el huésped directamente a ti.
+                💡 <strong>Nota:</strong> inhabitme retiene tu fee ({formatMajor(hostFee)}) del primer pago. Los meses restantes los cobra el huésped directamente a ti.
               </p>
             </div>
           )}

@@ -108,7 +108,7 @@ export function PricingComparisonSection({ tHow }: { tHow: any }) {
             </ul>
             <div className="mt-6 pt-6 border-t-2 border-red-200">
               <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-              <p className="text-2xl font-black text-red-600">3600 + 540 = 4140 EUR</p>
+              <p className="text-2xl font-black text-red-600">{tHow('example.otherPlatformTotal')}</p>
               <p className="text-sm text-gray-500 mt-1">{tHow('example.otherPlatform')}</p>
             </div>
           </div>
@@ -147,7 +147,7 @@ export function PricingComparisonSection({ tHow }: { tHow: any }) {
             </ul>
             <div className="mt-6 pt-6 border-t-2 border-green-200">
               <p className="text-base text-gray-600 mb-2">{tHow('example.title')}</p>
-              <p className="text-2xl font-black text-green-600">3600 + 218 = 3818 EUR</p>
+              <p className="text-2xl font-black text-green-600">{tHow('example.inhabitmeTotal')}</p>
               <p className="text-sm text-gray-500 mt-1">{tHow('example.inhabitme')}</p>
             </div>
           </div>

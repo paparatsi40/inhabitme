@@ -10,6 +10,7 @@ import {
   ArrowLeft, CreditCard, CheckCircle, XCircle, 
   Clock, Search, DollarSign
 } from 'lucide-react';
+import { normalizeCurrency } from '@/lib/currency';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,7 @@ interface Payment {
   amount: number;
   status: string;
   payment_date: string;
+  currency: 'EUR' | 'USD';
   booking: {
     property_id: string;
     guest_name: string;
@@ -47,6 +49,7 @@ export default async function PaymentsPage() {
       amount,
       status,
       payment_date,
+      currency,
       bookings!inner(
         property_id,
         guest_name,
@@ -66,6 +69,7 @@ export default async function PaymentsPage() {
     amount: p.amount,
     status: p.status,
     payment_date: p.payment_date,
+    currency: normalizeCurrency(p.currency),
     booking: {
       property_id: p.bookings.property_id,
       guest_name: p.bookings.guest_name,
@@ -74,14 +78,25 @@ export default async function PaymentsPage() {
     },
   }));
 
-  // Calcular totales
-  const totalEarnings = paymentsList
+  // Calcular totales por moneda (evitar mezclar EUR y USD)
+  const completedByCurrency = paymentsList
     .filter(p => p.status === 'completed')
-    .reduce((sum, p) => sum + p.amount, 0);
+    .reduce<Record<'EUR' | 'USD', number>>((acc, p) => {
+      acc[p.currency] += p.amount
+      return acc
+    }, { EUR: 0, USD: 0 })
 
-  const pendingAmount = paymentsList
+  const pendingByCurrency = paymentsList
     .filter(p => p.status === 'pending')
-    .reduce((sum, p) => sum + p.amount, 0);
+    .reduce<Record<'EUR' | 'USD', number>>((acc, p) => {
+      acc[p.currency] += p.amount
+      return acc
+    }, { EUR: 0, USD: 0 })
+
+  const formatMajor = (amount: number, currency: 'EUR' | 'USD') => {
+    const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+    return new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(amount)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
@@ -152,8 +167,9 @@ export default async function PaymentsPage() {
               <DollarSign className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-gray-900">
-                €{totalEarnings.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+              <div className="text-2xl font-black text-gray-900 space-y-1">
+                <div>{formatMajor(completedByCurrency.EUR, 'EUR')}</div>
+                <div>{formatMajor(completedByCurrency.USD, 'USD')}</div>
               </div>
               <p className="text-xs text-gray-500 mt-1">
                 Pagos completados
@@ -169,8 +185,9 @@ export default async function PaymentsPage() {
               <Clock className="h-5 w-5 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-4xl font-black text-gray-900">
-                €{pendingAmount.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+              <div className="text-2xl font-black text-gray-900 space-y-1">
+                <div>{formatMajor(pendingByCurrency.EUR, 'EUR')}</div>
+                <div>{formatMajor(pendingByCurrency.USD, 'USD')}</div>
               </div>
               <p className="text-xs text-gray-500 mt-1">
                 En proceso
@@ -256,7 +273,7 @@ export default async function PaymentsPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="text-lg font-bold text-gray-900">
-                          €{payment.amount.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                          {formatMajor(payment.amount, payment.currency)}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">

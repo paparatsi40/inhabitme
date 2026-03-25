@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, Eye, Search, Sparkles } from 'lucide-react';
+import { normalizeCurrency } from '@/lib/currency';
 
 export default function PaymentSuccessPage() {
   const params = useParams();
@@ -24,6 +25,10 @@ export default function PaymentSuccessPage() {
       console.error('Error fetching booking:', error);
     }
   };
+
+  const currency = normalizeCurrency(booking?.currency)
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 py-12 px-4">
@@ -60,7 +65,7 @@ export default function PaymentSuccessPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Host Completa su Pago</p>
-                  <p className="text-sm text-gray-600">El host debe pagar su service fee según duración (o €0 si es Founding Host)</p>
+                  <p className="text-sm text-gray-600">El host debe pagar su service fee según duración (o {formatMinor(0)} si es Founding Host)</p>
                 </div>
               </div>
 
@@ -93,20 +98,20 @@ export default function PaymentSuccessPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Primer mes</span>
-                  <span className="font-semibold">€{(booking.monthly_price / 100).toFixed(2)}</span>
+                  <span className="font-semibold">{formatMinor(booking.monthly_price)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Depósito (reembolsable)</span>
-                  <span className="font-semibold">€{(booking.deposit_amount / 100).toFixed(2)}</span>
+                  <span className="font-semibold">{formatMinor(booking.deposit_amount)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">inhabitme service fee</span>
-                  <span className="font-semibold">€{(booking.guest_fee / 100).toFixed(2)}</span>
+                  <span className="font-semibold">{formatMinor(booking.guest_fee)}</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between text-lg">
                   <span className="font-bold text-gray-900">Total Pagado</span>
                   <span className="font-bold text-green-600">
-                    €{((booking.monthly_price + booking.deposit_amount + booking.guest_fee) / 100).toFixed(2)}
+                    {formatMinor((booking.monthly_price || 0) + (booking.deposit_amount || 0) + (booking.guest_fee || 0))}
                   </span>
                 </div>
               </div>

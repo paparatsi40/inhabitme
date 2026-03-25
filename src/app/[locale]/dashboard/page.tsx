@@ -11,6 +11,7 @@ import {
   Building2, Search, Calendar, Settings, User, ArrowRight, 
   Mail, TrendingUp, Eye, CheckCircle, Plus, Inbox 
 } from 'lucide-react';
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
 export const dynamic = 'force-dynamic'
 
@@ -211,7 +212,10 @@ export default async function DashboardPage() {
                 const mainImage = property.images && property.images.length > 0 
                   ? property.images[0] 
                   : null;
-                
+                const currency = normalizeCurrency((property as any).currency ?? getCurrencyFromLocation((property as any).city_country, (property as any).city_name))
+                const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+                const monthlyPriceFormatted = new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(Number((property as any).monthly_price || 0))
+
                 return (
                   <div key={property.id} className="group bg-white rounded-2xl overflow-hidden shadow-sm border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all">
                     {/* Image */}
@@ -246,7 +250,7 @@ export default async function DashboardPage() {
                       
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-2xl font-black text-gray-900">
-                          €{property.monthly_price}
+                          {monthlyPriceFormatted}
                           <span className="text-sm font-medium text-gray-600">{t('perMonth')}</span>
                         </span>
                       </div>

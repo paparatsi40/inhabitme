@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Bed, Bath, Wifi, Check, Image as ImageIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import type { Listing } from '@/lib/domain/listing'
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency'
 
 type ListingGridProps = {
   listings: Listing[]
@@ -43,6 +44,9 @@ export function ListingGrid({ listings }: ListingGridProps) {
         const city = listing.city || {}
         const cityName = city.name
         const cityCountry = city.country
+        const currency = normalizeCurrency((price as any).currency ?? (listing as any).currency ?? getCurrencyFromLocation(cityCountry, cityName))
+        const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+        const monthlyPriceFormatted = new Intl.NumberFormat(locale, { style: 'currency', currency }).format(Number(monthlyPrice || 0))
         const neighborhoodName = listing.neighborhood?.name
         const availability = listing.availability || {}
         const minMonths = availability.minMonths
@@ -116,7 +120,7 @@ export function ListingGrid({ listings }: ListingGridProps) {
                 <div className="flex items-end justify-between">
                   <div>
                     <p className="text-2xl font-bold text-blue-600">
-                      €{monthlyPrice.toLocaleString()}
+                      {monthlyPriceFormatted}
                     </p>
                     <p className="text-xs text-gray-500">por mes</p>
                   </div>

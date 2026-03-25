@@ -27,6 +27,7 @@ import {
 import { getFAQs } from '@/config/faqs'
 import { NeighborhoodMap } from '@/components/maps/NeighborhoodMap'
 import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
+import { getCurrencyFromLocation } from '@/lib/currency'
 
 // ISR con revalidación cada 60 segundos
 export const revalidate = 60
@@ -123,6 +124,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const listingsCount = listings?.length || 0
   const minPrice =
     listings && listings.length > 0 ? Math.min(...listings.map((l) => l.price.monthly)) : 0
+  const cityCurrency = getCurrencyFromLocation(cityConfig.country, cityConfig.slug)
+  const moneyLocale = cityCurrency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMajor = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency: cityCurrency }).format(amount || 0)
 
   return (
     <>
@@ -200,7 +204,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                             <TrendingUp className="h-5 w-5 text-green-600" />
                             <span className="text-sm font-medium text-gray-600">Desde</span>
                           </div>
-                          <span className="text-3xl font-black text-gray-900">€{minPrice.toLocaleString()}</span>
+                          <span className="text-3xl font-black text-gray-900">{formatMajor(minPrice)}</span>
                           <span className="text-sm text-gray-600 font-medium">/mes</span>
                         </div>
                       )}
@@ -297,7 +301,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   <div className="hidden sm:block bg-gradient-to-br from-green-50 to-emerald-100 px-6 py-3 rounded-xl border-2 border-green-200">
                     <p className="text-sm font-medium text-gray-600 mb-1">Precio medio</p>
                     <p className="text-2xl font-black text-gray-900">
-                      €{minPrice.toLocaleString()}
+                      {formatMajor(minPrice)}
                       <span className="text-sm font-medium text-gray-600">/mes</span>
                     </p>
                   </div>

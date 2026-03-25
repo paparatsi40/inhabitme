@@ -26,7 +26,7 @@ export type ListingAvailability = {
 
 export type ListingPrice = {
   monthly: number
-  currency: 'EUR'
+  currency: 'EUR' | 'USD'
 }
 
 export type ListingStatus =

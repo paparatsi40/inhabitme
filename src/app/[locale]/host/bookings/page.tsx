@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { Calendar, Clock, Euro, Eye, CheckCircle, XCircle, Loader2, Home, ArrowLeft, Inbox } from 'lucide-react';
+import { normalizeCurrency } from '@/lib/currency';
 
 // Helper function to format dates without timezone issues
 const formatDateSafe = (dateString: string, options: Intl.DateTimeFormatOptions) => {
@@ -194,7 +195,12 @@ export default function HostBookingsPage() {
           </div>
         ) : (
           <div className="space-y-6">
-            {filteredBookings.map((booking) => (
+            {filteredBookings.map((booking) => {
+              const currency = normalizeCurrency((booking as any).currency)
+              const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+              const formatMinor = (amountMinor: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
+
+              return (
               <div key={booking.id} className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border-2 border-gray-200 hover:shadow-xl hover:border-blue-300 transition-all">
                 <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
                   <div className="flex-1 w-full">
@@ -254,7 +260,7 @@ export default function HostBookingsPage() {
                           <Euro className="w-5 h-5 text-green-600" />
                           <span className="text-xs font-semibold text-gray-600 uppercase">Precio</span>
                         </div>
-                        <p className="text-lg font-black text-green-700">€{(booking.monthly_price / 100).toFixed(0)}<span className="text-sm font-semibold text-gray-600">/mes</span></p>
+                        <p className="text-lg font-black text-green-700">{formatMinor(booking.monthly_price)}<span className="text-sm font-semibold text-gray-600">/mes</span></p>
                       </div>
                     </div>
 
@@ -303,7 +309,7 @@ export default function HostBookingsPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </div>

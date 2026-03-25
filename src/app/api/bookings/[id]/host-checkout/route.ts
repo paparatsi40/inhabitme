@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
+import { normalizeCurrency, toStripeCurrency } from '@/lib/currency'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
@@ -93,8 +94,10 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     }
 
     const pricingTier = booking.pricing_tier || 'Standard'
+    const bookingCurrency = normalizeCurrency(booking.currency)
+    const stripeCurrency = toStripeCurrency(bookingCurrency)
 
-    console.log('💰 Host fee amount:', hostFeeAmount / 100, 'EUR')
+    console.log('💰 Host fee amount:', hostFeeAmount / 100, bookingCurrency)
     console.log('📊 Pricing tier:', pricingTier)
 
     // Create Stripe checkout session
@@ -107,7 +110,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       line_items: [
         {
           price_data: {
-            currency: 'eur',
+            currency: stripeCurrency,
             product_data: {
               name: `inhabitme Host Fee - ${pricingTier}`,
               description: `Fee for accepting booking: ${booking.property?.title || 'Property'}`,
@@ -125,7 +128,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       metadata: {
         booking_id: bookingId,
         host_id: userId,
-        payment_type: 'host_fee',
+        payment_type: 'host',
+        currency: bookingCurrency,
+        type: 'host_payment', // legacy compatibility
       },
     })
 

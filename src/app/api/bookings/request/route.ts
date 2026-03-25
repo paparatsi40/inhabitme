@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { formatMoneyFromMinor, getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -64,9 +65,14 @@ export async function POST(request: NextRequest) {
     // For now, we'll calculate the fee and it will be adjusted in the payment step
     const currentYear = new Date().getFullYear();
     
-    // Calculate prices (in cents)
-    const monthlyPrice = property.monthly_price * 100; // €1200 -> 120000
-    const depositAmount = (property.deposit_amount || property.monthly_price) * 100; // Use monthly_price if deposit not set
+    // Resolve booking currency from listing/location (single source of truth)
+    const bookingCurrency = normalizeCurrency(
+      property.currency || getCurrencyFromLocation(property.country_code || property.country, property.city_slug || property.city_name)
+    )
+
+    // Calculate prices (in minor units: cents)
+    const monthlyPrice = Math.round(Number(property.monthly_price) * 100)
+    const depositAmount = Math.round(Number(property.deposit_amount || property.monthly_price) * 100)
     
     // Calculate fees based on duration
     const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
@@ -96,6 +102,7 @@ export async function POST(request: NextRequest) {
         guest_fee: guestFee,
         host_fee: hostFee,
         total_first_payment: totalFirstPayment,
+        currency: bookingCurrency,
         status: 'pending_host_approval',
         guest_message: message,
         guest_email: guestEmail, // Saved from Clerk at booking creation
@@ -134,8 +141,9 @@ export async function POST(request: NextRequest) {
         // Si falla, usa el fallback
       }
       
-      // Calculate earnings for host
+      // Calculate earnings for host (minor units)
       const hostEarnings = (monthlyPrice * monthsDiff) + depositAmount - guestFee - hostFee;
+      const moneyLocale = bookingCurrency === 'EUR' ? 'es-ES' : 'en-US'
       
       // Email al Host
       await resend.emails.send({
@@ -161,7 +169,7 @@ export async function POST(request: NextRequest) {
                 <p style="margin: 8px 0;"><strong>Check-in:</strong> ${checkInFormatted}</p>
                 <p style="margin: 8px 0;"><strong>Check-out:</strong> ${checkOutFormatted}</p>
                 <p style="margin: 8px 0;"><strong>Duración:</strong> ${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'}</p>
-                <p style="margin: 8px 0;"><strong>Precio mensual:</strong> €${(monthlyPrice / 100).toFixed(2)}</p>
+                <p style="margin: 8px 0;"><strong>Precio mensual:</strong> ${formatMoneyFromMinor(monthlyPrice, bookingCurrency, moneyLocale)}</p>
               </div>
               
               ${message ? `
@@ -174,7 +182,7 @@ export async function POST(request: NextRequest) {
               <div style="background: #fef3c7; padding: 20px; border-radius: 10px; margin: 20px 0;">
                 <p style="margin: 0 0 10px 0;"><strong>💰 Tu Ganancia Potencial:</strong></p>
                 <p style="font-size: 32px; font-weight: bold; color: #16a34a; margin: 0;">
-                  €${(hostEarnings / 100).toFixed(2)}
+                  ${formatMoneyFromMinor(hostEarnings, bookingCurrency, moneyLocale)}
                 </p>
                 <p style="margin: 10px 0 0 0; font-size: 14px; color: #666;">
                   (${monthsDiff} ${monthsDiff === 1 ? 'mes' : 'meses'} + depósito - fees)
@@ -219,7 +227,7 @@ export async function POST(request: NextRequest) {
             <p><strong>Check-in:</strong> ${checkIn}</p>
             <p><strong>Check-out:</strong> ${checkOut}</p>
             <p><strong>Duración:</strong> ${monthsDiff} meses</p>
-            <p><strong>Valor:</strong> €${(monthlyPrice / 100).toFixed(2)}/mes</p>
+            <p><strong>Valor:</strong> ${formatMoneyFromMinor(monthlyPrice, bookingCurrency, moneyLocale)}/mes</p>
             <hr>
             <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/en/admin/bookings/${booking.id}">Ver en Admin</a></p>
           </div>

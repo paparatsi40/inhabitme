@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Search, X } from 'lucide-react'
 import { SearchFilters as SearchFiltersType } from '@/lib/domain/search-filters'
+import { getCurrencyFromLocation } from '@/lib/currency'
 
 export type SearchFiltersProps = {
   filters: SearchFiltersType
@@ -19,6 +20,8 @@ export function SearchFilters({
   onClear
 }: SearchFiltersProps) {
   const hasActiveFilters = Object.values(filters).some(Boolean)
+  const currency = getCurrencyFromLocation(undefined, filters.city)
+  const currencySymbol = currency === 'EUR' ? '€' : '$'
 
   return (
     <Card>
@@ -71,7 +74,7 @@ export function SearchFilters({
           {/* Min Price */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Precio mín. (€)
+              Precio mín. ({currencySymbol})
             </label>
             <input
               type="number"
@@ -91,7 +94,7 @@ export function SearchFilters({
           {/* Max Price */}
           <div>
             <label className="block text-sm font-medium mb-2">
-              Precio máx. (€)
+              Precio máx. ({currencySymbol})
             </label>
             <input
               type="number"

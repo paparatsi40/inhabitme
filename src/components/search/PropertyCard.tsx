@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Building2, MapPin, Wifi, Monitor, Bed, Bath } from 'lucide-react'
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency'
 
 export function PropertyCard({ property }: { property: any }) {
   // Obtener la primera imagen o usar placeholder
@@ -9,6 +10,10 @@ export function PropertyCard({ property }: { property: any }) {
     || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
   
   console.log('[PropertyCard]', property.title, 'images:', property.images, 'mainImage:', mainImage)
+
+  const currency = normalizeCurrency(property.currency ?? getCurrencyFromLocation(property.city?.country, property.city?.name))
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const monthlyPriceFormatted = new Intl.NumberFormat(locale, { style: 'currency', currency }).format(Number(property.monthlyPrice || 0))
   
   return (
     <Link href={`/properties/${property.id}`}>
@@ -56,7 +61,7 @@ export function PropertyCard({ property }: { property: any }) {
 
           <div className="pt-3 border-t flex justify-between items-baseline">
             <span className="text-2xl font-bold text-blue-600">
-              €{Number(property.monthlyPrice).toLocaleString()}
+              {monthlyPriceFormatted}
             </span>
             <span className="text-gray-600 text-sm">/mes</span>
           </div>

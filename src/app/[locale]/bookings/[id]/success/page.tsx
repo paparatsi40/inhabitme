@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, Eye, Search, Clock, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { normalizeCurrency } from '@/lib/currency';
 
 export default function BookingSuccessPage() {
   const params = useParams();
@@ -36,6 +37,10 @@ export default function BookingSuccessPage() {
       </div>
     );
   }
+
+  const currency = normalizeCurrency(booking?.currency)
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4">
@@ -142,7 +147,7 @@ export default function BookingSuccessPage() {
                   <div className="flex justify-between pt-2 border-t border-gray-300">
                     <span className="text-gray-600">Total (si se acepta):</span>
                     <span className="font-bold text-lg text-purple-600">
-                      €{(booking.total_first_payment / 100).toFixed(2)}
+                      {formatMinor(booking.total_first_payment)}
                     </span>
                   </div>
                 </div>

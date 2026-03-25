@@ -14,6 +14,7 @@ import { PropertyActions } from '@/components/dashboard/PropertyActions'
 import { FeaturedToggle } from '@/components/dashboard/FeaturedToggle'
 import { getTranslations } from 'next-intl/server'
 import { getLocale } from 'next-intl/server'
+import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency'
 
 export default async function MyPropertiesPage() {
   const { userId } = await auth()
@@ -128,7 +129,7 @@ export default async function MyPropertiesPage() {
               </div>
               <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('income')}</span>
             </div>
-            <p className="text-3xl font-black text-gray-900">€{totalLeads * 15}</p>
+            <p className="text-3xl font-black text-gray-900">{new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(totalLeads * 15)}</p>
           </div>
         </div>
 
@@ -159,6 +160,9 @@ export default async function MyPropertiesPage() {
                 ? property.images[0] 
                 : null
               const leadsCount = property.property_leads?.length || 0
+              const currency = normalizeCurrency((property as any).currency ?? getCurrencyFromLocation((property as any).city_country, (property as any).city_name))
+              const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+              const monthlyPriceFormatted = new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(Number((property as any).monthly_price || 0))
 
               return (
                 <div key={property.id} className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 hover:shadow-lg transition-shadow overflow-hidden">
@@ -222,7 +226,7 @@ export default async function MyPropertiesPage() {
                           <div className="flex items-center gap-4 mt-4">
                             <div className="flex items-center gap-2">
                               <Euro className="h-4 w-4 text-gray-400" />
-                              <span className="text-lg font-bold text-gray-900">€{property.monthly_price}</span>
+                              <span className="text-lg font-bold text-gray-900">{monthlyPriceFormatted}</span>
                               <span className="text-sm text-gray-500">/mes</span>
                             </div>
                             <div className="flex items-center gap-2">

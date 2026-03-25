@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
+import { normalizeCurrency, toStripeCurrency } from '@/lib/currency'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -85,6 +86,9 @@ export async function POST(_request: NextRequest, { params }: Ctx) {
       booking.host_fee ??
       7900 // fallback
 
+    const bookingCurrency = normalizeCurrency(booking.currency)
+    const stripeCurrency = toStripeCurrency(bookingCurrency)
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       payment_method_types: ['card'],
@@ -93,12 +97,14 @@ export async function POST(_request: NextRequest, { params }: Ctx) {
       metadata: {
         booking_id: bookingId,
         host_id: userId,
-        payment_type: 'host_fee',
+        payment_type: 'host',
+        currency: bookingCurrency,
+        type: 'host_payment', // legacy compatibility
       },
       line_items: [
         {
           price_data: {
-            currency: 'eur',
+            currency: stripeCurrency,
             product_data: {
               name: 'inhabitme Host Fee',
               description: 'Host fee to confirm booking',
