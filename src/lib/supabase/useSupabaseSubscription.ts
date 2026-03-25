@@ -38,13 +38,10 @@ export function useSupabaseSubscription({
     
     try {
       const channel = channelRef.current
-      const state = channel.state
-      
-      // Solo intentar unsubscribe si el canal está en estado válido
-      if (state !== 'closed' && state !== 'channelClosed') {
-        await channel.unsubscribe()
-      }
-      
+
+      // Intentar unsubscribe; si el canal ya está cerrándose/cerrado, se maneja en catch
+      await channel.unsubscribe()
+
       // Remover el canal del cliente
       const supabase = getSupabaseBrowserClientWithRealtime()
       supabase.removeChannel(channel)
