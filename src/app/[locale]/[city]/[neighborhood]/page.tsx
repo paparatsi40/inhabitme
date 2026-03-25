@@ -124,7 +124,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const listingsCount = listings?.length || 0
   const minPrice =
     listings && listings.length > 0 ? Math.min(...listings.map((l) => l.price.monthly)) : 0
-  const cityCurrency = getCurrencyFromLocation(cityConfig.country, cityConfig.slug)
+  const cityCurrency = getCurrencyFromLocation(undefined, cityConfig.slug)
   const moneyLocale = cityCurrency === 'EUR' ? 'es-ES' : 'en-US'
   const formatMajor = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency: cityCurrency }).format(amount || 0)
 
