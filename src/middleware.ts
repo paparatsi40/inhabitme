@@ -57,9 +57,7 @@ export default clerkMiddleware(async (auth, req) => {
   // Non-locale auth routes pass-through
   if (
     pathname === "/onboarding" ||
-    pathname.startsWith("/onboarding/") ||
-    pathname === "/founding-host" ||
-    pathname.startsWith("/founding-host/")
+    pathname.startsWith("/onboarding/")
   ) {
     return NextResponse.next();
   }
