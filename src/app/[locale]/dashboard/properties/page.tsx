@@ -15,6 +15,7 @@ import { FeaturedToggle } from '@/components/dashboard/FeaturedToggle'
 import { getTranslations } from 'next-intl/server'
 import { getLocale } from 'next-intl/server'
 import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency'
+import { resolveCanonicalUserIdentity } from '@/lib/user-identity'
 
 export default async function MyPropertiesPage() {
   const { userId } = await auth()
@@ -30,32 +31,15 @@ export default async function MyPropertiesPage() {
   // Obtener propiedades del usuario con leads
   const supabase = getSupabaseServerClient()
 
-  // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
-  let legacyUserId: string | null = null
-  let canonicalClerkId: string | null = null
+  const identity = await resolveCanonicalUserIdentity({
+    supabase,
+    runtimeClerkId: userId,
+    email: userEmail,
+  })
 
-  const { data: legacyUserRow } = await supabase
-    .from('User')
-    .select('id, clerkId, email')
-    .eq('clerkId', userId)
-    .maybeSingle()
-
-  if (legacyUserRow) {
-    legacyUserId = (legacyUserRow as any)?.id ?? null
-    canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
-  } else if (userEmail) {
-    // Fallback por email para casos donde Clerk userId cambia entre entornos/instancias
-    const { data: legacyUserByEmail } = await supabase
-      .from('User')
-      .select('id, clerkId, email')
-      .eq('email', userEmail)
-      .maybeSingle()
-
-    legacyUserId = (legacyUserByEmail as any)?.id ?? null
-    canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
-  }
-
-  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
+  const ownerIds = Array.from(
+    new Set([identity.runtimeClerkId, identity.canonicalClerkId, identity.legacyUserId].filter(Boolean) as string[])
+  )
   console.log('[MyProperties] ownerIds used for queries:', ownerIds)
   
   // Primero obtener solo las propiedades (sin joins)

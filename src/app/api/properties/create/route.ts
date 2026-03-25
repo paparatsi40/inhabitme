@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { notifyWaitlist, getWaitlistCount } from '@/lib/email/send-waitlist-notification'
+import { resolveCanonicalUserIdentity } from '@/lib/user-identity'
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,7 +61,18 @@ async function handleCreateProperty(req: NextRequest) {
   }
 
   console.log('[API] ✅ User authenticated:', userId)
-  console.log('[API] Will create property with owner_id:', userId)
+
+  const user = await currentUser()
+  const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? null
+  const identity = await resolveCanonicalUserIdentity({
+    supabase: getSupabaseServerClient(),
+    runtimeClerkId: userId,
+    email: userEmail,
+  })
+  const ownerId = identity.canonicalClerkId
+
+  console.log('[API] Canonical identity resolved:', identity)
+  console.log('[API] Will create property with owner_id:', ownerId)
 
   let body: any
   try {
@@ -182,7 +194,7 @@ async function handleCreateProperty(req: NextRequest) {
     monthly_price: monthlyPrice,
     currency: 'EUR',
 
-    owner_id: userId,
+    owner_id: ownerId,
     status: 'active',
   }
 
@@ -245,7 +257,7 @@ async function handleCreateProperty(req: NextRequest) {
   return NextResponse.json({
     success: true,
     id: data.id,
-    ownerId: userId,
-    debug: { ownerId: userId }
+    ownerId,
+    debug: { ownerId, runtimeUserId: userId }
   })
 }
