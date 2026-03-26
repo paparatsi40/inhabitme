@@ -72,10 +72,15 @@ export default function CustomizeListingPage() {
   // Save theme
   const handleSave = async () => {
     setSaving(true)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
+
     try {
       const res = await fetch(`/api/listings/${listingId}/theme`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        signal: controller.signal,
         body: JSON.stringify({
           template: selectedTemplate,
           customizations: customTheme,
@@ -95,17 +100,24 @@ export default function CustomizeListingPage() {
           }
         })
       })
-      
+
+      clearTimeout(timeoutId)
+
       if (res.ok) {
         alert('Theme saved successfully!')
         router.push(`/${locale}/dashboard/properties`)
       } else {
-        const error = await res.json()
-        alert(error.error || 'Failed to save theme')
+        const payload = await res.json().catch(() => ({}))
+        alert(payload.error || `Failed to save theme (${res.status})`)
       }
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId)
       console.error('Error saving theme:', error)
-      alert('Failed to save theme')
+      if (error?.name === 'AbortError') {
+        alert('Save request timed out. Please try again.')
+      } else {
+        alert('Failed to save theme')
+      }
     } finally {
       setSaving(false)
     }
