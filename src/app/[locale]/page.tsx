@@ -467,8 +467,8 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
               src={imageUrl}
               alt={`${name} cityscape`}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              quality={70}
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
+              quality={55}
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
