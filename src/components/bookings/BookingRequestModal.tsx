@@ -160,7 +160,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
           {/* Mensaje */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('messageToHost')
+              {t('messageToHost')}
             </label>
             <textarea
               rows={4}
