@@ -28,21 +28,6 @@ function safeLower(input: unknown): string {
   return typeof input === 'string' ? input.toLowerCase() : ''
 }
 
-const NEIGHBORHOOD_IMAGE_MAP: Record<string, Record<string, string>> = {
-  austin: {
-    mueller: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=900&h=700&fit=crop&q=80',
-    zilker: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=700&fit=crop&q=80',
-    'barton-hills': 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&h=700&fit=crop&q=80',
-    domain: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&h=700&fit=crop&q=80',
-    'east-austin': 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=900&h=700&fit=crop&q=80',
-    tarrytown: 'https://images.unsplash.com/photo-1430285561322-7808604715df?w=900&h=700&fit=crop&q=80',
-  },
-}
-
-function getNeighborhoodImage(citySlug: string, neighborhoodSlug: string, fallback: string): string {
-  return NEIGHBORHOOD_IMAGE_MAP[citySlug]?.[neighborhoodSlug] || fallback
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, city } = await params
   const localeSafe = safeLower(locale) || 'en'
@@ -158,26 +143,14 @@ export default async function CityPage({ params }: PageProps) {
         {/* Neighborhoods */}
         <section className="pb-10">
           <h3 className="text-2xl font-black text-gray-900 mb-4">{t('exploreNeighborhoodsTitle', { city: cityName })}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="flex flex-wrap gap-3">
             {neighborhoods.map((n) => (
               <Link
                 key={n.slug}
                 href={`/${citySlug}/${n.slug}`}
-                className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-lg hover:border-blue-400 transition-all"
+                className="px-5 py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-2xl font-bold text-sm hover:border-blue-500 hover:shadow-lg transition-all"
               >
-                <div className="relative h-28">
-                  <Image
-                    src={getNeighborhoodImage(citySlug, n.slug, cityConfig.image)}
-                    alt={`${n.name} - ${cityName}`}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/25" />
-                </div>
-                <div className="p-3">
-                  <p className="font-bold text-sm text-gray-900 group-hover:text-blue-700 transition-colors">{n.name}</p>
-                </div>
+                {n.name}
               </Link>
             ))}
           </div>
