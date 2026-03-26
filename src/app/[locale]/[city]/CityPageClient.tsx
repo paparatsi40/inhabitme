@@ -67,12 +67,9 @@ export function CityPageClient({ cityName, citySlug, neighborhoods, alternatives
               <Link
                 key={slug}
                 href={`/${citySlug}/${slug}`}
-                className="group rounded-2xl overflow-hidden border border-blue-200 hover:shadow-md hover:border-blue-500 transition-all"
+                className="group rounded-2xl border border-purple-200 bg-purple-100 hover:bg-purple-200 hover:shadow-md transition-all h-24 flex items-center justify-center text-center px-4"
               >
-                <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 transition-colors" />
-                <div className="p-3 text-left bg-white">
-                  <span className="font-medium text-gray-700 group-hover:text-blue-700 transition">{name}</span>
-                </div>
+                <span className="font-black text-base md:text-lg text-purple-900 group-hover:text-purple-950 transition leading-tight">{name}</span>
               </Link>
             ))}
           </div>

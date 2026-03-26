@@ -149,12 +149,9 @@ export default async function CityPage({ params }: PageProps) {
               <Link
                 key={n.slug}
                 href={`/${citySlug}/${n.slug}`}
-                className="group rounded-2xl overflow-hidden border border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all"
+                className="group rounded-2xl border border-purple-200 bg-purple-100 hover:bg-purple-200 hover:shadow-md transition-all h-24 flex items-center justify-center text-center px-4"
               >
-                <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 transition-colors" />
-                <div className="p-3 bg-white">
-                  <p className="font-bold text-sm text-gray-900 group-hover:text-blue-700 transition-colors">{n.name}</p>
-                </div>
+                <p className="font-black text-base md:text-lg text-purple-900 group-hover:text-purple-950 transition-colors leading-tight">{n.name}</p>
               </Link>
             ))}
           </div>
