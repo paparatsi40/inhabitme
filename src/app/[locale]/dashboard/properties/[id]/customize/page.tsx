@@ -3,11 +3,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme, TemplateId } from '@/lib/domain/listing-theme'
-import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
+import dynamic from 'next/dynamic'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
+
+const ThemedListingPage = dynamic(
+  () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
+  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Loading preview...</div> }
+)
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
@@ -29,26 +34,31 @@ export default function CustomizeListingPage() {
   // Fetch listing data
   useEffect(() => {
     const fetchListing = async () => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 12000)
       try {
-        const res = await fetch(`/api/listings/${listingId}`)
+        const res = await fetch(`/api/listings/${listingId}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        })
         if (res.ok) {
           const data = await res.json()
-          // Map API fields to component expected format
           const mappedListing = {
             ...data,
             city: data.city_name,
             country: data.city_country,
-            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
+            monthly_price: data.monthly_price || 1000,
           }
           setListing(mappedListing)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
       } finally {
+        clearTimeout(timeoutId)
         setLoading(false)
       }
     }
-    
+
     fetchListing()
   }, [listingId])
   
