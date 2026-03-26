@@ -39,7 +39,7 @@ export default async function ProfilePage() {
               <Link href="/search">
                 <Button variant="ghost" className="font-semibold">
                   <Search className="h-4 w-4 mr-2" />
-                  Buscar
+                  {t('searchButton')}
                 </Button>
               </Link>
               <UserMenu />
