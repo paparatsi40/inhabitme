@@ -42,48 +42,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Handle user.created / user.updated event
-    if (evt.type === 'user.created' || evt.type === 'user.updated') {
-      const {
-        id: userId,
-        unsafe_metadata,
-        email_addresses,
-        primary_email_address_id,
-      } = evt.data;
-
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-      // Keep legacy User table synced by email to avoid owner_id mismatches
-      const primaryEmail = (email_addresses || []).find(
-        (e: any) => e.id === primary_email_address_id
-      )?.email_address?.toLowerCase?.();
-
-      if (primaryEmail) {
-        const { data: existingByEmail } = await supabase
-          .from('User')
-          .select('id, clerkId, email')
-          .eq('email', primaryEmail)
-          .maybeSingle();
-
-        if (existingByEmail) {
-          const currentClerkId = (existingByEmail as any)?.clerkId;
-          if (currentClerkId !== userId) {
-            const { error: syncError } = await supabase
-              .from('User')
-              .update({ clerkId: userId })
-              .eq('id', (existingByEmail as any).id);
-
-            if (syncError) {
-              console.error('Error syncing User.clerkId by email:', syncError);
-            } else {
-              console.log(`Synced User.clerkId for ${primaryEmail} -> ${userId}`);
-            }
-          }
-        }
-      }
+    // Handle user.created event
+    if (evt.type === 'user.created') {
+      const { id: userId, unsafe_metadata } = evt.data;
 
       // Check if this is a founding host signup
       if (unsafe_metadata?.role === 'founding_host' && unsafe_metadata?.invitation_token) {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
         // Mark invitation as accepted
         const { error: updateError } = await supabase
           .from('founding_host_invitations')

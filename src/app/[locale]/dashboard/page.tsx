@@ -12,7 +12,6 @@ import {
   Mail, TrendingUp, Eye, CheckCircle, Plus, Inbox 
 } from 'lucide-react';
 import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
-import { resolveCanonicalUserIdentity } from '@/lib/user-identity'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,15 +31,32 @@ export default async function DashboardPage() {
   // Obtener stats del usuario
   const supabase = getSupabaseServerClient();
 
-  const identity = await resolveCanonicalUserIdentity({
-    supabase,
-    runtimeClerkId: userId,
-    email: userEmail,
-  })
+  // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
+  let legacyUserId: string | null = null
+  let canonicalClerkId: string | null = null
 
-  const ownerIds = Array.from(
-    new Set([identity.runtimeClerkId, identity.canonicalClerkId, identity.legacyUserId].filter(Boolean) as string[])
-  )
+  const { data: legacyUserRow } = await supabase
+    .from('User')
+    .select('id, clerkId, email')
+    .eq('clerkId', userId)
+    .maybeSingle()
+
+  if (legacyUserRow) {
+    legacyUserId = (legacyUserRow as any)?.id ?? null
+    canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
+  } else if (userEmail) {
+    // Fallback por email para casos donde Clerk userId cambia entre entornos/instancias
+    const { data: legacyUserByEmail } = await supabase
+      .from('User')
+      .select('id, clerkId, email')
+      .eq('email', userEmail)
+      .maybeSingle()
+
+    legacyUserId = (legacyUserByEmail as any)?.id ?? null
+    canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
+  }
+
+  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
   // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy
