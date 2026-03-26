@@ -178,7 +178,7 @@ export default async function MyPropertiesPage() {
           <div className="flex items-center justify-between h-16">
             <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-semibold transition">
               <ArrowLeft className="h-4 w-4" />
-              Dashboard
+              {t('backToDashboard')}
             </Link>
             
             <div className="flex items-center gap-3">
@@ -305,7 +305,7 @@ export default async function MyPropertiesPage() {
                                 📍 {property.city_name}, {property.city_country}
                               </p>
                               <p className="text-sm text-gray-600">
-                                🛏️ {property.bedrooms} hab • 🚿 {property.bathrooms} baño{property.bathrooms > 1 ? 's' : ''}
+                                🛏️ {property.bedrooms} {t('bedroomsAbbr')} • 🚿 {property.bathrooms} {t('bathroomsLabel', { count: property.bathrooms })}
                               </p>
                             </div>
                             
@@ -314,7 +314,7 @@ export default async function MyPropertiesPage() {
                                 ? 'bg-green-100 text-green-700 border-2 border-green-200' 
                                 : 'bg-gray-100 text-gray-600 border-2 border-gray-200'
                             }`}>
-                              {property.status === 'active' ? '✓ Activa' : 'Inactiva'}
+                              {property.status === 'active' ? t('active') : t('inactive')}
                             </div>
                           </div>
 
@@ -331,12 +331,12 @@ export default async function MyPropertiesPage() {
                             <div className="flex items-center gap-2">
                               <TrendingUp className="h-4 w-4 text-gray-400" />
                               <span className="text-lg font-bold text-gray-900">{monthlyPriceFormatted}</span>
-                              <span className="text-sm text-gray-500">/mes</span>
+                              <span className="text-sm text-gray-500">{t('perMonth')}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Mail className="h-4 w-4 text-gray-400" />
                               <span className="text-sm font-semibold text-gray-900">{leadsCount}</span>
-                              <span className="text-sm text-gray-500">lead{leadsCount !== 1 ? 's' : ''}</span>
+                              <span className="text-sm text-gray-500">{leadsCount === 1 ? t('leads') : t('leadsPlural')}</span>
                             </div>
                           </div>
 
@@ -355,7 +355,7 @@ export default async function MyPropertiesPage() {
                     <div className="lg:col-span-1 bg-gradient-to-br from-gray-50 to-blue-50/30 p-6 border-l-2 border-gray-200">
                       <h4 className="font-bold text-sm text-gray-600 uppercase tracking-wide mb-4 flex items-center gap-2">
                         <Mail className="h-4 w-4" />
-                        Leads Recibidos ({leadsCount})
+                        {t('leadsSection')} ({leadsCount})
                       </h4>
 
                       {leadsCount === 0 ? (
@@ -363,7 +363,7 @@ export default async function MyPropertiesPage() {
                           <div className="inline-flex p-3 bg-white rounded-xl mb-3 shadow-sm">
                             <Mail className="h-8 w-8 text-gray-300" />
                           </div>
-                          <p className="text-sm text-gray-500">Sin leads aún</p>
+                          <p className="text-sm text-gray-500">{t('noLeads')}</p>
                         </div>
                       ) : (
                         <div className="space-y-3 max-h-48 overflow-y-auto">
@@ -377,7 +377,7 @@ export default async function MyPropertiesPage() {
                                   </p>
                                   <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
                                     <Clock className="h-3 w-3" />
-                                    {new Date(lead.created_at).toLocaleDateString('es-ES', { 
+                                    {new Date(lead.created_at).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', { 
                                       day: 'numeric', 
                                       month: 'short' 
                                     })}
@@ -389,7 +389,7 @@ export default async function MyPropertiesPage() {
                                 className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
                               >
                                 <Mail className="h-3 w-3" />
-                                Contactar
+                                {t('contactLead')}
                               </a>
                             </div>
                           ))}

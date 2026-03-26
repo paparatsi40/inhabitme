@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { Link } from '@/i18n/routing';
 import { Calendar, Clock, Euro, Eye, CheckCircle, XCircle, Loader2, Home, ArrowLeft, Inbox } from 'lucide-react';
 import { normalizeCurrency } from '@/lib/currency';
+import { useLocale, useTranslations } from 'next-intl';
 
 // Helper function to format dates without timezone issues
-const formatDateSafe = (dateString: string, options: Intl.DateTimeFormatOptions) => {
+const formatDateSafe = (dateString: string, locale: string, options: Intl.DateTimeFormatOptions) => {
   // Parse date as local date to avoid timezone shifts
   const [year, month, day] = dateString.split('T')[0].split('-');
   const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-  return date.toLocaleDateString('es', options);
+  return date.toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', options);
 };
 
 interface Booking {
@@ -31,6 +32,8 @@ interface Booking {
 }
 
 export default function HostBookingsPage() {
+  const t = useTranslations('hostBookings');
+  const locale = useLocale();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'completed'>('all');
@@ -69,7 +72,7 @@ export default function HostBookingsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600 font-semibold">Cargando reservas...</p>
+          <p className="text-gray-600 font-semibold">{t('loading')}</p>
         </div>
       </div>
     );
@@ -96,7 +99,7 @@ export default function HostBookingsPage() {
             <Link href="/dashboard">
               <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl font-semibold text-gray-700 transition">
                 <ArrowLeft className="w-4 h-4" />
-                Dashboard
+                {t('dashboard')}
               </button>
             </Link>
           </div>
@@ -111,9 +114,9 @@ export default function HostBookingsPage() {
               <Inbox className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-3xl lg:text-5xl font-black">Solicitudes de Reserva</h1>
+              <h1 className="text-3xl lg:text-5xl font-black">{t('title')}</h1>
               <p className="text-lg lg:text-xl opacity-90 mt-2">
-                Gestiona las reservas de tus propiedades
+                {t('subtitle')}
               </p>
             </div>
           </div>
@@ -132,9 +135,9 @@ export default function HostBookingsPage() {
                 </div>
               )}
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Pendientes</p>
+            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('pending')}</p>
             <p className="text-4xl font-black text-gray-900">{pendingCount}</p>
-            <p className="text-xs text-gray-500 mt-2">Esperando tu respuesta</p>
+            <p className="text-xs text-gray-500 mt-2">{t('waitingYourResponse')}</p>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-green-100 hover:shadow-lg hover:border-green-300 transition-all">
@@ -143,9 +146,9 @@ export default function HostBookingsPage() {
                 <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Confirmadas</p>
+            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('confirmed')}</p>
             <p className="text-4xl font-black text-gray-900">{confirmedCount}</p>
-            <p className="text-xs text-gray-500 mt-2">Reservas activas</p>
+            <p className="text-xs text-gray-500 mt-2">{t('activeBookings')}</p>
           </div>
 
           <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-blue-100 hover:shadow-lg hover:border-blue-300 transition-all">
@@ -154,9 +157,9 @@ export default function HostBookingsPage() {
                 <Calendar className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">Total</p>
+            <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('total')}</p>
             <p className="text-4xl font-black text-gray-900">{bookings.length}</p>
-            <p className="text-xs text-gray-500 mt-2">Todas las solicitudes</p>
+            <p className="text-xs text-gray-500 mt-2">{t('allRequests')}</p>
           </div>
         </div>
 
@@ -172,10 +175,10 @@ export default function HostBookingsPage() {
                   : 'bg-transparent text-gray-700 hover:bg-gray-100'
               }`}
             >
-              {f === 'all' && 'Todas'}
-              {f === 'pending' && `Pendientes (${pendingCount})`}
-              {f === 'confirmed' && `Confirmadas (${confirmedCount})`}
-              {f === 'completed' && 'Completadas'}
+              {f === 'all' && t('all')}
+              {f === 'pending' && `${t('pending')} (${pendingCount})`}
+              {f === 'confirmed' && `${t('confirmed')} (${confirmedCount})`}
+              {f === 'completed' && t('completed')}
             </button>
           ))}
         </div>
@@ -186,11 +189,11 @@ export default function HostBookingsPage() {
             <div className="inline-flex p-6 bg-white rounded-3xl shadow-lg mb-6">
               <Inbox className="w-16 h-16 text-gray-400" />
             </div>
-            <h3 className="text-2xl font-black mb-3 text-gray-900">No hay reservas</h3>
+            <h3 className="text-2xl font-black mb-3 text-gray-900">{t('noBookings')}</h3>
             <p className="text-gray-600 text-lg">
-              {filter === 'pending' && 'No tienes solicitudes pendientes.'}
-              {filter === 'confirmed' && 'No tienes reservas confirmadas.'}
-              {filter === 'all' && 'Aún no has recibido ninguna solicitud de reserva.'}
+              {filter === 'pending' && t('noPendingRequests')}
+              {filter === 'confirmed' && t('noConfirmedBookings')}
+              {filter === 'all' && t('noBookingRequestsYet')}
             </p>
           </div>
         ) : (
@@ -209,32 +212,32 @@ export default function HostBookingsPage() {
                       {booking.status === 'pending_host_approval' && (
                         <span className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-bold border-2 border-yellow-200">
                           <Clock className="w-4 h-4" />
-                          Esperando tu respuesta
+                          {t('waitingYourResponse')}
                         </span>
                       )}
                       {booking.status === 'pending_guest_payment' && (
                         <span className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 px-4 py-2 rounded-xl text-sm font-bold border-2 border-blue-200">
                           <Clock className="w-4 h-4" />
-                          Esperando pago del huésped
+                          {t('waitingGuestPayment')}
                         </span>
                       )}
                       {booking.status === 'pending_host_payment' && (
                         <span className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-4 py-2 rounded-xl text-sm font-bold border-2 border-purple-200">
                           <Clock className="w-4 h-4" />
-                          Esperando tu pago
+                          {t('waitingYourPayment')}
                         </span>
                       )}
                       {booking.status === 'confirmed' && (
                         <span className="inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-4 py-2 rounded-xl text-sm font-bold border-2 border-green-200">
                           <CheckCircle className="w-4 h-4" />
-                          Confirmada
+                          {t('confirmedSingle')}
                         </span>
                       )}
                     </div>
 
                     {/* Guest Info */}
                     <h3 className="text-xl lg:text-2xl font-black mb-4 text-gray-900">
-                      Solicitud de Huésped
+                      {t('guestRequest')}
                     </h3>
 
                     {/* Booking Details */}
@@ -242,39 +245,39 @@ export default function HostBookingsPage() {
                       <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-100">
                         <div className="flex items-center gap-2 mb-2">
                           <Calendar className="w-5 h-5 text-blue-600" />
-                          <span className="text-xs font-semibold text-gray-600 uppercase">Fechas</span>
+                          <span className="text-xs font-semibold text-gray-600 uppercase">{t('dates')}</span>
                         </div>
                         <p className="text-sm font-bold text-gray-900">
-                          {formatDateSafe(booking.check_in, { day: 'numeric', month: 'short' })} - {formatDateSafe(booking.check_out, { day: 'numeric', month: 'short', year: 'numeric' })}
+                          {formatDateSafe(booking.check_in, locale, { day: 'numeric', month: 'short' })} - {formatDateSafe(booking.check_out, locale, { day: 'numeric', month: 'short', year: 'numeric' })}
                         </p>
                       </div>
                       <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-100">
                         <div className="flex items-center gap-2 mb-2">
                           <Clock className="w-5 h-5 text-purple-600" />
-                          <span className="text-xs font-semibold text-gray-600 uppercase">Duración</span>
+                          <span className="text-xs font-semibold text-gray-600 uppercase">{t('duration')}</span>
                         </div>
-                        <p className="text-sm font-bold text-gray-900">{booking.months_duration} meses</p>
+                        <p className="text-sm font-bold text-gray-900">{booking.months_duration} {t('months')}</p>
                       </div>
                       <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border-2 border-green-100">
                         <div className="flex items-center gap-2 mb-2">
                           <Euro className="w-5 h-5 text-green-600" />
-                          <span className="text-xs font-semibold text-gray-600 uppercase">Precio</span>
+                          <span className="text-xs font-semibold text-gray-600 uppercase">{t('price')}</span>
                         </div>
-                        <p className="text-lg font-black text-green-700">{formatMinor(booking.monthly_price)}<span className="text-sm font-semibold text-gray-600">/mes</span></p>
+                        <p className="text-lg font-black text-green-700">{formatMinor(booking.monthly_price)}<span className="text-sm font-semibold text-gray-600">{t('perMonth')}</span></p>
                       </div>
                     </div>
 
                     {/* Guest Message */}
                     {booking.guest_message && (
                       <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 rounded-xl p-4 mb-4 border-l-4 border-blue-500">
-                        <p className="text-xs font-semibold text-gray-600 uppercase mb-2">Mensaje del Huésped</p>
+                        <p className="text-xs font-semibold text-gray-600 uppercase mb-2">{t('guestMessage')}</p>
                         <p className="text-sm text-gray-700 italic">"{booking.guest_message}"</p>
                       </div>
                     )}
 
                     {/* Created At */}
                     <p className="text-xs text-gray-500 font-medium">
-                      📅 Solicitud recibida: {formatDateSafe(booking.created_at, { day: 'numeric', month: 'long', year: 'numeric' })} a las {new Date(booking.created_at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })}
+                      📅 {t('requestReceived')}: {formatDateSafe(booking.created_at, locale, { day: 'numeric', month: 'long', year: 'numeric' })} {t('atTime')} {new Date(booking.created_at).toLocaleTimeString(locale === 'en' ? 'en-US' : 'es-ES', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
 
@@ -285,7 +288,7 @@ export default function HostBookingsPage() {
                       className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                     >
                       <Eye className="w-5 h-5" />
-                      Ver Detalles
+                      {t('viewDetails')}
                     </Link>
 
                     {booking.status === 'pending_host_approval' && (
@@ -295,14 +298,14 @@ export default function HostBookingsPage() {
                           className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                           <CheckCircle className="w-5 h-5" />
-                          Aceptar
+                          {t('accept')}
                         </Link>
                         <Link
                           href={`/host/bookings/${booking.id}?action=reject`}
                           className="bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                           <XCircle className="w-5 h-5" />
-                          Rechazar
+                          {t('reject')}
                         </Link>
                       </div>
                     )}
