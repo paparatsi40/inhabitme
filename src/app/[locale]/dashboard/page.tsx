@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/routing';
 import { redirect as nextRedirect } from 'next/navigation';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser, clerkClient } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -56,7 +56,20 @@ export default async function DashboardPage() {
     canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
   }
 
-  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
+  let emailLinkedClerkIds: string[] = []
+  if (userEmail) {
+    try {
+      const client = await clerkClient()
+      const users = await client.users.getUserList({ emailAddress: [userEmail], limit: 10 })
+      emailLinkedClerkIds = (users.data || []).map((u: any) => String(u.id))
+    } catch (error) {
+      console.error('[Dashboard] error resolving email-linked Clerk ids:', error)
+    }
+  }
+
+  const ownerIds = Array.from(
+    new Set([userId, canonicalClerkId, legacyUserId, ...emailLinkedClerkIds].filter(Boolean) as string[])
+  )
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
   // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy

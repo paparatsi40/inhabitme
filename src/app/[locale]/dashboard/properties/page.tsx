@@ -1,4 +1,4 @@
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth, currentUser, clerkClient } from '@clerk/nextjs/server'
 import { Link } from '@/i18n/routing'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
@@ -55,7 +55,20 @@ export default async function MyPropertiesPage() {
     canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
   }
 
-  const ownerIds = Array.from(new Set([userId, canonicalClerkId, legacyUserId].filter(Boolean) as string[]))
+  let emailLinkedClerkIds: string[] = []
+  if (userEmail) {
+    try {
+      const client = await clerkClient()
+      const users = await client.users.getUserList({ emailAddress: [userEmail], limit: 10 })
+      emailLinkedClerkIds = (users.data || []).map((u: any) => String(u.id))
+    } catch (error) {
+      console.error('[MyProperties] error resolving email-linked Clerk ids:', error)
+    }
+  }
+
+  const ownerIds = Array.from(
+    new Set([userId, canonicalClerkId, legacyUserId, ...emailLinkedClerkIds].filter(Boolean) as string[])
+  )
   console.log('[MyProperties] ownerIds used for queries:', ownerIds)
   
   // Primero obtener solo las propiedades (sin joins)
