@@ -9,6 +9,7 @@ import { useTranslations } from 'next-intl'
 export function CityCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const t = useTranslations('home.heroCarousel')
+  const currentCity = CITIES[currentIndex]
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,42 +24,34 @@ export function CityCarousel() {
       <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-200">
         {/* Carrusel de imágenes */}
         <div className="aspect-[4/3] relative overflow-hidden">
-          {CITIES.map((city, index) => (
-            <div
-              key={city.name}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <Image
-                src={city.image}
-                alt={city.name}
-                fill
-                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 42vw"
-                quality={50}
-                className="object-cover"
-                priority={index === 0}
-                fetchPriority={index === currentIndex ? "high" : "low"}
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-              
-              {/* Nombre de ciudad */}
-              <div className="absolute top-6 left-6 right-6">
-                <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-bold text-gray-900">{city.name}</span>
-                </div>
-              </div>
-
-              {/* Subtitle */}
-              <div className="absolute bottom-24 left-6 right-6">
-                <p className="text-white text-lg font-semibold drop-shadow-lg">
-                  {city.subtitle}
-                </p>
+          <div key={currentCity.name} className="absolute inset-0 transition-opacity duration-700 opacity-100">
+            <Image
+              src={currentCity.image}
+              alt={currentCity.name}
+              fill
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 42vw"
+              quality={45}
+              className="object-cover"
+              priority
+              fetchPriority="high"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+            
+            {/* Nombre de ciudad */}
+            <div className="absolute top-6 left-6 right-6">
+              <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-bold text-gray-900">{currentCity.name}</span>
               </div>
             </div>
-          ))}
+
+            {/* Subtitle */}
+            <div className="absolute bottom-24 left-6 right-6">
+              <p className="text-white text-lg font-semibold drop-shadow-lg">
+                {currentCity.subtitle}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stats overlay */}
