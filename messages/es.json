@@ -426,6 +426,96 @@
     "rights": "Todos los derechos reservados.",
     "made": "Hecho con ❤️ para nómadas digitales"
   },
+  "termsPage": {
+    "metadataTitle": "Términos de Servicio | inhabitme",
+    "metadataDescription": "Lee los términos y condiciones de uso de inhabitme.",
+    "back": "Volver",
+    "title": "Términos de Servicio",
+    "lastUpdated": "Última actualización: 13 de enero de 2026",
+    "intro": "Bienvenido a inhabitme. Al usar nuestra plataforma, aceptas estos Términos de Servicio.",
+    "sections": {
+      "acceptance": {
+        "title": "1. Aceptación de Términos",
+        "body": "Al registrarte o usar inhabitme, confirmas que tienes al menos 18 años, capacidad legal y que proporcionarás información veraz."
+      },
+      "service": {
+        "title": "2. Descripción del Servicio",
+        "body": "inhabitme conecta anfitriones y huéspedes para estancias de mediano plazo y actúa como intermediario para descubrimiento y comunicación."
+      },
+      "accounts": {
+        "title": "3. Cuentas de Usuario",
+        "body": "Eres responsable de la seguridad de tu cuenta y de toda la actividad asociada, y debes notificar accesos no autorizados."
+      },
+      "payments": {
+        "title": "4. Pagos y Tarifas",
+        "body": "Los pagos se procesan de forma segura con Stripe. Las tarifas y cargos aplicables se muestran claramente antes de pagar."
+      },
+      "liability": {
+        "title": "5. Limitación de Responsabilidad",
+        "body": "inhabitme actúa como intermediario y no es parte del contrato de arrendamiento entre anfitrión y huésped."
+      }
+    },
+    "contactTitle": "¿Preguntas sobre los Términos?",
+    "contactBody": "Si tienes dudas sobre estos Términos de Servicio, contáctanos en:"
+  },
+  "cookiesPage": {
+    "metadataTitle": "Política de Cookies | inhabitme",
+    "metadataDescription": "Conoce cómo inhabitme usa cookies y cómo puedes gestionarlas.",
+    "back": "Volver",
+    "title": "Política de Cookies",
+    "intro": "inhabitme utiliza cookies para mejorar tu experiencia. Esta política explica qué son, cómo las usamos y cómo controlarlas.",
+    "whatAreTitle": "¿Qué son las cookies?",
+    "whatAreBody": "Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.",
+    "typesTitle": "Cookies que usamos",
+    "essentialTitle": "Esenciales",
+    "authLabel": "Autenticación:",
+    "authBody": "Mantienen tu sesión activa (Clerk)",
+    "securityLabel": "Seguridad:",
+    "securityBody": "Protegen contra CSRF y abusos",
+    "functionalTitle": "Funcionales",
+    "preferencesLabel": "Preferencias:",
+    "preferencesBody": "Idioma y configuración de interfaz",
+    "searchLabel": "Búsqueda:",
+    "searchBody": "Guardan tus filtros de búsqueda",
+    "analyticsTitle": "Analíticas",
+    "analyticsLabel": "Analíticas:",
+    "analyticsBody": "Nos ayudan a entender el uso del producto (anónimo)",
+    "manageTitle": "Gestionar cookies",
+    "manageBody": "Puedes controlar las cookies desde la configuración de tu navegador. Bloquear cookies esenciales puede afectar la funcionalidad.",
+    "questionsPrefix": "¿Preguntas? Contáctanos en"
+  },
+  "privacyPage": {
+    "metadataTitle": "Política de Privacidad | inhabitme",
+    "metadataDescription": "Conoce cómo inhabitme recopila, usa y protege tus datos personales.",
+    "back": "Volver",
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: 13 de enero de 2026",
+    "intro": "En inhabitme, tu privacidad es fundamental. Esta política explica cómo recopilamos, usamos, compartimos y protegemos tu información personal.",
+    "sections": {
+      "dataCollect": {
+        "title": "1. Datos que recopilamos",
+        "body": "Recopilamos información de cuenta, perfil, datos de propiedades y reservas, y analítica básica necesaria para operar la plataforma."
+      },
+      "dataUse": {
+        "title": "2. Cómo usamos tus datos",
+        "body": "Usamos tus datos para prestar el servicio, procesar pagos, mejorar búsquedas y producto, comunicar actualizaciones importantes y mantener la seguridad."
+      },
+      "dataShare": {
+        "title": "3. Compartición de datos",
+        "body": "Nunca vendemos tus datos. Solo compartimos información cuando es necesario con proveedores clave (pagos, autenticación, almacenamiento) o por obligación legal."
+      },
+      "security": {
+        "title": "4. Seguridad",
+        "body": "Aplicamos cifrado en tránsito, controles de acceso estrictos, monitoreo y copias de seguridad seguras para proteger tu información."
+      },
+      "rights": {
+        "title": "5. Tus derechos",
+        "body": "Puedes solicitar acceso, corrección, eliminación, portabilidad, oposición o limitación del tratamiento contactándonos."
+      }
+    },
+    "contactTitle": "¿Preguntas sobre privacidad?",
+    "contactBody": "Si tienes preguntas sobre esta política o sobre cómo tratamos tus datos, escríbenos a:"
+  },
   "faqPage": {
     "back": "Volver",
     "title": "Preguntas Frecuentes",

@@ -426,6 +426,96 @@
     "rights": "All rights reserved.",
     "made": "Made with ❤️ for digital nomads"
   },
+  "termsPage": {
+    "metadataTitle": "Terms of Service | inhabitme",
+    "metadataDescription": "Read the terms and conditions for using inhabitme.",
+    "back": "Back",
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: January 13, 2026",
+    "intro": "Welcome to inhabitme. By using our platform, you agree to these Terms of Service.",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "body": "By registering or using inhabitme, you confirm you are at least 18 years old, have legal capacity, and will provide accurate information."
+      },
+      "service": {
+        "title": "2. Service Description",
+        "body": "inhabitme connects hosts and guests for medium-term rentals and acts as an intermediary for discovery and communication."
+      },
+      "accounts": {
+        "title": "3. User Accounts",
+        "body": "You are responsible for account security and all activity under your account, and must notify us of unauthorized access."
+      },
+      "payments": {
+        "title": "4. Payments and Fees",
+        "body": "Payments are processed securely through Stripe. Platform fees and applicable charges are shown clearly before payment."
+      },
+      "liability": {
+        "title": "5. Limitation of Liability",
+        "body": "inhabitme acts as an intermediary and is not a party to rental contracts between host and guest."
+      }
+    },
+    "contactTitle": "Questions about the Terms?",
+    "contactBody": "If you have questions about these Terms of Service, contact us at:"
+  },
+  "cookiesPage": {
+    "metadataTitle": "Cookie Policy | inhabitme",
+    "metadataDescription": "Learn how inhabitme uses cookies and how you can control them.",
+    "back": "Back",
+    "title": "Cookie Policy",
+    "intro": "inhabitme uses cookies to improve your experience. This policy explains what they are, how we use them, and how to control them.",
+    "whatAreTitle": "What are cookies?",
+    "whatAreBody": "Cookies are small text files stored on your device when you visit a website.",
+    "typesTitle": "Cookies we use",
+    "essentialTitle": "Essential",
+    "authLabel": "Authentication:",
+    "authBody": "Keeps your session active (Clerk)",
+    "securityLabel": "Security:",
+    "securityBody": "Protects against CSRF and abuse",
+    "functionalTitle": "Functional",
+    "preferencesLabel": "Preferences:",
+    "preferencesBody": "Language and UI configuration",
+    "searchLabel": "Search:",
+    "searchBody": "Stores your search filters",
+    "analyticsTitle": "Analytics",
+    "analyticsLabel": "Analytics:",
+    "analyticsBody": "Helps us understand product usage (anonymous)",
+    "manageTitle": "Manage cookies",
+    "manageBody": "You can control cookies through your browser settings. Blocking essential cookies may affect functionality.",
+    "questionsPrefix": "Questions? Contact us at"
+  },
+  "privacyPage": {
+    "metadataTitle": "Privacy Policy | inhabitme",
+    "metadataDescription": "Learn how inhabitme collects, uses and protects your personal data.",
+    "back": "Back",
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: January 13, 2026",
+    "intro": "At inhabitme, your privacy matters. This policy explains how we collect, use, share and protect your personal information.",
+    "sections": {
+      "dataCollect": {
+        "title": "1. Data we collect",
+        "body": "We collect account information, profile details, listing and booking data, and basic analytics needed to operate the platform."
+      },
+      "dataUse": {
+        "title": "2. How we use your data",
+        "body": "We use your data to provide the service, process payments, improve search and product quality, communicate important updates, and keep the platform secure."
+      },
+      "dataShare": {
+        "title": "3. Data sharing",
+        "body": "We never sell your data. We only share information when needed with core providers (payments, authentication, storage) or when legally required."
+      },
+      "security": {
+        "title": "4. Security",
+        "body": "We apply encryption in transit, strict access controls, monitoring, and secure backups to protect your information."
+      },
+      "rights": {
+        "title": "5. Your rights",
+        "body": "You can request access, correction, deletion, portability, objection, or restriction of processing by contacting us."
+      }
+    },
+    "contactTitle": "Questions about privacy?",
+    "contactBody": "If you have questions about this policy or how we process data, contact us at:"
+  },
   "faqPage": {
     "back": "Back",
     "title": "Frequently Asked Questions",
