@@ -41,19 +41,30 @@ export default async function DashboardPage() {
     .eq('clerkId', userId)
     .maybeSingle()
 
+  let emailLinkedLegacyIds: string[] = []
+  let emailLinkedCanonicalClerkIds: string[] = []
+
   if (legacyUserRow) {
     legacyUserId = (legacyUserRow as any)?.id ?? null
     canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
-  } else if (userEmail) {
-    // Fallback por email para casos donde Clerk userId cambia entre entornos/instancias
-    const { data: legacyUserByEmail } = await supabase
+  }
+
+  if (userEmail) {
+    // Tomar TODOS los usuarios legacy con ese email (pueden existir duplicados históricos)
+    const { data: legacyUsersByEmail } = await supabase
       .from('User')
       .select('id, clerkId, email')
       .eq('email', userEmail)
-      .maybeSingle()
 
-    legacyUserId = (legacyUserByEmail as any)?.id ?? null
-    canonicalClerkId = (legacyUserByEmail as any)?.clerkId ?? null
+    emailLinkedLegacyIds = (legacyUsersByEmail || [])
+      .map((u: any) => u?.id)
+      .filter(Boolean)
+      .map((v: any) => String(v))
+
+    emailLinkedCanonicalClerkIds = (legacyUsersByEmail || [])
+      .map((u: any) => u?.clerkId)
+      .filter(Boolean)
+      .map((v: any) => String(v))
   }
 
   let emailLinkedClerkIds: string[] = []
@@ -68,7 +79,14 @@ export default async function DashboardPage() {
   }
 
   const ownerIds = Array.from(
-    new Set([userId, canonicalClerkId, legacyUserId, ...emailLinkedClerkIds].filter(Boolean) as string[])
+    new Set([
+      userId,
+      canonicalClerkId,
+      legacyUserId,
+      ...emailLinkedLegacyIds,
+      ...emailLinkedCanonicalClerkIds,
+      ...emailLinkedClerkIds,
+    ].filter(Boolean) as string[])
   )
   console.log('[Dashboard] ownerIds used for queries:', ownerIds)
   
