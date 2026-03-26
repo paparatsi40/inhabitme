@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button'
 import { WaitlistModal } from '@/components/waitlist/WaitlistModal'
 import { useTranslations } from 'next-intl'
 
+function getNeighborhoodMapEmbedUrl(cityName: string, neighborhoodName: string): string {
+  const query = encodeURIComponent(`${neighborhoodName}, ${cityName}`)
+  return `https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker=&q=${query}`
+}
 
 interface AlternativeCity {
   name: string
@@ -67,10 +71,19 @@ export function CityPageClient({ cityName, citySlug, neighborhoods, alternatives
               <Link
                 key={slug}
                 href={`/${citySlug}/${slug}`}
-                className="group rounded-2xl overflow-hidden border border-blue-200 hover:shadow-md hover:border-blue-500 transition-all"
+                className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-md hover:border-blue-500 transition-all"
               >
-                <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 transition-colors" />
-                <div className="p-3 text-left bg-white">
+                <div className="relative h-24">
+                  <iframe
+                    src={getNeighborhoodMapEmbedUrl(cityName, name)}
+                    title={`${name} map`}
+                    className="h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+                </div>
+                <div className="p-3 text-left">
                   <span className="font-medium text-gray-700 group-hover:text-blue-700 transition">{name}</span>
                 </div>
               </Link>

@@ -28,6 +28,27 @@ function safeLower(input: unknown): string {
   return typeof input === 'string' ? input.toLowerCase() : ''
 }
 
+type LatLng = { lat: number; lng: number }
+type CityCenter = { lat: number; lng: number; zoom: number }
+
+const NEIGHBORHOOD_COORDS: Record<string, Record<string, LatLng>> = {
+  austin: {
+    mueller: { lat: 30.2999, lng: -97.7044 },
+    zilker: { lat: 30.2669, lng: -97.7728 },
+    'barton-hills': { lat: 30.2508, lng: -97.7899 },
+    domain: { lat: 30.4012, lng: -97.7242 },
+    'east-austin': { lat: 30.2676, lng: -97.7172 },
+    tarrytown: { lat: 30.2898, lng: -97.7798 },
+  },
+}
+
+function getNeighborhoodMapEmbedUrl(citySlug: string, neighborhoodSlug: string, cityCenter?: CityCenter): string {
+  const coords = NEIGHBORHOOD_COORDS[citySlug]?.[neighborhoodSlug] || cityCenter || { lat: 40.4168, lng: -3.7038 }
+  const delta = 0.01
+  const bbox = `${coords.lng - delta},${coords.lat - delta},${coords.lng + delta},${coords.lat + delta}`
+
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${coords.lat},${coords.lng}`
+}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale, city } = await params
@@ -149,10 +170,19 @@ export default async function CityPage({ params }: PageProps) {
               <Link
                 key={n.slug}
                 href={`/${citySlug}/${n.slug}`}
-                className="group rounded-2xl overflow-hidden border border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all"
+                className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-lg hover:border-blue-400 transition-all"
               >
-                <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 group-hover:from-blue-600 group-hover:via-indigo-600 group-hover:to-purple-600 transition-colors" />
-                <div className="p-3 bg-white">
+                <div className="relative h-28">
+                  <iframe
+                    src={getNeighborhoodMapEmbedUrl(citySlug, n.slug, cityConfig.coordinates)}
+                    title={`${n.name} map`}
+                    className="h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+                </div>
+                <div className="p-3">
                   <p className="font-bold text-sm text-gray-900 group-hover:text-blue-700 transition-colors">{n.name}</p>
                 </div>
               </Link>
