@@ -11,8 +11,8 @@ export const routing = defineRouting({
   // Always show locale prefix
   localePrefix: 'always',
   
-  // Enable locale detection for automatic redirect from /
-  localeDetection: true
+  // Disable locale detection to avoid locale cookie writes on already-localized routes
+  localeDetection: false
 });
 
 // Lightweight wrappers around Next.js' navigation APIs

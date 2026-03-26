@@ -34,7 +34,8 @@ export function CityCarousel() {
                 src={city.image}
                 alt={city.name}
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 42vw"
+                quality={50}
                 className="object-cover"
                 priority={index === 0}
                 fetchPriority={index === currentIndex ? "high" : "low"}
@@ -82,10 +83,10 @@ export function CityCarousel() {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className="h-2.5 w-2.5 rounded-full transition-all"
+              className="h-10 w-10 flex items-center justify-center rounded-full transition-all"
               aria-label={`Go to slide ${index + 1}`}
             >
-              <span className={`block h-2.5 w-2.5 rounded-full transition-all ${
+              <span className={`block h-3.5 w-3.5 rounded-full transition-all ${
                 index === currentIndex ? 'bg-white ring-2 ring-white/60' : 'bg-white/55 hover:bg-white/80'
               }`} />
             </button>
