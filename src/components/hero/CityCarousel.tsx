@@ -61,28 +61,28 @@ export function CityCarousel() {
         </div>
 
         {/* Stats overlay */}
-        <div className="absolute bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
-            <p className="text-base sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
+        <div className="absolute bottom-10 sm:bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
+            <p className="text-sm sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
-            <p className="text-xl sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
+            <p className="text-lg sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
-            <p className="text-xl sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
-            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
+            <p className="text-lg sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
           </div>
         </div>
 
-        {/* Indicadores de progreso (dots) - Fixed touch targets */}
-        <div className="absolute bottom-28 sm:bottom-20 left-0 right-0 flex justify-center gap-1 sm:gap-2 z-10 px-4">
+        {/* Indicadores de progreso (dots) - Franja inferior dedicada en móvil */}
+        <div className="absolute bottom-1 sm:bottom-20 left-0 right-0 flex justify-center gap-1 sm:gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`flex items-center justify-center rounded-full transition-all min-w-[28px] min-h-[28px] sm:min-w-[48px] sm:min-h-[48px] p-1 sm:p-2 ${
+              className={`flex items-center justify-center rounded-full transition-all min-w-[22px] min-h-[22px] sm:min-w-[48px] sm:min-h-[48px] p-0.5 sm:p-2 ${
                 index === currentIndex 
                   ? 'bg-white shadow-md' 
                   : 'bg-white/50 hover:bg-white/70'
