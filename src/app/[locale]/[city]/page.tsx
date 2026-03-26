@@ -28,26 +28,19 @@ function safeLower(input: unknown): string {
   return typeof input === 'string' ? input.toLowerCase() : ''
 }
 
-type LatLng = { lat: number; lng: number }
-type CityCenter = { lat: number; lng: number; zoom: number }
-
-const NEIGHBORHOOD_COORDS: Record<string, Record<string, LatLng>> = {
+const NEIGHBORHOOD_IMAGE_MAP: Record<string, Record<string, string>> = {
   austin: {
-    mueller: { lat: 30.2999, lng: -97.7044 },
-    zilker: { lat: 30.2669, lng: -97.7728 },
-    'barton-hills': { lat: 30.2508, lng: -97.7899 },
-    domain: { lat: 30.4012, lng: -97.7242 },
-    'east-austin': { lat: 30.2676, lng: -97.7172 },
-    tarrytown: { lat: 30.2898, lng: -97.7798 },
+    mueller: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=900&h=700&fit=crop&q=80',
+    zilker: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=900&h=700&fit=crop&q=80',
+    'barton-hills': 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&h=700&fit=crop&q=80',
+    domain: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&h=700&fit=crop&q=80',
+    'east-austin': 'https://images.unsplash.com/photo-1494526585095-c41746248156?w=900&h=700&fit=crop&q=80',
+    tarrytown: 'https://images.unsplash.com/photo-1430285561322-7808604715df?w=900&h=700&fit=crop&q=80',
   },
 }
 
-function getNeighborhoodMapEmbedUrl(citySlug: string, neighborhoodSlug: string, cityCenter?: CityCenter): string {
-  const coords = NEIGHBORHOOD_COORDS[citySlug]?.[neighborhoodSlug] || cityCenter || { lat: 40.4168, lng: -3.7038 }
-  const delta = 0.01
-  const bbox = `${coords.lng - delta},${coords.lat - delta},${coords.lng + delta},${coords.lat + delta}`
-
-  return `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${coords.lat},${coords.lng}`
+function getNeighborhoodImage(citySlug: string, neighborhoodSlug: string, fallback: string): string {
+  return NEIGHBORHOOD_IMAGE_MAP[citySlug]?.[neighborhoodSlug] || fallback
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -173,14 +166,14 @@ export default async function CityPage({ params }: PageProps) {
                 className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-lg hover:border-blue-400 transition-all"
               >
                 <div className="relative h-28">
-                  <iframe
-                    src={getNeighborhoodMapEmbedUrl(citySlug, n.slug, cityConfig.coordinates)}
-                    title={`${n.name} map`}
-                    className="h-full w-full border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
+                  <Image
+                    src={getNeighborhoodImage(citySlug, n.slug, cityConfig.image)}
+                    alt={`${n.name} - ${cityName}`}
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+                  <div className="absolute inset-0 bg-black/25" />
                 </div>
                 <div className="p-3">
                   <p className="font-bold text-sm text-gray-900 group-hover:text-blue-700 transition-colors">{n.name}</p>
