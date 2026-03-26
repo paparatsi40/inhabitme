@@ -76,7 +76,6 @@ export default function middleware(req: NextRequest) {
     if (isLocaleRoot) {
       response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
       response.headers.set("Vary", "Accept-Encoding");
-      response.cookies.delete("NEXT_LOCALE");
     }
 
     return response;
