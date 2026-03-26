@@ -7,10 +7,11 @@ import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
+  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -140,7 +141,7 @@ export default function CustomizeListingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push('/dashboard/properties')}
+              onClick={() => router.push(`/${locale}/dashboard/properties`)}
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />
