@@ -7,11 +7,6 @@ import { Button } from '@/components/ui/button'
 import { useTranslations } from 'next-intl'
 import { MapPin } from 'lucide-react'
 
-function getNeighborhoodMapEmbedUrl(cityName: string, neighborhoodName: string): string {
-  const query = encodeURIComponent(`${neighborhoodName}, ${cityName}`)
-  return `https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker=&q=${query}`
-}
-
 interface CityPageWithListingsProps {
   cityName: string
   citySlug: string
@@ -60,22 +55,14 @@ export function CityPageWithListings({
             <Link
               key={slug}
               href={`/${citySlug}/${slug}`}
-              className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-md hover:border-blue-500 transition-all"
+              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-500 hover:shadow-md transition-all group"
             >
-              <div className="relative h-24">
-                <iframe
-                  src={getNeighborhoodMapEmbedUrl(cityName, name)}
-                  title={`${name} map`}
-                  className="h-full w-full border-0"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
-                <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+              <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                <MapPin className="h-5 w-5 text-blue-600" />
               </div>
-              <div className="p-3 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-blue-600" />
-                <span className="font-semibold text-gray-700 group-hover:text-blue-700">{name}</span>
-              </div>
+              <span className="font-semibold text-gray-700 group-hover:text-blue-700">
+                {name}
+              </span>
             </Link>
           ))}
         </div>
