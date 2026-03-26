@@ -42,8 +42,8 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
     property?.price?.currency ??
     getCurrencyFromLocation(property?.country, property?.city)
   );
-  const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
-  const formatMoney = (amount: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
+  const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US';
+  const formatMoney = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(amount);
   
   // Calculate guest fee based on duration
   const { calculateDurationFees } = require('@/lib/pricing/duration-fees')
