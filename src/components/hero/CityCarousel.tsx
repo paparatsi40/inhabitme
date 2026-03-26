@@ -76,21 +76,17 @@ export function CityCarousel() {
           </div>
         </div>
 
-        {/* Indicadores de progreso (dots) - Franja inferior dedicada en móvil */}
-        <div className="absolute bottom-1 sm:bottom-20 left-0 right-0 flex justify-center gap-1 sm:gap-2 z-10 px-4">
+        {/* Indicadores de progreso (dots) - separados de las cards */}
+        <div className="absolute bottom-28 sm:bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`flex items-center justify-center rounded-full transition-all min-w-[22px] min-h-[22px] sm:min-w-[48px] sm:min-h-[48px] p-0.5 sm:p-2 ${
-                index === currentIndex 
-                  ? 'bg-white shadow-md' 
-                  : 'bg-white/50 hover:bg-white/70'
-              }`}
+              className="flex items-center justify-center p-0"
               aria-label={`Go to slide ${index + 1}`}
             >
-              <span className={`block h-1.5 sm:h-2 rounded-full transition-all ${
-                index === currentIndex ? 'w-4 sm:w-6 bg-gray-800' : 'w-1.5 sm:w-2 bg-gray-600'
+              <span className={`block h-2 rounded-full transition-all ${
+                index === currentIndex ? 'w-6 bg-white shadow-sm' : 'w-2 bg-white/70 hover:bg-white'
               }`} />
             </button>
           ))}
