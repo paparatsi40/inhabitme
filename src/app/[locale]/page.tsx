@@ -5,7 +5,7 @@ import NextLink from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+
 import { ClientNav } from '@/components/home/ClientNav'
 import {
   ArrowRight,
