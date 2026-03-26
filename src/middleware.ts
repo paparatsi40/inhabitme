@@ -1,3 +1,4 @@
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse, type NextRequest } from "next/server";
@@ -25,7 +26,7 @@ function hasAuthSession(req: NextRequest): boolean {
   return req.cookies.has("__session") || req.cookies.has("__client_uat");
 }
 
-export default function middleware(req: NextRequest) {
+function internalMiddleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
@@ -86,6 +87,10 @@ export default function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 }
+
+export default clerkMiddleware((auth, req) => {
+  return internalMiddleware(req);
+});
 
 export const config = {
   matcher: ["/", "/((?!api|trpc|_next|_vercel|.*\\..*).*)"],
