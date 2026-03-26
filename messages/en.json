@@ -516,6 +516,8 @@
     "noLeads": "No leads yet",
     "contactLead": "Contact",
     "pendingBookings": "Pending Bookings",
+    "bookingRequests": "Booking Requests",
+    "manageBookingRequests": "Manage booking requests for your properties",
     "myPropertiesTitle": "My Properties",
     "propertiesCount": "Properties",
     "income": "Revenue",

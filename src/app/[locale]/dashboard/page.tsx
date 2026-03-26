@@ -440,10 +440,10 @@ export default async function DashboardPage() {
                 <Calendar className="h-6 w-6 text-green-600" />
               </div>
               <h3 className="font-bold text-lg mb-2 group-hover:text-green-600 transition">
-                Solicitudes de Reserva
+                {t('bookingRequests')}
               </h3>
               <p className="text-sm text-gray-600">
-                Gestiona las solicitudes de tus propiedades
+                {t('manageBookingRequests')}
               </p>
             </div>
           </Link>
