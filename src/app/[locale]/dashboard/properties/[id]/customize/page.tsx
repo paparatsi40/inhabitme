@@ -7,11 +7,10 @@ import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
-  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -30,10 +29,7 @@ export default function CustomizeListingPage() {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 12000)
-        const res = await fetch(`/api/listings/${listingId}`, { signal: controller.signal, cache: 'no-store' })
-        clearTimeout(timeoutId)
+        const res = await fetch(`/api/listings/${listingId}`)
         if (res.ok) {
           const data = await res.json()
           // Map API fields to component expected format
@@ -41,16 +37,12 @@ export default function CustomizeListingPage() {
             ...data,
             city: data.city_name,
             country: data.city_country,
-            monthly_price: data.monthly_price || 1000,
+            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
           }
           setListing(mappedListing)
-        } else {
-          console.error('Customize fetch failed:', res.status)
-          setListing(null)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
-        setListing(null)
       } finally {
         setLoading(false)
       }
@@ -141,7 +133,7 @@ export default function CustomizeListingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push(`/${locale}/dashboard/properties`)}
+              onClick={() => router.push('/dashboard/properties')}
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />
