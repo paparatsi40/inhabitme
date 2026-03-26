@@ -7,6 +7,11 @@ import { Button } from '@/components/ui/button'
 import { WaitlistModal } from '@/components/waitlist/WaitlistModal'
 import { useTranslations } from 'next-intl'
 
+function getNeighborhoodMapEmbedUrl(cityName: string, neighborhoodName: string): string {
+  const query = encodeURIComponent(`${neighborhoodName}, ${cityName}`)
+  return `https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker=&q=${query}`
+}
+
 interface AlternativeCity {
   name: string
   slug: string
@@ -61,14 +66,26 @@ export function CityPageClient({ cityName, citySlug, neighborhoods, alternatives
           <p className="text-base font-semibold text-gray-700 mb-6">
             {t('exploreNeighborhoodsTitle', { city: cityName })}
           </p>
-          <div className="flex flex-wrap gap-3 justify-center max-w-3xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {neighborhoods.slice(0, 8).map(({ name, slug }) => (
               <Link
                 key={slug}
                 href={`/${citySlug}/${slug}`}
-                className="inline-block px-4 py-2 bg-white border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-xl font-medium text-gray-700 hover:text-blue-700 transition shadow-sm hover:shadow-md"
+                className="group rounded-2xl overflow-hidden border border-gray-200 bg-white hover:shadow-md hover:border-blue-500 transition-all"
               >
-                {name}
+                <div className="relative h-24">
+                  <iframe
+                    src={getNeighborhoodMapEmbedUrl(cityName, name)}
+                    title={`${name} map`}
+                    className="h-full w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                  <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+                </div>
+                <div className="p-3 text-left">
+                  <span className="font-medium text-gray-700 group-hover:text-blue-700 transition">{name}</span>
+                </div>
               </Link>
             ))}
           </div>
