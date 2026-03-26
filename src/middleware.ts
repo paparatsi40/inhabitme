@@ -66,7 +66,7 @@ function internalMiddleware(req: NextRequest) {
   }
 
   if (isProtectedRoute(pathname) && !hasAuthSession(req)) {
-    const locale = pathname.startsWith('/es') ? 'es' : 'en';
+    const locale = req.cookies.get("NEXT_LOCALE")?.value || "en";
     return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
   }
 
