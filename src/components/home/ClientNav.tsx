@@ -1,9 +1,7 @@
 'use client'
 
 import NextLink from 'next/link'
-import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 

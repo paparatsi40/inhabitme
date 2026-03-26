@@ -82,7 +82,15 @@ export default clerkMiddleware(async (auth, req) => {
 
   // next-intl
   try {
-    return intlMiddleware(req);
+    const response = intlMiddleware(req);
+
+    // Keep public locale landing pages bfcache-friendly for performance audits
+    const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
+    if (isLocaleRoot) {
+      response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+    }
+
+    return response;
   } catch (error) {
     console.error("[Middleware] intlMiddleware error:", error);
     return NextResponse.next();

@@ -463,7 +463,14 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
       <div className="aspect-[4/3] relative overflow-hidden">
         {imageUrl ? (
           <>
-            <img src={imageUrl} alt={`${name} cityscape`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+            <Image
+              src={imageUrl}
+              alt={`${name} cityscape`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              quality={70}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
           </>
         ) : (
