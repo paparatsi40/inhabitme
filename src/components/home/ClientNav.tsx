@@ -19,24 +19,19 @@ export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }
   return (
     <div className="flex items-center gap-3">
       <LanguageSwitcher />
-      <SignedIn>
-        <NextLink href={dashboardUrl}>
-          <Button variant="ghost" className="font-semibold">
-            Dashboard
-          </Button>
-        </NextLink>
-        <UserButton afterSignOutUrl="/" />
-      </SignedIn>
-      <SignedOut>
-        <NextLink href={signInUrl}>
-          <Button variant="ghost" className="font-semibold">{signIn}</Button>
-        </NextLink>
-        <NextLink href={signUpUrl}>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
-            {signUp}
-          </Button>
-        </NextLink>
-      </SignedOut>
+      <NextLink href={dashboardUrl}>
+        <Button variant="ghost" className="font-semibold">
+          Dashboard
+        </Button>
+      </NextLink>
+      <NextLink href={signInUrl}>
+        <Button variant="ghost" className="font-semibold">{signIn}</Button>
+      </NextLink>
+      <NextLink href={signUpUrl}>
+        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
+          {signUp}
+        </Button>
+      </NextLink>
     </div>
   )
 }
