@@ -29,7 +29,10 @@ export default function CustomizeListingPage() {
   useEffect(() => {
     const fetchListing = async () => {
       try {
-        const res = await fetch(`/api/listings/${listingId}`)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 12000)
+        const res = await fetch(`/api/listings/${listingId}`, { signal: controller.signal, cache: 'no-store' })
+        clearTimeout(timeoutId)
         if (res.ok) {
           const data = await res.json()
           // Map API fields to component expected format
@@ -37,12 +40,16 @@ export default function CustomizeListingPage() {
             ...data,
             city: data.city_name,
             country: data.city_country,
-            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
+            monthly_price: data.monthly_price || 1000,
           }
           setListing(mappedListing)
+        } else {
+          console.error('Customize fetch failed:', res.status)
+          setListing(null)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
+        setListing(null)
       } finally {
         setLoading(false)
       }

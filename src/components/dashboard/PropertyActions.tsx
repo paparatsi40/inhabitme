@@ -75,7 +75,7 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
       </Link>
 
       {/* Customize Design */}
-      <Link href={`/dashboard/properties/${propertyId}/customize`}>
+      <Link href={`/${locale}/dashboard/properties/${propertyId}/customize`}>
         <Button 
           size="sm" 
           className="border-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-sm"
