@@ -70,16 +70,14 @@ function internalMiddleware(req: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
   }
 
-  const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
-  if (isLocaleRoot) {
-    const response = NextResponse.next();
-    response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
-    response.headers.set("Vary", "Accept-Encoding");
-    return response;
-  }
-
   try {
     const response = intlMiddleware(req);
+
+    const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
+    if (isLocaleRoot) {
+      response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+      response.headers.set("Vary", "Accept-Encoding");
+    }
 
     return response;
   } catch (error) {
