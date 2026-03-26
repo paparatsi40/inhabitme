@@ -21,6 +21,17 @@ interface UserPreferences {
   tips_and_guides: boolean;
 }
 
+const DEFAULT_PREFERENCES: UserPreferences = {
+  email_new_leads: true,
+  email_new_bookings: true,
+  email_booking_updates: true,
+  email_messages: true,
+  email_marketing: false,
+  newsletter_subscribed: true,
+  product_updates: true,
+  tips_and_guides: true,
+};
+
 export function SettingsContent() {
   const t = useTranslations('settingsPage');
   const locale = useLocale();
