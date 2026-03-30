@@ -1,15 +1,16 @@
 import { SignIn } from '@clerk/nextjs';
 import Link from 'next/link';
 
-export default function SignInPage({
+export default async function SignInPage({
   params,
   searchParams,
 }: {
-  params: { locale: string };
-  searchParams: { redirect_url?: string };
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ redirect_url?: string }>;
 }) {
-  const locale = params.locale || 'en';
-  const redirectUrl = searchParams.redirect_url || `/${locale}/dashboard`;
+  const { locale = 'en' } = await params;
+  const { redirect_url } = await searchParams;
+  const redirectUrl = redirect_url || `/${locale}/dashboard`;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">

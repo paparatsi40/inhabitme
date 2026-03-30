@@ -12,19 +12,43 @@ const scriptSrc = [
   "https://clerk.accounts.dev",
   "https://clerk.inhabitme.com",
   "https://*.clerk.accounts.dev",
+  "https://*.clerk.dev",
+  "https://cdn.jsdelivr.net",
   "https://js.stripe.com",
   "https://maps.googleapis.com",
   ...(allowVercelLive ? ["https://vercel.live"] : []),
+].join(" ");
+
+const styleSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  "https://fonts.googleapis.com",
+  "https://*.clerk.accounts.dev",
+  "https://*.clerk.dev",
 ].join(" ");
 
 const connectSrc = [
   "'self'",
   "https://clerk.inhabitme.com",
   "https://*.clerk.accounts.dev",
+  "https://*.clerk.dev",
   "https://api.stripe.com",
   "https://*.supabase.co",
   "https://*.cloudinary.com",
   ...(allowVercelLive ? ["https://vercel.live"] : []),
+].join(" ");
+
+const imgSrc = [
+  "'self'",
+  "blob:",
+  "data:",
+  "https://img.clerk.com",
+  "https://images.clerk.dev",
+  "https://*.clerk.accounts.dev",
+  "https://*.clerk.dev",
+  "https://res.cloudinary.com",
+  "https://images.unsplash.com",
+  "https://agjntynuysvwgzlcdmiq.supabase.co",
 ].join(" ");
 
 const nextConfig = {
@@ -88,7 +112,7 @@ const nextConfig = {
           // Content Security Policy - enabled for Best Practices score
           {
             key: "Content-Security-Policy",
-            value: `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src * blob: data:; font-src 'self' https://fonts.gstatic.com; connect-src ${connectSrc}; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
+            value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src 'self' https://fonts.gstatic.com data:; connect-src ${connectSrc}; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://*.clerk.accounts.dev https://*.clerk.dev; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
           },
         ],
       },
