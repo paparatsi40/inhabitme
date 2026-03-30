@@ -110,7 +110,7 @@ export default function OpenGraphTester() {
             </li>
             <li className="flex items-start">
               <span className="mr-2">2.</span>
-              <span>Click "Test on Facebook" or "Test on Twitter" to validate how they appear on social media</span>
+              <span>Click &quot;Test on Facebook&quot; or &quot;Test on Twitter&quot; to validate how they appear on social media</span>
             </li>
             <li className="flex items-start">
               <span className="mr-2">3.</span>

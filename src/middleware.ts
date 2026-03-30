@@ -1,4 +1,4 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { NextResponse, type NextRequest } from "next/server";
@@ -11,31 +11,27 @@ import {
 
 const intlMiddleware = createMiddleware(routing);
 
-function isProtectedRoute(pathname: string): boolean {
+const isProtectedRoute = createRouteMatcher([
+  "/(en|es)/dashboard(.*)",
+  "/(en|es)/properties/new(.*)",
+  "/(en|es)/bookings(.*)",
+  "/(en|es)/host/bookings(.*)",
+  "/onboarding(.*)",
+]);
+
+function shouldBypass(pathname: string): boolean {
   return (
-    /^\/(en|es)\/dashboard(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/properties\/new(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/bookings(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/host\/bookings(\/.*)?$/.test(pathname) ||
-    pathname === "/onboarding" ||
-    pathname.startsWith("/onboarding/")
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/static") ||
+    pathname.includes(".")
   );
 }
 
-function hasAuthSession(req: NextRequest): boolean {
-  return req.cookies.has("__session") || req.cookies.has("__client_uat");
-}
-
-function internalMiddleware(req: NextRequest) {
+function applySeoRedirects(req: NextRequest): NextResponse | null {
   const pathname = req.nextUrl.pathname;
-
-  if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
-    return NextResponse.next();
-  }
-
-  if (pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
 
   const redirectDestination = getRedirectDestination(pathname);
   if (redirectDestination) {
@@ -57,39 +53,46 @@ function internalMiddleware(req: NextRequest) {
     }
   }
 
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/static") ||
-    pathname.includes(".")
-  ) {
+  return null;
+}
+
+function setLocaleRootCaching(pathname: string, response: NextResponse): NextResponse {
+  const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
+  if (isLocaleRoot) {
+    response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+    response.headers.set("Vary", "Accept-Encoding");
+  }
+
+  return response;
+}
+
+export default clerkMiddleware(async (auth, req) => {
+  const pathname = req.nextUrl.pathname;
+
+  if (shouldBypass(pathname)) {
     return NextResponse.next();
   }
 
-  if (isProtectedRoute(pathname) && !hasAuthSession(req)) {
-    const locale = pathname.startsWith('/es') ? 'es' : 'en';
-    return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
+  const seoRedirect = applySeoRedirects(req);
+  if (seoRedirect) {
+    return seoRedirect;
   }
 
-  const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
-  if (isLocaleRoot) {
-    const response = NextResponse.next();
-    response.headers.set("Cache-Control", "public, max-age=0, must-revalidate");
-    response.headers.set("Vary", "Accept-Encoding");
-    return response;
+  if (isProtectedRoute(req)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const locale = pathname.startsWith("/es") ? "es" : "en";
+      return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
+    }
   }
 
   try {
     const response = intlMiddleware(req);
-
-    return response;
+    return setLocaleRootCaching(pathname, response);
   } catch (error) {
     console.error("[Middleware] intlMiddleware error:", error);
     return NextResponse.next();
   }
-}
-
-export default clerkMiddleware((auth, req) => {
-  return internalMiddleware(req);
 });
 
 export const config = {

@@ -271,7 +271,7 @@ export default function HostBookingsPage() {
                     {booking.guest_message && (
                       <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 rounded-xl p-4 mb-4 border-l-4 border-blue-500">
                         <p className="text-xs font-semibold text-gray-600 uppercase mb-2">{t('guestMessage')}</p>
-                        <p className="text-sm text-gray-700 italic">"{booking.guest_message}"</p>
+                        <p className="text-sm text-gray-700 italic">&quot;{booking.guest_message}&quot;</p>
                       </div>
                     )}
 

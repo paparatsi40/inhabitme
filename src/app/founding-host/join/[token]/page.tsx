@@ -15,10 +15,6 @@ export default function FoundingHostJoinPage() {
   const [error, setError] = useState<string | null>(null);
   const [invitationData, setInvitationData] = useState<any>(null);
 
-  useEffect(() => {
-    validateToken();
-  }, [token]);
-
   const validateToken = async () => {
     try {
       const res = await fetch('/api/founding-host/validate-token', {
@@ -42,6 +38,10 @@ export default function FoundingHostJoinPage() {
       setValidating(false);
     }
   };
+
+  useEffect(() => {
+    validateToken();
+  }, [token]);
 
   if (validating) {
     return (
