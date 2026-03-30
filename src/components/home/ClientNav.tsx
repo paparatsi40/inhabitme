@@ -1,7 +1,9 @@
 'use client'
 
 import NextLink from 'next/link'
+import { useLocale } from 'next-intl'
 import { usePathname } from 'next/navigation'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
@@ -19,19 +21,24 @@ export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }
   return (
     <div className="flex items-center gap-3">
       <LanguageSwitcher />
-      <NextLink href={dashboardUrl}>
-        <Button variant="ghost" className="font-semibold">
-          Dashboard
-        </Button>
-      </NextLink>
-      <NextLink href={signInUrl}>
-        <Button variant="ghost" className="font-semibold">{signIn}</Button>
-      </NextLink>
-      <NextLink href={signUpUrl}>
-        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
-          {signUp}
-        </Button>
-      </NextLink>
+      <SignedIn>
+        <NextLink href={dashboardUrl}>
+          <Button variant="ghost" className="font-semibold">
+            Dashboard
+          </Button>
+        </NextLink>
+        <UserButton afterSignOutUrl="/" />
+      </SignedIn>
+      <SignedOut>
+        <NextLink href={signInUrl}>
+          <Button variant="ghost" className="font-semibold">{signIn}</Button>
+        </NextLink>
+        <NextLink href={signUpUrl}>
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
+            {signUp}
+          </Button>
+        </NextLink>
+      </SignedOut>
     </div>
   )
 }

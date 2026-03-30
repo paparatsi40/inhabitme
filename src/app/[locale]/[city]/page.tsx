@@ -98,15 +98,15 @@ export default async function CityPage({ params }: PageProps) {
                   {t('heroTitle', { city: cityName }) || `Vive en ${cityName}`}
                 </h1>
                 <p className="text-xl lg:text-2xl text-gray-700 font-medium mb-6 lg:mb-8 leading-relaxed">
-                  {t('heroSubtitle')}
+                  Espacios diseñados para <span className="text-blue-600 font-bold">nómadas digitales</span>
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <Link href="/">
-                    <Button>{t('backToHome')}</Button>
+                    <Button>Volver al inicio</Button>
                   </Link>
                   <Link href="/search">
-                    <Button variant="outline">{t('searchProperties')}</Button>
+                    <Button variant="outline">Buscar propiedades</Button>
                   </Link>
                 </div>
               </div>
@@ -134,15 +134,15 @@ export default async function CityPage({ params }: PageProps) {
           <div className="inline-flex p-8 bg-white rounded-3xl shadow-xl mb-8">
             <MapPin className="h-16 w-16 text-blue-600" />
           </div>
-          <h2 className="text-3xl lg:text-4xl font-black mb-4">{t('noPropertiesTitle', { city: cityName })}</h2>
+          <h2 className="text-3xl lg:text-4xl font-black mb-4">Próximamente en {cityName}</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            {t('noPropertiesDesc', { city: cityName })}
+            Estamos trabajando para traerte las mejores opciones de alquiler mensual en {cityName}.
           </p>
         </section>
 
         {/* Neighborhoods */}
         <section className="pb-10">
-          <h3 className="text-2xl font-black text-gray-900 mb-4">{t('exploreNeighborhoodsTitle', { city: cityName })}</h3>
+          <h3 className="text-2xl font-black text-gray-900 mb-4">Explora barrios en {cityName}</h3>
           <div className="flex flex-wrap gap-3">
             {neighborhoods.map((n) => (
               <Link

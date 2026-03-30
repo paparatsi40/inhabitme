@@ -56,10 +56,18 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     console.log('✅ User is the host')
 
-    // Check if already paid
+    // Check if already paid or waived
     if (booking.host_payment_status === 'paid') {
       console.log('⚠️ Already paid')
       return NextResponse.json({ error: 'Already paid' }, { status: 400 })
+    }
+
+    if (booking.host_payment_status === 'waived') {
+      console.log('✅ Payment waived (Founding Host)')
+      return NextResponse.json({
+        message: 'Payment waived for Founding Host',
+        waived: true,
+      })
     }
 
     // Get host email from Clerk

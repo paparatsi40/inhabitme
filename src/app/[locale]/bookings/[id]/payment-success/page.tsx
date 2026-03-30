@@ -65,7 +65,7 @@ export default function PaymentSuccessPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">Host Completa su Pago</p>
-                  <p className="text-sm text-gray-600">El host debe pagar su service fee según duración</p>
+                  <p className="text-sm text-gray-600">El host debe pagar su service fee según duración (o {formatMinor(0)} si es Founding Host)</p>
                 </div>
               </div>
 

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { X, Calendar, Euro, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { useLocale, useTranslations } from 'next-intl';
 import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
 interface BookingRequestModalProps {
@@ -14,8 +13,6 @@ interface BookingRequestModalProps {
 
 export function BookingRequestModal({ isOpen, onClose, property }: BookingRequestModalProps) {
   const { user } = useUser();
-  const locale = useLocale();
-  const t = useTranslations('bookingModal');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [message, setMessage] = useState('');
@@ -42,8 +39,8 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
     property?.price?.currency ??
     getCurrencyFromLocation(property?.country, property?.city)
   );
-  const moneyLocale = currency === 'EUR' ? 'es-ES' : 'en-US';
-  const formatMoney = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency }).format(amount);
+  const locale = currency === 'EUR' ? 'es-ES' : 'en-US';
+  const formatMoney = (amount: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount);
   
   // Calculate guest fee based on duration
   const { calculateDurationFees } = require('@/lib/pricing/duration-fees')
@@ -57,7 +54,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
     setError('');
 
     if (months < 1) {
-      setError(t('minStayError'));
+      setError('La estancia debe ser de al menos 1 mes');
       return;
     }
 
@@ -78,11 +75,11 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || t('createRequestError'));
+        throw new Error(data.error || 'Error al crear la solicitud');
       }
 
       // Redirigir a la página de éxito
-      window.location.href = `/${locale}/bookings/${data.bookingId}/success`;
+      window.location.href = `/en/bookings/${data.bookingId}/success`;
     } catch (err: any) {
       setError(err.message);
       setSubmitting(false);
@@ -98,7 +95,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
             <div className="flex items-center gap-2 mb-1">
               <span className="text-white text-xl font-black">inhabitme</span>
               <span className="text-white/80 text-xs">•</span>
-              <span className="text-white/80 text-xs font-medium">{t('bookingRequest')}</span>
+              <span className="text-white/80 text-xs font-medium">Booking Request</span>
             </div>
             <h2 className="text-2xl font-bold text-white">{property?.title}</h2>
           </div>
@@ -115,13 +112,13 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
           <div className="space-y-4">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Calendar className="h-5 w-5 text-blue-600" />
-              {t('stayDates')}
+              Fechas de tu estancia
             </h3>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('checkIn')}
+                  Check-in
                 </label>
                 <input
                   type="date"
@@ -134,7 +131,7 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('checkOut')}
+                  Check-out
                 </label>
                 <input
                   type="date"
@@ -160,13 +157,13 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
           {/* Mensaje */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('messageToHost')}
+              Mensaje al anfitrión
             </label>
             <textarea
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder={t('messagePlaceholder')}
+              placeholder="Cuéntale al anfitrión por qué buscas este lugar, cuándo llegarías, etc."
               className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-blue-500 outline-none resize-none"
             />
           </div>
@@ -204,11 +201,11 @@ export function BookingRequestModal({ isOpen, onClose, property }: BookingReques
               <div className="bg-white rounded-lg p-4 space-y-2">
                 <p className="text-sm text-gray-600 flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>{t('payAfterHostAccepts')}</span>
+                  <span>Solo pagas cuando el anfitrión acepta tu solicitud</span>
                 </p>
                 <p className="text-sm text-gray-600 flex items-start gap-2">
                   <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                  <span>{t('nextMonthsPayHost', { amount: formatMoney(monthlyPrice) })}</span>
+                  <span>Meses siguientes: paga {formatMoney(monthlyPrice)} directo al anfitrión</span>
                 </p>
               </div>
             </div>

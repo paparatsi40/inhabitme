@@ -42,55 +42,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Handle user.created / user.updated: keep legacy public."User" in sync without duplicating emails
-    if (evt.type === 'user.created' || evt.type === 'user.updated') {
-      const { id: userId, unsafe_metadata, email_addresses, primary_email_address_id } = evt.data;
-      const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-      const primaryEmail = (email_addresses || [])
-        .find((e: any) => e.id === primary_email_address_id)
-        ?.email_address?.toLowerCase?.() || null;
-
-      if (primaryEmail) {
-        const { data: existingByEmail } = await supabase
-          .from('User')
-          .select('id, clerkId, email')
-          .eq('email', primaryEmail)
-          .maybeSingle();
-
-        if (existingByEmail) {
-          // email already exists: update clerkId on same row (no duplicate rows)
-          await supabase
-            .from('User')
-            .update({ clerkId: userId, email: primaryEmail })
-            .eq('id', (existingByEmail as any).id);
-        } else {
-          // fallback: if row exists by clerkId update email, otherwise insert
-          const { data: existingByClerkId } = await supabase
-            .from('User')
-            .select('id')
-            .eq('clerkId', userId)
-            .maybeSingle();
-
-          if (existingByClerkId) {
-            await supabase
-              .from('User')
-              .update({ email: primaryEmail })
-              .eq('id', (existingByClerkId as any).id);
-          } else {
-            await supabase
-              .from('User')
-              .insert({
-                clerkId: userId,
-                email: primaryEmail,
-                role: 'GUEST',
-              });
-          }
-        }
-      }
+    // Handle user.created event
+    if (evt.type === 'user.created') {
+      const { id: userId, unsafe_metadata } = evt.data;
 
       // Check if this is a founding host signup
       if (unsafe_metadata?.role === 'founding_host' && unsafe_metadata?.invitation_token) {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
         // Mark invitation as accepted
         const { error: updateError } = await supabase
           .from('founding_host_invitations')

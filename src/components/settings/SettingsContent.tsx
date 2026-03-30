@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/routing';
@@ -21,20 +20,7 @@ interface UserPreferences {
   tips_and_guides: boolean;
 }
 
-const DEFAULT_PREFERENCES: UserPreferences = {
-  email_new_leads: true,
-  email_new_bookings: true,
-  email_booking_updates: true,
-  email_messages: true,
-  email_marketing: false,
-  newsletter_subscribed: true,
-  product_updates: true,
-  tips_and_guides: true,
-};
-
 export function SettingsContent() {
-  const t = useTranslations('settingsPage');
-  const locale = useLocale();
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,24 +33,22 @@ export function SettingsContent() {
       const response = await fetch('/api/user/preferences');
       if (response.ok) {
         const data = await response.json();
-        setPreferences(data ?? DEFAULT_PREFERENCES);
-      } else {
-        setPreferences(DEFAULT_PREFERENCES);
+        setPreferences(data);
       }
     } catch (error) {
       console.error('[Settings] Error loading preferences:', error);
-      setPreferences(DEFAULT_PREFERENCES);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handlePreferenceUpdate = (key: string, value: boolean) => {
-    const base = preferences ?? DEFAULT_PREFERENCES;
-    setPreferences({
-      ...base,
-      [key]: value,
-    });
+    if (preferences) {
+      setPreferences({
+        ...preferences,
+        [key]: value,
+      });
+    }
   };
 
   if (isLoading) {
@@ -95,21 +79,21 @@ export function SettingsContent() {
             <div className="p-2 bg-blue-100 rounded-lg">
               <User className="h-5 w-5 text-blue-600" />
             </div>
-            <CardTitle>{t('account')}</CardTitle>
+            <CardTitle>Cuenta</CardTitle>
           </div>
           <CardDescription>
-            {t('accountDescription')}
+            Administra tu información personal y configuración de cuenta
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <Link href="/dashboard/profile">
               <Button variant="outline" className="w-full justify-start">
-                {t('editProfile')}
+                Editar Perfil
               </Button>
             </Link>
             <p className="text-xs text-gray-500 px-1">
-              {t('manageProfile')}
+              Gestiona tu nombre, email, contraseña y foto de perfil
             </p>
           </div>
         </CardContent>
@@ -122,36 +106,38 @@ export function SettingsContent() {
             <div className="p-2 bg-purple-100 rounded-lg">
               <Bell className="h-5 w-5 text-purple-600" />
             </div>
-            <CardTitle>{t('notifications')}</CardTitle>
+            <CardTitle>Notificaciones</CardTitle>
           </div>
           <CardDescription>
-            {t('notificationsDescription')}
+            Configura cómo y cuándo recibes notificaciones
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <PreferenceToggle
-              preferenceKey="email_new_leads"
-              label={t('newLeadsEmail')}
-              description={t('newLeadsEmailDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).email_new_leads}
-              onUpdate={handlePreferenceUpdate}
-            />
-            <PreferenceToggle
-              preferenceKey="email_new_bookings"
-              label={t('pendingBookings')}
-              description={t('pendingBookingsDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).email_new_bookings}
-              onUpdate={handlePreferenceUpdate}
-            />
-            <PreferenceToggle
-              preferenceKey="email_booking_updates"
-              label={t('bookingUpdates')}
-              description={t('bookingUpdatesDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).email_booking_updates}
-              onUpdate={handlePreferenceUpdate}
-            />
-          </div>
+          {preferences && (
+            <div className="space-y-3">
+              <PreferenceToggle
+                preferenceKey="email_new_leads"
+                label="Email de nuevos leads"
+                description="Recibe notificación inmediata"
+                initialValue={preferences.email_new_leads}
+                onUpdate={handlePreferenceUpdate}
+              />
+              <PreferenceToggle
+                preferenceKey="email_new_bookings"
+                label="Reservas pendientes"
+                description="Notificaciones de solicitudes"
+                initialValue={preferences.email_new_bookings}
+                onUpdate={handlePreferenceUpdate}
+              />
+              <PreferenceToggle
+                preferenceKey="email_booking_updates"
+                label="Actualizaciones de reservas"
+                description="Cambios en reservas existentes"
+                initialValue={preferences.email_booking_updates}
+                onUpdate={handlePreferenceUpdate}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -162,21 +148,21 @@ export function SettingsContent() {
             <div className="p-2 bg-green-100 rounded-lg">
               <CreditCard className="h-5 w-5 text-green-600" />
             </div>
-            <CardTitle>{t('billingPayments')}</CardTitle>
+            <CardTitle>Pagos y Facturación</CardTitle>
           </div>
           <CardDescription>
-            {t('billingPaymentsDesc')}
+            Métodos de pago, facturas y transacciones
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <Link href="/dashboard/payments">
               <Button variant="outline" className="w-full justify-start">
-                {t('viewPaymentHistory')}
+                Ver Historial de Pagos
               </Button>
             </Link>
             <p className="text-xs text-gray-500 px-1">
-              {t('reviewPayments')}
+              Revisa todos tus pagos recibidos por reservas
             </p>
           </div>
         </CardContent>
@@ -189,21 +175,21 @@ export function SettingsContent() {
             <div className="p-2 bg-red-100 rounded-lg">
               <Shield className="h-5 w-5 text-red-600" />
             </div>
-            <CardTitle>{t('privacySecurity')}</CardTitle>
+            <CardTitle>Privacidad y Seguridad</CardTitle>
           </div>
           <CardDescription>
-            {t('privacySecurityDesc')}
+            Controla tu privacidad y seguridad de cuenta
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <Link href="/dashboard/profile">
               <Button variant="outline" className="w-full justify-start">
-                {t('securitySettings')}
+                Configuración de Seguridad
               </Button>
             </Link>
             <p className="text-xs text-gray-500 px-1">
-              {t('securitySettingsDesc')}
+              Autenticación de dos factores, sesiones activas y más
             </p>
           </div>
         </CardContent>
@@ -216,19 +202,19 @@ export function SettingsContent() {
             <div className="p-2 bg-orange-100 rounded-lg">
               <Globe className="h-5 w-5 text-orange-600" />
             </div>
-            <CardTitle>{t('languageRegion')}</CardTitle>
+            <CardTitle>Idioma y Región</CardTitle>
           </div>
           <CardDescription>
-            {t('languageRegionDesc')}
+            Preferencias de idioma y formato regional
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm font-medium mb-1">{t('currentLanguage')}</p>
-              <p className="text-lg font-bold text-gray-900">{locale === 'en' ? 'English 🇺🇸' : 'Español 🇪🇸'}</p>
+              <p className="text-sm font-medium mb-1">Idioma actual</p>
+              <p className="text-lg font-bold text-gray-900">Español 🇪🇸</p>
               <p className="text-xs text-gray-500 mt-2">
-                {t('languageHint')}
+                Cambia entre español e inglés usando el selector en la barra superior
               </p>
             </div>
           </div>
@@ -242,36 +228,38 @@ export function SettingsContent() {
             <div className="p-2 bg-cyan-100 rounded-lg">
               <Mail className="h-5 w-5 text-cyan-600" />
             </div>
-            <CardTitle>{t('communication')}</CardTitle>
+            <CardTitle>Comunicación</CardTitle>
           </div>
           <CardDescription>
-            {t('communicationDesc')}
+            Preferencias de email y comunicación con guests
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <PreferenceToggle
-              preferenceKey="newsletter_subscribed"
-              label={t('newsletter')}
-              description={t('newsletterDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).newsletter_subscribed}
-              onUpdate={handlePreferenceUpdate}
-            />
-            <PreferenceToggle
-              preferenceKey="product_updates"
-              label={t('productUpdates')}
-              description={t('productUpdatesDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).product_updates}
-              onUpdate={handlePreferenceUpdate}
-            />
-            <PreferenceToggle
-              preferenceKey="tips_and_guides"
-              label={t('tipsGuides')}
-              description={t('tipsGuidesDesc')}
-              initialValue={(preferences ?? DEFAULT_PREFERENCES).tips_and_guides}
-              onUpdate={handlePreferenceUpdate}
-            />
-          </div>
+          {preferences && (
+            <div className="space-y-3">
+              <PreferenceToggle
+                preferenceKey="newsletter_subscribed"
+                label="Newsletter"
+                description="Tips y novedades"
+                initialValue={preferences.newsletter_subscribed}
+                onUpdate={handlePreferenceUpdate}
+              />
+              <PreferenceToggle
+                preferenceKey="product_updates"
+                label="Actualizaciones de producto"
+                description="Nuevas funcionalidades"
+                initialValue={preferences.product_updates}
+                onUpdate={handlePreferenceUpdate}
+              />
+              <PreferenceToggle
+                preferenceKey="tips_and_guides"
+                label="Tips y guías"
+                description="Consejos para hosts"
+                initialValue={preferences.tips_and_guides}
+                onUpdate={handlePreferenceUpdate}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 

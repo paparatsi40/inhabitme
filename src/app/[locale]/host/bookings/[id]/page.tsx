@@ -23,13 +23,36 @@ export default function HostBookingDetailPage() {
 
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isFoundingHost, setIsFoundingHost] = useState(false);
   const [responding, setResponding] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
   const [showRejectForm, setShowRejectForm] = useState(action === 'reject');
 
   useEffect(() => {
     fetchBooking();
+    checkFoundingHost();
   }, [bookingId]);
+  
+  const checkFoundingHost = async () => {
+    try {
+      const res = await fetch('/api/debug/session');
+      if (res.ok) {
+        const data = await res.json();
+        const metadata = { 
+          ...data.sessionClaims?.public_metadata, 
+          ...data.sessionClaims?.unsafe_metadata 
+        };
+        
+        const is2026Founding = 
+          metadata?.role === 'founding_host' && 
+          (metadata?.founding_host_year === 2026 || metadata?.founding_host_year === '2026');
+        
+        setIsFoundingHost(is2026Founding);
+      }
+    } catch (error) {
+      console.error('Error checking founding host:', error);
+    }
+  };
 
   useEffect(() => {
     if (action === 'accept') {
@@ -55,6 +78,7 @@ export default function HostBookingDetailPage() {
     setResponding(true);
     try {
       console.log('🔵 Starting host acceptance flow...')
+      console.log('Is Founding Host?', isFoundingHost)
       
       // Step 1: Create host checkout session
       const checkoutRes = await fetch(`/api/bookings/${bookingId}/host-checkout`, {
@@ -72,7 +96,30 @@ export default function HostBookingDetailPage() {
       const checkoutData = await checkoutRes.json();
       console.log('Checkout response:', checkoutData)
 
-      // Redirect to Stripe for host fee payment
+      // If Founding Host (waived payment)
+      if (checkoutData.waived) {
+        console.log('✅ Payment waived for Founding Host, accepting directly...')
+        
+        // Accept directly without payment
+        const res = await fetch(`/api/bookings/${bookingId}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'accept',
+            message: responseMessage || 'Me encantaría recibirte en mi propiedad!'
+          })
+        });
+
+        if (res.ok) {
+          alert(`✅ ¡Solicitud aceptada! (Founding Host - ${formatMajor(0)} fee)\n\nEl huésped recibirá un email para proceder con el pago.`);
+          router.push('/host/bookings');
+        } else {
+          alert('Error al aceptar la solicitud');
+        }
+        return;
+      }
+
+      // Regular/Featured Host: Redirect to Stripe
       if (checkoutData.url) {
         console.log('💳 Redirecting to Stripe checkout:', checkoutData.url)
         window.location.href = checkoutData.url;
@@ -323,15 +370,27 @@ export default function HostBookingDetailPage() {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Tu fee de inhabitme:</span>
-              <span className="text-gray-600">-{formatMajor(hostFee)}</span>
+              {isFoundingHost ? (
+                <span className="text-green-600 font-bold">{formatMajor(0)} (Founding Host 2026 🏆)</span>
+              ) : (
+                <span className="text-gray-600">-{formatMajor(hostFee)}</span>
+              )}
             </div>
           </div>
 
-          <div className="mt-4 bg-blue-50 rounded-lg p-4">
-            <p className="text-sm text-blue-800">
-              💡 <strong>Nota:</strong> inhabitme retiene tu fee ({formatMajor(hostFee)}) del primer pago. Los meses restantes los cobra el huésped directamente a ti.
-            </p>
-          </div>
+          {isFoundingHost ? (
+            <div className="mt-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-4">
+              <p className="text-sm text-purple-900">
+                🏆 <strong>Founding Host Benefit:</strong> Como Founding Host, no pagas comisiones durante 2026. ¡Recibes el 100% del pago!
+              </p>
+            </div>
+          ) : (
+            <div className="mt-4 bg-blue-50 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
+                💡 <strong>Nota:</strong> inhabitme retiene tu fee ({formatMajor(hostFee)}) del primer pago. Los meses restantes los cobra el huésped directamente a ti.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

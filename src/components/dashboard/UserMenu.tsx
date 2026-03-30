@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useClerk, useUser } from '@clerk/nextjs'
 import { useRouter } from '@/i18n/routing'
-import { useLocale, useTranslations } from 'next-intl'
+import { useLocale } from 'next-intl'
 import { User, LogOut, Settings, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 
@@ -14,7 +14,6 @@ export function UserMenu() {
   const { user } = useUser()
   const router = useRouter()
   const locale = useLocale()
-  const t = useTranslations('dashboard')
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -84,7 +83,7 @@ export function UserMenu() {
               className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
             >
               <Settings className="h-4 w-4 text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">{t('settings')}</span>
+              <span className="text-sm font-medium text-gray-700">Configuración</span>
             </button>
 
             <button
@@ -92,7 +91,7 @@ export function UserMenu() {
               className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors text-left border-t border-gray-100"
             >
               <LogOut className="h-4 w-4 text-red-600" />
-              <span className="text-sm font-medium text-red-600">{t('signOut')}</span>
+              <span className="text-sm font-medium text-red-600">Cerrar sesión</span>
             </button>
           </div>
         </div>

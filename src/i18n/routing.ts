@@ -7,15 +7,12 @@ export const routing = defineRouting({
 
   // Default locale (English for international digital nomads)
   defaultLocale: 'en',
-
+  
   // Always show locale prefix
   localePrefix: 'always',
-
-  // Disable locale detection to avoid locale cookie writes on already-localized routes
-  localeDetection: false,
-
-  // Prevent NEXT_LOCALE cookie writes so localized roots can use bfcache-friendly caching
-  localeCookie: false
+  
+  // Enable locale detection for automatic redirect from /
+  localeDetection: true
 });
 
 // Lightweight wrappers around Next.js' navigation APIs

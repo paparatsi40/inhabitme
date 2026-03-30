@@ -7,10 +7,8 @@ import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
 export default function CustomizeListingPage() {
-  const t = useTranslations('listingCustomization')
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -137,11 +135,11 @@ export default function CustomizeListingPage() {
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />
-              {t('back')}
+              Volver
             </button>
             <div className="border-l pl-4">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {t('title')}
+                Customize Your Listing
               </h1>
               <p className="text-sm text-gray-600">{listing.title}</p>
             </div>
@@ -153,7 +151,7 @@ export default function CustomizeListingPage() {
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
               <Eye className="w-4 h-4" />
-              {showPreview ? t('edit') : t('preview')}
+              {showPreview ? 'Edit' : 'Preview'}
             </button>
             
             <button
@@ -166,7 +164,7 @@ export default function CustomizeListingPage() {
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              {t('save')}
+              Save
             </button>
           </div>
         </div>
@@ -186,7 +184,7 @@ export default function CustomizeListingPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Layout className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold">{t('chooseTemplate')}</h2>
+                <h2 className="text-lg font-semibold">Choose Template</h2>
               </div>
               
               <div className="space-y-3">
@@ -216,7 +214,7 @@ export default function CustomizeListingPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <Palette className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-semibold">{t('colors')}</h2>
+                <h2 className="text-lg font-semibold">Colors</h2>
               </div>
               
               <div className="space-y-4">
@@ -243,7 +241,7 @@ export default function CustomizeListingPage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('secondaryColor')}
+                    Secondary Color
                   </label>
                   <div className="flex gap-3">
                     <input
@@ -264,7 +262,7 @@ export default function CustomizeListingPage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('accentColor')}
+                    Accent Color
                   </label>
                   <div className="flex gap-3">
                     <input
@@ -307,7 +305,7 @@ export default function CustomizeListingPage() {
           {/* Live Preview */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4">{t('preview')}</h2>
+              <h2 className="text-lg font-semibold mb-4">Preview</h2>
               <div className="border-2 border-gray-200 rounded-xl overflow-hidden">
                 <div className="transform scale-75 origin-top-left" style={{ width: '133.33%', height: 'auto' }}>
                   <ThemedListingPage listing={listing} theme={customTheme} />

@@ -120,7 +120,7 @@ export default async function PaymentsPage() {
               <Link href="/search">
                 <Button variant="ghost" className="font-semibold">
                   <Search className="h-4 w-4 mr-2" />
-                  {t('searchButton')}
+                  Buscar
                 </Button>
               </Link>
               <UserMenu />

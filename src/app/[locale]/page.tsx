@@ -5,7 +5,7 @@ import NextLink from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ClientNav } from '@/components/home/ClientNav'
 import {
   ArrowRight,
@@ -463,14 +463,7 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
       <div className="aspect-[4/3] relative overflow-hidden">
         {imageUrl ? (
           <>
-            <Image
-              src={imageUrl}
-              alt={`${name} cityscape`}
-              fill
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
-              quality={55}
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
-            />
+            <img src={imageUrl} alt={`${name} cityscape`} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
           </>
         ) : (

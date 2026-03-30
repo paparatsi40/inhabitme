@@ -93,7 +93,7 @@ export default async function AnalyticsPage() {
               <Link href="/search">
                 <Button variant="ghost" className="font-semibold">
                   <Search className="h-4 w-4 mr-2" />
-                  {t('searchButton')}
+                  Buscar
                 </Button>
               </Link>
               <UserMenu />
@@ -110,7 +110,7 @@ export default async function AnalyticsPage() {
           <Link href="/dashboard">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('backToDashboard')}
+              Volver al Dashboard
             </Button>
           </Link>
           
@@ -120,10 +120,10 @@ export default async function AnalyticsPage() {
             </div>
             <div>
               <h1 className="text-3xl lg:text-4xl font-black text-gray-900">
-                {t('analyticsTitle')}
+                Analytics de Vistas
               </h1>
               <p className="text-gray-600 mt-1">
-                {t('analyticsSubtitle')}
+                Monitorea el rendimiento de tus propiedades
               </p>
             </div>
           </div>
@@ -136,7 +136,7 @@ export default async function AnalyticsPage() {
           <Card className="border-2 border-orange-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                {t('totalViews')}
+                Total de Vistas
               </CardTitle>
               <Eye className="h-5 w-5 text-orange-600" />
             </CardHeader>
@@ -145,7 +145,7 @@ export default async function AnalyticsPage() {
                 {stats.total_views.toLocaleString()}
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {stats.unique_sessions.toLocaleString()} {t('uniqueSessions')}
+                {stats.unique_sessions.toLocaleString()} sesiones únicas
               </p>
             </CardContent>
           </Card>
@@ -154,7 +154,7 @@ export default async function AnalyticsPage() {
           <Card className="border-2 border-blue-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                {t('thisWeek')}
+                Esta Semana
               </CardTitle>
               <TrendingUp className="h-5 w-5 text-blue-600" />
             </CardHeader>
@@ -163,7 +163,7 @@ export default async function AnalyticsPage() {
                 {stats.views_this_week.toLocaleString()}
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {stats.views_today} {t('today')}
+                {stats.views_today} hoy
               </p>
             </CardContent>
           </Card>
@@ -172,7 +172,7 @@ export default async function AnalyticsPage() {
           <Card className="border-2 border-purple-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                {t('thisMonth')}
+                Este Mes
               </CardTitle>
               <Calendar className="h-5 w-5 text-purple-600" />
             </CardHeader>
@@ -181,7 +181,7 @@ export default async function AnalyticsPage() {
                 {stats.views_this_month.toLocaleString()}
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {t('averagePerProperty')}: {stats.avg_views_per_listing.toFixed(1)}
+                Promedio: {stats.avg_views_per_listing.toFixed(1)} por propiedad
               </p>
             </CardContent>
           </Card>
@@ -194,11 +194,11 @@ export default async function AnalyticsPage() {
             <div className="flex items-center gap-3">
               <BarChart3 className="h-6 w-6 text-gray-700" />
               <h2 className="text-2xl font-black text-gray-900">
-                {t('viewsByProperty')}
+                Vistas por Propiedad
               </h2>
             </div>
             <p className="text-gray-600 mt-1">
-              {t('viewsByPropertySubtitle')}
+              Rendimiento detallado de cada una de tus propiedades
             </p>
           </div>
 
@@ -208,7 +208,7 @@ export default async function AnalyticsPage() {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      {t('property')}
+                      Propiedad
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                       <Eye className="h-4 w-4 inline mr-1" />
@@ -216,13 +216,13 @@ export default async function AnalyticsPage() {
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                       <Users className="h-4 w-4 inline mr-1" />
-                      {t('sessions')}
+                      Sesiones
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      {t('last7d')}
+                      Últimos 7d
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      {t('last30d')}
+                      Últimos 30d
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
                       <Monitor className="h-4 w-4 inline mr-1" />
@@ -245,7 +245,7 @@ export default async function AnalyticsPage() {
                         </Link>
                         {property.last_viewed_at && (
                           <div className="text-xs text-gray-500 mt-1">
-                            {t('lastView')}: {new Date(property.last_viewed_at).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES')}
+                            Última vista: {new Date(property.last_viewed_at).toLocaleDateString('es-ES')}
                           </div>
                         )}
                       </td>
@@ -291,14 +291,14 @@ export default async function AnalyticsPage() {
                 <Eye className="h-12 w-12 text-gray-400" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {t('noViews')}
+                No hay vistas registradas
               </h3>
               <p className="text-gray-600 mb-6">
-                {t('noViewsSubtitle')}
+                Comparte tus propiedades para empezar a recibir visitas
               </p>
               <Link href="/dashboard/properties">
                 <Button>
-                  {t('myProperties')}
+                  Ver Mis Propiedades
                 </Button>
               </Link>
             </div>

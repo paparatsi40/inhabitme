@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Eye, Calendar, Pencil, Trash2, Loader2, Palette } from 'lucide-react'
-import { Link } from '@/i18n/routing'
+import Link from 'next/link'
 
 interface PropertyActionsProps {
   propertyId: string
@@ -15,12 +14,10 @@ interface PropertyActionsProps {
 export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
-  const t = useTranslations('dashboard')
-  const locale = useLocale()
 
   const handleDelete = async () => {
     const confirmed = confirm(
-      t('deleteConfirm', { title: propertyTitle })
+      `¿Estás seguro de eliminar "${propertyTitle}"?\n\nEsta acción no se puede deshacer.`
     )
 
     if (!confirmed) return
@@ -33,13 +30,13 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
       })
 
       if (!res.ok) {
-        throw new Error(t('deleteFailed'))
+        throw new Error('Failed to delete')
       }
 
       // Refresh the page to show updated list
       router.refresh()
     } catch (error) {
-      alert(t('deleteErrorAlert'))
+      alert('Error al eliminar la propiedad')
       console.error(error)
       setIsDeleting(false)
     }
@@ -52,17 +49,17 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
         variant="outline" 
         size="sm" 
         className="border-2"
-        onClick={() => window.open(`/${locale}/properties/${propertyId}?v=${Date.now()}`, '_blank')}
+        onClick={() => window.open(`/properties/${propertyId}?v=${Date.now()}`, '_blank')}
       >
         <Eye className="h-4 w-4 mr-2" />
-        {t('viewPublic')}
+        Ver Pública
       </Button>
 
       {/* Availability */}
       <Link href={`/dashboard/properties/${propertyId}/availability`}>
         <Button variant="outline" size="sm" className="border-2 border-blue-300 text-blue-700 hover:bg-blue-50">
           <Calendar className="h-4 w-4 mr-2" />
-          {t('availability')}
+          Disponibilidad
         </Button>
       </Link>
 
@@ -70,7 +67,7 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
       <Link href={`/properties/${propertyId}/edit`}>
         <Button variant="outline" size="sm" className="border-2 border-green-300 text-green-700 hover:bg-green-50">
           <Pencil className="h-4 w-4 mr-2" />
-          {t('edit')}
+          Editar
         </Button>
       </Link>
 
@@ -81,7 +78,7 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
           className="border-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-sm"
         >
           <Palette className="h-4 w-4 mr-2" />
-          🎨 {t('customize')}
+          🎨 Personalizar
         </Button>
       </Link>
 
@@ -96,12 +93,12 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
         {isDeleting ? (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            {t('deleting')}
+            Eliminando...
           </>
         ) : (
           <>
             <Trash2 className="h-4 w-4 mr-2" />
-            {t('delete')}
+            Eliminar
           </>
         )}
       </Button>
