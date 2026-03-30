@@ -93,5 +93,5 @@ export default clerkMiddleware((auth, req) => {
 });
 
 export const config = {
-  matcher: ["/", "/api/:path*", "/((?!trpc|_next|_vercel|.*\\..*).*)"],
+  matcher: ["/", "/((?!api|trpc|_next|_vercel|.*\\..*).*)"],
 };
