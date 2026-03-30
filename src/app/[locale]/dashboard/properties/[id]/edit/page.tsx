@@ -11,10 +11,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, Save, Loader2, Home, MapPin, Wifi, Euro, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 
 export default function EditPropertyPage() {
   const params = useParams()
   const router = useRouter()
+  const locale = useLocale()
   const { isLoaded, isSignedIn } = useUser()
   const listingId = params.id as string
 
@@ -58,7 +60,7 @@ export default function EditPropertyPage() {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push('/sign-in')
+      router.push(`/${locale}/sign-in`)
       return
     }
 
@@ -116,7 +118,7 @@ export default function EditPropertyPage() {
     if (isLoaded && isSignedIn) {
       fetchListing()
     }
-  }, [isLoaded, isSignedIn, listingId, router])
+  }, [isLoaded, isSignedIn, listingId, router, locale])
 
   const updateFormData = (updates: Partial<typeof formData>) => {
     setFormData(prev => ({ ...prev, ...updates }))
@@ -140,7 +142,7 @@ export default function EditPropertyPage() {
 
       setSuccess(true)
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push(`/${locale}/dashboard`)
       }, 1500)
     } catch (err: any) {
       setError(err.message)
@@ -162,7 +164,7 @@ export default function EditPropertyPage() {
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <Link href={`/${locale}/dashboard`} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <ArrowLeft className="h-4 w-4" />
             Volver
           </Link>
@@ -546,7 +548,7 @@ export default function EditPropertyPage() {
 
         {/* Save Button */}
         <div className="flex justify-end gap-4">
-          <Link href="/dashboard">
+          <Link href={`/${locale}/dashboard`}>
             <Button variant="outline">Cancelar</Button>
           </Link>
           <Button

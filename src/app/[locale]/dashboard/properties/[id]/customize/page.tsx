@@ -11,7 +11,7 @@ import { useLocale, useTranslations } from 'next-intl'
 
 const ThemedListingPage = dynamic(
   () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
-  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Loading preview...</div> }
+  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Cargando vista previa...</div> }
 )
 
 export default function CustomizeListingPage() {
@@ -122,19 +122,22 @@ export default function CustomizeListingPage() {
       clearTimeout(timeoutId)
 
       if (res.ok) {
-        alert('Theme saved successfully!')
+        alert(locale === 'es' ? 'Tema guardado correctamente' : 'Theme saved successfully')
         router.push(`/${locale}/dashboard/properties`)
       } else {
         const payload = await res.json().catch(() => ({}))
-        alert(payload.error || `Failed to save theme (${res.status})`)
+        const fallback = locale === 'es'
+          ? `No se pudo guardar el tema (${res.status})`
+          : `Failed to save theme (${res.status})`
+        alert(payload.error || fallback)
       }
     } catch (error: any) {
       clearTimeout(timeoutId)
       console.error('Error saving theme:', error)
       if (error?.name === 'AbortError') {
-        alert('Save request timed out. Please try again.')
+        alert(locale === 'es' ? 'Se agotó el tiempo de guardado. Intenta nuevamente.' : 'Save request timed out. Please try again.')
       } else {
-        alert('Failed to save theme')
+        alert(locale === 'es' ? 'No se pudo guardar el tema' : 'Failed to save theme')
       }
     } finally {
       setSaving(false)
@@ -152,7 +155,7 @@ export default function CustomizeListingPage() {
   if (!listing) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Listing not found</p>
+        <p>{locale === 'es' ? 'Publicación no encontrada' : 'Listing not found'}</p>
       </div>
     )
   }
@@ -253,7 +256,7 @@ export default function CustomizeListingPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Primary Color
+                    {t('primaryColor')}
                   </label>
                   <div className="flex gap-3">
                     <input
