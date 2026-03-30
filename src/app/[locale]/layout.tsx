@@ -1,19 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import '../globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-})
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -27,6 +19,10 @@ export async function generateMetadata({
   params: LocaleParams
 }): Promise<Metadata> {
   const { locale } = await params
+
+  if (!routing.locales.includes(locale as any)) {
+    notFound()
+  }
 
   const t = await getTranslations({ locale, namespace: 'metadata' })
   const localeUrl = getLocalizedUrl('', locale as 'en' | 'es')
@@ -93,22 +89,18 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params
 
-  // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
-  // Providing all messages to the client
   const messages = await getMessages()
 
   return (
-    <ClerkProvider>
-      <NextIntlClientProvider messages={messages}>
-        <div className="flex flex-col min-h-screen">
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-      </NextIntlClientProvider>
-    </ClerkProvider>
+    <NextIntlClientProvider messages={messages}>
+      <div className="flex min-h-screen flex-col">
+        <main className="flex-grow">{children}</main>
+        <Footer />
+      </div>
+    </NextIntlClientProvider>
   )
 }
