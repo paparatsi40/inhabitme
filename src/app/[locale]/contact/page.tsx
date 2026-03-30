@@ -33,7 +33,7 @@ export default async function ContactPage() {
             <Link href="/">
               <Button variant="ghost">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Volver
+                {t('back')}
               </Button>
             </Link>
           </div>
@@ -49,10 +49,10 @@ export default async function ContactPage() {
             <MessageCircle className="h-10 w-10 text-blue-600" />
           </div>
           <h1 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4">
-            Contacta con nosotros
+            {t('title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            ¿Tienes alguna pregunta? Estamos aquí para ayudarte. Responderemos lo antes posible.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -62,9 +62,9 @@ export default async function ContactPage() {
           <div className="lg:col-span-2">
             <Card className="border-2 border-gray-200 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl">Envíanos un mensaje</CardTitle>
+                <CardTitle className="text-2xl">{t('sendMessageTitle')}</CardTitle>
                 <CardDescription>
-                  Completa el formulario y nos pondremos en contacto contigo
+                  {t('sendMessageDescription')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -72,12 +72,12 @@ export default async function ContactPage() {
                   
                   {/* Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nombre completo *</Label>
+                    <Label htmlFor="name">{t('fullNameLabel')}</Label>
                     <Input
                       id="name"
                       name="name"
                       type="text"
-                      placeholder="Tu nombre"
+                      placeholder={t('fullNamePlaceholder')}
                       required
                       className="w-full"
                     />
@@ -85,7 +85,7 @@ export default async function ContactPage() {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">{t('emailLabel')}</Label>
                     <Input
                       id="email"
                       name="email"
@@ -98,12 +98,12 @@ export default async function ContactPage() {
 
                   {/* Subject */}
                   <div className="space-y-2">
-                    <Label htmlFor="subject">Asunto *</Label>
+                    <Label htmlFor="subject">{t('subjectLabel')}</Label>
                     <Input
                       id="subject"
                       name="subject"
                       type="text"
-                      placeholder="¿En qué podemos ayudarte?"
+                      placeholder={t('subjectPlaceholder')}
                       required
                       className="w-full"
                     />
@@ -111,11 +111,11 @@ export default async function ContactPage() {
 
                   {/* Message */}
                   <div className="space-y-2">
-                    <Label htmlFor="message">Mensaje *</Label>
+                    <Label htmlFor="message">{t('messageLabel')}</Label>
                     <Textarea
                       id="message"
                       name="message"
-                      placeholder="Escribe tu mensaje aquí..."
+                      placeholder={t('messagePlaceholder')}
                       required
                       rows={6}
                       className="w-full resize-none"
@@ -129,11 +129,11 @@ export default async function ContactPage() {
                     className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                   >
                     <Send className="h-4 w-4 mr-2" />
-                    Enviar mensaje
+                    {t('sendButton')}
                   </Button>
 
                   <p className="text-xs text-gray-500 text-center">
-                    * Campos obligatorios
+                    {t('requiredFieldsNote')}
                   </p>
                 </form>
               </CardContent>
@@ -151,7 +151,7 @@ export default async function ContactPage() {
                     <Mail className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Email</h3>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('emailCardTitle')}</h3>
                     <a 
                       href="mailto:contact@inhabitme.com"
                       className="text-blue-600 hover:text-blue-700 text-sm"
@@ -159,7 +159,7 @@ export default async function ContactPage() {
                       contact@inhabitme.com
                     </a>
                     <p className="text-xs text-gray-500 mt-1">
-                      Respondemos en 24-48h
+                      {t('emailCardResponseTime')}
                     </p>
                   </div>
                 </div>
@@ -174,7 +174,7 @@ export default async function ContactPage() {
                     <MessageCircle className="h-6 w-6 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Soporte</h3>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('supportCardTitle')}</h3>
                     <a 
                       href="mailto:support@inhabitme.com"
                       className="text-purple-600 hover:text-purple-700 text-sm"
@@ -182,7 +182,7 @@ export default async function ContactPage() {
                       support@inhabitme.com
                     </a>
                     <p className="text-xs text-gray-500 mt-1">
-                      Para problemas técnicos
+                      {t('supportCardDescription')}
                     </p>
                   </div>
                 </div>
@@ -197,12 +197,12 @@ export default async function ContactPage() {
                     <MapPin className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Ubicación</h3>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('locationCardTitle')}</h3>
                     <p className="text-sm text-gray-600">
-                      Madrid, España
+                      {t('locationCardCity')}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Trabajamos remotamente
+                      {t('locationCardRemote')}
                     </p>
                   </div>
                 </div>
@@ -212,13 +212,13 @@ export default async function ContactPage() {
             {/* FAQ Link */}
             <Card className="border-2 border-orange-100 shadow-sm bg-gradient-to-br from-orange-50 to-yellow-50">
               <CardContent className="p-6">
-                <h3 className="font-bold text-gray-900 mb-2">¿Tienes dudas rápidas?</h3>
+                <h3 className="font-bold text-gray-900 mb-2">{t('faqCardTitle')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Consulta nuestras preguntas frecuentes
+                  {t('faqCardDescription')}
                 </p>
                 <Link href="/faq">
                   <Button variant="outline" className="w-full">
-                    Ver FAQ
+                    {t('faqButton')}
                   </Button>
                 </Link>
               </CardContent>

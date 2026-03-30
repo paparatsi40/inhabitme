@@ -1,19 +1,20 @@
 import { SignIn } from '@clerk/nextjs';
-import { useLocale } from 'next-intl';
+import Link from 'next/link';
 
-export default function SignInPage({
+export default async function SignInPage({
   params,
   searchParams,
 }: {
-  params: { locale: string };
-  searchParams: { redirect_url?: string };
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ redirect_url?: string }>;
 }) {
-  const locale = params.locale || 'en';
-  const redirectUrl = searchParams.redirect_url || `/${locale}/dashboard`;
+  const { locale = 'en' } = await params;
+  const { redirect_url } = await searchParams;
+  const redirectUrl = redirect_url || `/${locale}/dashboard`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 px-4">
+      <div className="w-full max-w-md space-y-4">
         <SignIn 
           fallbackRedirectUrl={redirectUrl}
           forceRedirectUrl={redirectUrl}
@@ -25,6 +26,15 @@ export default function SignInPage({
             },
           }}
         />
+
+        <div className="text-center">
+          <Link
+            href={`/${locale}/reset-session`}
+            className="text-sm text-gray-600 hover:text-blue-700 underline"
+          >
+            ¿Problemas de carga? Reiniciar sesión local
+          </Link>
+        </div>
       </div>
     </div>
   );

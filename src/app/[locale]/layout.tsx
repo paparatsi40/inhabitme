@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
-import { ClerkProvider } from '@clerk/nextjs'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -102,13 +101,11 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <ClerkProvider>
-      <NextIntlClientProvider messages={messages}>
-        <div className="flex flex-col min-h-screen">
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
-      </NextIntlClientProvider>
-    </ClerkProvider>
+    <NextIntlClientProvider messages={messages}>
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow">{children}</main>
+        <Footer />
+      </div>
+    </NextIntlClientProvider>
   )
 }

@@ -3,14 +3,20 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme, TemplateId } from '@/lib/domain/listing-theme'
-import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
+import dynamic from 'next/dynamic'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+
+const ThemedListingPage = dynamic(
+  () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
+  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Loading preview...</div> }
+)
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
+  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -28,26 +34,31 @@ export default function CustomizeListingPage() {
   // Fetch listing data
   useEffect(() => {
     const fetchListing = async () => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 12000)
       try {
-        const res = await fetch(`/api/listings/${listingId}`)
+        const res = await fetch(`/api/listings/${listingId}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        })
         if (res.ok) {
           const data = await res.json()
-          // Map API fields to component expected format
           const mappedListing = {
             ...data,
             city: data.city_name,
             country: data.city_country,
-            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
+            monthly_price: data.monthly_price || 1000,
           }
           setListing(mappedListing)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
       } finally {
+        clearTimeout(timeoutId)
         setLoading(false)
       }
     }
-    
+
     fetchListing()
   }, [listingId])
   
@@ -71,10 +82,15 @@ export default function CustomizeListingPage() {
   // Save theme
   const handleSave = async () => {
     setSaving(true)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
+
     try {
       const res = await fetch(`/api/listings/${listingId}/theme`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        signal: controller.signal,
         body: JSON.stringify({
           template: selectedTemplate,
           customizations: customTheme,
@@ -94,17 +110,24 @@ export default function CustomizeListingPage() {
           }
         })
       })
-      
+
+      clearTimeout(timeoutId)
+
       if (res.ok) {
         alert('Theme saved successfully!')
-        router.push(`/dashboard/properties`)
+        router.push(`/${locale}/dashboard/properties`)
       } else {
-        const error = await res.json()
-        alert(error.error || 'Failed to save theme')
+        const payload = await res.json().catch(() => ({}))
+        alert(payload.error || `Failed to save theme (${res.status})`)
       }
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId)
       console.error('Error saving theme:', error)
-      alert('Failed to save theme')
+      if (error?.name === 'AbortError') {
+        alert('Save request timed out. Please try again.')
+      } else {
+        alert('Failed to save theme')
+      }
     } finally {
       setSaving(false)
     }
@@ -133,7 +156,7 @@ export default function CustomizeListingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push('/dashboard/properties')}
+              onClick={() => router.push(`/${locale}/dashboard/properties`)}
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />
