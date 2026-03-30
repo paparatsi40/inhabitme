@@ -130,11 +130,12 @@ const nextConfig = {
             value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
 
-          // Content Security Policy - enabled for Best Practices score
-          {
-            key: "Content-Security-Policy",
-            value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src ${fontSrc}; connect-src ${connectSrc}; frame-src ${frameSrc}; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
-          },
+          // Temporary incident mitigation: CSP disabled to restore runtime integrations
+          // TODO: re-enable with Report-Only and monitored allowlist
+          // {
+          //   key: "Content-Security-Policy",
+          //   value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src ${fontSrc}; connect-src ${connectSrc}; frame-src ${frameSrc}; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
+          // },
         ],
       },
     ];
