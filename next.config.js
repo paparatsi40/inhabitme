@@ -28,6 +28,13 @@ const styleSrc = [
   "https://*.clerk.dev",
 ].join(" ");
 
+const fontSrc = [
+  "'self'",
+  "https://fonts.gstatic.com",
+  "data:",
+  ...(allowVercelLive ? ["https://vercel.live"] : []),
+].join(" ");
+
 const connectSrc = [
   "'self'",
   "https://clerk.inhabitme.com",
@@ -48,6 +55,7 @@ const frameSrc = [
   "https://*.clerk.accounts.dev",
   "https://*.clerk.dev",
   "https://*.clerk.com",
+  "https://upload-widget.cloudinary.com",
   ...(allowVercelLive ? ["https://vercel.live"] : []),
 ].join(" ");
 
@@ -125,7 +133,7 @@ const nextConfig = {
           // Content Security Policy - enabled for Best Practices score
           {
             key: "Content-Security-Policy",
-            value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src 'self' https://fonts.gstatic.com data:; connect-src ${connectSrc}; frame-src ${frameSrc}; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
+            value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src ${fontSrc}; connect-src ${connectSrc}; frame-src ${frameSrc}; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
           },
         ],
       },
