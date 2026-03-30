@@ -33,9 +33,10 @@ export default function CustomizeListingPage() {
   
   // Fetch listing data
   useEffect(() => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 12000)
+
     const fetchListing = async () => {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 12000)
       try {
         const res = await fetch(`/api/listings/${listingId}`, {
           cache: 'no-store',
@@ -51,8 +52,10 @@ export default function CustomizeListingPage() {
           }
           setListing(mappedListing)
         }
-      } catch (error) {
-        console.error('Error fetching listing:', error)
+      } catch (error: any) {
+        if (error?.name !== 'AbortError') {
+          console.error('Error fetching listing:', error)
+        }
       } finally {
         clearTimeout(timeoutId)
         setLoading(false)
@@ -60,6 +63,11 @@ export default function CustomizeListingPage() {
     }
 
     fetchListing()
+
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
   }, [listingId])
   
   // Update theme when template changes
