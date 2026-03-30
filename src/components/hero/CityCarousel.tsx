@@ -9,7 +9,6 @@ import { useTranslations } from 'next-intl'
 export function CityCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const t = useTranslations('home.heroCarousel')
-  const currentCity = CITIES[currentIndex]
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,63 +23,74 @@ export function CityCarousel() {
       <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-200">
         {/* Carrusel de imágenes */}
         <div className="aspect-[4/3] relative overflow-hidden">
-          <div key={currentCity.name} className="absolute inset-0 transition-opacity duration-700 opacity-100">
-            <Image
-              src={currentCity.image}
-              alt={currentCity.name}
-              fill
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 42vw"
-              quality={45}
-              className="object-cover"
-              priority
-              fetchPriority="high"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-            
-            {/* Nombre de ciudad */}
-            <div className="absolute top-6 left-6 right-6">
-              <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <span className="text-sm font-bold text-gray-900">{currentCity.name}</span>
+          {CITIES.map((city, index) => (
+            <div
+              key={city.name}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <Image
+                src={city.image}
+                alt={city.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+                priority={index === 0}
+                fetchPriority={index === currentIndex ? "high" : "low"}
+                loading={index === 0 ? "eager" : "lazy"}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              
+              {/* Nombre de ciudad */}
+              <div className="absolute top-6 left-6 right-6">
+                <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-bold text-gray-900">{city.name}</span>
+                </div>
+              </div>
+
+              {/* Subtitle */}
+              <div className="absolute bottom-24 left-6 right-6">
+                <p className="text-white text-lg font-semibold drop-shadow-lg">
+                  {city.subtitle}
+                </p>
               </div>
             </div>
-
-            {/* Subtitle */}
-            <div className="absolute bottom-24 left-6 right-6">
-              <p className="text-white text-lg font-semibold drop-shadow-lg">
-                {currentCity.subtitle}
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Stats overlay */}
-        <div className="absolute bottom-10 sm:bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-sm sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
+        <div className="absolute bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
+            <p className="text-base sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-lg sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
+            <p className="text-xl sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
           </div>
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-lg sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 text-center shadow-lg pt-5 sm:pt-4">
+            <p className="text-xl sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
+            <p className="text-xs text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
           </div>
         </div>
 
-        {/* Indicadores de progreso (dots) - separados de las cards */}
-        <div className="absolute bottom-30 sm:bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
+        {/* Indicadores de progreso (dots) - Fixed touch targets */}
+        <div className="absolute bottom-28 sm:bottom-20 left-0 right-0 flex justify-center gap-1 sm:gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className="h-10 w-10 flex items-center justify-center rounded-full transition-all"
+              className={`flex items-center justify-center rounded-full transition-all min-w-[28px] min-h-[28px] sm:min-w-[48px] sm:min-h-[48px] p-1 sm:p-2 ${
+                index === currentIndex 
+                  ? 'bg-white shadow-md' 
+                  : 'bg-white/50 hover:bg-white/70'
+              }`}
               aria-label={`Go to slide ${index + 1}`}
             >
-              <span className={`block h-3.5 w-3.5 rounded-full transition-all ${
-                index === currentIndex ? 'bg-white ring-2 ring-white/60' : 'bg-white/55 hover:bg-white/80'
+              <span className={`block h-1.5 sm:h-2 rounded-full transition-all ${
+                index === currentIndex ? 'w-4 sm:w-6 bg-gray-800' : 'w-1.5 sm:w-2 bg-gray-600'
               }`} />
             </button>
           ))}

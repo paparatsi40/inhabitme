@@ -259,7 +259,7 @@ export default function HostBookingDetailPage() {
                   Mensaje del huésped:
                 </span>
                 <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700 italic">&quot;{booking.guest_message}&quot;</p>
+                  <p className="text-gray-700 italic">"{booking.guest_message}"</p>
                 </div>
               </div>
             )}

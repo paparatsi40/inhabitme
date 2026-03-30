@@ -65,9 +65,9 @@ export default async function ProfilePage() {
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
             <h3 className="font-bold text-blue-900 mb-2">💡 Cómo cambiar tu email o teléfono</h3>
             <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-              <li>Usa el botón <strong>&quot;+ Add email address&quot;</strong> o <strong>&quot;+ Add phone number&quot;</strong></li>
+              <li>Usa el botón <strong>"+ Add email address"</strong> o <strong>"+ Add phone number"</strong></li>
               <li>Verifica el nuevo contacto (recibirás un código)</li>
-              <li>Márcalo como <strong>&quot;Primary&quot;</strong> usando el menú (⋮)</li>
+              <li>Márcalo como <strong>"Primary"</strong> usando el menú (⋮)</li>
               <li>Opcionalmente, elimina el anterior si ya no lo necesitas</li>
             </ol>
             <p className="text-xs text-blue-700 mt-2">
