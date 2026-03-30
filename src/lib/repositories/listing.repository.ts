@@ -2,6 +2,24 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { Listing } from '../domain/listing'
 import { SearchFilters } from '../domain/search-filters'
 
+const QUERY_TIMEOUT_MS = 5000
+
+function withTimeout<T>(promise: PromiseLike<T>, timeoutMs: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
+
+    Promise.resolve(promise)
+      .then((value) => {
+        clearTimeout(timer)
+        resolve(value)
+      })
+      .catch((error) => {
+        clearTimeout(timer)
+        reject(error)
+      })
+  })
+}
+
 function mapRowToListing(row: any): Listing {
   return {
     id: row.id,
@@ -59,42 +77,48 @@ function mapRowToListing(row: any): Listing {
 
 export const listingRepository = {
   async search(filters: SearchFilters): Promise<Listing[]> {
-    const supabase = getSupabaseServerClient()
+    try {
+      const supabase = getSupabaseServerClient()
 
-    let query = supabase.from('listings').select('*')
+      let query = supabase.from('listings').select('*')
 
-    // Case-insensitive search para ciudad
-    if (filters.city) {
-      query = query.ilike('city_name', filters.city)
-    }
+      // Case-insensitive search para ciudad
+      if (filters.city) {
+        query = query.ilike('city_name', filters.city)
+      }
 
-    // Case-insensitive search para barrio
-    if (filters.neighborhood) {
-      query = query.ilike('neighborhood', filters.neighborhood)
-    }
+      // Case-insensitive search para barrio
+      if (filters.neighborhood) {
+        query = query.ilike('neighborhood', filters.neighborhood)
+      }
 
-    if (filters.minPrice) {
-      query = query.gte('monthly_price', filters.minPrice)
-    }
+      if (filters.minPrice) {
+        query = query.gte('monthly_price', filters.minPrice)
+      }
 
-    if (filters.maxPrice) {
-      query = query.lte('monthly_price', filters.maxPrice)
-    }
+      if (filters.maxPrice) {
+        query = query.lte('monthly_price', filters.maxPrice)
+      }
 
-    if (filters.bedrooms) {
-      query = query.gte('bedrooms', filters.bedrooms)
-    }
+      if (filters.bedrooms) {
+        query = query.gte('bedrooms', filters.bedrooms)
+      }
 
-    const { data, error } = await query
+      const { data, error } = await withTimeout(query, QUERY_TIMEOUT_MS)
 
-    if (error) {
-      console.error('[listingRepository.search] Error:', error)
+      if (error) {
+        console.error('[listingRepository.search] Error:', error)
+        console.error('[listingRepository.search] Filters:', filters)
+        // Return empty array instead of throwing to prevent page crashes
+        return []
+      }
+
+      return (data ?? []).map(mapRowToListing)
+    } catch (error) {
+      console.error('[listingRepository.search] Timeout/unexpected error:', error)
       console.error('[listingRepository.search] Filters:', filters)
-      // Return empty array instead of throwing to prevent page crashes
       return []
     }
-
-    return (data ?? []).map(mapRowToListing)
   },
 
   async getById(id: string): Promise<Listing | null> {
