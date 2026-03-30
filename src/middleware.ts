@@ -23,7 +23,6 @@ function shouldBypass(pathname: string): boolean {
   return (
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
-    pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/static") ||
     pathname.includes(".")
@@ -68,6 +67,11 @@ function setLocaleRootCaching(pathname: string, response: NextResponse): NextRes
 
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
+
+  // Let Clerk run for API routes, but skip i18n/SEO processing there
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
 
   if (shouldBypass(pathname)) {
     return NextResponse.next();
