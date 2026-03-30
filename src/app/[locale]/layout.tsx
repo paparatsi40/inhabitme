@@ -1,26 +1,33 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale
+} from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
 
+type Props = {
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
+}
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
-type LocaleParams = Promise<{ locale: string }>
-
 export async function generateMetadata({
-  params,
+  params
 }: {
-  params: LocaleParams
+  params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound()
   }
 
@@ -40,8 +47,8 @@ export async function generateMetadata({
       canonical: localeUrl,
       languages: {
         en: getLocalizedUrl('', 'en'),
-        es: getLocalizedUrl('', 'es'),
-      },
+        es: getLocalizedUrl('', 'es')
+      }
     },
     openGraph: {
       title: t('title'),
@@ -55,9 +62,9 @@ export async function generateMetadata({
           url: `${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`,
           width: SEO_CONFIG.openGraph.imageWidth,
           height: SEO_CONFIG.openGraph.imageHeight,
-          alt: 'InhabitMe - Medium-term stays',
-        },
-      ],
+          alt: 'InhabitMe - Medium-term stays'
+        }
+      ]
     },
     twitter: {
       card: SEO_CONFIG.twitter.card,
@@ -65,34 +72,29 @@ export async function generateMetadata({
       description: t('description'),
       images: [`${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`],
       site: SEO_CONFIG.twitter.site,
-      creator: SEO_CONFIG.twitter.creator,
+      creator: SEO_CONFIG.twitter.creator
     },
     robots: SEO_CONFIG.robots,
     icons: {
       icon: '/favicon.svg',
-      apple: '/favicon.svg',
+      apple: '/favicon.svg'
     },
     ...(SEO_CONFIG.verification.google && {
       verification: {
-        google: SEO_CONFIG.verification.google,
-      },
-    }),
+        google: SEO_CONFIG.verification.google
+      }
+    })
   }
 }
 
-export default async function LocaleLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: LocaleParams
-}) {
+export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
 
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound()
   }
 
+  setRequestLocale(locale)
   const messages = await getMessages()
 
   return (
