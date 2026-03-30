@@ -3,16 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { THEME_PRESETS, TEMPLATE_METADATA, ListingTheme, TemplateId } from '@/lib/domain/listing-theme'
-import dynamic from 'next/dynamic'
+import { ThemedListingPage } from '@/components/listings/ThemedListingPage'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
-
-const ThemedListingPage = dynamic(
-  () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
-  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Loading preview...</div> }
-)
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
@@ -34,31 +29,26 @@ export default function CustomizeListingPage() {
   // Fetch listing data
   useEffect(() => {
     const fetchListing = async () => {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 12000)
       try {
-        const res = await fetch(`/api/listings/${listingId}`, {
-          cache: 'no-store',
-          signal: controller.signal,
-        })
+        const res = await fetch(`/api/listings/${listingId}`)
         if (res.ok) {
           const data = await res.json()
+          // Map API fields to component expected format
           const mappedListing = {
             ...data,
             city: data.city_name,
             country: data.city_country,
-            monthly_price: data.monthly_price || 1000,
+            monthly_price: data.monthly_price || 1000, // Fallback por si acaso
           }
           setListing(mappedListing)
         }
       } catch (error) {
         console.error('Error fetching listing:', error)
       } finally {
-        clearTimeout(timeoutId)
         setLoading(false)
       }
     }
-
+    
     fetchListing()
   }, [listingId])
   
@@ -82,15 +72,10 @@ export default function CustomizeListingPage() {
   // Save theme
   const handleSave = async () => {
     setSaving(true)
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 15000)
-
     try {
       const res = await fetch(`/api/listings/${listingId}/theme`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-        signal: controller.signal,
         body: JSON.stringify({
           template: selectedTemplate,
           customizations: customTheme,
@@ -110,24 +95,17 @@ export default function CustomizeListingPage() {
           }
         })
       })
-
-      clearTimeout(timeoutId)
-
+      
       if (res.ok) {
         alert('Theme saved successfully!')
         router.push(`/${locale}/dashboard/properties`)
       } else {
-        const payload = await res.json().catch(() => ({}))
-        alert(payload.error || `Failed to save theme (${res.status})`)
+        const error = await res.json()
+        alert(error.error || 'Failed to save theme')
       }
-    } catch (error: any) {
-      clearTimeout(timeoutId)
+    } catch (error) {
       console.error('Error saving theme:', error)
-      if (error?.name === 'AbortError') {
-        alert('Save request timed out. Please try again.')
-      } else {
-        alert('Failed to save theme')
-      }
+      alert('Failed to save theme')
     } finally {
       setSaving(false)
     }

@@ -12,11 +12,6 @@ import {
 const intlMiddleware = createMiddleware(routing);
 
 function isProtectedRoute(pathname: string): boolean {
-  // Never protect auth pages to avoid redirect loops (especially in incognito)
-  if (/^\/(en|es)\/sign-(in|up)(\/.*)?$/.test(pathname)) {
-    return false;
-  }
-
   return (
     /^\/(en|es)\/dashboard(\/.*)?$/.test(pathname) ||
     /^\/(en|es)\/properties\/new(\/.*)?$/.test(pathname) ||
