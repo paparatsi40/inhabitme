@@ -16,6 +16,7 @@ const scriptSrc = [
   "https://cdn.jsdelivr.net",
   "https://js.stripe.com",
   "https://maps.googleapis.com",
+  "https://upload-widget.cloudinary.com",
   ...(allowVercelLive ? ["https://vercel.live"] : []),
 ].join(" ");
 
@@ -47,6 +48,7 @@ const frameSrc = [
   "https://*.clerk.accounts.dev",
   "https://*.clerk.dev",
   "https://*.clerk.com",
+  ...(allowVercelLive ? ["https://vercel.live"] : []),
 ].join(" ");
 
 const imgSrc = [
