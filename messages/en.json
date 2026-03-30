@@ -1015,6 +1015,34 @@
     "digitalNomad": "Digital Nomad",
     "wifi": "WiFi",
     "bedrooms": "bedrooms",
-    "bathrooms": "bathrooms"
+    "bathrooms": "bathrooms",
+    "months": "months"
+  },
+  "themedListingWrapper": {
+    "back": "Back",
+    "share": "Share",
+    "shareTitle": "Check out this property",
+    "linkCopied": "Link copied to clipboard!",
+    "footerCopyPrefix": "© 2026",
+    "footerCopySuffix": "Find your perfect home for remote work.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies"
+  },
+  "listingCta": {
+    "pricePerMonth": "Price per month",
+    "askQuestion": "Ask a question",
+    "requestBooking": "Request booking",
+    "close": "Close",
+    "readyToBook": "Ready to book?",
+    "bookNowDescription": "Request your booking now and the host will respond within 48 hours",
+    "perMonth": "/month"
+  },
+  "listingHeader": {
+    "featured": "Featured",
+    "featuredListing": "Featured Listing",
+    "highSpeedWifi": "High-Speed WiFi",
+    "reviews": "reviews",
+    "description": "Experience comfortable living in this beautiful space designed for digital nomads and medium-term stays. Fully equipped with everything you need for a productive and relaxing stay."
   }
 }

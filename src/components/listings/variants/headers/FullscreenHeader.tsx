@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { MapPin, Star, Wifi, Crown, ChevronDown } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface FullscreenHeaderProps {
   title: string
@@ -22,6 +23,7 @@ export function FullscreenHeader({
   primaryColor = '#2563eb',
   isFeatured = false,
 }: FullscreenHeaderProps) {
+  const t = useTranslations('listingHeader')
   const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
   const altText = title || 'Property image'
   
@@ -49,12 +51,12 @@ export function FullscreenHeader({
               style={{ background: `linear-gradient(135deg, ${primaryColor}99, ${primaryColor}DD)` }}
             >
               <Crown className="w-4 h-4" />
-              Featured Listing
+              {t('featuredListing')}
             </div>
           )}
           <div className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full">
             <Wifi className="w-4 h-4" />
-            High-Speed WiFi
+            {t('highSpeedWifi')}
           </div>
         </div>
         
@@ -77,7 +79,7 @@ export function FullscreenHeader({
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                 <span className="text-lg font-semibold">{rating.toFixed(1)}</span>
                 {reviewCount && (
-                  <span className="text-white/80">({reviewCount} reviews)</span>
+                  <span className="text-white/80">({reviewCount} {t('reviews')})</span>
                 )}
               </div>
             </>

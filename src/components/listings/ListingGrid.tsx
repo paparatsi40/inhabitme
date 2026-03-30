@@ -72,14 +72,14 @@ export function ListingGrid({ listings }: ListingGridProps) {
               {hasWorkspace && (
                 <div className="absolute top-3 left-3 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                   <Check className="h-3 w-3" />
-                  Workspace
+                  {t('workspace')}
                 </div>
               )}
 
               {/* Badge de Amueblado */}
               {listing.amenities.furnished && (
                 <div className="absolute bottom-3 left-3 bg-white/90 text-gray-800 px-3 py-1 rounded-full text-xs font-medium">
-                  ✓ Amueblado
+                  ✓ {t('furnished')}
                 </div>
               )}
             </div>
@@ -122,11 +122,11 @@ export function ListingGrid({ listings }: ListingGridProps) {
                     <p className="text-2xl font-bold text-blue-600">
                       {monthlyPriceFormatted}
                     </p>
-                    <p className="text-xs text-gray-500">por mes</p>
+                    <p className="text-xs text-gray-500">{t('perMonth')}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-600">
-                      {minMonths}-{maxMonths} meses
+                      {minMonths}-{maxMonths} {t('months')}
                     </p>
                   </div>
                 </div>

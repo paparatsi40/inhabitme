@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { MapPin, Star, Wifi, Crown } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface SplitHeaderProps {
   title: string
@@ -24,6 +25,7 @@ export function SplitHeader({
   primaryColor = '#2563eb',
   isFeatured = false,
 }: SplitHeaderProps) {
+  const t = useTranslations('listingHeader')
   const mainImage = images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop'
   const altText = title || 'Property image'
   
@@ -47,7 +49,7 @@ export function SplitHeader({
               style={{ background: `linear-gradient(135deg, ${primaryColor}99, ${primaryColor}DD)` }}
             >
               <Crown className="w-4 h-4" />
-              Featured
+              {t('featured')}
             </div>
           </div>
         )}
@@ -56,7 +58,7 @@ export function SplitHeader({
         <div className="absolute top-4 right-4">
           <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-full">
             <Wifi className="w-4 h-4" style={{ color: primaryColor }} />
-            <span className="text-sm font-medium">High-Speed WiFi</span>
+            <span className="text-sm font-medium">{t('highSpeedWifi')}</span>
           </div>
         </div>
       </div>
@@ -76,7 +78,7 @@ export function SplitHeader({
               <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">{rating.toFixed(1)}</span>
               {reviewCount && (
-                <span className="text-gray-500">({reviewCount} reviews)</span>
+                  <span className="text-gray-500">({reviewCount} {t('reviews')})</span>
               )}
             </div>
           )}
@@ -84,8 +86,7 @@ export function SplitHeader({
         
         <div className="prose prose-lg">
           <p className="text-gray-700 leading-relaxed">
-            Experience comfortable living in this beautiful space designed for digital nomads and medium-term stays.
-            Fully equipped with everything you need for a productive and relaxing stay.
+            {t('description')}
           </p>
         </div>
       </div>

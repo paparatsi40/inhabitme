@@ -1,10 +1,11 @@
 'use client'
 
 import { 
-  Wifi, Thermometer, Wind, Sunrise, Home, WashingMachine, 
+  Thermometer, Wind, Sunrise, Home, WashingMachine, 
   UtensilsCrossed, Building2, Car, Bell, ShieldCheck, 
   Lock, PawPrint, Cigarette, Check
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 interface AmenitiesDisplayProps {
   amenities: Record<string, boolean | number>
@@ -34,31 +35,32 @@ const AMENITY_ICONS: Record<string, any> = {
   allows_smoking: Cigarette,
 }
 
-const AMENITY_LABELS: Record<string, string> = {
-  has_heating: 'Calefacción',
-  has_ac: 'Aire Acondicionado',
-  has_balcony: 'Balcón',
-  has_terrace: 'Terraza',
-  has_washer: 'Lavadora',
-  has_dryer: 'Secadora',
-  has_dishwasher: 'Lavavajillas',
-  has_full_kitchen: 'Cocina Completa',
-  has_elevator: 'Ascensor',
-  has_parking: 'Parking/Garaje',
-  has_doorman: 'Portero/Conserje',
-  floor_number: 'Número de Piso',
-  has_security_system: 'Sistema de Seguridad',
-  has_safe: 'Caja Fuerte',
-  allows_pets: 'Se Permiten Mascotas',
-  allows_smoking: 'Se Permite Fumar',
+const AMENITY_LABEL_KEYS: Record<string, string> = {
+  has_heating: 'heating',
+  has_ac: 'airConditioning',
+  has_balcony: 'balcony',
+  has_terrace: 'terrace',
+  has_washer: 'washer',
+  has_dryer: 'dryer',
+  has_dishwasher: 'dishwasher',
+  has_full_kitchen: 'fullyEquippedKitchen',
+  has_elevator: 'elevator',
+  has_parking: 'parking',
+  has_doorman: 'concierge',
+  floor_number: 'floorNumberLabel',
+  has_security_system: 'securitySystem',
+  has_safe: 'safe',
+  allows_pets: 'petFriendly',
+  allows_smoking: 'smokingAllowed',
 }
 
 export function AmenitiesDisplay({ amenities, variant, colors }: AmenitiesDisplayProps) {
+  const t = useTranslations('propertyForm')
   const enabledAmenities = Object.entries(amenities)
     .filter(([key, value]) => value === true || (key === 'floor_number' && value))
     .map(([key, value]) => ({
       key,
-      label: AMENITY_LABELS[key] || key,
+      label: t(AMENITY_LABEL_KEYS[key] || 'amenities') || key,
       icon: AMENITY_ICONS[key] || Check,
       value: key === 'floor_number' ? value : true,
     }))
@@ -71,13 +73,13 @@ export function AmenitiesDisplay({ amenities, variant, colors }: AmenitiesDispla
     case 'list':
       return <ListVariant amenities={enabledAmenities} colors={colors} />
     case 'grid':
-      return <GridVariant amenities={enabledAmenities} colors={colors} />
+      return <GridVariant amenities={enabledAmenities} colors={colors} t={t} />
     case 'badges':
       return <BadgesVariant amenities={enabledAmenities} colors={colors} />
     case 'icons':
-      return <IconsVariant amenities={enabledAmenities} colors={colors} />
+      return <IconsVariant amenities={enabledAmenities} colors={colors} t={t} />
     default:
-      return <GridVariant amenities={enabledAmenities} colors={colors} />
+      return <GridVariant amenities={enabledAmenities} colors={colors} t={t} />
   }
 }
 
@@ -107,7 +109,7 @@ function ListVariant({ amenities, colors }: any) {
 }
 
 // Grid Variant: Cards with icons in grid
-function GridVariant({ amenities, colors }: any) {
+function GridVariant({ amenities, colors, t }: any) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
       {amenities.map((amenity: any) => {
@@ -129,7 +131,7 @@ function GridVariant({ amenities, colors }: any) {
                 {amenity.label}
               </p>
               {amenity.key === 'floor_number' && (
-                <p className="text-xs text-gray-500">Piso {amenity.value}</p>
+                <p className="text-xs text-gray-500">{t('floorNumberLabel')} {amenity.value}</p>
               )}
             </div>
           </div>
@@ -166,7 +168,7 @@ function BadgesVariant({ amenities, colors }: any) {
 }
 
 // Icons Variant: Large icon circles
-function IconsVariant({ amenities, colors }: any) {
+function IconsVariant({ amenities, colors, t }: any) {
   return (
     <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-6">
       {amenities.map((amenity: any) => {
@@ -185,7 +187,7 @@ function IconsVariant({ amenities, colors }: any) {
               {amenity.label.split(' ').slice(0, 2).join(' ')}
             </p>
             {amenity.key === 'floor_number' && (
-              <p className="text-xs text-gray-500">Piso {amenity.value}</p>
+              <p className="text-xs text-gray-500">{t('floorNumberLabel')} {amenity.value}</p>
             )}
           </div>
         )

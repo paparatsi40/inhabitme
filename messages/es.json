@@ -1015,6 +1015,34 @@
     "digitalNomad": "Nómada Digital",
     "wifi": "WiFi",
     "bedrooms": "hab",
-    "bathrooms": "baños"
+    "bathrooms": "baños",
+    "months": "meses"
+  },
+  "themedListingWrapper": {
+    "back": "Volver",
+    "share": "Compartir",
+    "shareTitle": "Mira esta propiedad",
+    "linkCopied": "¡Enlace copiado al portapapeles!",
+    "footerCopyPrefix": "© 2026",
+    "footerCopySuffix": "Encuentra tu hogar perfecto para trabajar remoto.",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "cookies": "Cookies"
+  },
+  "listingCta": {
+    "pricePerMonth": "Precio por mes",
+    "askQuestion": "Hacer pregunta",
+    "requestBooking": "Solicitar reserva",
+    "close": "Cerrar",
+    "readyToBook": "¿Listo para reservar?",
+    "bookNowDescription": "Solicita tu reserva ahora y el host responderá en 48 horas",
+    "perMonth": "/mes"
+  },
+  "listingHeader": {
+    "featured": "Destacada",
+    "featuredListing": "Publicación destacada",
+    "highSpeedWifi": "WiFi de alta velocidad",
+    "reviews": "reseñas",
+    "description": "Disfruta una estancia cómoda en este espacio diseñado para nómadas digitales y estancias de medio plazo. Totalmente equipado con todo lo que necesitas para trabajar y relajarte."
   }
 }
