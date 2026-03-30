@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,8 +20,7 @@ import {
   MapPin,
   Wifi,
   Euro,
-  Bed,
-  Bath,
+
   Zap,
   Monitor,
   Image as ImageIcon,
@@ -43,6 +43,9 @@ interface EditPropertyClientProps {
 
 export default function EditPropertyClient({ listing }: EditPropertyClientProps) {
   const router = useRouter()
+  const params = useParams()
+  const t = useTranslations('propertyForm')
+  const c = useTranslations('common')
 
   const [currentStep, setCurrentStep] = useState<Step>('basic')
   const [submitting, setSubmitting] = useState(false)
@@ -55,7 +58,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
     description: listing.description || '',
     city_name: listing.city_name || '',
     city_slug: listing.city_slug || '',
-    country: listing.country || 'España',
+    country: listing.country || 'Spain',
     neighborhood: typeof listing.neighborhood === 'string' ? listing.neighborhood : listing.neighborhood?.name || '',
     has_fast_wifi: listing.has_fast_wifi || false,
     wifi_speed_mbps: listing.wifi_speed_mbps || '',
@@ -110,16 +113,16 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.message || 'Failed to update property')
+        throw new Error(data.message || c('error'))
       }
 
       setSuccess(true)
       setTimeout(() => {
-        router.push('/dashboard/properties')
+        router.push(`/${params.locale as string}/dashboard/properties`)
       }, 2000)
     } catch (err: any) {
       console.error('[EditProperty] Error:', err)
-      setError(err.message || 'Something went wrong')
+      setError(err.message || c('error'))
     } finally {
       setSubmitting(false)
     }
@@ -139,10 +142,10 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <Check className="h-8 w-8 text-green-600" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              ¡Propiedad Actualizada!
+              {c('success')}
             </h2>
             <p className="text-gray-600 mb-6">
-              Redirigiendo al dashboard...
+              {c('loading')}
             </p>
             <Loader2 className="h-6 w-6 animate-spin mx-auto text-gray-400" />
           </CardContent>
@@ -157,11 +160,11 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
       <nav className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
-            href="/dashboard/properties"
+            href={`/${params.locale as string}/dashboard/properties`}
             className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Properties
+            {c('cancel')}
           </Link>
         </div>
       </nav>
@@ -171,10 +174,10 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">
-            Editar Propiedad
+            {c('edit')}
           </h1>
           <p className="text-gray-600">
-            Actualiza la información de tu propiedad
+            {t('reviewDescription')}
           </p>
         </div>
 
@@ -219,27 +222,27 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Home className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Información Básica</h2>
+                  <h2 className="text-2xl font-bold">{t('basicInfo')}</h2>
                 </div>
 
                 <div>
-                  <Label htmlFor="title">Título de la Propiedad</Label>
+                  <Label htmlFor="title">{t('propertyTitle')}</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => updateFormData('title', e.target.value)}
-                    placeholder="Ej: Apartamento luminoso en el centro"
+                    placeholder={t('placeholderTitle')}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Descripción</Label>
+                  <Label htmlFor="description">{t('propertyDescription')}</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => updateFormData('description', e.target.value)}
                     rows={6}
-                    placeholder="Describe tu propiedad..."
+                    placeholder={t('placeholderDescription')}
                   />
                 </div>
               </div>
@@ -249,11 +252,11 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <MapPin className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Ubicación</h2>
+                  <h2 className="text-2xl font-bold">{t('location')}</h2>
                 </div>
 
                 <div>
-                  <Label htmlFor="city_name">Ciudad</Label>
+                  <Label htmlFor="city_name">{t('city')}</Label>
                   <Input
                     id="city_name"
                     value={formData.city_name}
@@ -262,7 +265,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                 </div>
 
                 <div>
-                  <Label htmlFor="neighborhood">Barrio</Label>
+                  <Label htmlFor="neighborhood">{t('neighborhood')}</Label>
                   <Input
                     id="neighborhood"
                     value={formData.neighborhood}
@@ -271,7 +274,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                 </div>
 
                 <div>
-                  <Label htmlFor="country">País</Label>
+                  <Label htmlFor="country">{t('country')}</Label>
                   <Input
                     id="country"
                     value={formData.country}
@@ -285,7 +288,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Monitor className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Espacio de Trabajo</h2>
+                  <h2 className="text-2xl font-bold">{t('workspaceDigital')}</h2>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -297,7 +300,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                     }
                   />
                   <Label htmlFor="has_dedicated_workspace">
-                    Tiene espacio de trabajo dedicado
+                    {t('dedicatedDesk')}
                   </Label>
                 </div>
 
@@ -309,7 +312,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                       updateFormData('has_fast_wifi', checked)
                     }
                   />
-                  <Label htmlFor="has_fast_wifi">WiFi rápido (&gt;50 Mbps)</Label>
+                  <Label htmlFor="has_fast_wifi">{t('highSpeedWifi')}</Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -320,7 +323,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                       updateFormData('has_monitor', checked)
                     }
                   />
-                  <Label htmlFor="has_monitor">Monitor incluido</Label>
+                  <Label htmlFor="has_monitor">{t('extraMonitor')}</Label>
                 </div>
               </div>
             )}
@@ -329,12 +332,12 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Zap className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Comodidades</h2>
+                  <h2 className="text-2xl font-bold">{t('amenities')}</h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="bedrooms">Habitaciones</Label>
+                    <Label htmlFor="bedrooms">{t('bedroomsLabel')}</Label>
                     <Input
                       id="bedrooms"
                       type="number"
@@ -345,7 +348,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                   </div>
 
                   <div>
-                    <Label htmlFor="bathrooms">Baños</Label>
+                    <Label htmlFor="bathrooms">{t('bathroomsLabel')}</Label>
                     <Input
                       id="bathrooms"
                       type="number"
@@ -364,7 +367,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                       updateFormData('is_furnished', checked)
                     }
                   />
-                  <Label htmlFor="is_furnished">Amueblado</Label>
+                  <Label htmlFor="is_furnished">{t('furnished')}</Label>
                 </div>
               </div>
             )}
@@ -373,11 +376,11 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Euro className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Precio</h2>
+                  <h2 className="text-2xl font-bold">{t('pricingTitle')}</h2>
                 </div>
 
                 <div>
-                  <Label htmlFor="monthly_price">Precio Mensual (€)</Label>
+                  <Label htmlFor="monthly_price">{t('pricePerMonth')}</Label>
                   <Input
                     id="monthly_price"
                     type="number"
@@ -389,7 +392,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="min_months">Estancia Mínima (meses)</Label>
+                    <Label htmlFor="min_months">{t('minStay')}</Label>
                     <Input
                       id="min_months"
                       type="number"
@@ -400,7 +403,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                   </div>
 
                   <div>
-                    <Label htmlFor="max_months">Estancia Máxima (meses)</Label>
+                    <Label htmlFor="max_months">{t('maxStayMonths')}</Label>
                     <Input
                       id="max_months"
                       type="number"
@@ -419,7 +422,7 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                       updateFormData('utilities_included', checked)
                     }
                   />
-                  <Label htmlFor="utilities_included">Servicios incluidos</Label>
+                  <Label htmlFor="utilities_included">{t('utilitiesIncluded')}</Label>
                 </div>
               </div>
             )}
@@ -428,11 +431,11 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
               <div className="space-y-6">
                 <div className="flex items-center gap-3 mb-6">
                   <ImageIcon className="h-6 w-6 text-blue-600" />
-                  <h2 className="text-2xl font-bold">Imágenes</h2>
+                  <h2 className="text-2xl font-bold">{t('photos')}</h2>
                 </div>
 
                 <p className="text-sm text-gray-600 mb-4">
-                  Las imágenes actuales se conservarán. Puedes añadir nuevas, eliminar o reordenar.
+                  {t('uploadedPhotos')}
                 </p>
 
                 <CloudinaryUploader
@@ -444,24 +447,24 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
 
             {currentStep === 'preview' && (
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold mb-6">Vista Previa</h2>
+                <h2 className="text-2xl font-bold mb-6">{t('review')}</h2>
                 
                 <div className="bg-gray-50 rounded-lg p-6 space-y-4">
                   <div>
-                    <p className="text-sm text-gray-600">Título</p>
+                    <p className="text-sm text-gray-600">{t('titleLabel')}</p>
                     <p className="font-semibold">{formData.title}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Ubicación</p>
+                    <p className="text-sm text-gray-600">{t('location')}</p>
                     <p className="font-semibold">{formData.neighborhood}, {formData.city_name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Precio</p>
-                    <p className="font-semibold">€{formData.monthly_price}/mes</p>
+                    <p className="text-sm text-gray-600">{t('pricingTitle')}</p>
+                    <p className="font-semibold">€{formData.monthly_price}{c('perMonth')}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Habitaciones/Baños</p>
-                    <p className="font-semibold">{formData.bedrooms} hab · {formData.bathrooms} baños</p>
+                    <p className="text-sm text-gray-600">{t('bedroomsLabel')}/{t('bathroomsLabel')}</p>
+                    <p className="font-semibold">{formData.bedrooms} {t('bedroomsLabel')} · {formData.bathrooms} {t('bathroomsLabel')}</p>
                   </div>
                 </div>
               </div>
@@ -475,12 +478,12 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                 disabled={stepIndex === 0 || submitting}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Anterior
+                {t('previous')}
               </Button>
 
               {currentStep !== 'preview' ? (
                 <Button onClick={handleNext}>
-                  Siguiente
+                  {t('next')}
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               ) : (
@@ -492,10 +495,10 @@ export default function EditPropertyClient({ listing }: EditPropertyClientProps)
                   {submitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Actualizando...
+                      {t('submitting')}
                     </>
                   ) : (
-                    'Guardar Cambios'
+                    c('save')
                   )}
                 </Button>
               )}

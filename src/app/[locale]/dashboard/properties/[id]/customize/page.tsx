@@ -7,16 +7,15 @@ import dynamic from 'next/dynamic'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 const ThemedListingPage = dynamic(
   () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
-  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Cargando vista previa...</div> }
+  { ssr: false, loading: () => <div className="p-8 text-sm text-gray-500">Loading preview...</div> }
 )
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
-  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -122,22 +121,19 @@ export default function CustomizeListingPage() {
       clearTimeout(timeoutId)
 
       if (res.ok) {
-        alert(locale === 'es' ? 'Tema guardado correctamente' : 'Theme saved successfully')
-        router.push(`/${locale}/dashboard/properties`)
+        alert(t('saveSuccess'))
+        router.push(`/${params.locale as string}/dashboard/properties`)
       } else {
         const payload = await res.json().catch(() => ({}))
-        const fallback = locale === 'es'
-          ? `No se pudo guardar el tema (${res.status})`
-          : `Failed to save theme (${res.status})`
-        alert(payload.error || fallback)
+        alert(payload.error || t('saveFailedWithStatus', { status: res.status }))
       }
     } catch (error: any) {
       clearTimeout(timeoutId)
       console.error('Error saving theme:', error)
       if (error?.name === 'AbortError') {
-        alert(locale === 'es' ? 'Se agotó el tiempo de guardado. Intenta nuevamente.' : 'Save request timed out. Please try again.')
+        alert(t('saveTimeout'))
       } else {
-        alert(locale === 'es' ? 'No se pudo guardar el tema' : 'Failed to save theme')
+        alert(t('saveFailed'))
       }
     } finally {
       setSaving(false)
@@ -155,7 +151,7 @@ export default function CustomizeListingPage() {
   if (!listing) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>{locale === 'es' ? 'Publicación no encontrada' : 'Listing not found'}</p>
+        <p>{t('listingNotFound')}</p>
       </div>
     )
   }
@@ -167,7 +163,7 @@ export default function CustomizeListingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push(`/${locale}/dashboard/properties`)}
+              onClick={() => router.push(`/${params.locale as string}/dashboard/properties`)}
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />

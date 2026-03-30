@@ -856,7 +856,9 @@
       "workspace": "Workspace",
       "pricing": "Precios",
       "images": "Fotos"
-    }
+    },
+    "maxStayMonths": "Estancia máxima (meses)",
+    "utilitiesIncluded": "Servicios incluidos"
   },
   "neighborhoodPage": {
     "breadcrumbHome": "Inicio",
@@ -995,7 +997,12 @@
       "lockedDescription": "Añade tu logo o avatar personal en el listing",
       "lockedCardTitle": "Logo personalizado",
       "lockedCardDescription": "Sube tu logo personalizado para darle tu toque único a tu listing."
-    }
+    },
+    "saveSuccess": "Tema guardado correctamente",
+    "saveFailed": "No se pudo guardar el tema",
+    "saveTimeout": "Se agotó el tiempo de guardado. Intenta nuevamente.",
+    "saveFailedWithStatus": "No se pudo guardar el tema ({status})",
+    "listingNotFound": "Publicación no encontrada"
   },
   "listings": {
     "noPropertiesFound": "No se encontraron propiedades",

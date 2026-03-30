@@ -856,7 +856,9 @@
       "workspace": "Workspace",
       "pricing": "Pricing",
       "images": "Photos"
-    }
+    },
+    "maxStayMonths": "Maximum stay (months)",
+    "utilitiesIncluded": "Utilities included"
   },
   "neighborhoodPage": {
     "breadcrumbHome": "Home",
@@ -995,7 +997,12 @@
       "lockedDescription": "Add your logo or personal avatar to the listing",
       "lockedCardTitle": "Custom Logo",
       "lockedCardDescription": "Upload your custom logo to give your listing a unique touch."
-    }
+    },
+    "saveSuccess": "Theme saved successfully",
+    "saveFailed": "Failed to save theme",
+    "saveTimeout": "Save request timed out. Please try again.",
+    "saveFailedWithStatus": "Failed to save theme ({status})",
+    "listingNotFound": "Listing not found"
   },
   "listings": {
     "noPropertiesFound": "No properties found",
