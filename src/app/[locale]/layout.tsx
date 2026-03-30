@@ -1,35 +1,31 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
 import '../globals.css'
 import { NextIntlClientProvider } from 'next-intl'
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale
-} from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
 
-type Props = {
-  children: React.ReactNode
-  params: Promise<{ locale: string }>
-}
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
+type LocaleParams = Promise<{ locale: string }>
+
 export async function generateMetadata({
-  params
+  params,
 }: {
-  params: Promise<{ locale: string }>
+  params: LocaleParams
 }): Promise<Metadata> {
   const { locale } = await params
-
-  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
-    notFound()
-  }
 
   const t = await getTranslations({ locale, namespace: 'metadata' })
   const localeUrl = getLocalizedUrl('', locale as 'en' | 'es')
@@ -47,8 +43,8 @@ export async function generateMetadata({
       canonical: localeUrl,
       languages: {
         en: getLocalizedUrl('', 'en'),
-        es: getLocalizedUrl('', 'es')
-      }
+        es: getLocalizedUrl('', 'es'),
+      },
     },
     openGraph: {
       title: t('title'),
@@ -62,9 +58,9 @@ export async function generateMetadata({
           url: `${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`,
           width: SEO_CONFIG.openGraph.imageWidth,
           height: SEO_CONFIG.openGraph.imageHeight,
-          alt: 'InhabitMe - Medium-term stays'
-        }
-      ]
+          alt: 'InhabitMe - Medium-term stays',
+        },
+      ],
     },
     twitter: {
       card: SEO_CONFIG.twitter.card,
@@ -72,34 +68,41 @@ export async function generateMetadata({
       description: t('description'),
       images: [`${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`],
       site: SEO_CONFIG.twitter.site,
-      creator: SEO_CONFIG.twitter.creator
+      creator: SEO_CONFIG.twitter.creator,
     },
     robots: SEO_CONFIG.robots,
     icons: {
       icon: '/favicon.svg',
-      apple: '/favicon.svg'
+      apple: '/favicon.svg',
     },
     ...(SEO_CONFIG.verification.google && {
       verification: {
-        google: SEO_CONFIG.verification.google
-      }
-    })
+        google: SEO_CONFIG.verification.google,
+      },
+    }),
   }
 }
 
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: LocaleParams
+}) {
   const { locale } = await params
 
-  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+  // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
-  setRequestLocale(locale)
+  // Providing all messages to the client
   const messages = await getMessages()
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex flex-col min-h-screen">
         <main className="flex-grow">{children}</main>
         <Footer />
       </div>

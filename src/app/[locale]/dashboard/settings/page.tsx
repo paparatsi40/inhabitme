@@ -42,7 +42,7 @@ export default async function SettingsPage() {
               <Link href="/search">
                 <Button variant="ghost" className="font-semibold">
                   <Search className="h-4 w-4 mr-2" />
-                  Buscar
+                  {t('searchButton')}
                 </Button>
               </Link>
               <UserMenu />
@@ -59,7 +59,7 @@ export default async function SettingsPage() {
           <Link href="/dashboard">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver al Dashboard
+              {t('backToDashboard')}
             </Button>
           </Link>
           
@@ -69,10 +69,10 @@ export default async function SettingsPage() {
             </div>
             <div>
               <h1 className="text-3xl lg:text-4xl font-black text-gray-900">
-                Configuración
+                {t('settings')}
               </h1>
               <p className="text-gray-600 mt-1">
-                Administra tu cuenta y preferencias
+                {t('settingsSubtitle')}
               </p>
             </div>
           </div>
@@ -84,17 +84,17 @@ export default async function SettingsPage() {
         {/* Help Section */}
         <div className="mt-12 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-8 text-center border-2 border-blue-200">
           <h3 className="text-2xl font-black text-gray-900 mb-2">
-            ¿Necesitas ayuda?
+            {t('needHelp')}
           </h3>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Si tienes preguntas o necesitas asistencia, nuestro equipo está aquí para ayudarte
+            {t('needHelpSubtitle')}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button variant="outline" className="border-2">
-              Centro de Ayuda
+              {t('helpCenter')}
             </Button>
             <Button variant="outline" className="border-2">
-              Contactar Soporte
+              {t('contactSupport')}
             </Button>
           </div>
         </div>

@@ -60,10 +60,6 @@ export async function POST(request: NextRequest) {
     const checkOutDate = new Date(`${checkOut}T12:00:00`);
     const monthsDiff = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
 
-    // Check if host is Founding Host 2026 (free benefits)
-    // Note: In production, you'd query Clerk API or store this in your DB
-    // For now, we'll calculate the fee and it will be adjusted in the payment step
-    const currentYear = new Date().getFullYear();
     
     // Resolve booking currency from listing/location (single source of truth)
     const bookingCurrency = normalizeCurrency(
@@ -79,12 +75,8 @@ export async function POST(request: NextRequest) {
     const fees = calculateDurationFees(monthsDiff)
     const guestFee = fees.guestFee
     
-    // Host fee: €0 for Founding Hosts in 2026, otherwise based on duration and featured status
-    // This will be verified again at payment time based on host's metadata
-    let hostFee = property.featured ? fees.hostFeaturedFee : fees.hostFee
-    
-    // Note: Actual founding host check happens during payment
-    // This is just the displayed amount
+    // Host fee based on duration and featured status
+    const hostFee = property.featured ? fees.hostFeaturedFee : fees.hostFee
     const totalFirstPayment = monthlyPrice + depositAmount + guestFee;
 
     // Create booking

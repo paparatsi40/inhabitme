@@ -51,36 +51,7 @@ export async function POST(_request: NextRequest, { params }: Ctx) {
       )
     }
 
-    // 4) Founding host waive logic (si tu tabla lo soporta)
-    // Ajusta el campo a como lo tengas realmente.
-    const isFoundingHost =
-      booking.host_payment_status === 'waived' ||
-      booking.founding_host === true ||
-      booking.is_founding_host === true
-
-    if (isFoundingHost) {
-      // Marcar como confirmado / waived si aplica
-      const { error: updateError } = await supabase
-        .from('bookings')
-        .update({
-          host_payment_status: 'waived',
-          status: 'confirmed',
-        })
-        .eq('id', bookingId)
-
-      if (updateError) {
-        console.error('Error updating booking:', updateError)
-        return NextResponse.json({ error: 'Error confirming booking' }, { status: 500 })
-      }
-
-      return NextResponse.json({
-        success: true,
-        founding_host: true,
-        message: 'Booking confirmed! As a Founding Host, no fee applies.',
-      })
-    }
-
-    // 5) Create Stripe checkout session for host fee
+    // 4) Create Stripe checkout session for host fee
     const hostFeeAmount =
       booking.host_fee_amount ??
       booking.host_fee ??

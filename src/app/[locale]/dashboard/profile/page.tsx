@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Search } from 'lucide-react';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import { UserProfile } from '@clerk/nextjs';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ProfilePage() {
   const { userId } = await auth();
+  const t = await getTranslations('dashboard');
   const locale = await getLocale();
 
   if (!userId) {
@@ -39,7 +40,7 @@ export default async function ProfilePage() {
               <Link href="/search">
                 <Button variant="ghost" className="font-semibold">
                   <Search className="h-4 w-4 mr-2" />
-                  Buscar
+                  {t('searchButton')}
                 </Button>
               </Link>
               <UserMenu />

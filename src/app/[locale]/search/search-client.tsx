@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
@@ -16,6 +17,8 @@ import { ListingGrid } from '@/components/listings/ListingGrid'
 export default function SearchClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const t = useTranslations('searchPage')
+  const locale = useLocale()
 
   // Helper para parsear booleanos de URL
   const parseBoolean = (value: string | null) => {
@@ -88,13 +91,13 @@ export default function SearchClient() {
       }
     })
 
-    router.push(`/search?${params.toString()}`)
+    router.push(`/${locale}/search?${params.toString()}`)
     setFilters(newFilters)
     setShowFilters(false)
   }
 
   const clearFilters = () => {
-    router.push('/search')
+    router.push(`/${locale}/search`)
     setFilters({})
   }
 
@@ -113,16 +116,16 @@ export default function SearchClient() {
           </Link>
 
           <Link href="/dashboard">
-            <Button variant="ghost">Dashboard</Button>
+            <Button variant="ghost">{t('dashboard')}</Button>
           </Link>
         </div>
       </nav>
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-2">Buscar alojamiento</h1>
+        <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
         <p className="text-gray-600">
-          Encuentra tu espacio perfecto para vivir y trabajar
+          {t('subtitle')}
         </p>
 
         {/* Filters toggle */}
@@ -132,7 +135,7 @@ export default function SearchClient() {
             onClick={() => setShowFilters(!showFilters)}
           >
             <SlidersHorizontal className="h-4 w-4 mr-2" />
-            Filtros
+            {t('filters')}
             {activeFiltersCount > 0 && (
               <span className="ml-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 {activeFiltersCount}
@@ -170,13 +173,13 @@ export default function SearchClient() {
             <div className="text-center py-20">
               <Building2 className="h-16 w-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">
-                No hay alojamientos disponibles
+                {t('noListings')}
               </h3>
               <p className="text-gray-600 mb-6">
-                Prueba ajustando los filtros
+                {t('adjustFilters')}
               </p>
               <Button onClick={clearFilters}>
-                Ver todas las propiedades
+                {t('viewAllProperties')}
               </Button>
             </div>
           )}
@@ -186,8 +189,8 @@ export default function SearchClient() {
               <p className="text-gray-600 mb-6">
                 {results.length}{' '}
                 {results.length === 1
-                  ? 'alojamiento encontrado'
-                  : 'alojamientos encontrados'}
+                  ? t('singleFound')
+                  : t('multipleFound')}
               </p>
 
               <ListingGrid listings={results} />
