@@ -28,6 +28,7 @@ import { getFAQs } from '@/config/faqs'
 import { NeighborhoodMap } from '@/components/maps/NeighborhoodMap'
 import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
 import { getCurrencyFromLocation } from '@/lib/currency'
+import { getTranslations } from 'next-intl/server'
 
 // ISR con revalidación cada 60 segundos
 export const revalidate = 60
@@ -105,6 +106,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const localeSafe = safeLower(locale) || 'en'
   const citySlug = safeLower(city)
   const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
+  const t = await getTranslations({ locale: localeSafe, namespace: 'neighborhoodPage' })
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
@@ -137,7 +139,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
             <nav className="py-3 flex items-center gap-2 text-sm text-gray-600" aria-label="Breadcrumb">
               <Link href="/" className="hover:text-blue-600 transition-colors flex items-center gap-1 font-medium">
                 <Home className="h-4 w-4" />
-                Inicio
+                {t('breadcrumbHome')}
               </Link>
               <ChevronRight className="h-4 w-4" />
               <Link
@@ -146,7 +148,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
               >
                 <span>{cityName}</span>
                 <span className="hidden sm:inline text-xs text-gray-500 group-hover:text-blue-600 transition-colors">
-                  (ver todos los barrios)
+                  ({t('viewAllNeighborhoods')})
                 </span>
               </Link>
               <ChevronRight className="h-4 w-4" />
@@ -167,7 +169,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   </div>
 
                   <h1 className="text-4xl lg:text-6xl font-black mb-6 leading-tight bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
-                    Vive en {neighborhoodName}
+                    {t('liveIn')} {neighborhoodName}
                   </h1>
 
                   <p className="text-lg lg:text-xl text-gray-700 mb-6 leading-relaxed">
@@ -183,7 +185,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                       <div className="p-1.5 bg-purple-100 rounded-lg group-hover:bg-purple-200 transition-colors">
                         <Building2 className="h-4 w-4" />
                       </div>
-                      <span>Comparar con otros barrios de {cityName}</span>
+                      <span>{t('compareNeighborhoods')} {cityName}</span>
                       <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
@@ -193,7 +195,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border-2 border-blue-200">
                         <div className="flex items-center gap-2 mb-1">
                           <Building2 className="h-5 w-5 text-blue-600" />
-                          <span className="text-sm font-medium text-gray-600">Propiedades</span>
+                          <span className="text-sm font-medium text-gray-600">{t('properties')}</span>
                         </div>
                         <span className="text-3xl font-black text-gray-900">{listingsCount}</span>
                       </div>
@@ -202,10 +204,10 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                         <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-4 rounded-xl border-2 border-green-200">
                           <div className="flex items-center gap-2 mb-1">
                             <TrendingUp className="h-5 w-5 text-green-600" />
-                            <span className="text-sm font-medium text-gray-600">Desde</span>
+                            <span className="text-sm font-medium text-gray-600">{t('from')}</span>
                           </div>
                           <span className="text-3xl font-black text-gray-900">{formatMajor(minPrice)}</span>
-                          <span className="text-sm text-gray-600 font-medium">/mes</span>
+                          <span className="text-sm text-gray-600 font-medium">{t('perMonth')}</span>
                         </div>
                       )}
                     </div>
@@ -221,7 +223,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
 
                   {listingsCount > 0 && (
                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg z-10">
-                      <p className="text-sm font-bold text-gray-900">{listingsCount} propiedades</p>
+                      <p className="text-sm font-bold text-gray-900">{listingsCount} {t('properties')}</p>
                     </div>
                   )}
                 </div>
@@ -232,15 +234,15 @@ export default async function NeighborhoodPage({ params }: PageProps) {
           {/* Lifestyle Signals */}
           <section className="mb-12">
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-              <h2 className="text-2xl font-black mb-6 text-gray-900">Por qué vivir en {neighborhoodName}</h2>
+              <h2 className="text-2xl font-black mb-6 text-gray-900">{t('whyLive')} {neighborhoodName}</h2>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
                     <Wifi className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">WiFi Verificado</h3>
-                    <p className="text-sm text-gray-600">Todas las propiedades con conexión rápida</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('wifiVerified')}</h3>
+                    <p className="text-sm text-gray-600">{t('wifiDescription')}</p>
                   </div>
                 </div>
 
@@ -249,8 +251,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     <Coffee className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Cafés & Coworking</h3>
-                    <p className="text-sm text-gray-600">Espacios para trabajar cerca</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('coworking')}</h3>
+                    <p className="text-sm text-gray-600">{t('coworkingDescription')}</p>
                   </div>
                 </div>
 
@@ -259,8 +261,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     <Train className="h-5 w-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Bien Conectado</h3>
-                    <p className="text-sm text-gray-600">Transporte público accesible</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('wellConnected')}</h3>
+                    <p className="text-sm text-gray-600">{t('connectedDescription')}</p>
                   </div>
                 </div>
 
@@ -269,8 +271,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     <Users className="h-5 w-5 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 mb-1">Comunidad Local</h3>
-                    <p className="text-sm text-gray-600">Ambiente auténtico y acogedor</p>
+                    <h3 className="font-bold text-gray-900 mb-1">{t('community')}</h3>
+                    <p className="text-sm text-gray-600">{t('communityDescription')}</p>
                   </div>
                 </div>
               </div>
@@ -289,20 +291,19 @@ export default async function NeighborhoodPage({ params }: PageProps) {
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-2">
-                    Propiedades en {neighborhoodName}
+                    {t('monthlyRental')} {neighborhoodName}
                   </h2>
                   <p className="text-gray-600">
-                    {listingsCount} alojamiento{listingsCount > 1 ? 's' : ''} verificado{listingsCount > 1 ? 's' : ''}{' '}
-                    con workspace dedicado
+                    {listingsCount} {t('verifiedProperties')}
                   </p>
                 </div>
 
                 {minPrice > 0 && (
                   <div className="hidden sm:block bg-gradient-to-br from-green-50 to-emerald-100 px-6 py-3 rounded-xl border-2 border-green-200">
-                    <p className="text-sm font-medium text-gray-600 mb-1">Precio medio</p>
+                    <p className="text-sm font-medium text-gray-600 mb-1">{t('averagePrice')}</p>
                     <p className="text-2xl font-black text-gray-900">
                       {formatMajor(minPrice)}
-                      <span className="text-sm font-medium text-gray-600">/mes</span>
+                      <span className="text-sm font-medium text-gray-600">{t('perMonth')}</span>
                     </p>
                   </div>
                 )}
@@ -330,9 +331,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 </div>
 
                 <div className="mb-10">
-                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-3">Otros barrios en {cityName}</h2>
+                  <h2 className="text-3xl lg:text-4xl font-black text-gray-900 mb-3">{t('relatedNeighborhoods')}</h2>
                   <p className="text-lg text-gray-600 max-w-3xl">
-                    Cada barrio tiene su propia <strong>personalidad</strong>. Compara y encuentra tu match perfecto.
+                    {t('relatedDescription')} {cityName} {t('nomadsLove')}
                   </p>
                 </div>
 
@@ -359,7 +360,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
 
                         <div className="flex items-center gap-2 text-sm text-purple-600 font-medium">
                           <MapPin className="h-4 w-4" />
-                          <span>Ver propiedades</span>
+                          <span>{t('ctaButton')}</span>
                         </div>
                       </div>
                     </Link>
@@ -370,9 +371,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   <div className="absolute inset-0 bg-black/10" />
                   <div className="relative">
                     <Building2 className="h-12 w-12 mx-auto mb-4 opacity-90" />
-                    <h3 className="text-2xl lg:text-3xl font-black mb-4">¿Buscas otras opciones en {cityName}?</h3>
+                    <h3 className="text-2xl lg:text-3xl font-black mb-4">{t('relatedCtaTitle')} {cityName}?</h3>
                     <p className="text-lg opacity-90 mb-6 max-w-2xl mx-auto">
-                      Explora todos los barrios disponibles y encuentra el lugar perfecto para tu próxima estancia
+                      {t('relatedCtaDescription')}
                     </p>
                     <Link href={`/${citySlug}`}>
                       <Button
@@ -380,7 +381,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                         size="lg"
                         className="bg-white text-purple-600 hover:bg-gray-100 hover:scale-105 transition-all font-bold text-lg px-8 py-6 shadow-xl"
                       >
-                        Ver todos los barrios de {cityName}
+                        {t('relatedCtaButton')} {cityName}
                         <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                     </Link>
@@ -403,11 +404,10 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 <Building2 className="h-16 w-16 text-purple-600" />
               </div>
 
-              <h2 className="text-3xl lg:text-5xl font-black text-white mb-6">Próximamente en {neighborhoodName}</h2>
+              <h2 className="text-3xl lg:text-5xl font-black text-white mb-6">{t('noProperties')} {neighborhoodName}</h2>
 
               <p className="text-lg lg:text-xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto">
-                Estamos trabajando para traerte las mejores opciones de alquiler mensual en{' '}
-                <strong className="text-white">{neighborhoodName}</strong>. ¡Regístrate para ser el primero en saberlo!
+                {t('noPropertiesDescription')} <strong className="text-white">{neighborhoodName}</strong>.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -417,7 +417,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   className="bg-white text-purple-600 hover:bg-gray-100 hover:scale-105 transition-all font-bold text-lg px-8 py-6 shadow-xl"
                 >
                   <CheckCircle className="mr-2 h-5 w-5" />
-                  Notificarme cuando haya propiedades
+                  {t('notifyMeButton')}
                 </Button>
 
                 <Link href={`/${citySlug}`}>
@@ -426,14 +426,14 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     size="lg"
                     className="bg-white/10 backdrop-blur-sm border-2 border-white text-white hover:bg-white/20 font-bold text-lg px-8 py-6"
                   >
-                    Ver otros barrios de {cityName}
+                    {t('checkOtherNeighborhoods')} {cityName}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               </div>
 
               <div className="pt-8 border-t border-white/20">
-                <p className="text-base text-white/80 mb-6 font-medium">Mientras tanto, explora estos barrios cercanos:</p>
+                <p className="text-base text-white/80 mb-6 font-medium">{t('exploreNearby')}</p>
                 <div className="flex flex-wrap gap-3 justify-center">
                   {cityConfig.neighborhoods
                     .filter((nb) => nb.slug !== neighborhoodSlug)
@@ -473,8 +473,8 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                     <HelpCircle className="h-8 w-8 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-3xl lg:text-4xl font-black text-gray-900">Preguntas frecuentes</h2>
-                    <p className="text-gray-600 mt-1">Todo lo que necesitas saber sobre {neighborhoodName}</p>
+                    <h2 className="text-3xl lg:text-4xl font-black text-gray-900">{t('frequentlyAsked')}</h2>
+                    <p className="text-gray-600 mt-1">{t('faqDescription')} {neighborhoodName}</p>
                   </div>
                 </div>
 
@@ -501,9 +501,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 <div className="mt-10 bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-200 rounded-2xl p-8 text-center">
                   <CheckCircle className="h-10 w-10 text-blue-600 mx-auto mb-4" />
                   <p className="text-lg font-bold text-gray-900 mb-2">
-                    ¿Más preguntas sobre alquilar en {neighborhoodName}?
+                    {t('moreQuestionsAboutRenting')} {neighborhoodName}?
                   </p>
-                  <p className="text-gray-600">Contáctanos y te ayudamos a encontrar tu espacio ideal para vivir y trabajar</p>
+                  <p className="text-gray-600">{t('contactHelpText')}</p>
                 </div>
               </section>
             )
@@ -547,7 +547,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
               {
                 '@type': 'ListItem',
                 position: 1,
-                name: 'Inicio',
+                name: t('breadcrumbHome'),
                 item: `https://www.inhabitme.com/${localeSafe}`,
               },
               {
