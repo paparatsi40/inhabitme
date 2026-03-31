@@ -10,11 +10,15 @@ const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db
 
 function normalizeImageUrl(src?: string) {
   if (!src) return FALLBACK_CITY_IMAGE
-  if (!src.startsWith('http://') && !src.startsWith('https://')) return FALLBACK_CITY_IMAGE
 
   try {
     const parsed = new URL(src)
     if (!parsed.hostname) return FALLBACK_CITY_IMAGE
+
+    // Next/Image remotePatterns in this project only allow HTTPS
+    if (parsed.protocol === 'http:') parsed.protocol = 'https:'
+    if (parsed.protocol !== 'https:') return FALLBACK_CITY_IMAGE
+
     if (!parsed.searchParams.get('q')) parsed.searchParams.set('q', '60')
     return parsed.toString()
   } catch {

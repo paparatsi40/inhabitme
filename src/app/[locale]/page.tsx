@@ -25,11 +25,15 @@ const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db
 
 function normalizeImageUrl(src?: string) {
   if (!src) return FALLBACK_CITY_IMAGE
-  if (!src.startsWith('http://') && !src.startsWith('https://')) return FALLBACK_CITY_IMAGE
 
   try {
     const parsed = new URL(src)
     if (!parsed.hostname) return FALLBACK_CITY_IMAGE
+
+    // Next/Image remotePatterns in this project only allow HTTPS
+    if (parsed.protocol === 'http:') parsed.protocol = 'https:'
+    if (parsed.protocol !== 'https:') return FALLBACK_CITY_IMAGE
+
     if (!parsed.searchParams.get('q')) parsed.searchParams.set('q', '60')
     return parsed.toString()
   } catch {
@@ -116,12 +120,12 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex">
-                  <Button size="lg" className="w-full sm:w-auto min-h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg">
+                <Button asChild size="lg" className="w-full sm:w-auto min-h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg">
+                  <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex">
                     {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </a>
+                  </a>
+                </Button>
                 <Link href="/properties/new" className="flex-1 sm:flex-initial">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold px-8 py-6 text-lg">
                     {t('hero.cta.secondary')}
@@ -414,11 +418,11 @@ export default function HomePage() {
           </div>
           <div className="mt-12 text-center">
             <p className="text-gray-700 mb-6">{tFaqSection('moreQuestions')}</p>
-            <a href="mailto:hola@inhabitme.com" className="inline-block">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold">
+            <Button asChild size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold min-h-11">
+              <a href="mailto:hola@inhabitme.com" className="inline-flex min-h-11 items-center">
                 {tFaqSection('contactSupport')}
-              </Button>
-            </a>
+              </a>
+            </Button>
           </div>
         </div>
       </section>
@@ -428,12 +432,12 @@ export default function HomePage() {
           <h2 className="text-3xl lg:text-5xl font-black mb-6">{tFinalCta('title')}</h2>
           <p className="text-xl lg:text-2xl mb-10 opacity-90">{tFinalCta('subtitle')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/madrid">
-              <Button size="lg" className="min-h-11 bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl px-10 py-6 text-lg">
+            <Button asChild size="lg" className="min-h-11 bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl px-10 py-6 text-lg">
+              <Link href="/madrid" className="inline-flex min-h-11 items-center">
                 {tFinalCta('viewProperties')}
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <Link href="/properties/new">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 font-semibold px-10 py-6 text-lg">
                 {tFinalCta('listSpace')}
