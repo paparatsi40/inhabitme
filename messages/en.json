@@ -1033,6 +1033,15 @@
       }
     }
   },
+  "listingCta": {
+    "pricePerMonth": "Price per month",
+    "askQuestion": "Ask Question",
+    "requestBooking": "Request Booking",
+    "close": "Close",
+    "readyToBook": "Ready to book?",
+    "bookNowHostResponds48h": "Request your booking now and the host will respond within 48 hours",
+    "perMonth": "/month"
+  },
   "listings": {
     "noPropertiesFound": "No properties found",
     "adjustFilters": "Try adjusting your search filters",
