@@ -57,21 +57,21 @@ export default async function ProfilePage() {
           <Link href="/dashboard/settings">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver a Configuración
+              {t('backToSettings')}
             </Button>
           </Link>
 
           {/* Info Banner */}
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
-            <h3 className="font-bold text-blue-900 mb-2">💡 Cómo cambiar tu email o teléfono</h3>
+            <h3 className="font-bold text-blue-900 mb-2">💡 {t('changeContactTitle')}</h3>
             <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-              <li>Usa el botón <strong>"+ Add email address"</strong> o <strong>"+ Add phone number"</strong></li>
-              <li>Verifica el nuevo contacto (recibirás un código)</li>
-              <li>Márcalo como <strong>"Primary"</strong> usando el menú (⋮)</li>
-              <li>Opcionalmente, elimina el anterior si ya no lo necesitas</li>
+              <li>{t('changeContactStep1')}</li>
+              <li>{t('changeContactStep2')}</li>
+              <li>{t('changeContactStep3')}</li>
+              <li>{t('changeContactStep4')}</li>
             </ol>
             <p className="text-xs text-blue-700 mt-2">
-              ℹ️ Por seguridad, no se puede editar directamente. Debes agregar y verificar el nuevo antes de eliminar el anterior.
+              ℹ️ {t('changeContactNote')}
             </p>
           </div>
         </div>

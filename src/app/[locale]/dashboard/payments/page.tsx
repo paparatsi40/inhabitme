@@ -137,7 +137,7 @@ export default async function PaymentsPage() {
           <Link href="/dashboard/settings">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Volver a Configuración
+              {t('backToSettings')}
             </Button>
           </Link>
           
@@ -147,10 +147,10 @@ export default async function PaymentsPage() {
             </div>
             <div>
               <h1 className="text-3xl lg:text-4xl font-black text-gray-900">
-                Pagos y Facturación
+                {t('paymentsAndBilling')}
               </h1>
               <p className="text-gray-600 mt-1">
-                Historial de pagos recibidos por tus reservas
+                {t('paymentsHistorySubtitle')}
               </p>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default async function PaymentsPage() {
           <Card className="border-2 border-green-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                Total Recibido
+                {t('totalReceived')}
               </CardTitle>
               <DollarSign className="h-5 w-5 text-green-600" />
             </CardHeader>
@@ -172,7 +172,7 @@ export default async function PaymentsPage() {
                 <div>{formatMajor(completedByCurrency.USD, 'USD')}</div>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                Pagos completados
+                {t('completedPayments')}
               </p>
             </CardContent>
           </Card>
@@ -180,7 +180,7 @@ export default async function PaymentsPage() {
           <Card className="border-2 border-orange-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                Pendientes
+                {t('pending')}
               </CardTitle>
               <Clock className="h-5 w-5 text-orange-600" />
             </CardHeader>
@@ -190,7 +190,7 @@ export default async function PaymentsPage() {
                 <div>{formatMajor(pendingByCurrency.USD, 'USD')}</div>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                En proceso
+                {t('inProcess')}
               </p>
             </CardContent>
           </Card>
@@ -198,7 +198,7 @@ export default async function PaymentsPage() {
           <Card className="border-2 border-blue-100 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                Total Transacciones
+                {t('totalTransactions')}
               </CardTitle>
               <CreditCard className="h-5 w-5 text-blue-600" />
             </CardHeader>
@@ -207,7 +207,7 @@ export default async function PaymentsPage() {
                 {paymentsList.length}
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                Historial completo
+                {t('fullHistory')}
               </p>
             </CardContent>
           </Card>
@@ -218,10 +218,10 @@ export default async function PaymentsPage() {
         <div className="bg-white rounded-2xl shadow-sm border-2 border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-2xl font-black text-gray-900">
-              Historial de Pagos
+              {t('paymentsHistory')}
             </h2>
             <p className="text-gray-600 mt-1">
-              Todos tus pagos recibidos por reservas confirmadas
+              {t('paymentsHistoryDetail')}
             </p>
           </div>
 
@@ -231,19 +231,19 @@ export default async function PaymentsPage() {
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Fecha
+                      {t('date')}
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Huésped
+                      {t('guest')}
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Estancia
+                      {t('stay')}
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Monto
+                      {t('amount')}
                     </th>
                     <th className="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
-                      Estado
+                      {t('status')}
                     </th>
                   </tr>
                 </thead>
@@ -266,9 +266,9 @@ export default async function PaymentsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-600">
-                          {new Date(payment.booking.start_date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })}
+                          {new Date(payment.booking.start_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', { month: 'short', day: 'numeric' })}
                           {' - '}
-                          {new Date(payment.booking.end_date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          {new Date(payment.booking.end_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -280,19 +280,19 @@ export default async function PaymentsPage() {
                         {payment.status === 'completed' && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-semibold">
                             <CheckCircle className="h-4 w-4" />
-                            Completado
+                            {t('completed')}
                           </span>
                         )}
                         {payment.status === 'pending' && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-100 text-orange-800 text-sm font-semibold">
                             <Clock className="h-4 w-4" />
-                            Pendiente
+                            {t('pendingSingle')}
                           </span>
                         )}
                         {payment.status === 'failed' && (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-semibold">
                             <XCircle className="h-4 w-4" />
-                            Fallido
+                            {t('failed')}
                           </span>
                         )}
                       </td>
@@ -308,14 +308,14 @@ export default async function PaymentsPage() {
                 <CreditCard className="h-12 w-12 text-gray-400" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                No hay pagos registrados
+                {t('noPayments')}
               </h3>
               <p className="text-gray-600 mb-6">
-                Los pagos aparecerán aquí cuando tus guests completen sus reservas
+                {t('noPaymentsSubtitle')}
               </p>
               <Link href="/dashboard">
                 <Button>
-                  Ir al Dashboard
+                  {t('goToDashboard')}
                 </Button>
               </Link>
             </div>
