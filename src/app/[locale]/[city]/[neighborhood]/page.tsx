@@ -130,6 +130,14 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const cityCurrency = getCurrencyFromLocation(undefined, cityConfig.slug)
   const moneyLocale = cityCurrency === 'EUR' ? 'es-ES' : 'en-US'
   const formatMajor = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency: cityCurrency }).format(amount || 0)
+  const getNeighborhoodLongDescription = () => {
+    const key = `${citySlug}.${neighborhoodSlug}`
+    if (tNeighborhoods.has(key as any)) {
+      return tNeighborhoods(key as any)
+    }
+    return getNeighborhoodDescription(citySlug, neighborhoodSlug, cityName, neighborhoodName)
+  }
+
   const getRelatedCardDescription = (relatedSlug: string, fallback?: string) => {
     const key = `${citySlug}.${relatedSlug}`
     if (tNeighborhoods.has(key as any)) {
@@ -185,7 +193,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
 
                   <p className="text-lg lg:text-xl text-gray-700 mb-6 leading-relaxed">
                     <strong className="text-gray-900">{neighborhoodName}:</strong>{' '}
-                    {getNeighborhoodDescription(citySlug, neighborhoodSlug, cityName, neighborhoodName)}
+                    {getNeighborhoodLongDescription()}
                   </p>
 
                   <div className="mb-8">
