@@ -26,157 +26,157 @@ export default async function DashboardPage() {
     nextRedirect(`/${locale}/sign-in`);
   }
 
-  let properties: any[] = []
-  let propertiesCount = 0
-  let leadsCount = 0
-  let bookingsCount = 0
-  let viewsStats = { total_views: 0 }
+  console.log('[Dashboard] userId:', userId);
 
-  try {
-    // Obtener stats del usuario
-    const supabase = getSupabaseServerClient();
+  // Obtener stats del usuario
+  const supabase = getSupabaseServerClient();
 
-    // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
-    let legacyUserId: string | null = null
-    let canonicalClerkId: string | null = null
+  // Compatibilidad legacy: algunos registros guardan owner_id como User.id (tabla legacy "User")
+  let legacyUserId: string | null = null
+  let canonicalClerkId: string | null = null
 
-    const { data: legacyUserRow } = await supabase
+  const { data: legacyUserRow } = await supabase
+    .from('User')
+    .select('id, clerkId, email')
+    .eq('clerkId', userId)
+    .maybeSingle()
+
+  let emailLinkedLegacyIds: string[] = []
+  let emailLinkedCanonicalClerkIds: string[] = []
+
+  if (legacyUserRow) {
+    legacyUserId = (legacyUserRow as any)?.id ?? null
+    canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
+  }
+
+  if (userEmail) {
+    // Tomar TODOS los usuarios legacy con ese email (pueden existir duplicados históricos)
+    const { data: legacyUsersByEmail } = await supabase
       .from('User')
       .select('id, clerkId, email')
-      .eq('clerkId', userId)
-      .maybeSingle()
+      .eq('email', userEmail)
 
-    let emailLinkedLegacyIds: string[] = []
-    let emailLinkedCanonicalClerkIds: string[] = []
+    emailLinkedLegacyIds = (legacyUsersByEmail || [])
+      .map((u: any) => u?.id)
+      .filter(Boolean)
+      .map((v: any) => String(v))
 
-    if (legacyUserRow) {
-      legacyUserId = (legacyUserRow as any)?.id ?? null
-      canonicalClerkId = (legacyUserRow as any)?.clerkId ?? null
+    emailLinkedCanonicalClerkIds = (legacyUsersByEmail || [])
+      .map((u: any) => u?.clerkId)
+      .filter(Boolean)
+      .map((v: any) => String(v))
+  }
+
+  let emailLinkedClerkIds: string[] = []
+  if (userEmail) {
+    try {
+      const client = await clerkClient()
+      const users = await client.users.getUserList({ emailAddress: [userEmail], limit: 10 })
+      emailLinkedClerkIds = (users.data || []).map((u: any) => String(u.id))
+    } catch (error) {
+      console.error('[Dashboard] error resolving email-linked Clerk ids:', error)
     }
+  }
 
-    if (userEmail) {
-      // Tomar TODOS los usuarios legacy con ese email (pueden existir duplicados históricos)
-      const { data: legacyUsersByEmail } = await supabase
-        .from('User')
-        .select('id, clerkId, email')
-        .eq('email', userEmail)
+  const ownerIds = Array.from(
+    new Set([
+      userId,
+      canonicalClerkId,
+      legacyUserId,
+      ...emailLinkedLegacyIds,
+      ...emailLinkedCanonicalClerkIds,
+      ...emailLinkedClerkIds,
+    ].filter(Boolean) as string[])
+  )
+  console.log('[Dashboard] ownerIds used for queries:', ownerIds)
+  
+  // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy
+  let ownedProperties: any[] = []
+  const { data: exactProperties, error: exactPropertiesError } = await supabase
+    .from('listings')
+    .select('*')
+    .in('owner_id', ownerIds)
+    .order('created_at', { ascending: false })
 
-      emailLinkedLegacyIds = (legacyUsersByEmail || [])
-        .map((u: any) => u?.id)
-        .filter(Boolean)
-        .map((v: any) => String(v))
+  if (exactPropertiesError) {
+    console.error('[Dashboard] exact owner query error:', exactPropertiesError)
+  }
 
-      emailLinkedCanonicalClerkIds = (legacyUsersByEmail || [])
-        .map((u: any) => u?.clerkId)
-        .filter(Boolean)
-        .map((v: any) => String(v))
-    }
+  ownedProperties = exactProperties ?? []
 
-    let emailLinkedClerkIds: string[] = []
-    if (userEmail) {
-      try {
-        const client = await clerkClient()
-        const users = await client.users.getUserList({ emailAddress: [userEmail], limit: 10 })
-        emailLinkedClerkIds = (users.data || []).map((u: any) => String(u.id))
-      } catch (error) {
-        console.error('[Dashboard] error resolving email-linked Clerk ids:', error)
-      }
-    }
-
-    const ownerIds = Array.from(
-      new Set([
-        userId,
-        canonicalClerkId,
-        legacyUserId,
-        ...emailLinkedLegacyIds,
-        ...emailLinkedCanonicalClerkIds,
-        ...emailLinkedClerkIds,
-      ].filter(Boolean) as string[])
-    )
-
-    // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy
-    let ownedProperties: any[] = []
-    const { data: exactProperties, error: exactPropertiesError } = await supabase
+  // Fallback final: reconciliar contra campos legacy comunes
+  if (ownedProperties.length === 0) {
+    const { data: allListings, error: allListingsError } = await supabase
       .from('listings')
       .select('*')
-      .in('owner_id', ownerIds)
       .order('created_at', { ascending: false })
 
-    if (exactPropertiesError) {
-      console.error('[Dashboard] exact owner query error:', exactPropertiesError)
-    }
+    if (allListingsError) {
+      console.error('[Dashboard] fallback all listings query error:', allListingsError)
+    } else {
+      const ownerSet = new Set(ownerIds.map((v) => String(v)))
+      ownedProperties = (allListings ?? []).filter((listing: any) => {
+        const candidates = [
+          listing.owner_id,
+          listing.host_user_id,
+          listing.created_by,
+          listing.user_id,
+          listing.clerk_id,
+        ]
+          .filter(Boolean)
+          .map((v: any) => String(v))
 
-    ownedProperties = exactProperties ?? []
+        return candidates.some((value) => ownerSet.has(value))
+      })
 
-    // Fallback final: reconciliar contra campos legacy comunes
-    if (ownedProperties.length === 0) {
-      const { data: allListings, error: allListingsError } = await supabase
-        .from('listings')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (allListingsError) {
-        console.error('[Dashboard] fallback all listings query error:', allListingsError)
-      } else {
-        const ownerSet = new Set(ownerIds.map((v) => String(v)))
-        ownedProperties = (allListings ?? []).filter((listing: any) => {
-          const candidates = [
-            listing.owner_id,
-            listing.host_user_id,
-            listing.created_by,
-            listing.user_id,
-            listing.clerk_id,
-          ]
-            .filter(Boolean)
-            .map((v: any) => String(v))
-
-          return candidates.some((value) => ownerSet.has(value))
-        })
+      if (ownedProperties.length > 0) {
+        console.log('[Dashboard] recovered properties via legacy field reconciliation:', ownedProperties.length)
       }
     }
-
-    propertiesCount = ownedProperties.length
-
-    const ownedListingIds = ownedProperties.map((p: any) => p.id)
-
-    // Count de leads recibidos
-    if (ownedListingIds.length > 0) {
-      const { count } = await supabase
-        .from('property_leads')
-        .select('*', { count: 'exact', head: true })
-        .in('listing_id', ownedListingIds)
-      leadsCount = count ?? 0
-    }
-
-    // Count de bookings pendientes como host
-    const { count: pendingBookingsCount } = await supabase
-      .from('bookings')
-      .select('*', { count: 'exact', head: true })
-      .eq('host_id', userId)
-      .eq('status', 'pending_host_approval');
-    bookingsCount = pendingBookingsCount ?? 0
-
-    // Stats de vistas
-    const viewsOwnerIds = Array.from(new Set([...ownerIds, ...ownedProperties.map((p: any) => p.owner_id).filter(Boolean)]))
-    const viewsStatsResults = await Promise.all(
-      viewsOwnerIds.map((ownerId) =>
-        supabase
-          .rpc('get_owner_views_stats', { p_owner_id: ownerId })
-          .single()
-      )
-    )
-    const totalViews = viewsStatsResults.reduce((sum, result) => {
-      const views = Number((result.data as any)?.total_views || 0)
-      return sum + (Number.isFinite(views) ? views : 0)
-    }, 0)
-
-    viewsStats = { total_views: totalViews }
-
-    // Obtener propiedades para mostrar
-    properties = ownedProperties.slice(0, 3)
-  } catch (error) {
-    console.error('[Dashboard] fatal error, rendering safe fallback:', error)
   }
+
+  const propertiesCount = ownedProperties.length
+  console.log('[Dashboard] propertiesCount:', propertiesCount)
+
+  const ownedListingIds = ownedProperties.map((p: any) => p.id)
+
+  // Count de leads recibidos
+  let leadsCount = 0
+  if (ownedListingIds.length > 0) {
+    const { count } = await supabase
+      .from('property_leads')
+      .select('*', { count: 'exact', head: true })
+      .in('listing_id', ownedListingIds)
+    leadsCount = count ?? 0
+  }
+  
+  // Count de bookings pendientes como host
+  const { count: bookingsCount } = await supabase
+    .from('bookings')
+    .select('*', { count: 'exact', head: true })
+    .eq('host_id', userId)
+    .eq('status', 'pending_host_approval');
+  
+  // Stats de vistas
+  const viewsOwnerIds = Array.from(new Set([...ownerIds, ...ownedProperties.map((p: any) => p.owner_id).filter(Boolean)]))
+  const viewsStatsResults = await Promise.all(
+    viewsOwnerIds.map((ownerId) =>
+      supabase
+        .rpc('get_owner_views_stats', { p_owner_id: ownerId })
+        .single()
+    )
+  )
+  const totalViews = viewsStatsResults.reduce((sum, result) => {
+    const views = Number((result.data as any)?.total_views || 0)
+    return sum + (Number.isFinite(views) ? views : 0)
+  }, 0)
+  
+  const viewsStats = {
+    total_views: totalViews
+  };
+  
+  // Obtener propiedades para mostrar
+  const properties = ownedProperties.slice(0, 3)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">

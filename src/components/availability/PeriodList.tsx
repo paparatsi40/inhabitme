@@ -100,7 +100,7 @@ export function PeriodList({ periods, onEdit, onDelete }: PeriodListProps) {
                 {/* Notes */}
                 {period.notes && (
                   <p className="text-sm text-gray-600 mt-2 italic">
-                    &quot;{period.notes}&quot;
+                    "{period.notes}"
                   </p>
                 )}
               </div>

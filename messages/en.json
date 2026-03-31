@@ -856,9 +856,7 @@
       "workspace": "Workspace",
       "pricing": "Pricing",
       "images": "Photos"
-    },
-    "maxStayMonths": "Maximum stay (months)",
-    "utilitiesIncluded": "Utilities included"
+    }
   },
   "neighborhoodPage": {
     "breadcrumbHome": "Home",
@@ -952,57 +950,7 @@
     "colors": "Colors",
     "primaryColor": "Primary Color",
     "secondaryColor": "Secondary Color",
-    "accentColor": "Accent Color",
-    "backgroundUploader": {
-      "title": "Custom Background",
-      "subtitle": "Add a background image to make your listing unique",
-      "remove": "Remove",
-      "previewAlt": "Background preview",
-      "changeImage": "Change image",
-      "uploading": "Uploading...",
-      "clickUpload": "Click to upload image",
-      "formatHint": "PNG, JPG up to 5MB",
-      "tipLabel": "Tip:",
-      "tipText": "Use an image that represents your property's atmosphere. An overlay will be applied to keep text readable.",
-      "invalidImage": "Please select a valid image",
-      "maxSize": "Image must be under 5MB",
-      "uploadFailed": "Upload failed",
-      "unknownError": "Unknown error",
-      "uploadErrorPrefix": "Error uploading image",
-      "lockedTitle": "Custom Background",
-      "lockedDescription": "Add a custom background image for your listing",
-      "lockedCardTitle": "Custom Background",
-      "lockedCardDescription": "Upload a custom background image to make your listing unique."
-    },
-    "logoUploader": {
-      "title": "Custom Logo",
-      "subtitle": "Add your personal branding to the listing",
-      "remove": "Remove",
-      "previewAlt": "Logo preview",
-      "change": "Change",
-      "uploading": "Uploading...",
-      "uploadLogo": "Upload logo",
-      "formatHint": "PNG, JPG up to 2MB",
-      "recommendations": "Recommendations:",
-      "tipSquare": "Square format (1:1)",
-      "tipTransparent": "Transparent background (PNG)",
-      "tipSize": "Size: minimum 200x200px",
-      "tipType": "Logo or personal avatar",
-      "invalidImage": "Please select a valid image",
-      "maxSize": "Logo must be under 2MB",
-      "uploadFailed": "Upload failed",
-      "unknownError": "Unknown error",
-      "uploadErrorPrefix": "Error uploading logo",
-      "lockedTitle": "Custom Logo",
-      "lockedDescription": "Add your logo or personal avatar to the listing",
-      "lockedCardTitle": "Custom Logo",
-      "lockedCardDescription": "Upload your custom logo to give your listing a unique touch."
-    },
-    "saveSuccess": "Theme saved successfully",
-    "saveFailed": "Failed to save theme",
-    "saveTimeout": "Save request timed out. Please try again.",
-    "saveFailedWithStatus": "Failed to save theme ({status})",
-    "listingNotFound": "Listing not found"
+    "accentColor": "Accent Color"
   },
   "listings": {
     "noPropertiesFound": "No properties found",
@@ -1015,34 +963,6 @@
     "digitalNomad": "Digital Nomad",
     "wifi": "WiFi",
     "bedrooms": "bedrooms",
-    "bathrooms": "bathrooms",
-    "months": "months"
-  },
-  "themedListingWrapper": {
-    "back": "Back",
-    "share": "Share",
-    "shareTitle": "Check out this property",
-    "linkCopied": "Link copied to clipboard!",
-    "footerCopyPrefix": "© 2026",
-    "footerCopySuffix": "Find your perfect home for remote work.",
-    "terms": "Terms",
-    "privacy": "Privacy",
-    "cookies": "Cookies"
-  },
-  "listingCta": {
-    "pricePerMonth": "Price per month",
-    "askQuestion": "Ask a question",
-    "requestBooking": "Request booking",
-    "close": "Close",
-    "readyToBook": "Ready to book?",
-    "bookNowDescription": "Request your booking now and the host will respond within 48 hours",
-    "perMonth": "/month"
-  },
-  "listingHeader": {
-    "featured": "Featured",
-    "featuredListing": "Featured Listing",
-    "highSpeedWifi": "High-Speed WiFi",
-    "reviews": "reviews",
-    "description": "Experience comfortable living in this beautiful space designed for digital nomads and medium-term stays. Fully equipped with everything you need for a productive and relaxing stay."
+    "bathrooms": "bathrooms"
   }
 }

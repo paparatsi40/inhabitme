@@ -856,9 +856,7 @@
       "workspace": "Workspace",
       "pricing": "Precios",
       "images": "Fotos"
-    },
-    "maxStayMonths": "Estancia máxima (meses)",
-    "utilitiesIncluded": "Servicios incluidos"
+    }
   },
   "neighborhoodPage": {
     "breadcrumbHome": "Inicio",
@@ -952,57 +950,7 @@
     "colors": "Colores",
     "primaryColor": "Color primario",
     "secondaryColor": "Color secundario",
-    "accentColor": "Color de acento",
-    "backgroundUploader": {
-      "title": "Background personalizado",
-      "subtitle": "Añade una imagen de fondo para hacer tu listing único",
-      "remove": "Eliminar",
-      "previewAlt": "Vista previa del fondo",
-      "changeImage": "Cambiar imagen",
-      "uploading": "Subiendo...",
-      "clickUpload": "Click para subir imagen",
-      "formatHint": "PNG, JPG hasta 5MB",
-      "tipLabel": "Tip:",
-      "tipText": "Usa una imagen que represente el ambiente de tu propiedad. Se aplicará un overlay para mantener la legibilidad del texto.",
-      "invalidImage": "Por favor selecciona una imagen válida",
-      "maxSize": "La imagen no debe superar los 5MB",
-      "uploadFailed": "Error al subir",
-      "unknownError": "Error desconocido",
-      "uploadErrorPrefix": "Error al subir la imagen",
-      "lockedTitle": "Background personalizado",
-      "lockedDescription": "Añade una imagen de fondo personalizada para tu listing",
-      "lockedCardTitle": "Fondo personalizado",
-      "lockedCardDescription": "Sube una imagen de fondo personalizada para hacer tu listing único."
-    },
-    "logoUploader": {
-      "title": "Logo personalizado",
-      "subtitle": "Añade tu marca personal al listing",
-      "remove": "Eliminar",
-      "previewAlt": "Vista previa del logo",
-      "change": "Cambiar",
-      "uploading": "Subiendo...",
-      "uploadLogo": "Subir logo",
-      "formatHint": "PNG, JPG hasta 2MB",
-      "recommendations": "Recomendaciones:",
-      "tipSquare": "Formato cuadrado (1:1)",
-      "tipTransparent": "Fondo transparente (PNG)",
-      "tipSize": "Tamaño: 200x200px mínimo",
-      "tipType": "Logo o avatar personal",
-      "invalidImage": "Por favor selecciona una imagen válida",
-      "maxSize": "El logo no debe superar los 2MB",
-      "uploadFailed": "Error al subir",
-      "unknownError": "Error desconocido",
-      "uploadErrorPrefix": "Error al subir el logo",
-      "lockedTitle": "Logo personalizado",
-      "lockedDescription": "Añade tu logo o avatar personal en el listing",
-      "lockedCardTitle": "Logo personalizado",
-      "lockedCardDescription": "Sube tu logo personalizado para darle tu toque único a tu listing."
-    },
-    "saveSuccess": "Tema guardado correctamente",
-    "saveFailed": "No se pudo guardar el tema",
-    "saveTimeout": "Se agotó el tiempo de guardado. Intenta nuevamente.",
-    "saveFailedWithStatus": "No se pudo guardar el tema ({status})",
-    "listingNotFound": "Publicación no encontrada"
+    "accentColor": "Color de acento"
   },
   "listings": {
     "noPropertiesFound": "No se encontraron propiedades",
@@ -1015,34 +963,6 @@
     "digitalNomad": "Nómada Digital",
     "wifi": "WiFi",
     "bedrooms": "hab",
-    "bathrooms": "baños",
-    "months": "meses"
-  },
-  "themedListingWrapper": {
-    "back": "Volver",
-    "share": "Compartir",
-    "shareTitle": "Mira esta propiedad",
-    "linkCopied": "¡Enlace copiado al portapapeles!",
-    "footerCopyPrefix": "© 2026",
-    "footerCopySuffix": "Encuentra tu hogar perfecto para trabajar remoto.",
-    "terms": "Términos",
-    "privacy": "Privacidad",
-    "cookies": "Cookies"
-  },
-  "listingCta": {
-    "pricePerMonth": "Precio por mes",
-    "askQuestion": "Hacer pregunta",
-    "requestBooking": "Solicitar reserva",
-    "close": "Cerrar",
-    "readyToBook": "¿Listo para reservar?",
-    "bookNowDescription": "Solicita tu reserva ahora y el host responderá en 48 horas",
-    "perMonth": "/mes"
-  },
-  "listingHeader": {
-    "featured": "Destacada",
-    "featuredListing": "Publicación destacada",
-    "highSpeedWifi": "WiFi de alta velocidad",
-    "reviews": "reseñas",
-    "description": "Disfruta una estancia cómoda en este espacio diseñado para nómadas digitales y estancias de medio plazo. Totalmente equipado con todo lo que necesitas para trabajar y relajarte."
+    "bathrooms": "baños"
   }
 }

@@ -3,75 +3,6 @@
 
 const withNextIntl = require("next-intl/plugin")("./src/i18n/request.ts");
 
-const allowVercelLive = process.env.VERCEL === "1";
-
-const scriptSrc = [
-  "'self'",
-  "'unsafe-eval'",
-  "'unsafe-inline'",
-  "https://clerk.accounts.dev",
-  "https://clerk.inhabitme.com",
-  "https://*.clerk.accounts.dev",
-  "https://*.clerk.dev",
-  "https://cdn.jsdelivr.net",
-  "https://js.stripe.com",
-  "https://maps.googleapis.com",
-  "https://upload-widget.cloudinary.com",
-  ...(allowVercelLive ? ["https://vercel.live"] : []),
-].join(" ");
-
-const styleSrc = [
-  "'self'",
-  "'unsafe-inline'",
-  "https://fonts.googleapis.com",
-  "https://*.clerk.accounts.dev",
-  "https://*.clerk.dev",
-].join(" ");
-
-const fontSrc = [
-  "'self'",
-  "https://fonts.gstatic.com",
-  "data:",
-  ...(allowVercelLive ? ["https://vercel.live"] : []),
-].join(" ");
-
-const connectSrc = [
-  "'self'",
-  "https://clerk.inhabitme.com",
-  "https://*.clerk.accounts.dev",
-  "https://*.clerk.dev",
-  "https://*.clerk.com",
-  "https://api.stripe.com",
-  "https://*.supabase.co",
-  "https://*.cloudinary.com",
-  ...(allowVercelLive ? ["https://vercel.live"] : []),
-].join(" ");
-
-const frameSrc = [
-  "'self'",
-  "https://js.stripe.com",
-  "https://hooks.stripe.com",
-  "https://clerk.inhabitme.com",
-  "https://*.clerk.accounts.dev",
-  "https://*.clerk.dev",
-  "https://*.clerk.com",
-  "https://upload-widget.cloudinary.com",
-  ...(allowVercelLive ? ["https://vercel.live"] : []),
-].join(" ");
-
-const imgSrc = [
-  "'self'",
-  "blob:",
-  "data:",
-  "https://img.clerk.com",
-  "https://images.clerk.dev",
-  "https://*.clerk.accounts.dev",
-  "https://*.clerk.dev",
-  "https://res.cloudinary.com",
-  "https://images.unsplash.com",
-  "https://agjntynuysvwgzlcdmiq.supabase.co",
-].join(" ");
-
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
@@ -130,12 +61,11 @@ const nextConfig = {
             value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
           },
 
-          // Temporary incident mitigation: CSP disabled to restore runtime integrations
-          // TODO: re-enable with Report-Only and monitored allowlist
-          // {
-          //   key: "Content-Security-Policy",
-          //   value: `default-src 'self'; script-src ${scriptSrc}; style-src ${styleSrc}; img-src ${imgSrc}; font-src ${fontSrc}; connect-src ${connectSrc}; frame-src ${frameSrc}; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;`,
-          // },
+          // Content Security Policy - enabled for Best Practices score
+          {
+            key: "Content-Security-Policy",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://clerk.accounts.dev https://clerk.inhabitme.com https://*.clerk.accounts.dev https://js.stripe.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src * blob: data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://clerk.inhabitme.com https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com; frame-src 'self' https://js.stripe.com https://hooks.stripe.com; object-src 'none'; media-src 'self'; worker-src 'self' blob:; frame-ancestors 'self'; upgrade-insecure-requests;",
+          },
         ],
       },
     ];
@@ -160,6 +90,13 @@ const nextConfig = {
   // SEO redirects
   async redirects() {
     return [
+      // Root -> default locale
+      {
+        source: "/",
+        destination: "/en",
+        permanent: false,
+      },
+
       // Legacy /listings to /properties redirect
       {
         source: "/:locale/listings/:id",

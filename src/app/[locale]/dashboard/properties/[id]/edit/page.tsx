@@ -11,14 +11,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent } from '@/components/ui/card'
 import { ArrowLeft, Save, Loader2, Home, MapPin, Wifi, Euro, Zap } from 'lucide-react'
 import Link from 'next/link'
-import { useLocale, useTranslations } from 'next-intl'
 
 export default function EditPropertyPage() {
-  const t = useTranslations('propertyForm')
-  const c = useTranslations('common')
   const params = useParams()
   const router = useRouter()
-  const locale = useLocale()
   const { isLoaded, isSignedIn } = useUser()
   const listingId = params.id as string
 
@@ -62,7 +58,7 @@ export default function EditPropertyPage() {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push(`/${locale}/sign-in`)
+      router.push('/sign-in')
       return
     }
 
@@ -120,7 +116,7 @@ export default function EditPropertyPage() {
     if (isLoaded && isSignedIn) {
       fetchListing()
     }
-  }, [isLoaded, isSignedIn, listingId, router, locale])
+  }, [isLoaded, isSignedIn, listingId, router])
 
   const updateFormData = (updates: Partial<typeof formData>) => {
     setFormData(prev => ({ ...prev, ...updates }))
@@ -139,12 +135,12 @@ export default function EditPropertyPage() {
 
       if (!res.ok) {
         const errorData = await res.json()
-        throw new Error(errorData.error || c('error'))
+        throw new Error(errorData.error || 'Error al actualizar')
       }
 
       setSuccess(true)
       setTimeout(() => {
-        router.push(`/${locale}/dashboard`)
+        router.push('/dashboard')
       }, 1500)
     } catch (err: any) {
       setError(err.message)
@@ -166,11 +162,11 @@ export default function EditPropertyPage() {
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href={`/${locale}/dashboard`} className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
+          <Link href="/dashboard" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
             <ArrowLeft className="h-4 w-4" />
-            {c('cancel')}
+            Volver
           </Link>
-          <h1 className="text-xl font-bold">{c('edit')}</h1>
+          <h1 className="text-xl font-bold">Editar Propiedad</h1>
           <div className="w-20" />
         </div>
       </div>
@@ -188,7 +184,9 @@ export default function EditPropertyPage() {
         {success && (
           <Card className="mb-6 border-green-200 bg-green-50">
             <CardContent className="pt-6">
-              <p className="text-green-600 font-medium">✅ {c('success')} · {c('loading')}</p>
+              <p className="text-green-600 font-medium">
+                ✅ ¡Cambios guardados! Redirigiendo...
+              </p>
             </CardContent>
           </Card>
         )}
@@ -197,11 +195,11 @@ export default function EditPropertyPage() {
         <div className="space-y-6 bg-white p-6 rounded-lg shadow mb-6">
           <div className="flex items-center gap-3 mb-6">
             <Home className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold">{t('basicInfo')}</h2>
+            <h2 className="text-2xl font-bold">Información Básica</h2>
           </div>
 
           <div>
-            <Label htmlFor="title">{t('propertyTitle')}</Label>
+            <Label htmlFor="title">Título</Label>
             <Input
               id="title"
               value={formData.title}
@@ -211,7 +209,7 @@ export default function EditPropertyPage() {
           </div>
 
           <div>
-            <Label htmlFor="description">{t('propertyDescription')}</Label>
+            <Label htmlFor="description">Descripción</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -223,7 +221,7 @@ export default function EditPropertyPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="bedrooms">{t('bedroomsLabel')}</Label>
+              <Label htmlFor="bedrooms">Habitaciones</Label>
               <Input
                 id="bedrooms"
                 type="number"
@@ -234,7 +232,7 @@ export default function EditPropertyPage() {
               />
             </div>
             <div>
-              <Label htmlFor="bathrooms">{t('bathroomsLabel')}</Label>
+              <Label htmlFor="bathrooms">Baños</Label>
               <Input
                 id="bathrooms"
                 type="number"
@@ -251,11 +249,11 @@ export default function EditPropertyPage() {
         <div className="space-y-6 bg-white p-6 rounded-lg shadow mb-6">
           <div className="flex items-center gap-3 mb-6">
             <MapPin className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold">{t('location')}</h2>
+            <h2 className="text-2xl font-bold">Ubicación</h2>
           </div>
 
           <div>
-            <Label htmlFor="city">{t('city')}</Label>
+            <Label htmlFor="city">Ciudad</Label>
             <Input
               id="city"
               value={formData.city}
@@ -265,7 +263,7 @@ export default function EditPropertyPage() {
           </div>
 
           <div>
-            <Label htmlFor="neighborhood">{t('neighborhood')}</Label>
+            <Label htmlFor="neighborhood">Barrio</Label>
             <Input
               id="neighborhood"
               value={formData.neighborhood}
@@ -279,7 +277,7 @@ export default function EditPropertyPage() {
         <div className="space-y-6 bg-white p-6 rounded-lg shadow mb-6">
           <div className="flex items-center gap-3 mb-6">
             <Wifi className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold">{t('workspaceDigital')}</h2>
+            <h2 className="text-2xl font-bold">Espacio de Trabajo</h2>
           </div>
 
           <div className="space-y-4">
@@ -289,7 +287,7 @@ export default function EditPropertyPage() {
                 checked={formData.hasDesk}
                 onCheckedChange={checked => updateFormData({ hasDesk: checked as boolean })}
               />
-              <Label htmlFor="hasDesk" className="cursor-pointer">{t('dedicatedDesk')}</Label>
+              <Label htmlFor="hasDesk" className="cursor-pointer">Escritorio dedicado</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -298,7 +296,7 @@ export default function EditPropertyPage() {
                 checked={formData.hasSecondMonitor}
                 onCheckedChange={checked => updateFormData({ hasSecondMonitor: checked as boolean })}
               />
-              <Label htmlFor="hasSecondMonitor" className="cursor-pointer">{t('extraMonitor')}</Label>
+              <Label htmlFor="hasSecondMonitor" className="cursor-pointer">Monitor adicional</Label>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -307,12 +305,12 @@ export default function EditPropertyPage() {
                 checked={formData.furnished}
                 onCheckedChange={checked => updateFormData({ furnished: checked as boolean })}
               />
-              <Label htmlFor="furnished" className="cursor-pointer">{t('furnished')}</Label>
+              <Label htmlFor="furnished" className="cursor-pointer">Amueblado</Label>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="wifiSpeed">{t('wifiSpeed')}</Label>
+            <Label htmlFor="wifiSpeed">Velocidad WiFi (Mbps)</Label>
             <Input
               id="wifiSpeed"
               type="number"
@@ -328,7 +326,7 @@ export default function EditPropertyPage() {
         <div className="space-y-6 bg-white p-6 rounded-lg shadow mb-6">
           <div className="flex items-center gap-3 mb-6">
             <Zap className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold">{t('amenities')}</h2>
+            <h2 className="text-2xl font-bold">Comodidades</h2>
           </div>
 
           {/* Clima y Confort */}
@@ -341,7 +339,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasHeating}
                   onCheckedChange={checked => updateFormData({ hasHeating: checked as boolean })}
                 />
-                <Label htmlFor="hasHeating" className="cursor-pointer">{t('heating')}</Label>
+                <Label htmlFor="hasHeating" className="cursor-pointer">Calefacción</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -349,7 +347,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasAc}
                   onCheckedChange={checked => updateFormData({ hasAc: checked as boolean })}
                 />
-                <Label htmlFor="hasAc" className="cursor-pointer">{t('airConditioning')}</Label>
+                <Label htmlFor="hasAc" className="cursor-pointer">Aire Acondicionado</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -357,7 +355,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasBalcony}
                   onCheckedChange={checked => updateFormData({ hasBalcony: checked as boolean })}
                 />
-                <Label htmlFor="hasBalcony" className="cursor-pointer">{t('balcony')}</Label>
+                <Label htmlFor="hasBalcony" className="cursor-pointer">Balcón</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -365,14 +363,14 @@ export default function EditPropertyPage() {
                   checked={formData.hasTerrace}
                   onCheckedChange={checked => updateFormData({ hasTerrace: checked as boolean })}
                 />
-                <Label htmlFor="hasTerrace" className="cursor-pointer">{t('terrace')}</Label>
+                <Label htmlFor="hasTerrace" className="cursor-pointer">Terraza</Label>
               </div>
             </div>
           </div>
 
           {/* Hogar */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">{t('homeAmenities')}</h3>
+            <h3 className="font-semibold text-lg mb-3">🏠 Hogar y Comodidades</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -380,7 +378,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasWashingMachine}
                   onCheckedChange={checked => updateFormData({ hasWashingMachine: checked as boolean })}
                 />
-                <Label htmlFor="hasWashingMachine" className="cursor-pointer">{t('washer')}</Label>
+                <Label htmlFor="hasWashingMachine" className="cursor-pointer">Lavadora</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -388,7 +386,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasDryer}
                   onCheckedChange={checked => updateFormData({ hasDryer: checked as boolean })}
                 />
-                <Label htmlFor="hasDryer" className="cursor-pointer">{t('dryer')}</Label>
+                <Label htmlFor="hasDryer" className="cursor-pointer">Secadora</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -396,7 +394,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasDishwasher}
                   onCheckedChange={checked => updateFormData({ hasDishwasher: checked as boolean })}
                 />
-                <Label htmlFor="hasDishwasher" className="cursor-pointer">{t('dishwasher')}</Label>
+                <Label htmlFor="hasDishwasher" className="cursor-pointer">Lavavajillas</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -404,14 +402,14 @@ export default function EditPropertyPage() {
                   checked={formData.hasKitchen}
                   onCheckedChange={checked => updateFormData({ hasKitchen: checked as boolean })}
                 />
-                <Label htmlFor="hasKitchen" className="cursor-pointer">{t('fullyEquippedKitchen')}</Label>
+                <Label htmlFor="hasKitchen" className="cursor-pointer">Cocina Completa</Label>
               </div>
             </div>
           </div>
 
           {/* Edificio */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">{t('buildingAccessibility')}</h3>
+            <h3 className="font-semibold text-lg mb-3">🏢 Edificio y Accesibilidad</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -419,7 +417,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasElevator}
                   onCheckedChange={checked => updateFormData({ hasElevator: checked as boolean })}
                 />
-                <Label htmlFor="hasElevator" className="cursor-pointer">{t('elevator')}</Label>
+                <Label htmlFor="hasElevator" className="cursor-pointer">Ascensor</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -427,7 +425,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasParking}
                   onCheckedChange={checked => updateFormData({ hasParking: checked as boolean })}
                 />
-                <Label htmlFor="hasParking" className="cursor-pointer">{t('parking')}</Label>
+                <Label htmlFor="hasParking" className="cursor-pointer">Parking/Garaje</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -435,10 +433,10 @@ export default function EditPropertyPage() {
                   checked={formData.hasDoorman}
                   onCheckedChange={checked => updateFormData({ hasDoorman: checked as boolean })}
                 />
-                <Label htmlFor="hasDoorman" className="cursor-pointer">{t('concierge')}</Label>
+                <Label htmlFor="hasDoorman" className="cursor-pointer">Portero/Conserje</Label>
               </div>
               <div>
-                <Label htmlFor="floorNumber" className="text-sm">{t('floorNumberLabel')}</Label>
+                <Label htmlFor="floorNumber" className="text-sm">Número de Piso</Label>
                 <Input
                   id="floorNumber"
                   type="number"
@@ -452,9 +450,9 @@ export default function EditPropertyPage() {
             </div>
           </div>
 
-          
+          {/* Estilo de Vida */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">{t('lifestyle')}</h3>
+            <h3 className="font-semibold text-lg mb-3">🐾 Estilo de Vida</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -462,7 +460,7 @@ export default function EditPropertyPage() {
                   checked={formData.petsAllowed}
                   onCheckedChange={checked => updateFormData({ petsAllowed: checked as boolean })}
                 />
-                <Label htmlFor="petsAllowed" className="cursor-pointer">{t('petFriendly')}</Label>
+                <Label htmlFor="petsAllowed" className="cursor-pointer">Se Permiten Mascotas</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -470,14 +468,14 @@ export default function EditPropertyPage() {
                   checked={formData.smokingAllowed}
                   onCheckedChange={checked => updateFormData({ smokingAllowed: checked as boolean })}
                 />
-                <Label htmlFor="smokingAllowed" className="cursor-pointer">{t('smokingAllowed')}</Label>
+                <Label htmlFor="smokingAllowed" className="cursor-pointer">Se Permite Fumar</Label>
               </div>
             </div>
           </div>
 
-          
+          {/* Seguridad */}
           <div>
-            <h3 className="font-semibold text-lg mb-3">{t('security')}</h3>
+            <h3 className="font-semibold text-lg mb-3">🔒 Seguridad</h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -485,7 +483,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasSecuritySystem}
                   onCheckedChange={checked => updateFormData({ hasSecuritySystem: checked as boolean })}
                 />
-                <Label htmlFor="hasSecuritySystem" className="cursor-pointer">{t('securitySystem')}</Label>
+                <Label htmlFor="hasSecuritySystem" className="cursor-pointer">Sistema de Seguridad</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -493,7 +491,7 @@ export default function EditPropertyPage() {
                   checked={formData.hasSafe}
                   onCheckedChange={checked => updateFormData({ hasSafe: checked as boolean })}
                 />
-                <Label htmlFor="hasSafe" className="cursor-pointer">{t('safe')}</Label>
+                <Label htmlFor="hasSafe" className="cursor-pointer">Caja Fuerte</Label>
               </div>
             </div>
           </div>
@@ -503,11 +501,11 @@ export default function EditPropertyPage() {
         <div className="space-y-6 bg-white p-6 rounded-lg shadow mb-6">
           <div className="flex items-center gap-3 mb-6">
             <Euro className="h-6 w-6 text-blue-600" />
-            <h2 className="text-2xl font-bold">{t('pricingTitle')}</h2>
+            <h2 className="text-2xl font-bold">Precios</h2>
           </div>
 
           <div>
-            <Label htmlFor="monthlyPrice">{t('pricePerMonth')}</Label>
+            <Label htmlFor="monthlyPrice">Precio mensual (€)</Label>
             <Input
               id="monthlyPrice"
               type="number"
@@ -520,7 +518,7 @@ export default function EditPropertyPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="minStayMonths">{t('minStay')}</Label>
+              <Label htmlFor="minStayMonths">Estancia mínima (meses)</Label>
               <Input
                 id="minStayMonths"
                 type="number"
@@ -532,7 +530,7 @@ export default function EditPropertyPage() {
               />
             </div>
             <div>
-              <Label htmlFor="maxStayMonths">{t('maxStayMonths')}</Label>
+              <Label htmlFor="maxStayMonths">Estancia máxima (meses)</Label>
               <Input
                 id="maxStayMonths"
                 type="number"
@@ -548,8 +546,8 @@ export default function EditPropertyPage() {
 
         {/* Save Button */}
         <div className="flex justify-end gap-4">
-          <Link href={`/${locale}/dashboard`}>
-            <Button variant="outline">{c('cancel')}</Button>
+          <Link href="/dashboard">
+            <Button variant="outline">Cancelar</Button>
           </Link>
           <Button
             onClick={handleSubmit}
@@ -559,12 +557,12 @@ export default function EditPropertyPage() {
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                {t('submitting')}
+                Guardando...
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                {c('save')}
+                Guardar Cambios
               </>
             )}
           </Button>

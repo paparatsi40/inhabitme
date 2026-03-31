@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic'
 import { BackgroundUploader } from '@/components/listings/theme/BackgroundUploader'
 import { LogoUploader } from '@/components/listings/theme/LogoUploader'
 import { Check, Palette, Layout, Eye, Save, Loader2, ArrowLeft } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 const ThemedListingPage = dynamic(
   () => import('@/components/listings/ThemedListingPage').then((m) => m.ThemedListingPage),
@@ -16,6 +16,7 @@ const ThemedListingPage = dynamic(
 
 export default function CustomizeListingPage() {
   const t = useTranslations('listingCustomization')
+  const locale = useLocale()
   const params = useParams()
   const router = useRouter()
   const listingId = params.id as string
@@ -32,10 +33,9 @@ export default function CustomizeListingPage() {
   
   // Fetch listing data
   useEffect(() => {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 12000)
-
     const fetchListing = async () => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 12000)
       try {
         const res = await fetch(`/api/listings/${listingId}`, {
           cache: 'no-store',
@@ -51,10 +51,8 @@ export default function CustomizeListingPage() {
           }
           setListing(mappedListing)
         }
-      } catch (error: any) {
-        if (error?.name !== 'AbortError') {
-          console.error('Error fetching listing:', error)
-        }
+      } catch (error) {
+        console.error('Error fetching listing:', error)
       } finally {
         clearTimeout(timeoutId)
         setLoading(false)
@@ -62,11 +60,6 @@ export default function CustomizeListingPage() {
     }
 
     fetchListing()
-
-    return () => {
-      clearTimeout(timeoutId)
-      controller.abort()
-    }
   }, [listingId])
   
   // Update theme when template changes
@@ -121,19 +114,19 @@ export default function CustomizeListingPage() {
       clearTimeout(timeoutId)
 
       if (res.ok) {
-        alert(t('saveSuccess'))
-        router.push(`/${params.locale as string}/dashboard/properties`)
+        alert('Theme saved successfully!')
+        router.push(`/${locale}/dashboard/properties`)
       } else {
         const payload = await res.json().catch(() => ({}))
-        alert(payload.error || t('saveFailedWithStatus', { status: res.status }))
+        alert(payload.error || `Failed to save theme (${res.status})`)
       }
     } catch (error: any) {
       clearTimeout(timeoutId)
       console.error('Error saving theme:', error)
       if (error?.name === 'AbortError') {
-        alert(t('saveTimeout'))
+        alert('Save request timed out. Please try again.')
       } else {
-        alert(t('saveFailed'))
+        alert('Failed to save theme')
       }
     } finally {
       setSaving(false)
@@ -151,7 +144,7 @@ export default function CustomizeListingPage() {
   if (!listing) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>{t('listingNotFound')}</p>
+        <p>Listing not found</p>
       </div>
     )
   }
@@ -163,7 +156,7 @@ export default function CustomizeListingPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => router.push(`/${params.locale as string}/dashboard/properties`)}
+              onClick={() => router.push(`/${locale}/dashboard/properties`)}
               className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -252,7 +245,7 @@ export default function CustomizeListingPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('primaryColor')}
+                    Primary Color
                   </label>
                   <div className="flex gap-3">
                     <input

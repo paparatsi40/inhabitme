@@ -9,8 +9,10 @@ const supabase = createClient(
 )
 
 export async function GET(request: NextRequest, { params }: Ctx) {
+  console.log('🔥 GET /api/listings/[id] CALLED')
   try {
     const { id: listingId } = await params
+    console.log('📍 Listing ID:', listingId)
 
     if (!listingId) {
       return NextResponse.json({ error: 'Listing ID is required' }, { status: 400 })

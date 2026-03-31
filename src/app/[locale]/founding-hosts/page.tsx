@@ -84,7 +84,7 @@ export default function FoundingHostsPage() {
               <ul className="space-y-3 text-gray-700">
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span>Badge &quot;Founding Host #[X] of 10&quot;</span>
+                  <span>Badge "Founding Host #[X] of 10"</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />

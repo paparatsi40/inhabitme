@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, Image as ImageIcon } from 'lucide-react'
+import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
 
 interface BackgroundUploaderProps {
   value?: string
@@ -12,7 +11,6 @@ interface BackgroundUploaderProps {
 }
 
 export function BackgroundUploader({ value, onChange, isFoundingHost }: BackgroundUploaderProps) {
-  const t = useTranslations('listingCustomization.backgroundUploader')
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(value || '')
 
@@ -20,31 +18,35 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
     const file = e.target.files?.[0]
     if (!file) return
 
+    // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert(t('invalidImage'))
+      alert('Por favor selecciona una imagen válida')
       return
     }
 
+    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert(t('maxSize'))
+      alert('La imagen no debe superar los 5MB')
       return
     }
 
     setUploading(true)
 
     try {
+      // Create FormData
       const formData = new FormData()
       formData.append('file', file)
       formData.append('folder', 'listing-backgrounds')
 
+      // Upload to your preferred service (Cloudinary, S3, etc.)
       const res = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: t('unknownError') }))
-        throw new Error(errorData.error || t('uploadFailed'))
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || 'Upload failed')
       }
 
       const data = await res.json()
@@ -54,8 +56,8 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
       onChange(imageUrl)
     } catch (error) {
       console.error('[BackgroundUploader] Upload error:', error)
-      const errorMessage = error instanceof Error ? error.message : t('unknownError')
-      alert(`${t('uploadErrorPrefix')}: ${errorMessage}`)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      alert(`Error al subir la imagen: ${errorMessage}`)
     } finally {
       setUploading(false)
     }
@@ -73,12 +75,18 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
           <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
             <ImageIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900">{t('lockedTitle')}</h3>
+          <h3 className="text-lg font-bold text-gray-900">Background Personalizado</h3>
         </div>
-        <p className="text-gray-700 mb-3">{t('lockedDescription')}</p>
+        <p className="text-gray-700 mb-3">
+          Añade una imagen de fondo personalizada para tu listing
+        </p>
         <div className="bg-white border-2 border-yellow-400 rounded-lg p-4">
-          <p className="text-sm font-semibold text-yellow-800 mb-2">🎨 {t('lockedCardTitle')}</p>
-          <p className="text-sm text-gray-600">{t('lockedCardDescription')}</p>
+          <p className="text-sm font-semibold text-yellow-800 mb-2">
+            🎨 Fondo Personalizado
+          </p>
+          <p className="text-sm text-gray-600">
+            Sube una imagen de fondo personalizada para hacer tu listing único.
+          </p>
         </div>
       </div>
     )
@@ -88,15 +96,17 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{t('title')}</h3>
-          <p className="text-sm text-gray-600">{t('subtitle')}</p>
+          <h3 className="text-lg font-bold text-gray-900">Background Personalizado</h3>
+          <p className="text-sm text-gray-600">
+            Añade una imagen de fondo para hacer tu listing único
+          </p>
         </div>
         {preview && (
           <button
             onClick={handleRemove}
             className="text-red-600 hover:text-red-700 text-sm font-medium"
           >
-            {t('remove')}
+            Eliminar
           </button>
         )}
       </div>
@@ -105,13 +115,13 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
         <div className="relative aspect-video w-full rounded-xl overflow-hidden border-2 border-gray-200">
           <Image
             src={preview}
-            alt={t('previewAlt')}
+            alt="Background preview"
             fill
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
             <label className="cursor-pointer bg-white text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">
-              {t('changeImage')}
+              Cambiar imagen
               <input
                 type="file"
                 accept="image/*"
@@ -133,9 +143,11 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
               )}
               <div className="text-center">
                 <p className="text-base font-medium text-gray-700">
-                  {uploading ? t('uploading') : t('clickUpload')}
+                  {uploading ? 'Subiendo...' : 'Click para subir imagen'}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">{t('formatHint')}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  PNG, JPG hasta 5MB
+                </p>
               </div>
             </div>
           </div>
@@ -151,7 +163,8 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
         <p className="text-xs text-blue-800">
-          💡 <strong>{t('tipLabel')}</strong> {t('tipText')}
+          💡 <strong>Tip:</strong> Usa una imagen que represente el ambiente de tu propiedad. 
+          Se aplicará un overlay para mantener la legibilidad del texto.
         </p>
       </div>
     </div>

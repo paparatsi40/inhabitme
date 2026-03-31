@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, Crown } from 'lucide-react'
+import { Upload, X, Crown } from 'lucide-react'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
 
 interface LogoUploaderProps {
   value?: string
@@ -12,7 +11,6 @@ interface LogoUploaderProps {
 }
 
 export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderProps) {
-  const t = useTranslations('listingCustomization.logoUploader')
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(value || '')
 
@@ -21,12 +19,13 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      alert(t('invalidImage'))
+      alert('Por favor selecciona una imagen válida')
       return
     }
 
+    // Smaller size limit for logos (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert(t('maxSize'))
+      alert('El logo no debe superar los 2MB')
       return
     }
 
@@ -43,8 +42,8 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
       })
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: t('unknownError') }))
-        throw new Error(errorData.error || t('uploadFailed'))
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || 'Upload failed')
       }
 
       const data = await res.json()
@@ -54,8 +53,8 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
       onChange(imageUrl)
     } catch (error) {
       console.error('[LogoUploader] Upload error:', error)
-      const errorMessage = error instanceof Error ? error.message : t('unknownError')
-      alert(`${t('uploadErrorPrefix')}: ${errorMessage}`)
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      alert(`Error al subir el logo: ${errorMessage}`)
     } finally {
       setUploading(false)
     }
@@ -73,12 +72,18 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
           <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
             <Crown className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900">{t('lockedTitle')}</h3>
+          <h3 className="text-lg font-bold text-gray-900">Logo Personalizado</h3>
         </div>
-        <p className="text-gray-700 mb-3">{t('lockedDescription')}</p>
+        <p className="text-gray-700 mb-3">
+          Añade tu logo o avatar personal en el listing
+        </p>
         <div className="bg-white border-2 border-purple-400 rounded-lg p-4">
-          <p className="text-sm font-semibold text-purple-800 mb-2">🎨 {t('lockedCardTitle')}</p>
-          <p className="text-sm text-gray-600">{t('lockedCardDescription')}</p>
+          <p className="text-sm font-semibold text-purple-800 mb-2">
+            🎨 Logo Personalizado
+          </p>
+          <p className="text-sm text-gray-600">
+            Sube tu logo personalizado para darle tu toque único a tu listing.
+          </p>
         </div>
       </div>
     )
@@ -88,32 +93,35 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{t('title')}</h3>
-          <p className="text-sm text-gray-600">{t('subtitle')}</p>
+          <h3 className="text-lg font-bold text-gray-900">Logo Personalizado</h3>
+          <p className="text-sm text-gray-600">
+            Añade tu marca personal al listing
+          </p>
         </div>
         {preview && (
           <button
             onClick={handleRemove}
             className="text-red-600 hover:text-red-700 text-sm font-medium"
           >
-            {t('remove')}
+            Eliminar
           </button>
         )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
+        {/* Upload area */}
         <div>
           {preview ? (
             <div className="relative w-32 h-32 mx-auto rounded-xl overflow-hidden border-2 border-gray-200">
               <Image
                 src={preview}
-                alt={t('previewAlt')}
+                alt="Logo preview"
                 fill
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                 <label className="cursor-pointer bg-white text-gray-900 px-3 py-1 rounded-lg text-sm font-medium">
-                  {t('change')}
+                  Cambiar
                   <input
                     type="file"
                     accept="image/*"
@@ -135,9 +143,11 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
                   )}
                   <div className="text-center">
                     <p className="text-sm font-medium text-gray-700">
-                      {uploading ? t('uploading') : t('uploadLogo')}
+                      {uploading ? 'Subiendo...' : 'Subir logo'}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">{t('formatHint')}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      PNG, JPG hasta 2MB
+                    </p>
                   </div>
                 </div>
               </div>
@@ -152,14 +162,17 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
           )}
         </div>
 
+        {/* Tips */}
         <div className="space-y-3">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-xs font-semibold text-blue-900 mb-1">💡 {t('recommendations')}</p>
+            <p className="text-xs font-semibold text-blue-900 mb-1">
+              💡 Recomendaciones:
+            </p>
             <ul className="text-xs text-blue-800 space-y-1">
-              <li>• {t('tipSquare')}</li>
-              <li>• {t('tipTransparent')}</li>
-              <li>• {t('tipSize')}</li>
-              <li>• {t('tipType')}</li>
+              <li>• Formato cuadrado (1:1)</li>
+              <li>• Fondo transparente (PNG)</li>
+              <li>• Tamaño: 200x200px mínimo</li>
+              <li>• Logo o avatar personal</li>
             </ul>
           </div>
         </div>
