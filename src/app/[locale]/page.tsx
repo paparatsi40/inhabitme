@@ -21,6 +21,22 @@ import {
 import { Button } from '@/components/ui/button'
 import { CITIES } from '@/config/cities'
 
+const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=640&h=480&fit=crop&q=60'
+
+function normalizeImageUrl(src?: string) {
+  if (!src) return FALLBACK_CITY_IMAGE
+  if (!src.startsWith('http://') && !src.startsWith('https://')) return FALLBACK_CITY_IMAGE
+
+  try {
+    const parsed = new URL(src)
+    if (!parsed.hostname) return FALLBACK_CITY_IMAGE
+    if (!parsed.searchParams.get('q')) parsed.searchParams.set('q', '60')
+    return parsed.toString()
+  } catch {
+    return FALLBACK_CITY_IMAGE
+  }
+}
+
 const CityCarousel = dynamic(
   () => import('@/components/hero/CityCarousel').then((mod) => mod.CityCarousel),
   {
@@ -100,8 +116,8 @@ export default function HomePage() {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#ciudades" className="flex-1 sm:flex-initial">
-                  <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg">
+                <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex">
+                  <Button size="lg" className="w-full sm:w-auto min-h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg">
                     {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -413,7 +429,7 @@ export default function HomePage() {
           <p className="text-xl lg:text-2xl mb-10 opacity-90">{tFinalCta('subtitle')}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/madrid">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl px-10 py-6 text-lg">
+              <Button size="lg" className="min-h-11 bg-white text-blue-600 hover:bg-gray-100 font-bold shadow-xl px-10 py-6 text-lg">
                 {tFinalCta('viewProperties')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -455,7 +471,7 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
         {imageUrl ? (
           <>
             <Image
-              src={imageUrl}
+              src={normalizeImageUrl(imageUrl)}
               alt={`${name} cityscape`}
               fill
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 325px"

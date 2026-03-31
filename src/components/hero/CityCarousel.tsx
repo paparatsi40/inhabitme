@@ -6,6 +6,22 @@ import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
 import { useTranslations } from 'next-intl'
 
+const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=640&h=480&fit=crop&q=60'
+
+function normalizeImageUrl(src?: string) {
+  if (!src) return FALLBACK_CITY_IMAGE
+  if (!src.startsWith('http://') && !src.startsWith('https://')) return FALLBACK_CITY_IMAGE
+
+  try {
+    const parsed = new URL(src)
+    if (!parsed.hostname) return FALLBACK_CITY_IMAGE
+    if (!parsed.searchParams.get('q')) parsed.searchParams.set('q', '60')
+    return parsed.toString()
+  } catch {
+    return FALLBACK_CITY_IMAGE
+  }
+}
+
 export function CityCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const t = useTranslations('home.heroCarousel')
@@ -26,7 +42,7 @@ export function CityCarousel() {
         <div className="aspect-[4/3] relative overflow-hidden">
           <div key={currentCity.name} className="absolute inset-0 transition-opacity duration-700 opacity-100">
             <Image
-              src={currentCity.image}
+              src={normalizeImageUrl(currentCity.image)}
               alt={currentCity.name}
               fill
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 560px"
