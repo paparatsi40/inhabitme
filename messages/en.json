@@ -978,7 +978,60 @@
     "colors": "Colors",
     "primaryColor": "Primary Color",
     "secondaryColor": "Secondary Color",
-    "accentColor": "Accent Color"
+    "accentColor": "Accent Color",
+    "listingNotFound": "Listing not found",
+    "saveSuccess": "Theme saved successfully!",
+    "saveFailed": "Failed to save theme",
+    "saveFailedWithStatus": "Failed to save theme ({status})",
+    "saveRequestTimedOut": "Save request timed out. Please try again.",
+    "backgroundUploader": {
+      "title": "Custom Background",
+      "description": "Add a background image to make your listing unique",
+      "descriptionLocked": "Add a custom background image for your listing",
+      "badgeTitle": "🎨 Custom Background",
+      "badgeDescription": "Upload a custom background image to make your listing unique.",
+      "remove": "Remove",
+      "previewAlt": "Background preview",
+      "changeImage": "Change image",
+      "uploading": "Uploading...",
+      "clickToUpload": "Click to upload image",
+      "formats": "PNG, JPG up to 5MB",
+      "tip": "💡 Tip: Use an image that represents your property's vibe. An overlay will be applied to keep text readable.",
+      "errors": {
+        "invalidImage": "Please select a valid image",
+        "fileTooLarge": "The image must be smaller than 5MB",
+        "unknownError": "Unknown error",
+        "uploadFailed": "Upload failed",
+        "uploadImageWithMessage": "Error uploading image: {message}"
+      }
+    },
+    "logoUploader": {
+      "title": "Custom Logo",
+      "description": "Add your personal brand to the listing",
+      "descriptionLocked": "Add your personal logo or avatar to the listing",
+      "badgeTitle": "🎨 Custom Logo",
+      "badgeDescription": "Upload your custom logo to give your listing a unique touch.",
+      "remove": "Remove",
+      "previewAlt": "Logo preview",
+      "change": "Change",
+      "uploading": "Uploading...",
+      "uploadLogo": "Upload logo",
+      "formats": "PNG, JPG up to 2MB",
+      "recommendationsTitle": "💡 Recommendations:",
+      "recommendations": {
+        "squareFormat": "• Square format (1:1)",
+        "transparentBg": "• Transparent background (PNG)",
+        "minSize": "• Size: 200x200px minimum",
+        "logoOrAvatar": "• Logo or personal avatar"
+      },
+      "errors": {
+        "invalidImage": "Please select a valid image",
+        "fileTooLarge": "The logo must be smaller than 2MB",
+        "unknownError": "Unknown error",
+        "uploadFailed": "Upload failed",
+        "uploadLogoWithMessage": "Error uploading logo: {message}"
+      }
+    }
   },
   "listings": {
     "noPropertiesFound": "No properties found",

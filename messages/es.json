@@ -978,7 +978,60 @@
     "colors": "Colores",
     "primaryColor": "Color primario",
     "secondaryColor": "Color secundario",
-    "accentColor": "Color de acento"
+    "accentColor": "Color de acento",
+    "listingNotFound": "Publicación no encontrada",
+    "saveSuccess": "¡Tema guardado con éxito!",
+    "saveFailed": "No se pudo guardar el tema",
+    "saveFailedWithStatus": "No se pudo guardar el tema ({status})",
+    "saveRequestTimedOut": "La solicitud de guardado expiró. Inténtalo de nuevo.",
+    "backgroundUploader": {
+      "title": "Fondo personalizado",
+      "description": "Añade una imagen de fondo para hacer tu listing único",
+      "descriptionLocked": "Añade una imagen de fondo personalizada para tu listing",
+      "badgeTitle": "🎨 Fondo personalizado",
+      "badgeDescription": "Sube una imagen de fondo personalizada para hacer tu listing único.",
+      "remove": "Eliminar",
+      "previewAlt": "Vista previa del fondo",
+      "changeImage": "Cambiar imagen",
+      "uploading": "Subiendo...",
+      "clickToUpload": "Haz clic para subir imagen",
+      "formats": "PNG, JPG hasta 5MB",
+      "tip": "💡 Tip: Usa una imagen que represente el ambiente de tu propiedad. Se aplicará un overlay para mantener la legibilidad del texto.",
+      "errors": {
+        "invalidImage": "Por favor selecciona una imagen válida",
+        "fileTooLarge": "La imagen no debe superar los 5MB",
+        "unknownError": "Error desconocido",
+        "uploadFailed": "La subida falló",
+        "uploadImageWithMessage": "Error al subir la imagen: {message}"
+      }
+    },
+    "logoUploader": {
+      "title": "Logo personalizado",
+      "description": "Añade tu marca personal al listing",
+      "descriptionLocked": "Añade tu logo o avatar personal en el listing",
+      "badgeTitle": "🎨 Logo personalizado",
+      "badgeDescription": "Sube tu logo personalizado para darle tu toque único a tu listing.",
+      "remove": "Eliminar",
+      "previewAlt": "Vista previa del logo",
+      "change": "Cambiar",
+      "uploading": "Subiendo...",
+      "uploadLogo": "Subir logo",
+      "formats": "PNG, JPG hasta 2MB",
+      "recommendationsTitle": "💡 Recomendaciones:",
+      "recommendations": {
+        "squareFormat": "• Formato cuadrado (1:1)",
+        "transparentBg": "• Fondo transparente (PNG)",
+        "minSize": "• Tamaño: 200x200px mínimo",
+        "logoOrAvatar": "• Logo o avatar personal"
+      },
+      "errors": {
+        "invalidImage": "Por favor selecciona una imagen válida",
+        "fileTooLarge": "El logo no debe superar los 2MB",
+        "unknownError": "Error desconocido",
+        "uploadFailed": "La subida falló",
+        "uploadLogoWithMessage": "Error al subir el logo: {message}"
+      }
+    }
   },
   "listings": {
     "noPropertiesFound": "No se encontraron propiedades",

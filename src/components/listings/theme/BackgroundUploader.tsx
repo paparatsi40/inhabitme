@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, X, Image as ImageIcon } from 'lucide-react'
+import { Upload, Image as ImageIcon } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
 interface BackgroundUploaderProps {
   value?: string
@@ -11,6 +12,7 @@ interface BackgroundUploaderProps {
 }
 
 export function BackgroundUploader({ value, onChange, isFoundingHost }: BackgroundUploaderProps) {
+  const t = useTranslations('listingCustomization.backgroundUploader')
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(value || '')
 
@@ -20,13 +22,13 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona una imagen válida')
+      alert(t('errors.invalidImage'))
       return
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen no debe superar los 5MB')
+      alert(t('errors.fileTooLarge'))
       return
     }
 
@@ -45,8 +47,8 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
       })
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
-        throw new Error(errorData.error || 'Upload failed')
+        const errorData = await res.json().catch(() => ({ error: t('errors.unknownError') }))
+        throw new Error(errorData.error || t('errors.uploadFailed'))
       }
 
       const data = await res.json()
@@ -56,8 +58,8 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
       onChange(imageUrl)
     } catch (error) {
       console.error('[BackgroundUploader] Upload error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
-      alert(`Error al subir la imagen: ${errorMessage}`)
+      const errorMessage = error instanceof Error ? error.message : t('errors.unknownError')
+      alert(t('errors.uploadImageWithMessage', { message: errorMessage }))
     } finally {
       setUploading(false)
     }
@@ -75,17 +77,17 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
           <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
             <ImageIcon className="h-5 w-5 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900">Background Personalizado</h3>
+          <h3 className="text-lg font-bold text-gray-900">{t('title')}</h3>
         </div>
         <p className="text-gray-700 mb-3">
-          Añade una imagen de fondo personalizada para tu listing
+          {t('descriptionLocked')}
         </p>
         <div className="bg-white border-2 border-yellow-400 rounded-lg p-4">
           <p className="text-sm font-semibold text-yellow-800 mb-2">
-            🎨 Fondo Personalizado
+            {t('badgeTitle')}
           </p>
           <p className="text-sm text-gray-600">
-            Sube una imagen de fondo personalizada para hacer tu listing único.
+            {t('badgeDescription')}
           </p>
         </div>
       </div>
@@ -96,9 +98,9 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">Background Personalizado</h3>
+          <h3 className="text-lg font-bold text-gray-900">{t('title')}</h3>
           <p className="text-sm text-gray-600">
-            Añade una imagen de fondo para hacer tu listing único
+            {t('description')}
           </p>
         </div>
         {preview && (
@@ -106,7 +108,7 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
             onClick={handleRemove}
             className="text-red-600 hover:text-red-700 text-sm font-medium"
           >
-            Eliminar
+            {t('remove')}
           </button>
         )}
       </div>
@@ -115,13 +117,13 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
         <div className="relative aspect-video w-full rounded-xl overflow-hidden border-2 border-gray-200">
           <Image
             src={preview}
-            alt="Background preview"
+            alt={t('previewAlt')}
             fill
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
             <label className="cursor-pointer bg-white text-gray-900 px-4 py-2 rounded-lg font-medium hover:bg-gray-100">
-              Cambiar imagen
+              {t('changeImage')}
               <input
                 type="file"
                 accept="image/*"
@@ -143,10 +145,10 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
               )}
               <div className="text-center">
                 <p className="text-base font-medium text-gray-700">
-                  {uploading ? 'Subiendo...' : 'Click para subir imagen'}
+                  {uploading ? t('uploading') : t('clickToUpload')}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  PNG, JPG hasta 5MB
+                  {t('formats')}
                 </p>
               </div>
             </div>
@@ -163,8 +165,7 @@ export function BackgroundUploader({ value, onChange, isFoundingHost }: Backgrou
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
         <p className="text-xs text-blue-800">
-          💡 <strong>Tip:</strong> Usa una imagen que represente el ambiente de tu propiedad. 
-          Se aplicará un overlay para mantener la legibilidad del texto.
+          {t('tip')}
         </p>
       </div>
     </div>
