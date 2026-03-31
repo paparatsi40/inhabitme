@@ -2,6 +2,8 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { Listing } from '../domain/listing'
 import { SearchFilters } from '../domain/search-filters'
 
+const SEARCH_TIMEOUT_MS = 8000
+
 function mapRowToListing(row: any): Listing {
   return {
     id: row.id,
@@ -85,7 +87,20 @@ export const listingRepository = {
       query = query.gte('bedrooms', filters.bedrooms)
     }
 
-    const { data, error } = await query
+    const result = await Promise.race([
+      query.then((res) => ({ kind: 'ok' as const, res })),
+      new Promise<{ kind: 'timeout' }>((resolve) =>
+        setTimeout(() => resolve({ kind: 'timeout' }), SEARCH_TIMEOUT_MS)
+      ),
+    ])
+
+    if (result.kind === 'timeout') {
+      console.warn('[listingRepository.search] Timeout reached, returning empty result')
+      console.warn('[listingRepository.search] Filters:', filters)
+      return []
+    }
+
+    const { data, error } = result.res
 
     if (error) {
       console.error('[listingRepository.search] Error:', error)
