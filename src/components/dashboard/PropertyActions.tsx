@@ -67,7 +67,7 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
       </Link>
 
       {/* Edit */}
-      <Link href={`/properties/${propertyId}/edit`}>
+      <Link href={`/dashboard/properties/${propertyId}/edit`}>
         <Button variant="outline" size="sm" className="border-2 border-green-300 text-green-700 hover:bg-green-50">
           <Pencil className="h-4 w-4 mr-2" />
           {t('edit')}
