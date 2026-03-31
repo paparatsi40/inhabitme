@@ -10,6 +10,9 @@ const nextConfig = {
   // Image optimization (secure + compatible)
   images: {
     formats: ["image/avif", "image/webp"],
+    // Next 16 validates requested quality values against this allowlist.
+    // Include the qualities used in home/hero to avoid optimizer 400s.
+    qualities: [35, 40, 45, 55, 60, 75],
     remotePatterns: [
       {
         protocol: "https",
