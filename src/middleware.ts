@@ -94,15 +94,13 @@ export default clerkMiddleware((auth, req) => {
 
 export const config = {
   matcher: [
-    "/",
     "/api/:path*",
-    "/(en|es)",
+    "/onboarding/:path*",
     "/(en|es)/dashboard/:path*",
     "/(en|es)/properties/new/:path*",
     "/(en|es)/bookings/:path*",
     "/(en|es)/host/bookings/:path*",
     "/(en|es)/sign-in/:path*",
     "/(en|es)/sign-up/:path*",
-    "/onboarding/:path*",
   ],
 };
