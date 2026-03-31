@@ -29,8 +29,8 @@ export function CityCarousel() {
               src={currentCity.image}
               alt={currentCity.name}
               fill
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 42vw"
-              quality={45}
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 560px"
+              quality={35}
               className="object-cover"
               priority
               fetchPriority="high"

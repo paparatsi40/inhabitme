@@ -24,7 +24,7 @@ import { CITIES } from '@/config/cities'
 const CityCarousel = dynamic(
   () => import('@/components/hero/CityCarousel').then((mod) => mod.CityCarousel),
   {
-    ssr: false,
+    ssr: true,
     loading: () => <div className="aspect-[4/3] rounded-3xl border-2 border-gray-200 bg-white/60" />,
   }
 )
@@ -458,8 +458,8 @@ function CityCard({ slug, name, subtitle, price, gradient, hoverBorder, textColo
               src={imageUrl}
               alt={`${name} cityscape`}
               fill
-              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 30vw"
-              quality={55}
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 325px"
+              quality={40}
               className="object-cover group-hover:scale-110 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition"></div>
