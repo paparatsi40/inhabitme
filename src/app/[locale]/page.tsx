@@ -1,39 +1,33 @@
 'use client'
 
 import { Link } from '@/i18n/routing'
-import NextLink from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 
 import { ClientNav } from '@/components/home/ClientNav'
 import {
   ArrowRight,
-  Shield,
-  FileCheck,
   Zap,
-  Building2,
-  Check,
   Euro,
   MapPin,
-  Calendar,
-  Briefcase,
-  Star,
   Wifi,
   Monitor,
   CheckCircle,
   Clock,
-  Home,
   X
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CityCarousel } from '@/components/hero/CityCarousel'
 import { CITIES } from '@/config/cities'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
-import { calculateSavings } from '@/lib/use-cases/calculate-savings'
-import { SavingsCalculator } from '@/components/home/SavingsCalculator'
+
+const CityCarousel = dynamic(
+  () => import('@/components/hero/CityCarousel').then((mod) => mod.CityCarousel),
+  {
+    ssr: false,
+    loading: () => <div className="aspect-[4/3] rounded-3xl border-2 border-gray-200 bg-white/60" />,
+  }
+)
 
 export default function HomePage() {
   const t = useTranslations('home');
@@ -43,9 +37,6 @@ export default function HomePage() {
   const tFaqSection = useTranslations('home.faqSection');
   const tCities = useTranslations('home.citiesSection');
   const tFinalCta = useTranslations('home.finalCtaSection');
-  const [months, setMonths] = useState(3)
-  const [city, setCity] = useState('madrid')
-  const savings = calculateSavings({ city, months })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
