@@ -107,6 +107,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const citySlug = safeLower(city)
   const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
   const t = await getTranslations({ locale: localeSafe, namespace: 'neighborhoodPage' })
+  const tNeighborhoods = await getTranslations({ locale: localeSafe, namespace: 'neighborhoods' })
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
@@ -129,6 +130,16 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const cityCurrency = getCurrencyFromLocation(undefined, cityConfig.slug)
   const moneyLocale = cityCurrency === 'EUR' ? 'es-ES' : 'en-US'
   const formatMajor = (amount: number) => new Intl.NumberFormat(moneyLocale, { style: 'currency', currency: cityCurrency }).format(amount || 0)
+  const getRelatedCardDescription = (relatedSlug: string, fallback?: string) => {
+    const key = `${citySlug}.${relatedSlug}`
+    if (tNeighborhoods.has(key as any)) {
+      const fullDescription = tNeighborhoods(key as any)
+      const firstSentence = fullDescription.split('. ')[0]?.trim() || fullDescription
+      const normalized = firstSentence.replace(/\.$/, '')
+      return normalized.length > 70 ? `${normalized.slice(0, 67)}…` : normalized
+    }
+    return fallback || ''
+  }
 
   return (
     <>
@@ -351,8 +362,10 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                             <h3 className="text-xl font-black text-gray-900 group-hover:text-purple-600 transition-colors mb-2">
                               {related.name}
                             </h3>
-                            {related.description && (
-                              <p className="text-sm text-gray-600 leading-relaxed">{related.description}</p>
+                            {getRelatedCardDescription(related.slug, related.description) && (
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {getRelatedCardDescription(related.slug, related.description)}
+                              </p>
                             )}
                           </div>
                           <ArrowRight className="h-6 w-6 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-2 group-hover:scale-110 transition-all flex-shrink-0 ml-3" />
