@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2, ArrowRightCircle } from 'lucide-react'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -218,13 +218,19 @@ export default async function InquiryDetailPage({
             {!inquiry.paid && (
               <div className="bg-gradient-to-br from-purple-600 to-blue-700 text-white rounded-2xl p-5">
                 <div className="inline-flex items-center gap-2 text-sm mb-2"><Sparkles className="h-4 w-4" /> {t('highIntentTenant')}</div>
-                <h3 className="text-lg font-black mb-2">{t('unlockContactTitle')}</h3>
-                <p className="text-sm opacity-90 mb-4">{t('unlockContactBody')}</p>
+                <h3 className="text-lg font-black mb-2">{t('proceedBookingTitle')}</h3>
+                <p className="text-sm opacity-90 mb-4">{t('proceedBookingBody')}</p>
                 <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
-                  <Unlock className="h-4 w-4" /> {t('unlockContactButton')}
+                  <ArrowRightCircle className="h-4 w-4" /> {t('proceedBookingButton')}
                 </a>
+                <p className="text-xs opacity-80 mt-3">{t('unlockFallbackNote')}</p>
               </div>
             )}
+
+            <div className="bg-emerald-50 rounded-2xl border-2 border-emerald-200 p-5 text-sm text-emerald-900">
+              <h4 className="font-bold mb-2">{t('savingsTitle')}</h4>
+              <p>{t('savingsBody')}</p>
+            </div>
 
             <div className="bg-white rounded-2xl border-2 border-gray-200 p-5 text-sm text-gray-600">
               <h4 className="font-bold text-gray-900 mb-2">{t('internalChatNoteTitle')}</h4>

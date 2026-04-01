@@ -26,7 +26,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
 
     const { data: inquiry, error: inquiryError } = await supabase
       .from('availability_leads')
-      .select('id, listing_id, city, paid, email')
+      .select('id, listing_id, city, duration_months, paid, email')
       .eq('id', id)
       .single()
 
@@ -48,9 +48,9 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       return NextResponse.redirect(new URL(`/${locale}/dashboard/inquiries`, req.url))
     }
 
-    const city = inquiry.city || listing.city_name || 'Madrid'
-    const pricing = getLeadPrice(city)
-    const priceInCents = getLeadPriceInCents(city)
+    const durationMonths = Number(inquiry.duration_months || 3)
+    const pricing = getLeadPrice(durationMonths)
+    const priceInCents = getLeadPriceInCents(durationMonths)
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -59,8 +59,8 @@ export async function GET(req: NextRequest, { params }: Ctx) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Unlock inquiry contact',
-              description: `Unlock contact details for inquiry on ${listing.title}`,
+              name: 'Proceed with booking intent',
+              description: `Intent fee for ${durationMonths}-month stay on ${listing.title}`,
             },
             unit_amount: priceInCents,
           },
@@ -71,11 +71,11 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       cancel_url: `${BASE_URL}/${locale}/dashboard/inquiries/${id}?canceled=1`,
       client_reference_id: inquiry.id,
       metadata: {
-        type: 'availability_inquiry_unlock',
+        type: 'availability_inquiry_booking_intent',
         inquiryId: inquiry.id,
         listingId: listing.id,
         listingTitle: listing.title || '',
-        city,
+        durationMonths: String(durationMonths),
         tier: pricing.tier,
       },
       payment_method_types: ['card'],

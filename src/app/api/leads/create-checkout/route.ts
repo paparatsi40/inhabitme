@@ -11,7 +11,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { propertyId, propertyTitle, propertyCity } = body
+    const { propertyId, propertyTitle, propertyCity, durationMonths } = body
 
     if (!propertyId) {
       return NextResponse.json(
@@ -20,12 +20,13 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Precio dinámico por ciudad
-    const priceInCents = getLeadPriceInCents(propertyCity || 'Madrid')
-    const pricing = getLeadPrice(propertyCity || 'Madrid')
+    // Booking intent pricing by duration (1-3 / 4-6 / 7-12)
+    const parsedDuration = Number(durationMonths || 3)
+    const priceInCents = getLeadPriceInCents(parsedDuration)
+    const pricing = getLeadPrice(parsedDuration)
 
     console.log('[Lead Checkout] Creating checkout session for property:', propertyId)
-    console.log('[Lead Checkout] Dynamic pricing:', propertyCity, '→', `€${pricing.amount}`, `(${pricing.tier})`)
+    console.log('[Lead Checkout] Booking intent pricing:', `${parsedDuration} months`, '→', `€${pricing.amount}`, `(${pricing.tier})`)
 
     // Crear Stripe Checkout Session con precio dinámico
     const session = await stripe.checkout.sessions.create({
@@ -35,8 +36,8 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Contacto con Anfitrión',
-              description: `Desbloquea el contacto para: ${propertyTitle || 'Propiedad'} en ${propertyCity || ''}`,
+              name: 'Continue booking',
+              description: `Booking intent fee (${parsedDuration} months) for ${propertyTitle || 'property'}`,
               images: ['https://inhabitme.com/og-image.jpg'], // TODO: Añadir imagen real
             },
             unit_amount: priceInCents, // Precio dinámico por ciudad
