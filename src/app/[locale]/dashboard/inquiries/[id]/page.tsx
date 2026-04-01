@@ -137,13 +137,19 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
               <h2 className="font-bold text-gray-900 mb-3">{t('quickRepliesTitle')}</h2>
               <div className="space-y-2">
                 {quickReplies.map((reply) => (
-                  <a
-                    key={reply}
-                    href={`mailto:${inquiry.email || ''}?subject=${encodeURIComponent(t('replySubject'))}&body=${encodeURIComponent(reply)}`}
-                    className="block p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-sm text-gray-700"
-                  >
-                    {reply}
-                  </a>
+                  inquiry.paid ? (
+                    <a
+                      key={reply}
+                      href={`mailto:${inquiry.email || ''}?subject=${encodeURIComponent(t('replySubject'))}&body=${encodeURIComponent(reply)}`}
+                      className="block p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-sm text-gray-700"
+                    >
+                      {reply}
+                    </a>
+                  ) : (
+                    <div key={reply} className="block p-3 rounded-xl border border-dashed border-gray-200 text-sm text-gray-400">
+                      {reply}
+                    </div>
+                  )
                 ))}
               </div>
             </div>
@@ -152,12 +158,18 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
           <div className="space-y-4">
             <div className="bg-white rounded-2xl border-2 border-gray-200 p-5">
               <h3 className="font-bold text-gray-900 mb-3">{t('actions')}</h3>
-              <a
-                href={`mailto:${inquiry.email || ''}?subject=${encodeURIComponent(t('replySubject'))}`}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
-              >
-                <Mail className="h-4 w-4" /> {t('reply')}
-              </a>
+              {inquiry.paid ? (
+                <a
+                  href={`mailto:${inquiry.email || ''}?subject=${encodeURIComponent(t('replySubject'))}`}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                >
+                  <Mail className="h-4 w-4" /> {t('reply')}
+                </a>
+              ) : (
+                <div className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 font-semibold">
+                  <Mail className="h-4 w-4" /> {t('contactLocked')}
+                </div>
+              )}
             </div>
 
             {!inquiry.paid && (
@@ -165,9 +177,9 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
                 <div className="inline-flex items-center gap-2 text-sm mb-2"><Sparkles className="h-4 w-4" /> {t('highIntentTenant')}</div>
                 <h3 className="text-lg font-black mb-2">{t('unlockContactTitle')}</h3>
                 <p className="text-sm opacity-90 mb-4">{t('unlockContactBody')}</p>
-                <button className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
+                <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
                   <Unlock className="h-4 w-4" /> {t('unlockContactButton')}
-                </button>
+                </a>
               </div>
             )}
 

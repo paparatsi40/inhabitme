@@ -809,7 +809,8 @@
     "internalChatNoteBody": "Mantén la primera interacción dentro de InhabitMe y evita compartir contacto directo demasiado pronto.",
     "pipeline": "Pipeline",
     "pipelineHint": "consultas / alta intención / pagadas",
-    "pipelinePaid": "Pagadas"
+    "pipelinePaid": "Pagadas",
+    "contactLocked": "Contacto bloqueado"
   },
   "hostBookings": {
     "loading": "Cargando reservas...",

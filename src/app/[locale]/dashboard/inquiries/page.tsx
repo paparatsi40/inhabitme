@@ -163,9 +163,15 @@ export default async function HostInquiriesPage() {
                       <Link href={`/dashboard/inquiries/${inquiry.id}`}>
                         <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold">{t('viewDetails')}</button>
                       </Link>
-                      <a href={`mailto:${inquiry.email || ''}`} className="px-4 py-2 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold inline-flex items-center gap-2">
-                        <Mail className="h-4 w-4" /> {t('reply')}
-                      </a>
+                      {inquiry.paid ? (
+                        <a href={`mailto:${inquiry.email || ''}`} className="px-4 py-2 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold inline-flex items-center gap-2">
+                          <Mail className="h-4 w-4" /> {t('reply')}
+                        </a>
+                      ) : (
+                        <span className="px-4 py-2 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 font-semibold inline-flex items-center gap-2">
+                          <Mail className="h-4 w-4" /> {t('contactLocked')}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
