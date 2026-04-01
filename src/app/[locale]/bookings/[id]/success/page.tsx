@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLocale } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, Eye, Search, Clock, Mail } from 'lucide-react';
 import Link from 'next/link';
@@ -9,6 +10,7 @@ import { normalizeCurrency } from '@/lib/currency';
 export default function BookingSuccessPage() {
   const params = useParams();
   const router = useRouter();
+  const locale = useLocale()
   const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,8 +41,8 @@ export default function BookingSuccessPage() {
   }
 
   const currency = normalizeCurrency(booking?.currency)
-  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
-  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
+  const numberLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(numberLocale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-12 px-4">
@@ -157,7 +159,7 @@ export default function BookingSuccessPage() {
             {/* Botones de acción */}
             <div className="space-y-3 pt-4">
               {/* Dashboard - Primario */}
-              <Link href="/en/dashboard" className="block">
+              <Link href={`/${locale}/dashboard`} className="block">
                 <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-full font-bold text-lg hover:from-blue-700 hover:to-purple-700 hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
                   <Home className="h-5 w-5" />
                   Ir a Mi Dashboard
@@ -165,7 +167,7 @@ export default function BookingSuccessPage() {
               </Link>
 
               {/* Ver esta reserva */}
-              <Link href={`/en/bookings/${params.id}`} className="block">
+              <Link href={`/${locale}/bookings/${params.id}`} className="block">
                 <button className="w-full bg-white text-purple-600 border-2 border-purple-600 py-3 rounded-full font-semibold hover:bg-purple-50 transition flex items-center justify-center gap-2">
                   <Eye className="h-5 w-5" />
                   Ver Esta Reserva
@@ -173,7 +175,7 @@ export default function BookingSuccessPage() {
               </Link>
 
               {/* Buscar más propiedades */}
-              <Link href="/en/search" className="block">
+              <Link href={`/${locale}/search`} className="block">
                 <button className="w-full bg-white text-gray-700 border-2 border-gray-300 py-3 rounded-full font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2">
                   <Search className="h-5 w-5" />
                   Seguir Buscando Propiedades

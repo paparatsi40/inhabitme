@@ -68,6 +68,13 @@ function internalMiddleware(req: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
+  const duplicateLocaleMatch = pathname.match(/^\/(en|es)\/(en|es)(\/.*)?$/)
+  if (duplicateLocaleMatch && duplicateLocaleMatch[1] === duplicateLocaleMatch[2]) {
+    const url = req.nextUrl.clone()
+    url.pathname = `/${duplicateLocaleMatch[1]}${duplicateLocaleMatch[3] || ''}`
+    return NextResponse.redirect(url, 307)
+  }
+
 
   const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
   if (isLocaleRoot) {

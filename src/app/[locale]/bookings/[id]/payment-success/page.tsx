@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useLocale } from 'next-intl'
 import { useParams, useRouter } from 'next/navigation';
 import { CheckCircle, Home, Eye, Search, Sparkles } from 'lucide-react';
 import { normalizeCurrency } from '@/lib/currency';
@@ -8,6 +9,7 @@ import { normalizeCurrency } from '@/lib/currency';
 export default function PaymentSuccessPage() {
   const params = useParams();
   const router = useRouter();
+  const locale = useLocale()
   const [booking, setBooking] = useState<any>(null);
 
   useEffect(() => {
@@ -27,8 +29,8 @@ export default function PaymentSuccessPage() {
   };
 
   const currency = normalizeCurrency(booking?.currency)
-  const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
-  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(locale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
+  const numberLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
+  const formatMinor = (amountMinor: number) => new Intl.NumberFormat(numberLocale, { style: 'currency', currency }).format((amountMinor || 0) / 100)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 py-12 px-4">
@@ -121,7 +123,7 @@ export default function PaymentSuccessPage() {
           {/* Action Buttons */}
           <div className="space-y-3">
             <button
-              onClick={() => router.push('/en/dashboard')}
+              onClick={() => router.push(`/${locale}/dashboard`)}
               className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition flex items-center justify-center gap-2"
             >
               <Home className="w-5 h-5" />
@@ -129,7 +131,7 @@ export default function PaymentSuccessPage() {
             </button>
 
             <button
-              onClick={() => router.push(`/en/bookings/${params.id}`)}
+              onClick={() => router.push(`/${locale}/bookings/${params.id}`)}
               className="w-full bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full font-bold hover:border-gray-400 transition flex items-center justify-center gap-2"
             >
               <Eye className="w-5 h-5" />
@@ -137,7 +139,7 @@ export default function PaymentSuccessPage() {
             </button>
 
             <button
-              onClick={() => router.push('/en/search')}
+              onClick={() => router.push(`/${locale}/search`)}
               className="w-full bg-white border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-full font-bold hover:border-gray-400 transition flex items-center justify-center gap-2"
             >
               <Search className="w-5 h-5" />

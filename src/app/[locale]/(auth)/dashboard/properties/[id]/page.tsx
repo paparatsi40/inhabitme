@@ -12,7 +12,7 @@ export default async function PropertyDetailPage({
   // Validar que tenemos los valores necesarios
   if (!id || !locale) {
     console.error('[DashboardProperty] Missing params:', { id, locale })
-    nextRedirect('/en/dashboard')
+    nextRedirect('/dashboard')
   }
   
   // Redirigir a la página pública de la propiedad con locale
