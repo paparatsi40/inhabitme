@@ -11,18 +11,7 @@ import {
 
 const intlMiddleware = createMiddleware(routing);
 
-function isProtectedRoute(pathname: string): boolean {
-  return (
-    /^\/(en|es)\/dashboard(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/properties\/new(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/bookings(\/.*)?$/.test(pathname) ||
-    /^\/(en|es)\/host\/bookings(\/.*)?$/.test(pathname) ||
-    pathname === "/onboarding" ||
-    pathname.startsWith("/onboarding/")
-  );
-}
-
-async function internalMiddleware(req: NextRequest, auth: any) {
+function internalMiddleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
@@ -73,13 +62,6 @@ async function internalMiddleware(req: NextRequest, auth: any) {
     return NextResponse.redirect(url, 307);
   }
 
-  if (isProtectedRoute(pathname)) {
-    const { userId } = await auth();
-    if (!userId) {
-      const locale = pathname.startsWith('/es') ? 'es' : 'en';
-      return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
-    }
-  }
 
   const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
   if (isLocaleRoot) {
@@ -99,8 +81,8 @@ async function internalMiddleware(req: NextRequest, auth: any) {
   }
 }
 
-export default clerkMiddleware(async (auth, req) => {
-  return internalMiddleware(req, auth);
+export default clerkMiddleware((auth, req) => {
+  return internalMiddleware(req);
 });
 
 export const config = {
