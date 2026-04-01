@@ -316,6 +316,12 @@ export default async function MyPropertiesPage() {
                             }`}>
                               {property.status === 'active' ? t('active') : t('inactive')}
                             </div>
+
+                            {property.status !== 'active' && (
+                              <div className="ml-2 px-2 py-1 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-700 border border-amber-200 whitespace-nowrap">
+                                {t('notLive')}
+                              </div>
+                            )}
                           </div>
 
                           {/* Featured Toggle */}
@@ -345,6 +351,7 @@ export default async function MyPropertiesPage() {
                             <PropertyActions 
                               propertyId={property.id} 
                               propertyTitle={property.title}
+                              propertyStatus={property.status}
                             />
                           </div>
                         </div>

@@ -162,6 +162,73 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
 }
 
 /**
+ * PATCH /api/properties/[id]
+ * Partial update for property controls (publish/unpublish)
+ */
+export async function PATCH(request: NextRequest, { params }: Ctx) {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const { id } = await params
+    const supabase = getSupabaseServerClient()
+
+    const { data: listing, error: fetchError } = await supabase
+      .from('listings')
+      .select('owner_id, status')
+      .eq('id', id)
+      .single()
+
+    if (fetchError || !listing) {
+      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
+    }
+
+    if (listing.owner_id !== userId) {
+      return NextResponse.json(
+        { error: 'You do not have permission to update this property' },
+        { status: 403 }
+      )
+    }
+
+    const body = await request.json()
+    const requestedStatus = String(body?.status || '').trim().toLowerCase()
+
+    if (!['active', 'inactive'].includes(requestedStatus)) {
+      return NextResponse.json(
+        { error: 'Invalid status. Allowed: active, inactive' },
+        { status: 400 }
+      )
+    }
+
+    const { data: updated, error: updateError } = await supabase
+      .from('listings')
+      .update({
+        status: requestedStatus,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select('id, status, updated_at')
+      .single()
+
+    if (updateError) {
+      console.error('[API PATCH] Error updating property status:', updateError)
+      return NextResponse.json(
+        { error: 'Failed to update property status' },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({ success: true, data: updated })
+  } catch (error) {
+    console.error('[API] Error in PATCH /api/properties/[id]:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+/**
  * DELETE /api/properties/[id]
  * Delete a property (only owner can delete)
  */

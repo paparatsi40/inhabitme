@@ -4,19 +4,22 @@ import { useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Eye, Calendar, Pencil, Trash2, Loader2, Palette } from 'lucide-react'
+import { Eye, Calendar, Pencil, Trash2, Loader2, Palette, UploadCloud, PauseCircle } from 'lucide-react'
 import { Link } from '@/i18n/routing'
 
 interface PropertyActionsProps {
   propertyId: string
   propertyTitle: string
+  propertyStatus?: 'active' | 'inactive' | string
 }
 
-export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsProps) {
+export function PropertyActions({ propertyId, propertyTitle, propertyStatus }: PropertyActionsProps) {
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const router = useRouter()
   const t = useTranslations('dashboard')
   const locale = useLocale()
+  const isActive = propertyStatus === 'active'
 
   const handleDelete = async () => {
     const confirmed = confirm(
@@ -36,12 +39,35 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
         throw new Error(t('deleteFailed'))
       }
 
-      // Refresh the page to show updated list
       router.refresh()
     } catch (error) {
       alert(t('deleteErrorAlert'))
       console.error(error)
       setIsDeleting(false)
+    }
+  }
+
+  const handleTogglePublish = async () => {
+    const nextStatus = isActive ? 'inactive' : 'active'
+    setIsUpdatingStatus(true)
+
+    try {
+      const res = await fetch(`/api/properties/${propertyId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus }),
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to update property status')
+      }
+
+      router.refresh()
+    } catch (error) {
+      alert(t('statusUpdateError'))
+      console.error(error)
+    } finally {
+      setIsUpdatingStatus(false)
     }
   }
 
@@ -84,6 +110,34 @@ export function PropertyActions({ propertyId, propertyTitle }: PropertyActionsPr
           🎨 {t('customize')}
         </Button>
       </Link>
+
+      {/* Publish / Unpublish */}
+      <Button
+        onClick={handleTogglePublish}
+        disabled={isUpdatingStatus}
+        variant="outline"
+        size="sm"
+        className={isActive
+          ? 'border-2 border-amber-300 text-amber-700 hover:bg-amber-50 disabled:opacity-50'
+          : 'border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 disabled:opacity-50'}
+      >
+        {isUpdatingStatus ? (
+          <>
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            {t('updatingStatus')}
+          </>
+        ) : isActive ? (
+          <>
+            <PauseCircle className="h-4 w-4 mr-2" />
+            {t('unpublish')}
+          </>
+        ) : (
+          <>
+            <UploadCloud className="h-4 w-4 mr-2" />
+            {t('publish')}
+          </>
+        )}
+      </Button>
 
       {/* Delete */}
       <Button
