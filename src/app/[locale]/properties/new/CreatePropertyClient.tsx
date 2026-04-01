@@ -254,7 +254,7 @@ function CreatePropertyContent() {
       setSuccess(true)
 
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push(`/${locale}/dashboard`)
       }, 1500)
     } catch (err: any) {
       console.error('[CreateProperty] ❌ Error:', err)
@@ -290,7 +290,7 @@ function CreatePropertyContent() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">
+            <Link href={`/${locale}/dashboard`} className="text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <h1 className="text-2xl font-bold">{t('publishProperty')}</h1>
