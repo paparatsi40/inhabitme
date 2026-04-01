@@ -88,14 +88,24 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
         kpiRes.json().catch(() => ({})),
       ])
 
-      if (!pipelineRes.ok || !kpiRes.ok) {
-        const message = pipelineData?.error || kpiData?.error || 'Failed to refresh growth data.'
-        setErrorMessage(message)
-        return
+      let hasError = false
+
+      if (pipelineRes.ok) {
+        setLeads(pipelineData.leads || [])
+      } else {
+        hasError = true
       }
 
-      setLeads(pipelineData.leads || [])
-      setKpi(kpiData.kpi || null)
+      if (kpiRes.ok) {
+        setKpi(kpiData.kpi || null)
+      } else {
+        hasError = true
+      }
+
+      if (hasError) {
+        const message = pipelineData?.error || kpiData?.error || 'Partial refresh error in growth data.'
+        setErrorMessage(message)
+      }
     } catch (error: any) {
       console.error('[GrowthOpsClient] loadAll error:', error)
       setErrorMessage(error?.message || 'Failed to refresh growth data.')
@@ -146,6 +156,10 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
       if (!res.ok) {
         setErrorMessage(data?.error || 'Failed to add lead.')
         return
+      }
+
+      if (data?.lead) {
+        setLeads((prev) => [data.lead, ...prev])
       }
 
       setFullName('')
@@ -268,7 +282,12 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
       </div>
 
       <div className="bg-white rounded-2xl p-5 border-2 border-gray-200">
-        <h3 className="text-lg font-black mb-4">Pipeline board</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-black">Pipeline board</h3>
+          <Button variant="outline" size="sm" onClick={loadAll} disabled={isRefreshing}>
+            {isRefreshing ? 'Refreshing...' : 'Refresh pipeline'}
+          </Button>
+        </div>
         <div className="grid md:grid-cols-4 lg:grid-cols-8 gap-3 mb-4">
           {STAGES.map((stage) => (
             <div key={stage} className="rounded-xl border border-gray-200 p-3">
