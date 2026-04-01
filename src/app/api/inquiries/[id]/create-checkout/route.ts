@@ -101,6 +101,33 @@ export async function GET(req: NextRequest, { params }: Ctx) {
       return NextResponse.redirect(new URL(`/${locale}/dashboard/inquiries/${id}?error=checkout`, req.url))
     }
 
+    try {
+      const { data: conversation } = await supabase
+        .from('conversations')
+        .select('id')
+        .eq('inquiry_id', inquiry.id)
+        .maybeSingle()
+
+      await supabase.from('payment_transactions').insert({
+        inquiry_id: inquiry.id,
+        conversation_id: conversation?.id || null,
+        payer_role: 'host',
+        payer_id: userId,
+        amount_cents: priceInCents,
+        currency: 'EUR',
+        payment_type: 'booking_intent',
+        status: 'pending',
+        stripe_session_id: session.id,
+        metadata: {
+          tier: pricing.tier,
+          durationMonths,
+          listingId: listing.id,
+        },
+      })
+    } catch (txError) {
+      console.error('[inquiries/create-checkout] payment_transactions insert failed:', txError)
+    }
+
     return NextResponse.redirect(session.url)
   } catch (error) {
     console.error('[inquiries/create-checkout] error:', error)

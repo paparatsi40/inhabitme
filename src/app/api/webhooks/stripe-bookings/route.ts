@@ -93,6 +93,21 @@ export async function POST(request: NextRequest) {
           }
 
           try {
+            await supabase.from('payment_transactions').insert({
+              booking_id: bookingId,
+              payer_role: 'guest',
+              payer_id: booking.guest_id,
+              amount_cents: Number(session.amount_total || 0),
+              currency: bookingCurrency,
+              payment_type: 'booking_guest_payment',
+              status: 'paid',
+              stripe_session_id: session.id,
+              stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+              metadata: {
+                source: 'stripe_webhook',
+              },
+            })
+
             await supabase.from('booking_flow_events').insert([
               {
                 booking_id: bookingId,
@@ -116,6 +131,16 @@ export async function POST(request: NextRequest) {
             ])
           } catch (eventError) {
             console.error('[stripe-bookings] event logging failed (guest payment):', eventError)
+          }
+
+          if (booking.inquiry_id) {
+            await supabase
+              .from('availability_leads')
+              .update({
+                contact_visible: true,
+                contact_unlocked_at: new Date().toISOString(),
+              })
+              .eq('id', booking.inquiry_id)
           }
 
           // Send confirmation emails to both guest and host with contacts
@@ -143,6 +168,25 @@ export async function POST(request: NextRequest) {
           if (updateError) {
             console.error('Error updating booking:', updateError)
             return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+          }
+
+          try {
+            await supabase.from('payment_transactions').insert({
+              booking_id: bookingId,
+              payer_role: 'host',
+              payer_id: booking.host_id,
+              amount_cents: Number(session.amount_total || 0),
+              currency: bookingCurrency,
+              payment_type: 'booking_host_payment',
+              status: 'paid',
+              stripe_session_id: session.id,
+              stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+              metadata: {
+                source: 'stripe_webhook',
+              },
+            })
+          } catch (paymentTransactionError) {
+            console.error('[stripe-bookings] payment_transactions insert failed (host):', paymentTransactionError)
           }
 
           // Now accept the booking and send email to guest

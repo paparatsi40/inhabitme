@@ -96,6 +96,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to create inquiry' }, { status: 500 })
     }
 
+    let conversationId: string | null = null
+
+    try {
+      const { data: conversation, error: conversationError } = await supabase
+        .from('conversations')
+        .insert({
+          listing_id: listing.id,
+          inquiry_id: inserted.id,
+          host_id: String(listing.owner_id),
+          guest_id: userId || null,
+          guest_email: guestEmailFromBody || null,
+          status: 'inquiry_sent',
+          intent_score: 20,
+          message_count: 1,
+          last_message_at: new Date().toISOString(),
+          metadata: {
+            moveInDate: startDate,
+            durationMonths: durationMonthsRaw,
+            numberOfGuests,
+          },
+        })
+        .select('id')
+        .single()
+
+      if (conversationError) {
+        console.error('[inquiries.POST] conversation insert failed:', conversationError)
+      } else {
+        conversationId = conversation.id
+
+        const { error: messageError } = await supabase.from('messages').insert({
+          conversation_id: conversation.id,
+          sender_role: userId ? 'guest' : 'anonymous_guest',
+          sender_id: userId || null,
+          sender_email: guestEmailFromBody || null,
+          body: message,
+          message_type: 'inquiry',
+        })
+
+        if (messageError) {
+          console.error('[inquiries.POST] first message insert failed:', messageError)
+        }
+      }
+    } catch (conversationError) {
+      console.error('[inquiries.POST] conversation bootstrap failed:', conversationError)
+    }
+
     try {
       await supabase.from('booking_flow_events').insert({
         inquiry_id: inserted.id,
@@ -108,6 +154,7 @@ export async function POST(req: NextRequest) {
           numberOfGuests,
           score,
           scoreLabel: label,
+          conversationId,
         },
       })
     } catch (eventError) {
@@ -134,7 +181,12 @@ export async function POST(req: NextRequest) {
       console.error('[inquiries.POST] host email notify failed:', emailError)
     }
 
-    return NextResponse.json({ success: true, inquiryId: inserted.id, conversationStatus: 'inquiry_sent' })
+    return NextResponse.json({
+      success: true,
+      inquiryId: inserted.id,
+      conversationId,
+      conversationStatus: 'inquiry_sent',
+    })
   } catch (error: any) {
     console.error('[inquiries.POST] error:', error)
     return NextResponse.json({ error: error?.message || 'Internal server error' }, { status: 500 })

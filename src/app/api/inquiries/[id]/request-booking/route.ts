@@ -133,6 +133,64 @@ async function createBookingFromInquiry(userId: string, inquiryId: string) {
       })
       .eq('id', inquiry.id)
 
+    const { data: conversation } = await supabase
+      .from('conversations')
+      .select('id')
+      .eq('inquiry_id', inquiry.id)
+      .maybeSingle()
+
+    let conversationId = conversation?.id || null
+
+    if (!conversationId) {
+      const { data: createdConversation } = await supabase
+        .from('conversations')
+        .insert({
+          listing_id: listing.id,
+          inquiry_id: inquiry.id,
+          booking_id: booking.id,
+          host_id: String(listing.owner_id),
+          guest_email: inquiry.email || null,
+          status: 'booking_requested',
+          intent_score: 80,
+          message_count: 1,
+          last_message_at: new Date().toISOString(),
+          metadata: {
+            seededFrom: 'request_booking',
+          },
+        })
+        .select('id')
+        .single()
+
+      conversationId = createdConversation?.id || null
+    } else {
+      await supabase
+        .from('conversations')
+        .update({
+          booking_id: booking.id,
+          status: 'booking_requested',
+          intent_score: 80,
+          last_message_at: new Date().toISOString(),
+        })
+        .eq('id', conversationId)
+    }
+
+    await supabase
+      .from('booking_requests')
+      .insert({
+        conversation_id: conversationId,
+        inquiry_id: inquiry.id,
+        booking_id: booking.id,
+        listing_id: listing.id,
+        host_id: String(listing.owner_id),
+        guest_id: null,
+        guest_email: inquiry.email || null,
+        check_in: inquiry.start_date,
+        months_duration: monthsDuration,
+        guests_count: parsedSource.numberOfGuests,
+        guest_message: parsedSource.message,
+        status: 'booking_pending_host',
+      })
+
     await supabase.from('booking_flow_events').insert([
       {
         inquiry_id: inquiry.id,
@@ -143,6 +201,7 @@ async function createBookingFromInquiry(userId: string, inquiryId: string) {
         metadata: {
           monthsDuration,
           numberOfGuests: parsedSource.numberOfGuests,
+          conversationId,
         },
       },
       {
@@ -153,6 +212,7 @@ async function createBookingFromInquiry(userId: string, inquiryId: string) {
         actor_id: null,
         metadata: {
           reason: 'booking_request_created_from_inquiry',
+          conversationId,
         },
       },
     ])

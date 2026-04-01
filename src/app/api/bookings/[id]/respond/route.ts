@@ -91,6 +91,15 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
 
       try {
+        await supabase.from('booking_requests')
+          .update({
+            status: 'accepted',
+            host_response: message || null,
+            responded_at: new Date().toISOString(),
+          })
+          .eq('booking_id', bookingId)
+          .in('status', ['booking_requested', 'booking_pending_host', 'changes_requested'])
+
         await supabase.from('booking_flow_events').insert({
           booking_id: bookingId,
           event_name: 'booking_accepted',
@@ -142,6 +151,15 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
 
       try {
+        await supabase.from('booking_requests')
+          .update({
+            status: 'changes_requested',
+            host_response: message || null,
+            responded_at: new Date().toISOString(),
+          })
+          .eq('booking_id', bookingId)
+          .in('status', ['booking_requested', 'booking_pending_host'])
+
         await supabase.from('booking_flow_events').insert({
           booking_id: bookingId,
           event_name: 'booking_changes_requested',
@@ -195,6 +213,15 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       }
 
       try {
+        await supabase.from('booking_requests')
+          .update({
+            status: 'declined',
+            host_response: message || null,
+            responded_at: new Date().toISOString(),
+          })
+          .eq('booking_id', bookingId)
+          .in('status', ['booking_requested', 'booking_pending_host', 'changes_requested'])
+
         await supabase.from('booking_flow_events').insert({
           booking_id: bookingId,
           event_name: 'booking_declined',

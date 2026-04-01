@@ -86,7 +86,7 @@ export default async function HostInquiriesPage() {
   const { data: inquiries } = listingIds.length > 0
     ? await supabase
         .from('availability_leads')
-        .select('id, listing_id, start_date, duration_months, email, score_label, paid, created_at, source')
+        .select('id, listing_id, start_date, duration_months, email, score_label, paid, contact_visible, created_at, source')
         .in('listing_id', listingIds)
         .order('created_at', { ascending: false })
     : { data: [] as any[] }
@@ -163,7 +163,7 @@ export default async function HostInquiriesPage() {
                       <Link href={`/dashboard/inquiries/${inquiry.id}`}>
                         <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold">{t('viewDetails')}</button>
                       </Link>
-                      {inquiry.paid ? (
+                      {inquiry.paid && inquiry.contact_visible ? (
                         <a href={`mailto:${inquiry.email || ''}`} className="px-4 py-2 rounded-xl border-2 border-gray-300 text-gray-700 font-semibold inline-flex items-center gap-2">
                           <Mail className="h-4 w-4" /> {t('reply')}
                         </a>

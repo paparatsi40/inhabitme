@@ -43,6 +43,8 @@ export async function POST(req: NextRequest) {
       .update({
         paid: true,
         stripe_session_id: session.id,
+        contact_visible: true,
+        contact_unlocked_at: new Date().toISOString(),
       })
       .eq('id', leadId)
       .select()
@@ -54,11 +56,55 @@ export async function POST(req: NextRequest) {
         .update({
           paid: true,
           stripe_session_id: session.id,
+          contact_visible: true,
+          contact_unlocked_at: new Date().toISOString(),
         })
         .eq('stripe_session_id', session.id)
     }
 
     if (lead) {
+      try {
+        const { data: conversation } = await supabase
+          .from('conversations')
+          .select('id, booking_id')
+          .eq('inquiry_id', lead.id)
+          .maybeSingle()
+
+        await supabase.from('payment_transactions')
+          .update({
+            status: 'paid',
+            stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+          })
+          .eq('stripe_session_id', session.id)
+
+        await supabase.from('booking_flow_events').insert({
+          inquiry_id: lead.id,
+          booking_id: conversation?.booking_id || null,
+          event_name: 'payment_completed',
+          actor_role: 'host',
+          actor_id: null,
+          metadata: {
+            source: 'stripe_webhook',
+            sessionId: session.id,
+            paymentIntent: typeof session.payment_intent === 'string' ? session.payment_intent : null,
+            conversationId: conversation?.id || null,
+          },
+        })
+
+        if (conversation?.id) {
+          await supabase
+            .from('conversations')
+            .update({
+              status: 'confirmed',
+              intent_score: 100,
+              last_message_at: new Date().toISOString(),
+            })
+            .eq('id', conversation.id)
+        }
+      } catch (paymentSyncError) {
+        console.error('[stripe/webhook] payment sync error:', paymentSyncError)
+      }
+
       await sendUnlockedLeadEmail({
         hostEmail: lead.host_email,
         guestEmail: lead.email,

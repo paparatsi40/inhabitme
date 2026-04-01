@@ -5,6 +5,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2, ArrowRightCircle, CalendarCheck2 } from 'lucide-react'
 import Stripe from 'stripe'
+import { ConversationPanel } from './ConversationPanel'
 
 export const dynamic = 'force-dynamic'
 
@@ -85,7 +86,7 @@ export default async function InquiryDetailPage({
 
   const { data: inquiry } = await supabase
     .from('availability_leads')
-    .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id')
+    .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id, contact_visible')
     .eq('id', id)
     .single()
 
@@ -109,15 +110,26 @@ export default async function InquiryDetailPage({
     t('quickReply3'),
   ]
 
+  const { data: conversation } = await supabase
+    .from('conversations')
+    .select('id, status, intent_score, message_count')
+    .eq('inquiry_id', inquiry.id)
+    .maybeSingle()
+
   if (!inquiry.paid && query?.session_id && stripe) {
     try {
       const session = await stripe.checkout.sessions.retrieve(String(query.session_id))
       if (session.payment_status === 'paid' && session.client_reference_id === inquiry.id) {
         const { data: paidInquiry } = await supabase
           .from('availability_leads')
-          .update({ paid: true, stripe_session_id: session.id })
+          .update({
+            paid: true,
+            stripe_session_id: session.id,
+            contact_visible: true,
+            contact_unlocked_at: new Date().toISOString(),
+          })
           .eq('id', inquiry.id)
-          .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id')
+          .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id, contact_visible')
           .single()
 
         if (paidInquiry) {
@@ -196,12 +208,21 @@ export default async function InquiryDetailPage({
                 ))}
               </div>
             </div>
+
+            {conversation?.id && (
+              <ConversationPanel
+                conversationId={conversation.id}
+                locale={locale}
+                title={t('inquiriesInboxTitle')}
+                placeholder={t('guestMessage')}
+              />
+            )}
           </div>
 
           <div className="space-y-4">
             <div className="bg-white rounded-2xl border-2 border-gray-200 p-5">
               <h3 className="font-bold text-gray-900 mb-3">{t('actions')}</h3>
-              {inquiry.paid ? (
+              {inquiry.paid && inquiry.contact_visible ? (
                 <a
                   href={`mailto:${inquiry.email || ''}?subject=${encodeURIComponent(t('replySubject'))}`}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
