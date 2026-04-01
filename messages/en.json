@@ -1068,7 +1068,7 @@
       "title": "List your Austin property for free",
       "line1": "No commissions.",
       "line2": "Only pay if you get a tenant.",
-      "subtitle": "Built for 1–6 month stays for remote workers and professionals.",
+      "subtitle": "Built for 1–12 month stays for remote workers and professionals.",
       "cta": "List your property (free)",
       "microcopy": "Join early hosts in Austin and get more visibility as we grow."
     },
@@ -1117,7 +1117,7 @@
       "item1": "Remote workers",
       "item2": "Students",
       "item3": "Professionals relocating",
-      "footer": "Looking for stays of 1–6 months in Austin."
+      "footer": "Looking for stays of 1–12 months in Austin."
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -1126,7 +1126,7 @@
       "q2": "How is this different from Airbnb?",
       "a2": "We don’t charge commissions. Instead, we use a simple flat fee only when you successfully rent your property.",
       "q3": "What kind of stays?",
-      "a3": "We focus on 1–6 month stays for remote workers, students, and professionals."
+      "a3": "We focus on 1–12 month stays for remote workers, students, and professionals."
     },
     "finalCta": {
       "title": "Start listing your property",
