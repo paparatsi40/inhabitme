@@ -63,6 +63,7 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [updatingLeadId, setUpdatingLeadId] = useState<string | null>(null)
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
 
@@ -175,14 +176,43 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
   }
 
   async function updateStage(leadId: string, stage: string) {
-    const res = await fetch(`/api/growth/pipeline/${leadId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ stage }),
-    })
+    setErrorMessage(null)
+    setSuccessMessage(null)
 
-    if (res.ok) {
+    const previousLeads = leads
+    setUpdatingLeadId(leadId)
+
+    setLeads((prev) =>
+      prev.map((lead) => (lead.id === leadId ? { ...lead, stage } : lead))
+    )
+
+    try {
+      const res = await fetch(`/api/growth/pipeline/${leadId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage }),
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setLeads(previousLeads)
+        setErrorMessage(data?.error || 'Failed to update stage.')
+        return
+      }
+
+      if (data?.lead) {
+        setLeads((prev) => prev.map((lead) => (lead.id === leadId ? data.lead : lead)))
+      }
+
+      setSuccessMessage('Stage updated successfully.')
       await loadAll()
+    } catch (error) {
+      console.error('[GrowthOpsClient] updateStage error:', error)
+      setLeads(previousLeads)
+      setErrorMessage('Unexpected error while updating stage.')
+    } finally {
+      setUpdatingLeadId(null)
     }
   }
 
@@ -308,6 +338,7 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
                 <select
                   className="border border-gray-300 rounded-lg px-2 py-1 text-sm"
                   value={lead.stage}
+                  disabled={updatingLeadId === lead.id}
                   onChange={(e) => updateStage(lead.id, e.target.value)}
                 >
                   {STAGES.map((stage) => (
