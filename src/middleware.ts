@@ -65,6 +65,18 @@ function internalMiddleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname === '/sign-in' || pathname.startsWith('/sign-in/')) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/en/sign-in';
+    return NextResponse.redirect(url, 307);
+  }
+
+  if (pathname === '/sign-up' || pathname.startsWith('/sign-up/')) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/en/sign-up';
+    return NextResponse.redirect(url, 307);
+  }
+
   if (isProtectedRoute(pathname) && !hasAuthSession(req)) {
     const locale = pathname.startsWith('/es') ? 'es' : 'en';
     return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
