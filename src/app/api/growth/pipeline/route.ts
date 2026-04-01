@@ -101,7 +101,16 @@ export async function POST(req: NextRequest) {
 
     if (error || !data) {
       console.error('[growth/pipeline.POST] insert error:', error)
-      return NextResponse.json({ error: 'Failed to create lead' }, { status: 500 })
+
+      const message = String((error as any)?.message || '')
+      if (message.includes('relation') && message.includes('growth_pipeline_leads')) {
+        return NextResponse.json(
+          { error: 'Growth Ops tables are not available yet. Run latest database migrations and retry.' },
+          { status: 500 }
+        )
+      }
+
+      return NextResponse.json({ error: message || 'Failed to create lead' }, { status: 500 })
     }
 
     await supabase.from('growth_lead_activities').insert({

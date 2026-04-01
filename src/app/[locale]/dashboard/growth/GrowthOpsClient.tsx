@@ -54,6 +54,9 @@ export function GrowthOpsClient() {
   const [city, setCity] = useState('Austin')
 
   const [savingKpi, setSavingKpi] = useState(false)
+  const [isAddingLead, setIsAddingLead] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
 
@@ -80,24 +83,49 @@ export function GrowthOpsClient() {
   }, [])
 
   async function createLead() {
-    if (!contactValue.trim()) return
+    setErrorMessage(null)
+    setSuccessMessage(null)
 
-    const res = await fetch('/api/growth/pipeline', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fullName,
-        contactValue,
-        contactType,
-        sourceChannel,
-        city,
-      }),
-    })
+    if (!contactValue.trim()) {
+      setErrorMessage('Contact is required.')
+      return
+    }
 
-    if (res.ok) {
+    if (!['email', 'phone', 'whatsapp', 'dm'].includes(contactType.trim().toLowerCase())) {
+      setErrorMessage('Type must be: email, phone, whatsapp, or dm.')
+      return
+    }
+
+    setIsAddingLead(true)
+    try {
+      const res = await fetch('/api/growth/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName,
+          contactValue,
+          contactType,
+          sourceChannel,
+          city,
+        }),
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setErrorMessage(data?.error || 'Failed to add lead.')
+        return
+      }
+
       setFullName('')
       setContactValue('')
+      setSuccessMessage('Lead added successfully.')
       await loadAll()
+    } catch (error) {
+      console.error('[GrowthOpsClient] createLead error:', error)
+      setErrorMessage('Unexpected error while adding lead.')
+    } finally {
+      setIsAddingLead(false)
     }
   }
 
@@ -116,6 +144,8 @@ export function GrowthOpsClient() {
   async function saveKpi() {
     if (!kpi) return
     setSavingKpi(true)
+    setErrorMessage(null)
+    setSuccessMessage(null)
     try {
       const res = await fetch('/api/growth/kpis', {
         method: 'PUT',
@@ -135,9 +165,18 @@ export function GrowthOpsClient() {
         }),
       })
 
-      if (res.ok) {
-        await loadAll()
+      const data = await res.json().catch(() => ({}))
+
+      if (!res.ok) {
+        setErrorMessage(data?.error || 'Failed to save KPI row.')
+        return
       }
+
+      setSuccessMessage('KPI saved successfully.')
+      await loadAll()
+    } catch (error) {
+      console.error('[GrowthOpsClient] saveKpi error:', error)
+      setErrorMessage('Unexpected error while saving KPI.')
     } finally {
       setSavingKpi(false)
     }
@@ -158,13 +197,35 @@ export function GrowthOpsClient() {
     <div className="space-y-8">
       <div className="bg-white rounded-2xl p-5 border-2 border-gray-200">
         <h3 className="text-lg font-black mb-4">Add lead</h3>
+
+        {errorMessage ? (
+          <div className="mb-3 rounded-lg border border-red-200 bg-red-50 text-red-700 text-sm px-3 py-2">
+            {errorMessage}
+          </div>
+        ) : null}
+
+        {successMessage ? (
+          <div className="mb-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm px-3 py-2">
+            {successMessage}
+          </div>
+        ) : null}
+
         <div className="grid md:grid-cols-6 gap-2">
           <Input placeholder="Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
           <Input placeholder="Contact" value={contactValue} onChange={(e) => setContactValue(e.target.value)} />
-          <Input placeholder="Type (email/phone/whatsapp/dm)" value={contactType} onChange={(e) => setContactType(e.target.value)} />
+          <select
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            value={contactType}
+            onChange={(e) => setContactType(e.target.value)}
+          >
+            <option value="email">email</option>
+            <option value="phone">phone</option>
+            <option value="whatsapp">whatsapp</option>
+            <option value="dm">dm</option>
+          </select>
           <Input placeholder="Source (facebook/craigslist/whatsapp)" value={sourceChannel} onChange={(e) => setSourceChannel(e.target.value)} />
           <Input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} />
-          <Button onClick={createLead}>Add</Button>
+          <Button onClick={createLead} disabled={isAddingLead}>{isAddingLead ? 'Adding...' : 'Add'}</Button>
         </div>
       </div>
 
