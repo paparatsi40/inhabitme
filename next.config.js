@@ -113,6 +113,18 @@ const nextConfig = {
         permanent: false,
       },
 
+      // Hard fallback for non-localized dashboard paths
+      {
+        source: "/dashboard",
+        destination: "/en/dashboard",
+        permanent: false,
+      },
+      {
+        source: "/dashboard/:path*",
+        destination: "/en/dashboard/:path*",
+        permanent: false,
+      },
+
       // Legacy /listings to /properties redirect
       {
         source: "/:locale/listings/:id",
