@@ -108,6 +108,10 @@ export const config = {
   matcher: [
     "/api/:path*",
     "/onboarding/:path*",
+    "/sign-in",
+    "/sign-in/:path*",
+    "/sign-up",
+    "/sign-up/:path*",
     "/(en|es)/dashboard/:path*",
     "/(en|es)/properties/new/:path*",
     "/(en|es)/bookings/:path*",

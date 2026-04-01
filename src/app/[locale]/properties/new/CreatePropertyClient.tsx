@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -44,6 +44,7 @@ function CreatePropertyContent() {
   const router = useRouter()
   const { isLoaded, isSignedIn } = useUser()
   const t = useTranslations('propertyForm')
+  const locale = useLocale()
 
   const [currentStep, setCurrentStep] = useState<Step>('basic')
   const [submitting, setSubmitting] = useState(false)
@@ -130,9 +131,9 @@ function CreatePropertyContent() {
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      router.push('/sign-in')
+      router.push(`/${locale}/sign-in`)
     }
-  }, [isLoaded, isSignedIn, router])
+  }, [isLoaded, isSignedIn, router, locale])
 
   const updateFormData = (updates: Partial<typeof formData>) => {
     // Si cambia el país, resetear ciudad y barrio
@@ -239,7 +240,7 @@ function CreatePropertyContent() {
 
       if (res.status === 401) {
         console.error('[CreateProperty] ❌ Usuario no autenticado - redirigiendo a login')
-        window.location.href = '/en/sign-in'
+        window.location.href = `/${locale}/sign-in`
         return
       }
 
