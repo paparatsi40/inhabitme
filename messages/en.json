@@ -830,7 +830,9 @@
     "funnelViews": "Views",
     "funnelInquiries": "Inquiries",
     "funnelReplies": "Replies",
-    "funnelDeals": "Deals"
+    "funnelDeals": "Deals",
+    "growthOpsTitle": "Growth Ops",
+    "growthOpsSubtitle": "Run your 30-day execution board"
   },
   "hostBookings": {
     "loading": "Loading bookings...",

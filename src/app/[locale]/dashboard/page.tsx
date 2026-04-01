@@ -261,6 +261,12 @@ export default async function DashboardPage() {
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             </Link>
+            <Link href="/dashboard/growth">
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 font-semibold">
+                {t('growthOpsTitle')}
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -527,7 +533,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-4 gap-6">
           
           <Link href="/search" className="group">
             <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all">
@@ -567,6 +573,20 @@ export default async function DashboardPage() {
               </h3>
               <p className="text-sm text-gray-600">
                 {t('manageBookingRequests')}
+              </p>
+            </div>
+          </Link>
+
+          <Link href="/dashboard/growth" className="group">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-gray-200 hover:border-red-400 hover:shadow-lg transition-all">
+              <div className="inline-flex p-3 bg-red-100 rounded-xl mb-4 group-hover:scale-110 transition-transform">
+                <TrendingUp className="h-6 w-6 text-red-600" />
+              </div>
+              <h3 className="font-bold text-lg mb-2 group-hover:text-red-600 transition">
+                {t('growthOpsTitle')}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {t('growthOpsSubtitle')}
               </p>
             </div>
           </Link>

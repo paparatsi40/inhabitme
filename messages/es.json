@@ -830,7 +830,9 @@
     "funnelViews": "Vistas",
     "funnelInquiries": "Consultas",
     "funnelReplies": "Respuestas",
-    "funnelDeals": "Deals"
+    "funnelDeals": "Deals",
+    "growthOpsTitle": "Growth Ops",
+    "growthOpsSubtitle": "Gestiona tu tablero de ejecución de 30 días"
   },
   "hostBookings": {
     "loading": "Cargando reservas...",
