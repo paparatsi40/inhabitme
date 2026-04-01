@@ -129,6 +129,9 @@ async function handleCreateProperty(req: NextRequest) {
 
   const supabase = getSupabaseServerClient()
 
+  const normalizedMinStayMonths = Math.min(12, Math.max(1, Number(minStayMonths) || 1))
+  const normalizedMaxStayMonths = Math.min(12, Math.max(normalizedMinStayMonths, Number(maxStayMonths) || 12))
+
   // 🔍 Preparar el payload de inserción
   const insertPayload = {
     title,

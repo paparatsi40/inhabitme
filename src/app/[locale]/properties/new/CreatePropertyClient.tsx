@@ -90,6 +90,8 @@ function CreatePropertyContent() {
     pricePerWeek: 300,
     pricePerMonth: 800,
     currency: 'EUR',
+    minStayMonths: 1,
+    maxStayMonths: 12,
 
     images: [] as string[],
   })
@@ -188,9 +190,15 @@ function CreatePropertyContent() {
     setError('')
 
     try {
+      const normalizedMinStayMonths = Math.min(12, Math.max(1, Number(formData.minStayMonths) || 1))
+      const normalizedMaxStayMonths = Math.min(12, Math.max(normalizedMinStayMonths, Number(formData.maxStayMonths) || 12))
+
       const submitData = {
         ...formData,
         floorNumber: formData.floorNumber ?? null,
+        monthlyPrice: formData.pricePerMonth,
+        minStayMonths: normalizedMinStayMonths,
+        maxStayMonths: normalizedMaxStayMonths,
         amenities: {
           hasDesk: formData.hasDedicatedDesk,
           hasWifi: formData.wifiSpeed >= 10,
@@ -752,9 +760,39 @@ function CreatePropertyContent() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="minStayMonths">{t('minStayMonthsLabel')}</Label>
+                  <Input
+                    id="minStayMonths"
+                    type="number"
+                    min={1}
+                    max={12}
+                    value={formData.minStayMonths}
+                    onChange={e => updateFormData({ minStayMonths: parseInt(e.target.value) || 1 })}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="maxStayMonths">{t('maxStayMonthsLabel')}</Label>
+                  <Input
+                    id="maxStayMonths"
+                    type="number"
+                    min={1}
+                    max={12}
+                    value={formData.maxStayMonths}
+                    onChange={e => updateFormData({ maxStayMonths: parseInt(e.target.value) || 1 })}
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
               <div className="bg-yellow-50 p-4 rounded-lg">
                 <p className="text-sm text-yellow-800">
                   {t('priceTip')}
+                </p>
+                <p className="text-xs text-yellow-700 mt-2">
+                  {t('stayTermsHint')}
                 </p>
               </div>
             </div>
@@ -822,6 +860,9 @@ function CreatePropertyContent() {
                 </div>
                 <div>
                   <strong>{t('priceMonthLabel')}:</strong> {formData.pricePerMonth} EUR
+                </div>
+                <div>
+                  <strong>{t('stayRangeLabel')}:</strong> {formData.minStayMonths}–{formData.maxStayMonths} {t('monthsLabel')}
                 </div>
                 <div>
                   <strong>{t('photosLabel')}:</strong> {formData.images.length}

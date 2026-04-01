@@ -38,6 +38,9 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
+    const normalizedMinStayMonths = Math.min(12, Math.max(1, Number(body.minStayMonths) || 1))
+    const normalizedMaxStayMonths = Math.min(12, Math.max(normalizedMinStayMonths, Number(body.maxStayMonths) || 12))
+
     // Update listing
     const { data, error } = await supabase
       .from('listings')
@@ -71,8 +74,8 @@ export async function PUT(
         has_safe: body.hasSafe,
         // Pricing
         monthly_price: body.monthlyPrice,
-        min_months: body.minStayMonths,
-        max_months: body.maxStayMonths,
+        min_months: normalizedMinStayMonths,
+        max_months: normalizedMaxStayMonths,
         updated_at: new Date().toISOString(),
       })
       .eq('id', listingId)

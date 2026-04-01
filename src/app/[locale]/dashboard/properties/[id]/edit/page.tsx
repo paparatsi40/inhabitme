@@ -53,7 +53,7 @@ export default function EditPropertyPage() {
     hasSafe: false,
     monthlyPrice: 1000,
     minStayMonths: 1,
-    maxStayMonths: 6,
+    maxStayMonths: 12,
   })
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export default function EditPropertyPage() {
           hasSafe: data.has_safe || false,
           monthlyPrice: data.monthly_price || 1000,
           minStayMonths: data.min_months || 1,
-          maxStayMonths: data.max_months || 6,
+          maxStayMonths: data.max_months || 12,
         })
       } catch (err: any) {
         console.error('Error:', err)
