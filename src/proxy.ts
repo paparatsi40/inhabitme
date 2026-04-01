@@ -62,6 +62,12 @@ function internalMiddleware(req: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
+  if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/en${pathname}`;
+    return NextResponse.redirect(url, 307);
+  }
+
 
   const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
   if (isLocaleRoot) {
