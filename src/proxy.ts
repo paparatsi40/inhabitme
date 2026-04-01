@@ -76,12 +76,12 @@ function internalMiddleware(req: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("[Middleware] intlMiddleware error:", error);
+    console.error("[Proxy] intlMiddleware error:", error);
     return NextResponse.next();
   }
 }
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware((_auth, req) => {
   return internalMiddleware(req);
 });
 

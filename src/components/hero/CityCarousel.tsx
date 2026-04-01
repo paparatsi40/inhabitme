@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
-import { useTranslations } from 'next-intl'
 
 const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=640&h=480&fit=crop&q=60'
 
@@ -26,22 +25,25 @@ function normalizeImageUrl(src?: string) {
   }
 }
 
-export function CityCarousel() {
+interface CityCarouselMessages {
+  stats: {
+    propertiesValue: string
+    propertiesLabel: string
+    citiesValue: string
+    citiesLabel: string
+    verifiedValue: string
+    verifiedLabel: string
+  }
+  wifiBadge: string
+}
+
+export function CityCarousel({ messages }: { messages: CityCarouselMessages }) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const t = useTranslations('home.heroCarousel')
   const currentCity = CITIES[currentIndex]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % CITIES.length)
-    }, 4000) // Cambia cada 4 segundos
-
-    return () => clearInterval(interval)
-  }, [])
 
   return (
     <div className="relative">
-      <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-200">
+      <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-200 min-h-[320px] sm:min-h-0">
         {/* Carrusel de imágenes */}
         <div className="aspect-[4/3] relative overflow-hidden">
           <div key={currentCity.name} className="absolute inset-0 transition-opacity duration-700 opacity-100">
@@ -50,8 +52,10 @@ export function CityCarousel() {
               alt={currentCity.name}
               fill
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 560px"
-              quality={35}
+              quality={30}
               className="object-cover"
+              placeholder="blur"
+              blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzYnPjxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzYnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4="
               priority
               fetchPriority="high"
             />
@@ -77,21 +81,21 @@ export function CityCarousel() {
         {/* Stats overlay */}
         <div className="absolute bottom-10 sm:bottom-6 left-3 right-3 sm:left-6 sm:right-6 grid grid-cols-3 gap-2 sm:gap-3 z-10">
           <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-sm sm:text-xl font-black text-blue-700 leading-tight">{t('stats.propertiesValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.propertiesLabel')}</p>
+            <p className="text-sm sm:text-xl font-black text-blue-700 leading-tight">{messages.stats.propertiesValue}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{messages.stats.propertiesLabel}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-lg sm:text-2xl font-black text-purple-700 leading-tight">{t('stats.citiesValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.citiesLabel')}</p>
+            <p className="text-lg sm:text-2xl font-black text-purple-700 leading-tight">{messages.stats.citiesValue}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{messages.stats.citiesLabel}</p>
           </div>
           <div className="bg-white/95 backdrop-blur-sm rounded-xl px-2.5 py-2 sm:p-3 text-center shadow-lg">
-            <p className="text-lg sm:text-2xl font-black text-green-700 leading-tight">{t('stats.verifiedValue')}</p>
-            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{t('stats.verifiedLabel')}</p>
+            <p className="text-lg sm:text-2xl font-black text-green-700 leading-tight">{messages.stats.verifiedValue}</p>
+            <p className="text-[11px] text-gray-700 font-semibold leading-tight mt-0.5">{messages.stats.verifiedLabel}</p>
           </div>
         </div>
 
         {/* Indicadores de progreso (dots) - separados de las cards */}
-        <div className="absolute bottom-30 sm:bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
+        <div className="absolute bottom-32 sm:bottom-20 left-0 right-0 flex justify-center gap-2 z-10 px-4">
           {CITIES.map((_, index) => (
             <button
               key={index}
@@ -109,7 +113,7 @@ export function CityCarousel() {
 
       {/* Floating badge */}
       <div className="absolute -top-4 -right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-5 py-3 rounded-2xl shadow-xl font-bold text-sm rotate-3 z-20">
-        {t('wifiBadge')}
+        {messages.wifiBadge}
       </div>
     </div>
   )

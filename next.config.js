@@ -6,6 +6,19 @@ const withNextIntl = require("next-intl/plugin")("./src/i18n/request.ts");
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@radix-ui/react-icons",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-select",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-toast",
+    ],
+  },
 
   // Image optimization (secure + compatible)
   images: {

@@ -1,9 +1,6 @@
-'use client'
-
 import { Link } from '@/i18n/routing'
 import Image from 'next/image'
-import dynamic from 'next/dynamic'
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
 import { ClientNav } from '@/components/home/ClientNav'
 import {
@@ -41,22 +38,22 @@ function normalizeImageUrl(src?: string) {
   }
 }
 
-const CityCarousel = dynamic(
-  () => import('@/components/hero/CityCarousel').then((mod) => mod.CityCarousel),
-  {
-    ssr: true,
-    loading: () => <div className="aspect-[4/3] rounded-3xl border-2 border-gray-200 bg-white/60" />,
-  }
-)
+import { CityCarousel } from '@/components/hero/CityCarousel'
 
-export default function HomePage() {
-  const t = useTranslations('home');
-  const tCommon = useTranslations('common');
-  const tHow = useTranslations('home.howItWorks');
-  const tFaq = useTranslations('home.faq');
-  const tFaqSection = useTranslations('home.faqSection');
-  const tCities = useTranslations('home.citiesSection');
-  const tFinalCta = useTranslations('home.finalCtaSection');
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const currentLocale = locale === 'es' ? 'es' : 'en'
+
+  const t = await getTranslations('home')
+  const tCommon = await getTranslations('common')
+  const tHow = await getTranslations('home.howItWorks')
+  const tFaq = await getTranslations('home.faq')
+  const tFaqSection = await getTranslations('home.faqSection')
+  const tFinalCta = await getTranslations('home.finalCtaSection')
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -83,7 +80,7 @@ export default function HomePage() {
                 inhabitme
               </span>
             </Link>
-            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} />
+            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} locale={currentLocale} />
           </div>
         </div>
       </nav>
@@ -146,12 +143,24 @@ export default function HomePage() {
                 {t('hero.joinMessage')}
               </p>
             </div>
-            <CityCarousel />
+            <CityCarousel
+              messages={{
+                stats: {
+                  propertiesValue: t('heroCarousel.stats.propertiesValue'),
+                  propertiesLabel: t('heroCarousel.stats.propertiesLabel'),
+                  citiesValue: t('heroCarousel.stats.citiesValue'),
+                  citiesLabel: t('heroCarousel.stats.citiesLabel'),
+                  verifiedValue: t('heroCarousel.stats.verifiedValue'),
+                  verifiedLabel: t('heroCarousel.stats.verifiedLabel'),
+                },
+                wifiBadge: t('heroCarousel.wifiBadge'),
+              }}
+            />
           </div>
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 content-visibility-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent drop-shadow-sm">
@@ -312,7 +321,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="ciudades" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50/30">
+      <section id="ciudades" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50/30 content-visibility-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-black mb-4">Available in selected cities · Starting with Austin</h2>
@@ -377,7 +386,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-purple-50">
+      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-purple-50 content-visibility-auto">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl lg:text-5xl font-black mb-4 text-gray-900">For Hosts</h2>
           <p className="text-lg text-gray-700 mb-8">No commissions. Pay only if you get a tenant.</p>
@@ -501,7 +510,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700">
+      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700 content-visibility-auto">
         <div className="max-w-4xl mx-auto text-center text-white">
           <h2 className="text-3xl lg:text-5xl font-black mb-6">{tFinalCta('title')}</h2>
           <p className="text-xl lg:text-2xl mb-10 opacity-90">{tFinalCta('subtitle')}</p>

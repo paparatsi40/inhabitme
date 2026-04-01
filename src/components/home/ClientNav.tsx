@@ -1,37 +1,36 @@
-'use client'
-
-import NextLink from 'next/link'
-import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { Link } from '@/i18n/routing'
 
-export function ClientNav({ signIn, signUp }: { signIn: string; signUp: string }) {
-  const pathname = usePathname()
-  
-  // Detectar locale de la URL actual
-  const currentLocale = pathname.startsWith('/es') ? 'es' : 'en'
-  
-  // Construir URLs basadas en el locale actual
-  const dashboardUrl = `/${currentLocale}/dashboard`
-  const signInUrl = `/${currentLocale}/sign-in`
-  const signUpUrl = `/${currentLocale}/sign-up`
-  
+export function ClientNav({
+  signIn,
+  signUp,
+  locale,
+}: {
+  signIn: string
+  signUp: string
+  locale: 'en' | 'es'
+}) {
+  const dashboardUrl = `/${locale}/dashboard`
+  const signInUrl = `/${locale}/sign-in`
+  const signUpUrl = `/${locale}/sign-up`
+
   return (
     <div className="flex items-center gap-3">
       <LanguageSwitcher />
-      <NextLink href={dashboardUrl}>
+      <Link href={dashboardUrl}>
         <Button variant="ghost" className="font-semibold">
           Dashboard
         </Button>
-      </NextLink>
-      <NextLink href={signInUrl}>
+      </Link>
+      <Link href={signInUrl}>
         <Button variant="ghost" className="font-semibold">{signIn}</Button>
-      </NextLink>
-      <NextLink href={signUpUrl}>
+      </Link>
+      <Link href={signUpUrl}>
         <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold shadow-md">
           {signUp}
         </Button>
-      </NextLink>
+      </Link>
     </div>
   )
 }
