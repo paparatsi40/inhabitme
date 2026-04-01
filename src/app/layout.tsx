@@ -1,4 +1,3 @@
-import { ClerkProvider } from '@clerk/nextjs';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
@@ -23,9 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ClerkProvider dynamic={false}>
-          {children}
-        </ClerkProvider>
+        {children}
       </body>
     </html>
   );
