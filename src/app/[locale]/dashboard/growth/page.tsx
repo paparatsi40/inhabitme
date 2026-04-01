@@ -53,7 +53,7 @@ export default async function GrowthDashboardPage() {
   const supabase = getSupabaseServerClient()
   const today = new Date().toISOString().split('T')[0]
 
-  const [{ data: todayKpi }, { data: summaryRows }] = await Promise.all([
+  const [{ data: todayKpi }, { data: summaryRows }, { data: pipelineLeads }] = await Promise.all([
     supabase
       .from('growth_daily_kpis')
       .select('*')
@@ -64,6 +64,11 @@ export default async function GrowthDashboardPage() {
       .from('growth_pipeline_leads')
       .select('id, stage')
       .eq('owner_id', userId),
+    supabase
+      .from('growth_pipeline_leads')
+      .select('id, city, full_name, contact_value, contact_type, source_channel, stage, quality_score, next_follow_up_at, notes')
+      .eq('owner_id', userId)
+      .order('created_at', { ascending: false }),
   ])
 
   const stageCounts = (summaryRows || []).reduce((acc: Record<string, number>, row: any) => {
@@ -146,7 +151,25 @@ export default async function GrowthDashboardPage() {
           </div>
         </div>
 
-        <GrowthOpsClient />
+        <GrowthOpsClient
+          initialData={{
+            leads: (pipelineLeads as any[]) || [],
+            kpi:
+              (todayKpi as any) || {
+                kpi_date: today,
+                outbound_sent: 0,
+                contacted_count: 0,
+                replies_count: 0,
+                interested_count: 0,
+                listings_started: 0,
+                listings_published: 0,
+                followups_done: 0,
+                onboarding_calls: 0,
+                inquiries_generated: 0,
+                notes: null,
+              },
+          }}
+        />
       </main>
     </div>
   )

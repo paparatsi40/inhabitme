@@ -31,6 +31,11 @@ type Kpi = {
   notes: string | null
 }
 
+type GrowthOpsInitialData = {
+  leads: Lead[]
+  kpi: Kpi
+}
+
 const STAGES = [
   'lead',
   'contacted',
@@ -42,10 +47,10 @@ const STAGES = [
   'lost',
 ] as const
 
-export function GrowthOpsClient() {
-  const [loading, setLoading] = useState(true)
-  const [leads, setLeads] = useState<Lead[]>([])
-  const [kpi, setKpi] = useState<Kpi | null>(null)
+export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitialData }) {
+  const [loading, setLoading] = useState(false)
+  const [leads, setLeads] = useState<Lead[]>(initialData.leads || [])
+  const [kpi, setKpi] = useState<Kpi | null>(initialData.kpi || null)
 
   const [fullName, setFullName] = useState('')
   const [contactValue, setContactValue] = useState('')
@@ -57,29 +62,55 @@ export function GrowthOpsClient() {
   const [isAddingLead, setIsAddingLead] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
 
   async function loadAll() {
-    setLoading(true)
+    setIsRefreshing(true)
+    setErrorMessage(null)
+
+    const timeoutMs = 8000
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Growth data request timed out.')), timeoutMs)
+    })
+
     try {
-      const [pipelineRes, kpiRes] = await Promise.all([
+      const requestPromise = Promise.all([
         fetch('/api/growth/pipeline', { cache: 'no-store' }),
         fetch(`/api/growth/kpis?date=${today}`, { cache: 'no-store' }),
       ])
 
-      const pipelineData = await pipelineRes.json()
-      const kpiData = await kpiRes.json()
+      const [pipelineRes, kpiRes] = await Promise.race([requestPromise, timeoutPromise])
+
+      const [pipelineData, kpiData] = await Promise.all([
+        pipelineRes.json().catch(() => ({})),
+        kpiRes.json().catch(() => ({})),
+      ])
+
+      if (!pipelineRes.ok || !kpiRes.ok) {
+        const message = pipelineData?.error || kpiData?.error || 'Failed to refresh growth data.'
+        setErrorMessage(message)
+        return
+      }
 
       setLeads(pipelineData.leads || [])
       setKpi(kpiData.kpi || null)
+    } catch (error: any) {
+      console.error('[GrowthOpsClient] loadAll error:', error)
+      setErrorMessage(error?.message || 'Failed to refresh growth data.')
     } finally {
+      setIsRefreshing(false)
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    loadAll()
+    const refreshId = setTimeout(() => {
+      loadAll()
+    }, 250)
+
+    return () => clearTimeout(refreshId)
   }, [])
 
   async function createLead() {
@@ -209,6 +240,13 @@ export function GrowthOpsClient() {
             {successMessage}
           </div>
         ) : null}
+
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs text-gray-500">{isRefreshing ? 'Refreshing...' : 'Up to date'}</div>
+          <Button variant="outline" size="sm" onClick={loadAll} disabled={isRefreshing}>
+            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+          </Button>
+        </div>
 
         <div className="grid md:grid-cols-6 gap-2">
           <Input placeholder="Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
