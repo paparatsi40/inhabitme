@@ -121,16 +121,16 @@ export default function HomePage() {
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button asChild size="lg" className="w-full sm:w-auto min-h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg">
-                  <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex">
+                  <Link href="/properties/new" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
                     {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold px-8 py-6 text-lg">
+                  <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
+                    {t('hero.cta.secondary')}
                   </a>
                 </Button>
-                <Link href="/properties/new" className="flex-1 sm:flex-initial">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold px-8 py-6 text-lg">
-                    {t('hero.cta.secondary')}
-                  </Button>
-                </Link>
               </div>
               <div className="mt-8 p-5 bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-300 rounded-2xl">
                 <div className="flex items-center gap-3 mb-2">
@@ -165,9 +165,10 @@ export default function HomePage() {
             <TrustItem icon={<Clock className="h-8 w-8 text-purple-600" />} title={t('whyInhabitme.flexible.title')} text={t('whyInhabitme.flexible.description')} gradient="from-purple-50 to-purple-100" borderColor="border-purple-200" />
           </div>
           <div className="mt-12 text-center">
-            <Link href="/madrid">
-              <Button size="lg" variant="outline" className="border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold">
-                {t('whyInhabitme.cta')}
+            <Link href="/properties/new">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg">
+                List your property
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
@@ -314,8 +315,8 @@ export default function HomePage() {
       <section id="ciudades" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-black mb-4">{tCities('title')}</h2>
-            <p className="text-lg text-gray-700">{tCities('subtitle')}</p>
+            <h2 className="text-3xl lg:text-4xl font-black mb-4">Featured listings in active cities</h2>
+            <p className="text-lg text-gray-700">Early Austin launch · Founding hosts joining now · Built for remote workers</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {CITIES.map((city) => (
@@ -331,6 +332,79 @@ export default function HomePage() {
               />
             ))}
           </div>
+          <div className="mt-10 text-center">
+            <Link href="/properties/new">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg">
+                List your property
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Airbnb vs InhabitMe
+            </h2>
+            <p className="text-lg text-gray-700">Simple pricing that protects host margins</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="rounded-2xl border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50 p-8">
+              <p className="text-2xl font-black text-gray-900 mb-4">Airbnb</p>
+              <ul className="space-y-3 text-gray-700">
+                <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />15–20% commission</li>
+                <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />Higher effective fees for longer stays</li>
+                <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />Host margins get compressed</li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+              <p className="text-2xl font-black text-gray-900 mb-4">InhabitMe</p>
+              <ul className="space-y-3 text-gray-700">
+                <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />Flat fee (€128–€358 total platform fee)</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />No commissions</li>
+                <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />Pay only if booking happens</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 text-center">
+            <p className="text-lg font-bold">You can save €300–€900 per stay</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-purple-50">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl lg:text-5xl font-black mb-4 text-gray-900">For Hosts</h2>
+          <p className="text-lg text-gray-700 mb-8">No commissions. Pay only if you get a tenant.</p>
+          <div className="grid sm:grid-cols-2 gap-4 text-left mb-8">
+            <div className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+              <span>List your property for free</span>
+            </div>
+            <div className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+              <span>Only pay if you get a tenant</span>
+            </div>
+            <div className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+              <span>No commissions on monthly rent</span>
+            </div>
+            <div className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+              <span>Reach remote workers and students</span>
+            </div>
+          </div>
+          <Link href="/properties/new">
+            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg px-10 py-6 text-lg">
+              List your property
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </section>
 

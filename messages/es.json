@@ -1062,5 +1062,76 @@
     "wifi": "WiFi",
     "bedrooms": "hab",
     "bathrooms": "baños"
+  },
+  "hostsAustin": {
+    "hero": {
+      "title": "Publica tu propiedad en Austin gratis",
+      "line1": "Sin comisiones.",
+      "line2": "Solo pagas si consigues inquilino.",
+      "subtitle": "Creado para estancias de 1–6 meses para trabajadores remotos y profesionales.",
+      "cta": "Publicar propiedad (gratis)",
+      "microcopy": "Únete a los primeros hosts en Austin y consigue más visibilidad mientras crecemos."
+    },
+    "why": {
+      "title": "¿Por qué publicar en InhabitMe?",
+      "item1": "Publicar es completamente gratis",
+      "item2": "Sin costo inicial",
+      "item3": "Sin comisiones como Airbnb",
+      "item4": "Solo pagas cuando consigues una reserva",
+      "item5": "Llega a trabajadores remotos y estudiantes",
+      "cta": "Publicar propiedad"
+    },
+    "compare": {
+      "title": "Deja de pagar comisiones altas",
+      "leftTitle": "Airbnb",
+      "left1": "Comisión del 15–20%",
+      "left2": "Fees en cada reserva",
+      "rightTitle": "InhabitMe",
+      "right1": "Sin comisiones",
+      "right2": "Solo pagas si consigues inquilino",
+      "right3": "Diseñado para estancias medias",
+      "savings": "Ahorro típico: $300–$900 por reserva"
+    },
+    "austinFocus": {
+      "title": "Lanzando en Austin",
+      "subtitle": "Estamos incorporando a nuestros primeros hosts en Austin, con foco en zonas como:",
+      "area1": "Downtown",
+      "area2": "East Austin",
+      "area3": "South Congress",
+      "area4": "Zilker",
+      "earlyTitle": "Los primeros listings obtienen:",
+      "early1": "Más visibilidad",
+      "early2": "Menos competencia",
+      "early3": "Exposición prioritaria",
+      "cta": "Conviértete en founding host"
+    },
+    "how": {
+      "title": "Cómo funciona",
+      "step1": "Publica tu propiedad gratis",
+      "step2": "Recibe contactos de trabajadores remotos",
+      "step3": "Paga una pequeña tarifa solo si cierras",
+      "footer": "Eso es todo."
+    },
+    "guests": {
+      "title": "¿Quiénes son los huéspedes?",
+      "item1": "Trabajadores remotos",
+      "item2": "Estudiantes",
+      "item3": "Profesionales que se relocalizan",
+      "footer": "Buscan estancias de 1–6 meses en Austin."
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "q1": "¿Pago algo por adelantado?",
+      "a1": "No. Publicar tu propiedad es completamente gratis. Solo pagas una tarifa si consigues una reserva.",
+      "q2": "¿En qué se diferencia de Airbnb?",
+      "a2": "No cobramos comisiones. En su lugar, usamos una tarifa plana simple solo cuando alquilas tu propiedad con éxito.",
+      "q3": "¿Qué tipo de estancias?",
+      "a3": "Nos enfocamos en estancias de 1–6 meses para trabajadores remotos, estudiantes y profesionales."
+    },
+    "finalCta": {
+      "title": "Empieza a publicar tu propiedad",
+      "subtitle": "Solo te toma unos minutos.",
+      "cta": "Publicar propiedad"
+    }
   }
 }

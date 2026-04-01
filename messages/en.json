@@ -1062,5 +1062,76 @@
     "wifi": "WiFi",
     "bedrooms": "bedrooms",
     "bathrooms": "bathrooms"
+  },
+  "hostsAustin": {
+    "hero": {
+      "title": "List your Austin property for free",
+      "line1": "No commissions.",
+      "line2": "Only pay if you get a tenant.",
+      "subtitle": "Built for 1–6 month stays for remote workers and professionals.",
+      "cta": "List your property (free)",
+      "microcopy": "Join early hosts in Austin and get more visibility as we grow."
+    },
+    "why": {
+      "title": "Why list on InhabitMe?",
+      "item1": "Listing is completely free",
+      "item2": "No upfront cost",
+      "item3": "No commissions like Airbnb",
+      "item4": "Only pay when you get a booking",
+      "item5": "Reach remote workers and students",
+      "cta": "List your property"
+    },
+    "compare": {
+      "title": "Stop paying high commissions",
+      "leftTitle": "Airbnb",
+      "left1": "15–20% commission",
+      "left2": "Fees on every booking",
+      "rightTitle": "InhabitMe",
+      "right1": "No commissions",
+      "right2": "Pay only if you get a tenant",
+      "right3": "Built for mid-term stays",
+      "savings": "Typical savings: $300–$900 per booking"
+    },
+    "austinFocus": {
+      "title": "Launching in Austin",
+      "subtitle": "We’re onboarding our first hosts in Austin, focusing on areas like:",
+      "area1": "Downtown",
+      "area2": "East Austin",
+      "area3": "South Congress",
+      "area4": "Zilker",
+      "earlyTitle": "Early listings get:",
+      "early1": "Higher visibility",
+      "early2": "Less competition",
+      "early3": "Priority exposure",
+      "cta": "Become a founding host"
+    },
+    "how": {
+      "title": "How it works",
+      "step1": "List your property for free",
+      "step2": "Get contacted by remote workers",
+      "step3": "Pay a small fee only if you book",
+      "footer": "That’s it."
+    },
+    "guests": {
+      "title": "Who are the guests?",
+      "item1": "Remote workers",
+      "item2": "Students",
+      "item3": "Professionals relocating",
+      "footer": "Looking for stays of 1–6 months in Austin."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "Do I pay anything upfront?",
+      "a1": "No. Listing your property is completely free. You only pay a fee if you get a booking.",
+      "q2": "How is this different from Airbnb?",
+      "a2": "We don’t charge commissions. Instead, we use a simple flat fee only when you successfully rent your property.",
+      "q3": "What kind of stays?",
+      "a3": "We focus on 1–6 month stays for remote workers, students, and professionals."
+    },
+    "finalCta": {
+      "title": "Start listing your property",
+      "subtitle": "It only takes a few minutes.",
+      "cta": "List your property"
+    }
   }
 }
