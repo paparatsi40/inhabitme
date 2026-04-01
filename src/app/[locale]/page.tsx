@@ -315,8 +315,8 @@ export default function HomePage() {
       <section id="ciudades" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-blue-50/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-black mb-4">Featured listings in active cities</h2>
-            <p className="text-lg text-gray-700">Early Austin launch · Founding hosts joining now · Built for remote workers</p>
+            <h2 className="text-3xl lg:text-4xl font-black mb-4">Available in selected cities · Starting with Austin</h2>
+            <p className="text-lg text-gray-700">Austin focus for liquidity · Expanding to new cities soon · Built for remote workers</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {CITIES.map((city) => (
