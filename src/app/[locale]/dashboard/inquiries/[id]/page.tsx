@@ -3,22 +3,34 @@ import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles } from 'lucide-react'
+import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2 } from 'lucide-react'
+import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
+
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2026-02-25.clover' })
+  : null
 
 function parseInquiryMessage(source: string | null | undefined, fallback: string) {
   if (!source) return fallback
   return source.includes('inquiry_form:') ? source.replace('inquiry_form:', '') : fallback
 }
 
-export default async function InquiryDetailPage({ params }: { params: Promise<{ id: string; locale: string }> }) {
+export default async function InquiryDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string; locale: string }>
+  searchParams: Promise<{ session_id?: string; unlocked?: string }>
+}) {
   const { userId } = await auth()
   const user = await currentUser()
   const userEmail = user?.primaryEmailAddress?.emailAddress?.toLowerCase() ?? null
   const locale = await getLocale()
   const t = await getTranslations({ locale, namespace: 'dashboard' })
   const { id } = await params
+  const query = await searchParams
 
   if (!userId) {
     redirect('/sign-in')
@@ -73,7 +85,7 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
 
   const { data: inquiry } = await supabase
     .from('availability_leads')
-    .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source')
+    .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id')
     .eq('id', id)
     .single()
 
@@ -97,6 +109,27 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
     t('quickReply3'),
   ]
 
+  if (!inquiry.paid && query?.session_id && stripe) {
+    try {
+      const session = await stripe.checkout.sessions.retrieve(String(query.session_id))
+      if (session.payment_status === 'paid' && session.client_reference_id === inquiry.id) {
+        const { data: paidInquiry } = await supabase
+          .from('availability_leads')
+          .update({ paid: true, stripe_session_id: session.id })
+          .eq('id', inquiry.id)
+          .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at, source, stripe_session_id')
+          .single()
+
+        if (paidInquiry) {
+          Object.assign(inquiry, paidInquiry)
+        }
+      }
+    } catch (error) {
+      console.error('[InquiryDetail] fallback unlock error:', error)
+    }
+  }
+
+  const isRecentlyUnlocked = Boolean(query?.unlocked === '1' || (query?.session_id && inquiry.paid))
   const inquiryMessage = parseInquiryMessage(inquiry.source, t('inquiryReceived'))
 
   return (
@@ -105,6 +138,16 @@ export default async function InquiryDetailPage({ params }: { params: Promise<{ 
         <Link href="/dashboard/inquiries" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-semibold mb-4">
           <ArrowLeft className="h-4 w-4" /> {t('backToInquiries')}
         </Link>
+
+        {isRecentlyUnlocked && (
+          <div className="mb-4 rounded-2xl border-2 border-green-200 bg-green-50 p-4 text-green-800 flex items-start gap-3">
+            <CheckCircle2 className="h-5 w-5 mt-0.5" />
+            <div>
+              <p className="font-bold">{t('contactUnlockedTitle')}</p>
+              <p className="text-sm">{t('contactUnlockedBody')}</p>
+            </div>
+          </div>
+        )}
 
         <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 mb-6">
           <h1 className="text-2xl font-black text-gray-900 mb-1">{listing.title}</h1>

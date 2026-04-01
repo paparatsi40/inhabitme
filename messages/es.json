@@ -810,7 +810,13 @@
     "pipeline": "Pipeline",
     "pipelineHint": "consultas / alta intención / pagadas",
     "pipelinePaid": "Pagadas",
-    "contactLocked": "Contacto bloqueado"
+    "contactLocked": "Contacto bloqueado",
+    "contactUnlockedTitle": "Contacto desbloqueado",
+    "contactUnlockedBody": "Ya puedes responder directamente a este huésped.",
+    "funnelViews": "Vistas",
+    "funnelInquiries": "Consultas",
+    "funnelReplies": "Respuestas",
+    "funnelDeals": "Deals"
   },
   "hostBookings": {
     "loading": "Cargando reservas...",

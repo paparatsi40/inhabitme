@@ -810,7 +810,13 @@
     "pipeline": "Pipeline",
     "pipelineHint": "inquiries / high-intent / paid",
     "pipelinePaid": "Paid",
-    "contactLocked": "Contact locked"
+    "contactLocked": "Contact locked",
+    "contactUnlockedTitle": "Contact unlocked successfully",
+    "contactUnlockedBody": "You can now reply directly to this guest.",
+    "funnelViews": "Views",
+    "funnelInquiries": "Inquiries",
+    "funnelReplies": "Replies",
+    "funnelDeals": "Deals"
   },
   "hostBookings": {
     "loading": "Loading bookings...",

@@ -48,6 +48,16 @@ export async function POST(req: NextRequest) {
       .select()
       .single()
 
+    if (!lead) {
+      await supabase
+        .from('availability_leads')
+        .update({
+          paid: true,
+          stripe_session_id: session.id,
+        })
+        .eq('stripe_session_id', session.id)
+    }
+
     if (lead) {
       await sendUnlockedLeadEmail({
         hostEmail: lead.host_email,

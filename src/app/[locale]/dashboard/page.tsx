@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { 
   Building2, Search, Calendar, Settings, User, ArrowRight, 
-  Mail, TrendingUp, Eye, CheckCircle, Plus, Inbox 
+  Mail, TrendingUp, Eye, CheckCircle, Plus, Inbox, MessageSquareText, Handshake 
 } from 'lucide-react';
 import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
@@ -146,6 +146,8 @@ export default async function DashboardPage() {
   let recentInquiries: any[] = []
   let hotInquiriesCount = 0
   let paidInquiriesCount = 0
+  let repliedInquiriesCount = 0
+  let dealsCount = 0
 
   if (ownedListingIds.length > 0) {
     const { count } = await supabase
@@ -168,6 +170,15 @@ export default async function DashboardPage() {
     newInquiriesCount = recentInquiries.filter((item: any) => new Date(item.created_at) >= sevenDaysAgo).length
     hotInquiriesCount = recentInquiries.filter((item: any) => item.score_label === 'HOT').length
     paidInquiriesCount = recentInquiries.filter((item: any) => Boolean(item.paid)).length
+    repliedInquiriesCount = recentInquiries.filter((item: any) => Boolean(item.paid) && Boolean(item.email)).length
+
+    const { count: acceptedDealsCount } = await supabase
+      .from('bookings')
+      .select('*', { count: 'exact', head: true })
+      .in('listing_id', ownedListingIds)
+      .in('status', ['pending_guest_payment', 'confirmed'])
+
+    dealsCount = acceptedDealsCount ?? 0
   }
   
   // Count de bookings pendientes como host
@@ -323,6 +334,26 @@ export default async function DashboardPage() {
           
         </div>
 
+        {/* Funnel */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">{t('funnelViews')}</div>
+            <div className="text-2xl font-black text-gray-900">{viewsStats.total_views || 0}</div>
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">{t('funnelInquiries')}</div>
+            <div className="text-2xl font-black text-gray-900">{leadsCount}</div>
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">{t('funnelReplies')}</div>
+            <div className="text-2xl font-black text-gray-900 inline-flex items-center gap-2"><MessageSquareText className="h-5 w-5 text-blue-600" /> {repliedInquiriesCount}</div>
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-gray-200">
+            <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold mb-1">{t('funnelDeals')}</div>
+            <div className="text-2xl font-black text-gray-900 inline-flex items-center gap-2"><Handshake className="h-5 w-5 text-green-600" /> {dealsCount}</div>
+          </div>
+        </div>
+
         {/* New inquiries block */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
@@ -353,9 +384,13 @@ export default async function DashboardPage() {
                         : t('inquiryReceived')}
                     </p>
                     <div className="flex items-center justify-between gap-2">
-                      <a href={`mailto:${inquiry.email || ''}`} className="text-sm font-semibold text-blue-600 hover:text-blue-700">
-                        {t('reply')}
-                      </a>
+                      {inquiry.paid ? (
+                        <a href={`mailto:${inquiry.email || ''}`} className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                          {t('reply')}
+                        </a>
+                      ) : (
+                        <span className="text-sm font-semibold text-gray-400">{t('contactLocked')}</span>
+                      )}
                       <Link href={`/dashboard/inquiries/${inquiry.id}` as any} className="text-sm font-semibold text-gray-700 hover:text-gray-900">
                         {t('viewDetails')}
                       </Link>
