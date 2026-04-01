@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     const moveInDateRaw = String(body?.moveInDate || '').trim()
     const durationMonthsRaw = Number(body?.durationMonths)
     const message = String(body?.message || '').trim()
+    const numberOfGuests = Math.min(8, Math.max(1, Number(body?.numberOfGuests) || 1))
     const guestEmailFromBody = String(body?.guestEmail || '').trim().toLowerCase()
 
     if (!listingId) {
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
         start_date: startDate,
         duration_months: durationMonthsRaw,
         email: guestEmailFromBody || null,
-        source: `inquiry_form:${message}`,
+        source: `inquiry_form:guests=${numberOfGuests};message=${message}`,
         relocating: false,
         score,
         score_label: label,

@@ -26,6 +26,7 @@ export default function HostBookingDetailPage() {
   const [responding, setResponding] = useState(false);
   const [responseMessage, setResponseMessage] = useState('');
   const [showRejectForm, setShowRejectForm] = useState(action === 'reject');
+  const [showChangesForm, setShowChangesForm] = useState(action === 'changes');
 
   useEffect(() => {
     fetchBooking();
@@ -84,6 +85,37 @@ export default function HostBookingDetailPage() {
     } catch (error) {
       console.error('❌ Accept error:', error);
       alert('Error al procesar la aceptación');
+      setResponding(false);
+    }
+  };
+
+  const handleRequestChanges = async () => {
+    if (!responseMessage.trim()) {
+      alert('Please add details for the guest so they can update the request');
+      return;
+    }
+
+    setResponding(true);
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/respond`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'changes',
+          message: responseMessage
+        })
+      });
+
+      if (res.ok) {
+        alert('Changes requested. The guest has been notified.');
+        router.push('/host/bookings');
+      } else {
+        alert('Error requesting changes');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error requesting changes');
+    } finally {
       setResponding(false);
     }
   };
@@ -335,7 +367,7 @@ export default function HostBookingDetailPage() {
         </div>
 
         {/* Actions */}
-        {booking.status === 'pending_host_approval' && !showRejectForm && (
+        {booking.status === 'pending_host_approval' && !showRejectForm && !showChangesForm && (
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={handleAccept}
@@ -355,12 +387,47 @@ export default function HostBookingDetailPage() {
               )}
             </button>
             <button
+              onClick={() => setShowChangesForm(true)}
+              className="flex-1 bg-white border-2 border-blue-300 text-blue-700 py-4 rounded-xl font-bold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-5 h-5" />
+              Ask for changes
+            </button>
+            <button
               onClick={() => setShowRejectForm(true)}
               className="flex-1 bg-gray-200 text-gray-700 py-4 rounded-xl font-bold hover:bg-gray-300 transition flex items-center justify-center gap-2"
             >
               <XCircle className="w-5 h-5" />
               Rechazar
             </button>
+          </div>
+        )}
+
+        {showChangesForm && (
+          <div className="bg-white rounded-xl p-6 shadow-sm mb-4">
+            <h3 className="text-lg font-bold mb-4">What should the guest change?</h3>
+            <textarea
+              value={responseMessage}
+              onChange={(e) => setResponseMessage(e.target.value)}
+              className="w-full border-2 border-gray-300 rounded-lg p-3 mb-4"
+              rows={4}
+              placeholder="Ask for date/length updates or clarify conditions before accepting..."
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={handleRequestChanges}
+                disabled={responding || !responseMessage.trim()}
+                className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {responding ? 'Sending...' : 'Send changes request'}
+              </button>
+              <button
+                onClick={() => setShowChangesForm(false)}
+                className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-300 transition"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         )}
 

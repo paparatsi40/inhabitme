@@ -15,6 +15,7 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
   const [message, setMessage] = useState('')
   const [moveInDate, setMoveInDate] = useState('')
   const [durationMonths, setDurationMonths] = useState(3)
+  const [numberOfGuests, setNumberOfGuests] = useState(1)
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -40,6 +41,7 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
           listingId: property.id,
           moveInDate,
           durationMonths,
+          numberOfGuests,
           message: message.trim(),
         }),
       })
@@ -132,6 +134,20 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
                     className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-blue-500 outline-none"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('guests')}
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={1}
+                    max={8}
+                    value={numberOfGuests}
+                    onChange={(e) => setNumberOfGuests(parseInt(e.target.value) || 1)}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-blue-500 outline-none"
+                  />
+                </div>
               </div>
 
               <div>
@@ -170,7 +186,7 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
                 ) : (
                   <span className="flex items-center justify-center gap-2">
                     <Send className="h-5 w-5" />
-                    Enviar Pregunta
+                    {t('sendInquiryButton')}
                   </span>
                 )}
               </button>

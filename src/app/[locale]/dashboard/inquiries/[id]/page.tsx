@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getLocale, getTranslations } from 'next-intl/server'
-import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2, ArrowRightCircle } from 'lucide-react'
+import { ArrowLeft, Mail, Unlock, MessageSquare, Sparkles, CheckCircle2, ArrowRightCircle, CalendarCheck2 } from 'lucide-react'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -216,14 +216,20 @@ export default async function InquiryDetailPage({
             </div>
 
             {!inquiry.paid && (
-              <div className="bg-gradient-to-br from-purple-600 to-blue-700 text-white rounded-2xl p-5">
-                <div className="inline-flex items-center gap-2 text-sm mb-2"><Sparkles className="h-4 w-4" /> {t('highIntentTenant')}</div>
-                <h3 className="text-lg font-black mb-2">{t('proceedBookingTitle')}</h3>
-                <p className="text-sm opacity-90 mb-4">{t('proceedBookingBody')}</p>
-                <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
+              <div className="bg-gradient-to-br from-purple-600 to-blue-700 text-white rounded-2xl p-5 space-y-3">
+                <div className="inline-flex items-center gap-2 text-sm"><Sparkles className="h-4 w-4" /> {t('highIntentTenant')}</div>
+                <h3 className="text-lg font-black">{t('proceedBookingTitle')}</h3>
+                <p className="text-sm opacity-90">{t('proceedBookingBody')}</p>
+
+                <a href={`/${locale}/api/inquiries/${inquiry.id}/request-booking?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
+                  <CalendarCheck2 className="h-4 w-4" /> {t('requestBookingButton')}
+                </a>
+
+                <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white font-semibold hover:bg-white/20">
                   <ArrowRightCircle className="h-4 w-4" /> {t('proceedBookingButton')}
                 </a>
-                <p className="text-xs opacity-80 mt-3">{t('proceedNote')}</p>
+
+                <p className="text-xs opacity-80">{t('proceedNote')}</p>
               </div>
             )}
 

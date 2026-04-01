@@ -236,10 +236,12 @@
     "yourQuestion": "Mensaje",
     "moveInDate": "¿Cuándo quieres mudarte?",
     "durationMonths": "¿Cuánto tiempo te quedarás? (1–12 meses)",
+    "guests": "Número de huéspedes",
     "placeholder": "Ej: Hola, ¿sigue disponible? Me gustaría entrar en junio por 3 meses.",
     "characters": "{count} caracteres",
     "sending": "Enviando...",
     "sendQuestion": "Enviar consulta",
+    "sendInquiryButton": "Enviar consulta",
     "emailNotice": "Enviaremos tu solicitud directamente al anfitrión",
     "writeQuestionError": "Por favor escribe tu mensaje",
     "genericError": "No se pudo enviar la consulta. Inténtalo de nuevo."
@@ -808,7 +810,8 @@
     "proceedBookingTitle": "Este huésped está listo para avanzar",
     "proceedBookingBody": "Completa la intención de reserva para continuar y cerrar más rápido.",
     "proceedBookingButton": "Continuar reserva",
-    "proceedNote": "El pago se cobra solo cuando la intención del inquilino es real."
+    "requestBookingButton": "Solicitar reserva",
+    "proceedNote": "El pago se cobra solo cuando la intención del inquilino es real.",
     "savingsTitle": "Fees típicos de Airbnb: €500+ · InhabitMe: €129–€229",
     "savingsBody": "Puedes ahorrar €300+ por operación manteniendo alta conversión.",
     "internalChatNoteTitle": "Protección de chat interno",

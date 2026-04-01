@@ -23,7 +23,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     }
 
     const body = await request.json()
-    const { action, message } = body as { action?: 'accept' | 'reject'; message?: string }
+    const { action, message } = body as { action?: 'accept' | 'reject' | 'changes'; message?: string }
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -92,6 +92,42 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       return NextResponse.json({
         success: true,
         message: 'Booking accepted. Guest notified to pay.',
+      })
+    }
+
+    if (action === 'changes') {
+      const { error: updateError } = await supabase
+        .from('bookings')
+        .update({
+          status: 'pending_host_approval',
+          host_response: message || 'Host requested changes before acceptance.',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', bookingId)
+
+      if (updateError) {
+        return NextResponse.json({ error: 'Failed to request changes' }, { status: 500 })
+      }
+
+      const guestEmail = booking.guest_email
+      if (guestEmail) {
+        try {
+          if (process.env.RESEND_API_KEY) {
+            await resend.emails.send({
+              from: process.env.RESEND_FROM_EMAIL || 'hola@inhabitme.com',
+              to: guestEmail,
+              subject: 'The host requested changes to your booking request',
+              html: `<p>Your host requested changes before acceptance.</p><p>${message || ''}</p>`,
+            })
+          }
+        } catch (emailErr) {
+          console.warn('⚠️ Could not send email (changes):', emailErr)
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Host requested changes. Guest notified.',
       })
     }
 

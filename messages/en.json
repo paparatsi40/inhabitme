@@ -236,10 +236,12 @@
     "yourQuestion": "Message",
     "moveInDate": "When do you want to move in?",
     "durationMonths": "How long will you stay? (1–12 months)",
+    "guests": "Number of guests",
     "placeholder": "Ex: Hi, is this available? I’m planning to move in June for 3 months.",
     "characters": "{count} characters",
     "sending": "Sending...",
     "sendQuestion": "Send inquiry",
+    "sendInquiryButton": "Send inquiry",
     "emailNotice": "We’ll send your request directly to the host",
     "writeQuestionError": "Please write your message",
     "genericError": "Could not send inquiry. Please try again."
@@ -808,7 +810,8 @@
     "proceedBookingTitle": "This guest is ready to proceed",
     "proceedBookingBody": "Complete booking intent to continue and close faster.",
     "proceedBookingButton": "Continue booking",
-    "proceedNote": "Payment is charged only when tenant intent is real."
+    "requestBookingButton": "Request booking",
+    "proceedNote": "Payment is charged only when tenant intent is real.",
     "savingsTitle": "Typical Airbnb fees: €500+ · InhabitMe: €129–€229",
     "savingsBody": "You can save €300+ per deal while keeping conversions high.",
     "internalChatNoteTitle": "Internal chat protection",
