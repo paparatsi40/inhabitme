@@ -22,11 +22,7 @@ function isProtectedRoute(pathname: string): boolean {
   );
 }
 
-function hasAuthSession(req: NextRequest): boolean {
-  return req.cookies.has("__session") || req.cookies.has("__client_uat");
-}
-
-function internalMiddleware(req: NextRequest) {
+async function internalMiddleware(req: NextRequest, auth: any) {
   const pathname = req.nextUrl.pathname;
 
   if (pathname === "/robots.txt" || pathname === "/sitemap.xml") {
@@ -77,9 +73,12 @@ function internalMiddleware(req: NextRequest) {
     return NextResponse.redirect(url, 307);
   }
 
-  if (isProtectedRoute(pathname) && !hasAuthSession(req)) {
-    const locale = pathname.startsWith('/es') ? 'es' : 'en';
-    return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
+  if (isProtectedRoute(pathname)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const locale = pathname.startsWith('/es') ? 'es' : 'en';
+      return NextResponse.redirect(new URL(`/${locale}/sign-in`, req.url));
+    }
   }
 
   const isLocaleRoot = /^\/(en|es)\/?$/.test(pathname);
@@ -100,8 +99,8 @@ function internalMiddleware(req: NextRequest) {
   }
 }
 
-export default clerkMiddleware((auth, req) => {
-  return internalMiddleware(req);
+export default clerkMiddleware(async (auth, req) => {
+  return internalMiddleware(req, auth);
 });
 
 export const config = {
