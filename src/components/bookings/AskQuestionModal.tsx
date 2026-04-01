@@ -13,6 +13,8 @@ interface AskQuestionModalProps {
 export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModalProps) {
   const t = useTranslations('askQuestionModal')
   const [message, setMessage] = useState('')
+  const [moveInDate, setMoveInDate] = useState('')
+  const [durationMonths, setDurationMonths] = useState(3)
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -31,22 +33,30 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
     setError('')
 
     try {
-      // Simulamos el envío (endpoint pendiente de implementar)
-      console.log('[AskQuestion] Enviando pregunta:', {
-        propertyId: property.id,
-        message: message.trim(),
-        type: 'question',
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listingId: property.id,
+          moveInDate,
+          durationMonths,
+          message: message.trim(),
+        }),
       })
-      
-      // Simulamos un delay de red
-      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      const payload = await response.json()
+      if (!response.ok) {
+        throw new Error(payload?.error || t('genericError'))
+      }
 
       setSuccess(true)
       setTimeout(() => {
         onClose()
         setMessage('')
+        setMoveInDate('')
+        setDurationMonths(3)
         setSuccess(false)
-      }, 2000)
+      }, 1800)
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -94,6 +104,36 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
                 </p>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('moveInDate')}
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={moveInDate}
+                    onChange={(e) => setMoveInDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('durationMonths')}
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={1}
+                    max={12}
+                    value={durationMonths}
+                    onChange={(e) => setDurationMonths(parseInt(e.target.value) || 1)}
+                    className="w-full border-2 border-gray-300 rounded-xl px-4 py-3 focus:border-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('yourQuestion')}
@@ -119,7 +159,7 @@ export function AskQuestionModal({ isOpen, onClose, property }: AskQuestionModal
 
               <button
                 type="submit"
-                disabled={submitting || !message.trim()}
+                disabled={submitting || !message.trim() || !moveInDate || durationMonths < 1 || durationMonths > 12}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-full font-bold hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {submitting ? (

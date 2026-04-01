@@ -140,14 +140,30 @@ export default async function DashboardPage() {
 
   const ownedListingIds = ownedProperties.map((p: any) => p.id)
 
-  // Count de leads recibidos
+  // Count de inquiries (availability_leads)
   let leadsCount = 0
+  let newInquiriesCount = 0
+  let recentInquiries: any[] = []
+
   if (ownedListingIds.length > 0) {
     const { count } = await supabase
-      .from('property_leads')
+      .from('availability_leads')
       .select('*', { count: 'exact', head: true })
       .in('listing_id', ownedListingIds)
     leadsCount = count ?? 0
+
+    const { data: inquiriesData } = await supabase
+      .from('availability_leads')
+      .select('id, listing_id, city, neighborhood, start_date, duration_months, email, score_label, paid, created_at')
+      .in('listing_id', ownedListingIds)
+      .order('created_at', { ascending: false })
+      .limit(6)
+
+    recentInquiries = inquiriesData || []
+
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    newInquiriesCount = recentInquiries.filter((item: any) => new Date(item.created_at) >= sevenDaysAgo).length
   }
   
   // Count de bookings pendientes como host
@@ -250,21 +266,21 @@ export default async function DashboardPage() {
             </div>
           </Link>
 
-          {/* Solicitudes de Reserva Pendientes */}
-          <Link href="/host/bookings">
+          {/* New inquiries */}
+          <Link href="/dashboard/properties">
             <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-green-100 hover:shadow-lg hover:border-green-400 transition-all cursor-pointer">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-gradient-to-br from-green-100 to-emerald-200 rounded-xl">
                   <Inbox className="h-6 w-6 text-green-600" />
                 </div>
-                {bookingsCount && bookingsCount > 0 ? (
-                  <div className="bg-green-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
-                    {bookingsCount}
+                {newInquiriesCount > 0 ? (
+                  <div className="bg-green-500 text-white text-xs font-bold rounded-full px-2 h-6 min-w-6 flex items-center justify-center animate-pulse">
+                    {newInquiriesCount}
                   </div>
                 ) : null}
               </div>
-              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('pendingBookings')}</p>
-              <p className="text-4xl font-black text-gray-900">{bookingsCount ?? 0}</p>
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('newInquiries')}</p>
+              <p className="text-4xl font-black text-gray-900">{newInquiriesCount}</p>
             </div>
           </Link>
 
@@ -300,6 +316,58 @@ export default async function DashboardPage() {
             </div>
           </Link>
           
+        </div>
+
+        {/* New inquiries block */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl lg:text-3xl font-black text-gray-900">{t('newInquiries')}</h2>
+              <p className="text-gray-600 mt-1">{t('inquiriesSubtitle')}</p>
+            </div>
+          </div>
+
+          {recentInquiries.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recentInquiries.map((inquiry: any) => {
+                const listing = ownedProperties.find((p: any) => p.id === inquiry.listing_id)
+                return (
+                  <div key={inquiry.id} className="bg-white rounded-2xl p-5 shadow-sm border-2 border-gray-200 hover:border-blue-300 transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">{t('inquiry')}</span>
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${inquiry.score_label === 'HOT' ? 'bg-red-100 text-red-700' : inquiry.score_label === 'WARM' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700'}`}>
+                        {inquiry.score_label || 'NEW'}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 line-clamp-1 mb-1">{listing?.title || t('property')}</h3>
+                    <p className="text-sm text-gray-600 mb-1">{t('lookingFor')}: {inquiry.duration_months || 1} {t('months')}</p>
+                    <p className="text-sm text-gray-600 mb-3">{t('start')}: {inquiry.start_date ? new Date(inquiry.start_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'es-ES', { month: 'short', day: 'numeric' }) : '-'}</p>
+                    <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+                      {String(inquiry.source || '').includes('inquiry_form:')
+                        ? String(inquiry.source).replace('inquiry_form:', '')
+                        : t('inquiryReceived')}
+                    </p>
+                    <div className="flex items-center justify-between gap-2">
+                      <a href={`mailto:${inquiry.email || ''}`} className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+                        {t('reply')}
+                      </a>
+                      <Link href="/dashboard/properties" className="text-sm font-semibold text-gray-700 hover:text-gray-900">
+                        {t('viewProfile')}
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl p-8 border-2 border-dashed border-gray-300">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">{t('noInquiriesYet')}</h3>
+              <p className="text-gray-600 mb-4">{t('noInquiriesHelp')}</p>
+              <Link href="/dashboard/properties">
+                <Button variant="outline" className="font-semibold">{t('improveListing')}</Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Tus Propiedades */}
@@ -367,7 +435,7 @@ export default async function DashboardPage() {
                       </div>
                       
                       {/* Action Buttons */}
-                      <div className="flex gap-2">
+                                            <div className="flex gap-2">
                         <Link href={`/dashboard/properties/${property.id}/edit` as any} className="flex-1">
                           <Button size="sm" variant="outline" className="w-full">
                             ✏️ Edit
@@ -379,6 +447,11 @@ export default async function DashboardPage() {
                             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                           >
                             🎨 Design
+                          </Button>
+                        </Link>
+                        <Link href={`/dashboard/properties/${property.id}` as any} className="flex-1">
+                          <Button size="sm" variant="secondary" className="w-full">
+                            📣 {t('promoteListing')}
                           </Button>
                         </Link>
                       </div>
@@ -401,6 +474,16 @@ export default async function DashboardPage() {
               </p>
             </div>
           )}
+        </div>
+
+        {/* Trust block */}
+        <div className="mb-10 bg-white rounded-2xl border-2 border-blue-100 p-6">
+          <h3 className="text-xl font-black text-gray-900 mb-4">{t('howItWorksTitle')}</h3>
+          <div className="grid md:grid-cols-3 gap-3 text-sm font-semibold text-gray-700">
+            <div>✔ {t('howItWorksFree')}</div>
+            <div>✔ {t('howItWorksPayOnTenant')}</div>
+            <div>✔ {t('howItWorksStayTerms')}</div>
+          </div>
         </div>
 
         {/* Quick Links */}
