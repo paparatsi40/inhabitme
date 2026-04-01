@@ -144,6 +144,8 @@ export default async function DashboardPage() {
   let leadsCount = 0
   let newInquiriesCount = 0
   let recentInquiries: any[] = []
+  let hotInquiriesCount = 0
+  let paidInquiriesCount = 0
 
   if (ownedListingIds.length > 0) {
     const { count } = await supabase
@@ -164,6 +166,8 @@ export default async function DashboardPage() {
     const sevenDaysAgo = new Date()
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
     newInquiriesCount = recentInquiries.filter((item: any) => new Date(item.created_at) >= sevenDaysAgo).length
+    hotInquiriesCount = recentInquiries.filter((item: any) => item.score_label === 'HOT').length
+    paidInquiriesCount = recentInquiries.filter((item: any) => Boolean(item.paid)).length
   }
   
   // Count de bookings pendientes como host
@@ -300,19 +304,20 @@ export default async function DashboardPage() {
             </div>
           </Link>
 
-          {/* Vistas */}
-          <Link href="/dashboard/analytics">
+          {/* Pipeline */}
+          <Link href="/dashboard/inquiries">
             <div className="bg-white rounded-2xl p-6 shadow-sm border-2 border-orange-100 hover:shadow-lg hover:border-orange-400 transition-all cursor-pointer">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl">
                   <Eye className="h-6 w-6 text-orange-600" />
                 </div>
-                {viewsStats.total_views > 0 ? (
+                {hotInquiriesCount > 0 ? (
                   <TrendingUp className="h-5 w-5 text-orange-600" />
                 ) : null}
               </div>
-              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('views')}</p>
-              <p className="text-4xl font-black text-gray-900">{viewsStats.total_views?.toLocaleString() || 0}</p>
+              <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-1">{t('pipeline')}</p>
+              <p className="text-2xl font-black text-gray-900">{`${leadsCount}/${hotInquiriesCount}/${paidInquiriesCount}`}</p>
+              <p className="text-xs text-gray-500 mt-1">{t('pipelineHint')}</p>
             </div>
           </Link>
           
@@ -351,8 +356,8 @@ export default async function DashboardPage() {
                       <a href={`mailto:${inquiry.email || ''}`} className="text-sm font-semibold text-blue-600 hover:text-blue-700">
                         {t('reply')}
                       </a>
-                      <Link href="/dashboard/properties" className="text-sm font-semibold text-gray-700 hover:text-gray-900">
-                        {t('viewProfile')}
+                      <Link href={`/dashboard/inquiries/${inquiry.id}` as any} className="text-sm font-semibold text-gray-700 hover:text-gray-900">
+                        {t('viewDetails')}
                       </Link>
                     </div>
                   </div>

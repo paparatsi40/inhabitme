@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { scoreLead } from '@/lib/leads/scoreLead'
+import { getHostInfo } from '@/lib/clerk/getHostInfo'
+import { sendHostInquiryNotification } from '@/lib/email/send-host-inquiry-notification'
 
 const toIsoDate = (value: string) => {
   const d = new Date(value)
@@ -87,6 +89,26 @@ export async function POST(req: NextRequest) {
     if (insertError) {
       console.error('[inquiries.POST] insert error:', insertError)
       return NextResponse.json({ error: 'Failed to create inquiry' }, { status: 500 })
+    }
+
+    try {
+      const hostInfo = await getHostInfo(String(listing.owner_id))
+      if (hostInfo?.email) {
+        await sendHostInquiryNotification({
+          hostEmail: hostInfo.email,
+          hostName: hostInfo.name,
+          listingTitle: listing.title || 'Listing',
+          listingId: listing.id,
+          city: listing.city_name || '',
+          moveInDate: startDate,
+          durationMonths: durationMonthsRaw,
+          guestEmail: guestEmailFromBody || undefined,
+          guestMessage: message,
+          inquiryId: inserted.id,
+        })
+      }
+    } catch (emailError) {
+      console.error('[inquiries.POST] host email notify failed:', emailError)
     }
 
     return NextResponse.json({ success: true, inquiryId: inserted.id })
