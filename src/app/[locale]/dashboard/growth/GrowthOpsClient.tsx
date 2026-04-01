@@ -67,6 +67,23 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
 
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
 
+  function redirectToLocalizedSignIn() {
+    if (typeof window === 'undefined') return
+
+    const pathParts = window.location.pathname.split('/').filter(Boolean)
+    const locale = pathParts[0] === 'es' ? 'es' : 'en'
+    const redirectUrl = encodeURIComponent(`${window.location.pathname}${window.location.search}`)
+
+    window.location.href = `/${locale}/sign-in?redirect_url=${redirectUrl}`
+  }
+
+  function handleUnauthorized() {
+    setErrorMessage('Session expired. Redirecting to sign in...')
+    setTimeout(() => {
+      redirectToLocalizedSignIn()
+    }, 150)
+  }
+
   async function loadAll() {
     setIsRefreshing(true)
     setErrorMessage(null)
@@ -88,6 +105,11 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
         pipelineRes.json().catch(() => ({})),
         kpiRes.json().catch(() => ({})),
       ])
+
+      if (pipelineRes.status === 401 || kpiRes.status === 401) {
+        handleUnauthorized()
+        return
+      }
 
       let hasError = false
 
@@ -154,6 +176,11 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
 
       const data = await res.json().catch(() => ({}))
 
+      if (res.status === 401) {
+        handleUnauthorized()
+        return
+      }
+
       if (!res.ok) {
         setErrorMessage(data?.error || 'Failed to add lead.')
         return
@@ -194,6 +221,12 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
       })
 
       const data = await res.json().catch(() => ({}))
+
+      if (res.status === 401) {
+        setLeads(previousLeads)
+        handleUnauthorized()
+        return
+      }
 
       if (!res.ok) {
         setLeads(previousLeads)
@@ -241,6 +274,11 @@ export function GrowthOpsClient({ initialData }: { initialData: GrowthOpsInitial
       })
 
       const data = await res.json().catch(() => ({}))
+
+      if (res.status === 401) {
+        handleUnauthorized()
+        return
+      }
 
       if (!res.ok) {
         setErrorMessage(data?.error || 'Failed to save KPI row.')
