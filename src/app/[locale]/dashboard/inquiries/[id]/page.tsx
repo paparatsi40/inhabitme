@@ -22,7 +22,7 @@ export default async function InquiryDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string; locale: string }>
-  searchParams: Promise<{ session_id?: string; unlocked?: string }>
+  searchParams: Promise<{ session_id?: string; proceeded?: string }>
 }) {
   const { userId } = await auth()
   const user = await currentUser()
@@ -125,11 +125,11 @@ export default async function InquiryDetailPage({
         }
       }
     } catch (error) {
-      console.error('[InquiryDetail] fallback unlock error:', error)
+      console.error('[InquiryDetail] fallback proceed error:', error)
     }
   }
 
-  const isRecentlyUnlocked = Boolean(query?.unlocked === '1' || (query?.session_id && inquiry.paid))
+  const isRecentlyProceeded = Boolean(query?.proceeded === '1' || (query?.session_id && inquiry.paid))
   const inquiryMessage = parseInquiryMessage(inquiry.source, t('inquiryReceived'))
 
   return (
@@ -139,7 +139,7 @@ export default async function InquiryDetailPage({
           <ArrowLeft className="h-4 w-4" /> {t('backToInquiries')}
         </Link>
 
-        {isRecentlyUnlocked && (
+        {isRecentlyProceeded && (
           <div className="mb-4 rounded-2xl border-2 border-green-200 bg-green-50 p-4 text-green-800 flex items-start gap-3">
             <CheckCircle2 className="h-5 w-5 mt-0.5" />
             <div>
@@ -223,7 +223,7 @@ export default async function InquiryDetailPage({
                 <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-purple-700 font-bold hover:bg-purple-50">
                   <ArrowRightCircle className="h-4 w-4" /> {t('proceedBookingButton')}
                 </a>
-                <p className="text-xs opacity-80 mt-3">{t('unlockFallbackNote')}</p>
+                <p className="text-xs opacity-80 mt-3">{t('proceedNote')}</p>
               </div>
             )}
 

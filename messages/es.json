@@ -808,7 +808,7 @@
     "proceedBookingTitle": "Este huésped está listo para avanzar",
     "proceedBookingBody": "Completa la intención de reserva para continuar y cerrar más rápido.",
     "proceedBookingButton": "Continuar reserva",
-    "unlockFallbackNote": "Fallback: el desbloqueo de contacto sigue disponible si lo necesitas.",
+    "proceedNote": "El pago se cobra solo cuando la intención del inquilino es real."
     "savingsTitle": "Fees típicos de Airbnb: €500+ · InhabitMe: €129–€229",
     "savingsBody": "Puedes ahorrar €300+ por operación manteniendo alta conversión.",
     "internalChatNoteTitle": "Protección de chat interno",

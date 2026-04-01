@@ -808,7 +808,7 @@
     "proceedBookingTitle": "This guest is ready to proceed",
     "proceedBookingBody": "Complete booking intent to continue and close faster.",
     "proceedBookingButton": "Continue booking",
-    "unlockFallbackNote": "Fallback: contact unlock remains available if needed.",
+    "proceedNote": "Payment is charged only when tenant intent is real."
     "savingsTitle": "Typical Airbnb fees: €500+ · InhabitMe: €129–€229",
     "savingsBody": "You can save €300+ per deal while keeping conversions high.",
     "internalChatNoteTitle": "Internal chat protection",

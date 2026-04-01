@@ -35,7 +35,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
     }
 
     if (inquiry.paid) {
-      return NextResponse.redirect(new URL(`/${locale}/dashboard/inquiries/${id}?unlocked=1`, req.url))
+      return NextResponse.redirect(new URL(`/${locale}/dashboard/inquiries/${id}?proceeded=1`, req.url))
     }
 
     const { data: listing, error: listingError } = await supabase
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest, { params }: Ctx) {
           quantity: 1,
         },
       ],
-      success_url: `${BASE_URL}/${locale}/dashboard/inquiries/${id}?unlocked=1&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${BASE_URL}/${locale}/dashboard/inquiries/${id}?proceeded=1&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}/${locale}/dashboard/inquiries/${id}?canceled=1`,
       client_reference_id: inquiry.id,
       metadata: {
