@@ -83,6 +83,10 @@ export async function POST(req: NextRequest) {
         relocating: false,
         score,
         score_label: label,
+        conversation_status: 'inquiry_sent',
+        intent_score: 20,
+        message_count: 1,
+        last_interaction_at: new Date().toISOString(),
       })
       .select('id')
       .single()
@@ -90,6 +94,24 @@ export async function POST(req: NextRequest) {
     if (insertError) {
       console.error('[inquiries.POST] insert error:', insertError)
       return NextResponse.json({ error: 'Failed to create inquiry' }, { status: 500 })
+    }
+
+    try {
+      await supabase.from('booking_flow_events').insert({
+        inquiry_id: inserted.id,
+        event_name: 'send_inquiry',
+        actor_role: userId ? 'guest' : 'anonymous_guest',
+        actor_id: userId || null,
+        metadata: {
+          listingId: listing.id,
+          durationMonths: durationMonthsRaw,
+          numberOfGuests,
+          score,
+          scoreLabel: label,
+        },
+      })
+    } catch (eventError) {
+      console.error('[inquiries.POST] booking_flow_events insert failed:', eventError)
     }
 
     try {
@@ -112,7 +134,7 @@ export async function POST(req: NextRequest) {
       console.error('[inquiries.POST] host email notify failed:', emailError)
     }
 
-    return NextResponse.json({ success: true, inquiryId: inserted.id })
+    return NextResponse.json({ success: true, inquiryId: inserted.id, conversationStatus: 'inquiry_sent' })
   } catch (error: any) {
     console.error('[inquiries.POST] error:', error)
     return NextResponse.json({ error: error?.message || 'Internal server error' }, { status: 500 })

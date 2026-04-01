@@ -52,6 +52,22 @@ export async function GET(req: NextRequest, { params }: Ctx) {
     const pricing = getLeadPrice(durationMonths)
     const priceInCents = getLeadPriceInCents(durationMonths)
 
+    try {
+      await supabase.from('booking_flow_events').insert({
+        inquiry_id: inquiry.id,
+        event_name: 'payment_started',
+        actor_role: 'host',
+        actor_id: userId,
+        metadata: {
+          stage: 'inquiry_booking_intent',
+          durationMonths,
+          amount: priceInCents,
+        },
+      })
+    } catch (eventError) {
+      console.error('[inquiries/create-checkout] event log failed:', eventError)
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [

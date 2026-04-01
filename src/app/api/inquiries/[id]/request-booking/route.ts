@@ -107,6 +107,7 @@ async function createBookingFromInquiry(userId: string, inquiryId: string) {
       total_first_payment: totalFirstPayment,
       currency: bookingCurrency,
       status: 'pending_guest_payment',
+      flow_state: 'payment_pending',
       guest_message: parsedSource.message,
       guest_email: inquiry.email || null,
       host_response: 'Booking request initiated from inquiry thread',
@@ -119,6 +120,44 @@ async function createBookingFromInquiry(userId: string, inquiryId: string) {
   if (bookingError || !booking) {
     console.error('[inquiries/request-booking] bookingError:', bookingError)
     return { error: 'Failed to create booking request', status: 500 as const }
+  }
+
+  try {
+    await supabase
+      .from('availability_leads')
+      .update({
+        booking_id: booking.id,
+        conversation_status: 'booking_requested',
+        intent_score: 80,
+        last_interaction_at: new Date().toISOString(),
+      })
+      .eq('id', inquiry.id)
+
+    await supabase.from('booking_flow_events').insert([
+      {
+        inquiry_id: inquiry.id,
+        booking_id: booking.id,
+        event_name: 'booking_requested',
+        actor_role: 'host',
+        actor_id: userId,
+        metadata: {
+          monthsDuration,
+          numberOfGuests: parsedSource.numberOfGuests,
+        },
+      },
+      {
+        inquiry_id: inquiry.id,
+        booking_id: booking.id,
+        event_name: 'payment_pending',
+        actor_role: 'system',
+        actor_id: null,
+        metadata: {
+          reason: 'booking_request_created_from_inquiry',
+        },
+      },
+    ])
+  } catch (transitionError) {
+    console.error('[inquiries/request-booking] transition logging error:', transitionError)
   }
 
   return {

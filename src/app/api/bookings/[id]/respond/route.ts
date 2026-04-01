@@ -54,6 +54,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         .from('bookings')
         .update({
           status: 'pending_guest_payment',
+          flow_state: 'payment_pending',
           host_response: message,
           updated_at: new Date().toISOString(),
         })
@@ -89,6 +90,20 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         console.warn('⚠️ Could not send email (accept):', emailErr)
       }
 
+      try {
+        await supabase.from('booking_flow_events').insert({
+          booking_id: bookingId,
+          event_name: 'booking_accepted',
+          actor_role: 'host',
+          actor_id: userId,
+          metadata: {
+            nextState: 'payment_pending',
+          },
+        })
+      } catch (eventError) {
+        console.error('[bookings/respond] event log failed (accept):', eventError)
+      }
+
       return NextResponse.json({
         success: true,
         message: 'Booking accepted. Guest notified to pay.',
@@ -100,6 +115,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         .from('bookings')
         .update({
           status: 'pending_host_approval',
+          flow_state: 'booking_pending_host',
           host_response: message || 'Host requested changes before acceptance.',
           updated_at: new Date().toISOString(),
         })
@@ -125,6 +141,20 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         }
       }
 
+      try {
+        await supabase.from('booking_flow_events').insert({
+          booking_id: bookingId,
+          event_name: 'booking_changes_requested',
+          actor_role: 'host',
+          actor_id: userId,
+          metadata: {
+            note: message || null,
+          },
+        })
+      } catch (eventError) {
+        console.error('[bookings/respond] event log failed (changes):', eventError)
+      }
+
       return NextResponse.json({
         success: true,
         message: 'Host requested changes. Guest notified.',
@@ -137,6 +167,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         .from('bookings')
         .update({
           status: 'cancelled',
+          flow_state: 'declined',
           host_response: message,
           updated_at: new Date().toISOString(),
         })
@@ -161,6 +192,20 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         } catch (emailErr) {
           console.warn('⚠️ Could not send email (reject):', emailErr)
         }
+      }
+
+      try {
+        await supabase.from('booking_flow_events').insert({
+          booking_id: bookingId,
+          event_name: 'booking_declined',
+          actor_role: 'host',
+          actor_id: userId,
+          metadata: {
+            note: message || null,
+          },
+        })
+      } catch (eventError) {
+        console.error('[bookings/respond] event log failed (reject):', eventError)
       }
 
       return NextResponse.json({

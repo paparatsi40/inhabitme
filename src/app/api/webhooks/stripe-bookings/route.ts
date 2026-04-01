@@ -70,12 +70,15 @@ export async function POST(request: NextRequest) {
           const bookingCurrency = normalizeCurrency(session.metadata?.currency || booking.currency)
           
           // Update booking status to confirmed
+          const nextStatus = booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
+            ? 'confirmed'
+            : 'pending_host_payment'
+
           const { error: updateError } = await supabase
             .from('bookings')
             .update({
-              status: booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
-                ? 'confirmed'
-                : 'pending_host_payment',
+              status: nextStatus,
+              flow_state: nextStatus === 'confirmed' ? 'confirmed' : 'payment_pending',
               guest_payment_status: 'paid',
               guest_paid_at: new Date().toISOString(),
               guest_payment_intent_id: (session.payment_intent as string) || null,
@@ -87,6 +90,32 @@ export async function POST(request: NextRequest) {
           if (updateError) {
             console.error('Error updating booking:', updateError)
             return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+          }
+
+          try {
+            await supabase.from('booking_flow_events').insert([
+              {
+                booking_id: bookingId,
+                event_name: 'payment_completed',
+                actor_role: 'guest',
+                actor_id: booking.guest_id,
+                metadata: {
+                  sessionId: session.id,
+                  nextStatus,
+                },
+              },
+              {
+                booking_id: bookingId,
+                event_name: nextStatus === 'confirmed' ? 'booking_confirmed' : 'waiting_host_payment',
+                actor_role: 'system',
+                actor_id: null,
+                metadata: {
+                  sessionId: session.id,
+                },
+              },
+            ])
+          } catch (eventError) {
+            console.error('[stripe-bookings] event logging failed (guest payment):', eventError)
           }
 
           // Send confirmation emails to both guest and host with contacts
@@ -121,6 +150,7 @@ export async function POST(request: NextRequest) {
             .from('bookings')
             .update({
               status: 'pending_guest_payment',
+              flow_state: 'payment_pending',
               updated_at: new Date().toISOString(),
             })
             .eq('id', bookingId)
@@ -128,6 +158,31 @@ export async function POST(request: NextRequest) {
           if (acceptError) {
             console.error('Error accepting booking:', acceptError)
             return NextResponse.json({ error: 'Accept failed' }, { status: 500 })
+          }
+
+          try {
+            await supabase.from('booking_flow_events').insert([
+              {
+                booking_id: bookingId,
+                event_name: 'payment_completed',
+                actor_role: 'host',
+                actor_id: booking.host_id,
+                metadata: {
+                  sessionId: session.id,
+                },
+              },
+              {
+                booking_id: bookingId,
+                event_name: 'payment_started',
+                actor_role: 'system',
+                actor_id: null,
+                metadata: {
+                  for: 'guest',
+                },
+              },
+            ])
+          } catch (eventError) {
+            console.error('[stripe-bookings] event logging failed (host payment):', eventError)
           }
 
           // Send email to guest to pay
