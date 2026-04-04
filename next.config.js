@@ -100,6 +100,11 @@ const nextConfig = {
         destination: "/sitemap.xml",
         locale: false,
       },
+      {
+        source: "/favicon.ico",
+        destination: "/favicon.svg",
+        locale: false,
+      },
     ];
   },
 

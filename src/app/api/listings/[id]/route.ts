@@ -34,7 +34,31 @@ export async function GET(request: NextRequest, { params }: Ctx) {
         featured,
         owner_id,
         status,
-        created_at
+        created_at,
+        bedrooms,
+        bathrooms,
+        wifi_speed_mbps,
+        has_desk,
+        has_second_monitor,
+        furnished,
+        min_months,
+        max_months,
+        has_heating,
+        has_ac,
+        has_balcony,
+        has_terrace,
+        has_washing_machine,
+        has_dryer,
+        has_dishwasher,
+        has_kitchen,
+        has_elevator,
+        has_parking,
+        has_doorman,
+        floor_number,
+        pets_allowed,
+        smoking_allowed,
+        has_security_system,
+        has_safe
       `)
       .eq('id', listingId)
       .single()
