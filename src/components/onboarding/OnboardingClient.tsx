@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
-import { useUser } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Building2, User, Check } from 'lucide-react';
@@ -11,12 +10,11 @@ import { Building2, User, Check } from 'lucide-react';
 export default function OnboardingClient() {
   const router = useRouter();
   const locale = useLocale();
-  const { user } = useUser();
   const [selectedRole, setSelectedRole] = useState<'guest' | 'host' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleComplete = async () => {
-    if (!selectedRole || !user) return;
+    if (!selectedRole) return;
 
     setIsLoading(true);
     
@@ -25,9 +23,8 @@ export default function OnboardingClient() {
       const response = await fetch('/api/user/role', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          clerkId: user.id,
-          role: selectedRole.toUpperCase() 
+        body: JSON.stringify({
+          role: selectedRole.toUpperCase()
         }),
       });
 

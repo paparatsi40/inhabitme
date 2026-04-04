@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { X, Calendar, Euro, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
 import { useLocale, useTranslations } from 'next-intl';
 import { getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
 
@@ -13,7 +12,6 @@ interface BookingRequestModalProps {
 }
 
 export function BookingRequestModal({ isOpen, onClose, property }: BookingRequestModalProps) {
-  const { user } = useUser();
   const locale = useLocale();
   const t = useTranslations('bookingModal');
   const [checkIn, setCheckIn] = useState('');
