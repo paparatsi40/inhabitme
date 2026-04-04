@@ -29,6 +29,7 @@ const CITY_TO_CURRENCY: Record<string, SupportedCurrency> = {
   medellin: 'USD',
   medellín: 'USD',
   austin: 'USD',
+  miami: 'USD',
 }
 
 export function normalizeCurrency(input: unknown): SupportedCurrency {
