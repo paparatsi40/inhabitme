@@ -143,6 +143,18 @@ export const CITY_NEIGHBORHOODS: Record<string, CityNeighborhoods> = {
       { name: 'Tarrytown', slug: 'tarrytown' },
     ],
   },
+  miami: {
+    slug: 'miami',
+    name: 'Miami',
+    neighborhoods: [
+      { name: 'Brickell', slug: 'brickell' },
+      { name: 'Wynwood', slug: 'wynwood' },
+      { name: 'Miami Beach', slug: 'miami-beach' },
+      { name: 'Downtown', slug: 'downtown' },
+      { name: 'Edgewater', slug: 'edgewater' },
+      { name: 'Coconut Grove', slug: 'coconut-grove' },
+    ],
+  },
 }
 
 type NeighborhoodRelations = {
@@ -496,6 +508,40 @@ export const NEIGHBORHOOD_RELATIONS: NeighborhoodRelations = {
       { slug: 'zilker', name: 'Zilker', description: 'Cerca de Lady Bird Lake' },
       { slug: 'barton-hills', name: 'Barton Hills', description: 'Tranquilo' },
       { slug: 'domain', name: 'The Domain', description: 'Corporativo' },
+    ],
+  },
+
+  // MIAMI, FLORIDA
+  miami: {
+    brickell: [
+      { slug: 'downtown', name: 'Downtown', description: 'Céntrico y conectado' },
+      { slug: 'edgewater', name: 'Edgewater', description: 'Bahía y lifestyle moderno' },
+      { slug: 'coconut-grove', name: 'Coconut Grove', description: 'Verde y bohemio' },
+    ],
+    wynwood: [
+      { slug: 'miami-beach', name: 'Miami Beach', description: 'Playa y ocio premium' },
+      { slug: 'downtown', name: 'Downtown', description: 'Conectividad y servicios' },
+      { slug: 'brickell', name: 'Brickell', description: 'Finance y high-rise living' },
+    ],
+    'miami-beach': [
+      { slug: 'wynwood', name: 'Wynwood', description: 'Arte y creatividad' },
+      { slug: 'edgewater', name: 'Edgewater', description: 'Residencial frente a la bahía' },
+      { slug: 'downtown', name: 'Downtown', description: 'Urbano y accesible' },
+    ],
+    downtown: [
+      { slug: 'brickell', name: 'Brickell', description: 'Centro financiero' },
+      { slug: 'wynwood', name: 'Wynwood', description: 'Cultural y dinámico' },
+      { slug: 'edgewater', name: 'Edgewater', description: 'Skyline y bahía' },
+    ],
+    edgewater: [
+      { slug: 'downtown', name: 'Downtown', description: 'Movilidad y servicios' },
+      { slug: 'miami-beach', name: 'Miami Beach', description: 'Lifestyle costero' },
+      { slug: 'brickell', name: 'Brickell', description: 'Negocios y amenities' },
+    ],
+    'coconut-grove': [
+      { slug: 'brickell', name: 'Brickell', description: 'Conectado al centro financiero' },
+      { slug: 'edgewater', name: 'Edgewater', description: 'Moderno y residencial' },
+      { slug: 'wynwood', name: 'Wynwood', description: 'Creatividad y gastronomía' },
     ],
   },
 }

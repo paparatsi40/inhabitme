@@ -175,6 +175,21 @@ export const NEIGHBORHOOD_DESCRIPTIONS: Record<string, Record<string, string>> =
     tarrytown:
       "El barrio más exclusivo de Austin. Casas señoriales, cercanía a UT y estabilidad premium. Ideal para ejecutivos, profesores universitarios y médicos que buscan exclusividad y tradición.",
   },
+
+  miami: {
+    brickell:
+      "Centro financiero de Miami con rascacielos modernos, excelente oferta gastronómica y conexión rápida al downtown. Ideal para profesionales remotos que buscan un entorno premium con vida urbana activa.",
+    wynwood:
+      "Distrito creativo famoso por sus murales, galerías y comunidad emprendedora. Perfecto para perfiles creativos y startups que valoran inspiración, networking y ambiente internacional.",
+    "miami-beach":
+      "Lifestyle costero con playa, wellness y oferta turística de alto nivel. Ideal para quienes priorizan calidad de vida, clima y acceso a ocio premium durante estancias medias.",
+    downtown:
+      "Núcleo urbano de Miami con alta conectividad, servicios y acceso rápido al transporte metropolitano. Excelente para profesionales que necesitan movilidad y proximidad a zonas clave.",
+    edgewater:
+      "Barrio residencial moderno frente a la bahía, con vistas al skyline y ambiente más relajado que el centro. Muy atractivo para remote workers que buscan equilibrio entre ciudad y tranquilidad.",
+    "coconut-grove":
+      "Zona verde y bohemia con calles arboladas, marinas y ritmo pausado. Perfecta para familias y profesionales que quieren un estilo de vida tranquilo sin perder acceso al ecosistema de Miami.",
+  },
 }
 
 // Descripciones cortas para cards (max 80 caracteres)
@@ -258,6 +273,14 @@ export const NEIGHBORHOOD_SHORT_DESCRIPTIONS: Record<string, Record<string, stri
     domain: "Corporativo y moderno",
     "east-austin": "Creativo y emergente",
     tarrytown: "Premium y exclusivo",
+  },
+  miami: {
+    brickell: "Finance y lifestyle premium",
+    wynwood: "Arte urbano y startups",
+    "miami-beach": "Playa y bienestar",
+    downtown: "Céntrico y conectado",
+    edgewater: "Skyline y bahía",
+    "coconut-grove": "Verde y bohemio",
   },
 }
 
