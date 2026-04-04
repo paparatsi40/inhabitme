@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
@@ -40,6 +40,14 @@ interface CityCarouselMessages {
 export function CityCarousel({ messages }: { messages: CityCarouselMessages }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const currentCity = CITIES[currentIndex]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % CITIES.length)
+    }, 4500)
+
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="relative">
