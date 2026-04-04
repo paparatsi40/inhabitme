@@ -408,6 +408,14 @@
       "domain": "El 'segundo downtown' de Austin. Tech hub con Apple, Oracle y Meta cercanos. Shopping, restaurantes y vida corporativa. Perfecto para empleados tech que buscan comodidad y acceso a amenities.",
       "east-austin": "Barrio en plena gentrificación, auténtico y artístico. Music venues, food trucks y comunidad creativa. Precios más accesibles con alto potencial de valorización. Ideal para millennials y creativos.",
       "tarrytown": "El barrio más exclusivo de Austin. Casas señoriales, cercanía a UT y estabilidad premium. Ideal para ejecutivos, profesores universitarios y médicos que buscan exclusividad y tradición."
+    },
+    "miami": {
+      "brickell": "Centro financiero de Miami con rascacielos modernos, oferta gastronómica premium y acceso rápido al downtown. Ideal para profesionales remotos que buscan entorno urbano de alto nivel.",
+      "wynwood": "Distrito creativo famoso por sus murales, galerías y energía emprendedora. Perfecto para perfiles creativos y startups que valoran inspiración y networking internacional.",
+      "miami-beach": "Lifestyle costero con playa, bienestar y ocio premium. Ideal para estancias medias centradas en calidad de vida y clima cálido.",
+      "downtown": "Núcleo urbano de Miami con alta conectividad, servicios y acceso rápido al transporte. Excelente para profesionales que necesitan movilidad y centralidad.",
+      "edgewater": "Barrio residencial moderno frente a la bahía, con vistas al skyline y un ritmo más calmado que el centro. Muy atractivo para remote workers que buscan equilibrio.",
+      "coconut-grove": "Zona verde y bohemia con calles arboladas, marinas y ritmo relajado. Perfecta para familias y profesionales que quieren tranquilidad sin perder conexión con la ciudad."
     }
   },
   "footer": {

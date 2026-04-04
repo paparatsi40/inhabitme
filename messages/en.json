@@ -408,6 +408,14 @@
       "domain": "Austin's 'second downtown'. Tech hub with Apple, Oracle, and Meta nearby. Shopping, restaurants, and corporate life. Perfect for tech employees seeking comfort and access to amenities.",
       "east-austin": "Neighborhood in full gentrification, authentic and artistic. Music venues, food trucks, and creative community. More accessible prices with high appreciation potential. Ideal for millennials and creatives.",
       "tarrytown": "Austin's most exclusive neighborhood. Stately homes, proximity to UT, and premium stability. Ideal for executives, university professors, and doctors seeking exclusivity and tradition."
+    },
+    "miami": {
+      "brickell": "Miami's financial core with modern high-rises, premium dining, and fast access to downtown. Ideal for remote professionals who want an upscale urban environment.",
+      "wynwood": "Creative district known for street art, galleries, and startup energy. Great for creatives and founders who value inspiration, networking, and international vibe.",
+      "miami-beach": "Coastal lifestyle with beach access, wellness, and premium leisure. Perfect for medium-term stays focused on quality of life and sunshine.",
+      "downtown": "Miami's urban center with strong connectivity, services, and fast transport links. Great for professionals who need mobility and central access.",
+      "edgewater": "Modern residential bayfront area with skyline views and a calmer rhythm than downtown. Attractive for remote workers seeking city-life balance.",
+      "coconut-grove": "Green and bohemian neighborhood with tree-lined streets, marinas, and relaxed pace. Ideal for families and professionals wanting tranquility near the city core."
     }
   },
   "footer": {
