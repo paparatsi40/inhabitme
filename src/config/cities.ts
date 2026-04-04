@@ -258,6 +258,28 @@ export const CITIES: CityConfig[] = [
     ],
     coordinates: { lat: 30.2672, lng: -97.7431, zoom: 13 },
   },
+  {
+    slug: 'miami',
+    name: 'Miami',
+    subtitle: 'Sunshine y startup scene',
+    price: '1200 EUR',
+    country: 'US',
+    image: 'https://images.unsplash.com/photo-1535498730771-e735b998cd64?w=640&h=480&fit=crop&q=60',
+    gradient: 'from-cyan-600 to-blue-700',
+    hoverBorder: 'hover:border-cyan-400',
+    textColor: 'text-cyan-700',
+    description: 'Miami para nómadas: estancias medias con lifestyle costero y ecosistema tech.',
+    indexable: true,
+    neighborhoods: [
+      { slug: 'brickell', name: 'Brickell', description: 'Finance y high-rise living' },
+      { slug: 'wynwood', name: 'Wynwood', description: 'Arte, creatividad y startups' },
+      { slug: 'miami-beach', name: 'Miami Beach', description: 'Playa y lifestyle premium' },
+      { slug: 'downtown', name: 'Downtown', description: 'Céntrico y conectado' },
+      { slug: 'edgewater', name: 'Edgewater', description: 'Residencial moderno frente a la bahía' },
+      { slug: 'coconut-grove', name: 'Coconut Grove', description: 'Verde, bohemio y familiar' },
+    ],
+    coordinates: { lat: 25.7617, lng: -80.1918, zoom: 12 },
+  },
 ]
 
 // Helper functions
