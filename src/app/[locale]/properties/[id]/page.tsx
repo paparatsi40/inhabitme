@@ -7,44 +7,27 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { THEME_PRESETS } from '@/lib/domain/listing-theme'
 import { generatePropertyMetadata } from '@/lib/seo/metadata-helpers'
 
-// Desactivar caché para esta página - siempre obtener datos frescos
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+// ISR: regenerar la página a lo sumo cada 60 segundos
+export const revalidate = 60
 
 type PageProps = {
   params: Promise<{ id: string; locale: string }>
 }
 
 async function getListingById(id: string) {
-  console.log('[PropertyPage] 🔍 getListingById called with ID:', id)
-  
   try {
     const supabase = getSupabaseServerClient()
-    console.log('[PropertyPage] ✅ Supabase client created')
-    
     const { data, error } = await supabase
       .from('listings')
       .select('*')
       .eq('id', id)
       .eq('status', 'active')
       .single()
-    
-    console.log('[PropertyPage] 📊 Query result - data:', data ? 'found' : 'null', 'error:', error)
-    
-    if (error) {
-      console.error('[PropertyPage] ❌ Supabase error:', JSON.stringify(error, null, 2))
-      return null
-    }
-    
-    if (!data) {
-      console.log('[PropertyPage] ❌ No data found for ID:', id)
-      return null
-    }
-    
-    console.log('[PropertyPage] ✅ Found listing:', data.title)
+
+    if (error || !data) return null
     return data
   } catch (err: any) {
-    console.error('[PropertyPage] 🔥 Exception in getListingById:', err?.message || err)
+    console.error('[PropertyPage] Error fetching listing:', err?.message)
     return null
   }
 }

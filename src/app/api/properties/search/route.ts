@@ -60,7 +60,10 @@ export async function GET(request: Request) {
       createdAt: listing.created_at
     }));
 
-    return NextResponse.json({ data: listings });
+    return NextResponse.json(
+      { data: listings },
+      { headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=60' } }
+    );
   } catch (error: any) {
     console.error('[properties/search] Unexpected error:', error?.message);
     return NextResponse.json({

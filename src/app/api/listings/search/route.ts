@@ -260,10 +260,10 @@ export async function GET(request: NextRequest) {
     const listings = (data || []).map(mapRowToListing);
     const total = count ?? listings.length
 
-    return NextResponse.json({
-      data: listings,
-      pagination: { page, limit, total, hasMore: offset + listings.length < total },
-    });
+    return NextResponse.json(
+      { data: listings, pagination: { page, limit, total, hasMore: offset + listings.length < total } },
+      { headers: { 'Cache-Control': 's-maxage=30, stale-while-revalidate=60' } }
+    );
   } catch (error: any) {
     console.error('[API /api/listings/search] Exception:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
