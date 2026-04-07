@@ -1,8 +1,23 @@
+/**
+ * Host Checkout — InhabitMe
+ *
+ * Crea una sesión de Stripe Checkout para que el HOST pague la tarifa
+ * de conexión de InhabitMe. Solo un line item: el fee según duración.
+ *
+ * Fuente de verdad de precios: src/lib/pricing/duration-fees.ts
+ *
+ * Flujo:
+ *  Host aprueba booking → ambos reciben notificación de pago
+ *  Host paga aquí → webhook actualiza host_payment_status = 'paid'
+ *  Si guest ya pagó → booking pasa a 'confirmed' y se liberan contactos
+ *  Si guest no ha pagado → booking queda en estado intermedio hasta que guest pague
+ */
+
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, clerkClient } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
-import { normalizeCurrency, toStripeCurrency } from '@/lib/currency'
+import { calculateDurationFees, getTierName, type SupportedCurrency } from '@/lib/pricing/duration-fees'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
@@ -13,131 +28,115 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Cualquier estado post-aprobación permite pagar (host y guest pueden pagar en cualquier orden)
+const PAYABLE_STATUSES = ['approved', 'pending_guest_payment', 'pending_host_payment']
+
 type Ctx = { params: Promise<{ id: string }> }
 
 export async function POST(request: NextRequest, { params }: Ctx) {
-  console.log('🔥 HOST CHECKOUT CALLED')
-
   try {
     const { userId } = await auth()
     if (!userId) {
-      console.log('❌ No user authenticated')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    console.log('✅ User authenticated:', userId)
-
     const { id: bookingId } = await params
-    console.log('📍 Booking ID:', bookingId)
-
     if (!bookingId) {
-      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 })
+      return NextResponse.json({ error: 'Booking ID requerido' }, { status: 400 })
     }
 
-    // Get booking
+    // Obtener booking con datos de la propiedad
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('*, property:property_id(title, featured)')
+      .select('*, listings(title, city, featured)')
       .eq('id', bookingId)
       .single()
 
     if (bookingError || !booking) {
-      console.log('❌ Booking not found:', bookingError?.message)
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Booking no encontrado' }, { status: 404 })
     }
 
-    console.log('✅ Booking found:', bookingId)
-
-    // Verify user is the host
+    // Verificar que el usuario es el host
     if (booking.host_id !== userId) {
-      console.log('❌ Unauthorized - user is not the host')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
-    console.log('✅ User is the host')
-
-    // Check if already paid
-    if (booking.host_payment_status === 'paid') {
-      console.log('⚠️ Already paid')
-      return NextResponse.json({ error: 'Already paid' }, { status: 400 })
+    // Verificar que el booking está en un estado que permite pago
+    if (!PAYABLE_STATUSES.includes(booking.status)) {
+      return NextResponse.json(
+        { error: `Booking no disponible para pago. Estado actual: ${booking.status}` },
+        { status: 400 }
+      )
     }
 
-    // Get host email from Clerk
+    // No cobrar dos veces
+    if (booking.host_payment_status === 'paid') {
+      return NextResponse.json({ error: 'Ya completaste el pago' }, { status: 400 })
+    }
+
+    // Moneda: el host puede elegir EUR o USD en el UI.
+    // Si no se envía en el body, se usa la moneda del booking (detectada por ubicación del guest).
+    const body = await request.json().catch(() => ({}))
+    const rawCurrency = (body.currency ?? booking.currency ?? 'eur').toLowerCase()
+    const currency: SupportedCurrency = rawCurrency === 'usd' ? 'usd' : 'eur'
+
+    // Calcular fee — fuente única de verdad: duration-fees.ts
+    const months = booking.months_duration ?? 2
+    const fees = calculateDurationFees(months, currency)
+    const isFeatured = booking.listings?.featured ?? false
+    const hostFeeAmount = isFeatured ? fees.hostFeaturedFee : fees.hostFee
+
+    const tierName = getTierName(months)
+    const durationLabel = months === 1 ? '1 mes' : `${months} meses`
+    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const currencySymbol = currency === 'usd' ? '$' : '€'
+
+    // Obtener email del host desde Clerk
     let hostEmail = process.env.INTERNAL_ALERT_EMAIL!
     try {
       const client = await clerkClient()
       const user = await client.users.getUser(userId)
-      hostEmail = user.emailAddresses[0]?.emailAddress || hostEmail
-      console.log('✅ Host email:', hostEmail)
+      hostEmail = user.emailAddresses[0]?.emailAddress ?? hostEmail
     } catch {
-      console.log('⚠️ Could not fetch host email, using fallback')
+      console.warn('⚠️ No se pudo obtener email del host desde Clerk, usando fallback')
     }
-
-    // Use host_fee_amount from database (calculated by trigger based on booking value)
-    // If not set, calculate based on duration and featured status
-    let hostFeeAmount = booking.host_fee_amount
-
-    if (!hostFeeAmount && booking.months_duration) {
-      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees')
-      const fees = calculateDurationFees(booking.months_duration)
-      hostFeeAmount = booking.featured_used ? fees.hostFeaturedFee : fees.hostFee
-    } else if (!hostFeeAmount) {
-      hostFeeAmount = 7900 // Default to 2-3 months tier if no duration
-    }
-
-    const pricingTier = booking.pricing_tier || 'Standard'
-    const bookingCurrency = normalizeCurrency(booking.currency)
-    const stripeCurrency = toStripeCurrency(bookingCurrency)
-
-    console.log('💰 Host fee amount:', hostFeeAmount / 100, bookingCurrency)
-    console.log('📊 Pricing tier:', pricingTier)
-
-    // Create Stripe checkout session
-    console.log('🔵 Creating Stripe checkout session...')
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       mode: 'payment',
+      payment_method_types: ['card'],
       customer_email: hostEmail,
       line_items: [
         {
           price_data: {
-            currency: stripeCurrency,
+            currency,
             product_data: {
-              name: `inhabitme Host Fee - ${pricingTier}`,
-              description: `Fee for accepting booking: ${booking.property?.title || 'Property'}`,
-              images: [
-                'https://res.cloudinary.com/dkrpgt4o5/image/upload/v1234567890/inhabitme-logo.png',
-              ],
+              name: `InhabitMe — Conexión confirmada · ${durationLabel}`,
+              description: `Acceso a los datos de contacto de tu huésped confirmado en "${propertyTitle}". Pago único ${currencySymbol}${hostFeeAmount / 100}. Sin comisiones adicionales.`,
             },
             unit_amount: hostFeeAmount,
           },
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/bookings/${bookingId}/host-payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/host/bookings/${bookingId}`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/host/bookings/${bookingId}?payment=success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/host/bookings/${bookingId}`,
       metadata: {
         booking_id: bookingId,
         host_id: userId,
         payment_type: 'host',
-        currency: bookingCurrency,
-        type: 'host_payment', // legacy compatibility
+        months_duration: String(months),
+        tier: tierName,
+        fee_cents: String(hostFeeAmount),
+        featured: String(isFeatured),
+        currency,
       },
     })
 
-    console.log('✅ Stripe session created:', session.id)
-    console.log('🔗 Checkout URL:', session.url)
-
-    return NextResponse.json({
-      sessionId: session.id,
-      url: session.url,
-    })
+    return NextResponse.json({ sessionId: session.id, url: session.url })
   } catch (error: any) {
-    console.error('❌ Host checkout error:', error)
-    console.error('Stack:', error?.stack)
+    console.error('❌ Host checkout error:', error?.message)
     return NextResponse.json(
-      { error: error?.message || 'Failed to create checkout' },
+      { error: 'Error al crear el checkout', details: error?.message },
       { status: 500 }
     )
   }

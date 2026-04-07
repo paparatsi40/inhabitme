@@ -1,6 +1,19 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 
-export async function getHostLeads(hostEmail: string) {
+export type HostLead = {
+  id: string
+  listing_id: string
+  city: string
+  neighborhood: string | null
+  start_date: string
+  email: string
+  score: number
+  score_label: 'HOT' | 'WARM' | 'COLD'
+  paid: boolean
+  created_at: string
+}
+
+export async function getHostLeads(hostEmail: string): Promise<HostLead[]> {
   const supabase = getSupabaseServerClient()
 
   const { data, error } = await supabase

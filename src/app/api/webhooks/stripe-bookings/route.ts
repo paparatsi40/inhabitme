@@ -1,9 +1,20 @@
+/**
+ * Stripe Webhook — InhabitMe (único punto de entrada)
+ *
+ * Maneja checkout.session.completed para guest y host.
+ * Ambos pueden pagar en cualquier orden. Cuando los dos han pagado,
+ * el booking pasa a 'confirmed' y se liberan los datos de contacto.
+ *
+ * Eventos manejados:
+ *  - checkout.session.completed → payment_type: 'guest' | 'host'
+ *  - checkout.session.expired   → logging futuro
+ */
+
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { formatMoneyFromMinor, normalizeCurrency } from '@/lib/currency'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
@@ -18,19 +29,14 @@ export async function POST(request: NextRequest) {
   const signature = (await headers()).get('stripe-signature')!
 
   let event: Stripe.Event
-
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    )
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err: any) {
-    console.error('❌ Webhook signature verification failed:', err.message)
+    console.error('❌ Webhook signature inválida:', err.message)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  console.log('🔔 Stripe webhook event:', event.type)
+  console.log('🔔 Stripe webhook:', event.type)
 
   const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -38,22 +44,16 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
-        
-        console.log('💳 Checkout completed:', {
-          sessionId: session.id,
-          metadata: session.metadata,
-        })
 
         const bookingId = session.metadata?.booking_id
-        const paymentTypeRaw = session.metadata?.payment_type || session.metadata?.type
-        const paymentType = paymentTypeRaw === 'guest_payment' ? 'guest' : paymentTypeRaw === 'host_payment' || paymentTypeRaw === 'host_fee' ? 'host' : paymentTypeRaw // normalized
+        const paymentType = session.metadata?.payment_type // 'guest' | 'host'
 
         if (!bookingId || !paymentType) {
-          console.error('Missing metadata:', session.metadata)
+          console.error('❌ Metadata incompleto:', session.metadata)
           return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
         }
 
-        // Get booking
+        // Obtener booking actualizado
         const { data: booking, error: bookingError } = await supabase
           .from('bookings')
           .select('*, listings(*)')
@@ -61,178 +61,102 @@ export async function POST(request: NextRequest) {
           .single()
 
         if (bookingError || !booking) {
-          console.error('Booking not found:', bookingId)
+          console.error('❌ Booking no encontrado:', bookingId)
           return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
         }
 
+        const paymentIntentId = typeof session.payment_intent === 'string'
+          ? session.payment_intent
+          : null
+
+        // ── Pago del GUEST ─────────────────────────────────────────────────
         if (paymentType === 'guest') {
-          console.log('✅ Guest payment completed')
-          const bookingCurrency = normalizeCurrency(session.metadata?.currency || booking.currency)
-          
-          // Update booking status to confirmed
-          const nextStatus = booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
-            ? 'confirmed'
-            : 'pending_host_payment'
+          console.log('💳 Guest payment completado para booking:', bookingId)
 
-          const { error: updateError } = await supabase
-            .from('bookings')
-            .update({
-              status: nextStatus,
-              flow_state: nextStatus === 'confirmed' ? 'confirmed' : 'payment_pending',
-              guest_payment_status: 'paid',
-              guest_paid_at: new Date().toISOString(),
-              guest_payment_intent_id: (session.payment_intent as string) || null,
-              currency: bookingCurrency,
+          await supabase.from('bookings').update({
+            guest_payment_status: 'paid',
+            guest_paid_at: new Date().toISOString(),
+            guest_payment_intent_id: paymentIntentId,
+            updated_at: new Date().toISOString(),
+          }).eq('id', bookingId)
+
+          // Registrar transacción
+          await supabase.from('payment_transactions').insert({
+            booking_id: bookingId,
+            payer_role: 'guest',
+            payer_id: booking.guest_id,
+            amount_cents: Number(session.amount_total ?? 0),
+            currency: 'eur',
+            payment_type: 'booking_guest_fee',
+            status: 'paid',
+            stripe_session_id: session.id,
+            stripe_payment_intent_id: paymentIntentId,
+            metadata: { source: 'stripe_webhook', tier: session.metadata?.tier },
+          }).then(({ error }) => {
+            if (error) console.error('⚠️ payment_transactions insert (guest):', error.message)
+          })
+
+          // Verificar si el host ya pagó → si es así, confirmar y liberar contactos
+          const hostAlreadyPaid = booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
+
+          if (hostAlreadyPaid) {
+            await confirmAndReleaseContacts(supabase, booking, session.id, 'guest')
+          } else {
+            // Host no ha pagado aún — actualizar estado y notificarle
+            await supabase.from('bookings').update({
+              status: 'pending_host_payment',
+              flow_state: 'payment_pending',
               updated_at: new Date().toISOString(),
-            })
-            .eq('id', bookingId)
+            }).eq('id', bookingId)
 
-          if (updateError) {
-            console.error('Error updating booking:', updateError)
-            return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+            console.log('⏳ Guest pagó. Esperando pago del host para liberar contactos.')
+            await sendHostPaymentReminderEmail(booking)
           }
+        }
 
-          try {
-            await supabase.from('payment_transactions').insert({
-              booking_id: bookingId,
-              payer_role: 'guest',
-              payer_id: booking.guest_id,
-              amount_cents: Number(session.amount_total || 0),
-              currency: bookingCurrency,
-              payment_type: 'booking_guest_payment',
-              status: 'paid',
-              stripe_session_id: session.id,
-              stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
-              metadata: {
-                source: 'stripe_webhook',
-              },
-            })
+        // ── Pago del HOST ──────────────────────────────────────────────────
+        else if (paymentType === 'host') {
+          console.log('💳 Host payment completado para booking:', bookingId)
 
-            await supabase.from('booking_flow_events').insert([
-              {
-                booking_id: bookingId,
-                event_name: 'payment_completed',
-                actor_role: 'guest',
-                actor_id: booking.guest_id,
-                metadata: {
-                  sessionId: session.id,
-                  nextStatus,
-                },
-              },
-              {
-                booking_id: bookingId,
-                event_name: nextStatus === 'confirmed' ? 'booking_confirmed' : 'waiting_host_payment',
-                actor_role: 'system',
-                actor_id: null,
-                metadata: {
-                  sessionId: session.id,
-                },
-              },
-            ])
-          } catch (eventError) {
-            console.error('[stripe-bookings] event logging failed (guest payment):', eventError)
-          }
+          await supabase.from('bookings').update({
+            host_payment_status: 'paid',
+            host_paid_at: new Date().toISOString(),
+            host_payment_intent_id: paymentIntentId,
+            updated_at: new Date().toISOString(),
+          }).eq('id', bookingId)
 
-          if (booking.inquiry_id) {
-            await supabase
-              .from('availability_leads')
-              .update({
-                contact_visible: true,
-                contact_unlocked_at: new Date().toISOString(),
-              })
-              .eq('id', booking.inquiry_id)
-          }
+          // Registrar transacción
+          await supabase.from('payment_transactions').insert({
+            booking_id: bookingId,
+            payer_role: 'host',
+            payer_id: booking.host_id,
+            amount_cents: Number(session.amount_total ?? 0),
+            currency: 'eur',
+            payment_type: 'booking_host_fee',
+            status: 'paid',
+            stripe_session_id: session.id,
+            stripe_payment_intent_id: paymentIntentId,
+            metadata: { source: 'stripe_webhook', tier: session.metadata?.tier, featured: session.metadata?.featured },
+          }).then(({ error }) => {
+            if (error) console.error('⚠️ payment_transactions insert (host):', error.message)
+          })
 
-          // Send confirmation emails to both guest and host with contacts
-          await sendContactsEmail(booking, 'guest')
-          await sendContactsEmail(booking, 'host')
+          // Verificar si el guest ya pagó → si es así, confirmar y liberar contactos
+          const guestAlreadyPaid = booking.guest_payment_status === 'paid'
 
-          console.log('✅ Contacts released to both parties')
-
-        } else if (paymentType === 'host') {
-          console.log('✅ Host payment completed')
-          const bookingCurrency = normalizeCurrency(session.metadata?.currency || booking.currency)
-
-          // Update booking with host payment info
-          const { error: updateError } = await supabase
-            .from('bookings')
-            .update({
-              host_payment_status: 'paid',
-              host_paid_at: new Date().toISOString(),
-              host_payment_intent_id: (session.payment_intent as string) || null,
-              currency: bookingCurrency,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', bookingId)
-
-          if (updateError) {
-            console.error('Error updating booking:', updateError)
-            return NextResponse.json({ error: 'Update failed' }, { status: 500 })
-          }
-
-          try {
-            await supabase.from('payment_transactions').insert({
-              booking_id: bookingId,
-              payer_role: 'host',
-              payer_id: booking.host_id,
-              amount_cents: Number(session.amount_total || 0),
-              currency: bookingCurrency,
-              payment_type: 'booking_host_payment',
-              status: 'paid',
-              stripe_session_id: session.id,
-              stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : null,
-              metadata: {
-                source: 'stripe_webhook',
-              },
-            })
-          } catch (paymentTransactionError) {
-            console.error('[stripe-bookings] payment_transactions insert failed (host):', paymentTransactionError)
-          }
-
-          // Now accept the booking and send email to guest
-          const { error: acceptError } = await supabase
-            .from('bookings')
-            .update({
+          if (guestAlreadyPaid) {
+            await confirmAndReleaseContacts(supabase, booking, session.id, 'host')
+          } else {
+            // Guest no ha pagado aún — actualizar estado y notificarle
+            await supabase.from('bookings').update({
               status: 'pending_guest_payment',
               flow_state: 'payment_pending',
               updated_at: new Date().toISOString(),
-            })
-            .eq('id', bookingId)
+            }).eq('id', bookingId)
 
-          if (acceptError) {
-            console.error('Error accepting booking:', acceptError)
-            return NextResponse.json({ error: 'Accept failed' }, { status: 500 })
+            console.log('⏳ Host pagó. Esperando pago del guest para liberar contactos.')
+            await sendGuestPaymentReminderEmail(booking)
           }
-
-          try {
-            await supabase.from('booking_flow_events').insert([
-              {
-                booking_id: bookingId,
-                event_name: 'payment_completed',
-                actor_role: 'host',
-                actor_id: booking.host_id,
-                metadata: {
-                  sessionId: session.id,
-                },
-              },
-              {
-                booking_id: bookingId,
-                event_name: 'payment_started',
-                actor_role: 'system',
-                actor_id: null,
-                metadata: {
-                  for: 'guest',
-                },
-              },
-            ])
-          } catch (eventError) {
-            console.error('[stripe-bookings] event logging failed (host payment):', eventError)
-          }
-
-          // Send email to guest to pay
-          await sendGuestPaymentEmail(booking)
-
-          console.log('✅ Guest notified to complete payment')
         }
 
         break
@@ -240,17 +164,16 @@ export async function POST(request: NextRequest) {
 
       case 'checkout.session.expired': {
         const session = event.data.object as Stripe.Checkout.Session
-        console.log('⏰ Checkout expired:', session.id)
-        // Could update booking to mark payment as failed/expired
+        console.log('⏰ Checkout expirado:', session.id, '| booking:', session.metadata?.booking_id)
+        // TODO: notificar al usuario que el enlace expiró y generar uno nuevo
         break
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        console.log(`ℹ️ Evento no manejado: ${event.type}`)
     }
 
     return NextResponse.json({ received: true })
-
   } catch (error: any) {
     console.error('❌ Webhook handler error:', error)
     return NextResponse.json(
@@ -260,177 +183,201 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Send contacts to guest or host
-async function sendContactsEmail(booking: any, recipient: 'guest' | 'host') {
-  const supabase = createClient(supabaseUrl, supabaseKey)
+// ─────────────────────────────────────────────────────────────────────────────
+// Confirmar booking y liberar datos de contacto a ambas partes
+// ─────────────────────────────────────────────────────────────────────────────
+async function confirmAndReleaseContacts(
+  supabase: ReturnType<typeof createClient>,
+  booking: any,
+  sessionId: string,
+  lastPayer: 'guest' | 'host'
+) {
+  console.log(`✅ Ambos pagaron. Confirmando booking ${booking.id} y liberando contactos.`)
 
+  // Confirmar el booking
+  await supabase.from('bookings').update({
+    status: 'confirmed',
+    flow_state: 'confirmed',
+    updated_at: new Date().toISOString(),
+  }).eq('id', booking.id)
+
+  // Log del evento
+  await supabase.from('booking_flow_events').insert([
+    {
+      booking_id: booking.id,
+      event_name: 'payment_completed',
+      actor_role: lastPayer,
+      actor_id: lastPayer === 'guest' ? booking.guest_id : booking.host_id,
+      metadata: { sessionId, lastPayer },
+    },
+    {
+      booking_id: booking.id,
+      event_name: 'booking_confirmed',
+      actor_role: 'system',
+      actor_id: null,
+      metadata: { trigger: 'both_payments_received' },
+    },
+  ]).then(({ error }) => {
+    if (error) console.error('⚠️ booking_flow_events insert:', error.message)
+  })
+
+  // Enviar datos de contacto a ambas partes
+  await Promise.all([
+    sendContactsEmail(supabase, booking, 'guest'),
+    sendContactsEmail(supabase, booking, 'host'),
+  ])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Email con datos de contacto (se envía cuando ambos han pagado)
+// ─────────────────────────────────────────────────────────────────────────────
+async function sendContactsEmail(
+  supabase: ReturnType<typeof createClient>,
+  booking: any,
+  recipient: 'guest' | 'host'
+) {
   try {
-    // Get both parties' info
     const { data: guestUser } = await supabase
-      .from('users')
-      .select('email, full_name, phone')
-      .eq('id', booking.guest_id)
-      .single()
-
+      .from('users').select('email, full_name, phone').eq('id', booking.guest_id).single()
     const { data: hostUser } = await supabase
-      .from('users')
-      .select('email, full_name, phone')
-      .eq('id', booking.host_id)
-      .single()
+      .from('users').select('email, full_name, phone').eq('id', booking.host_id).single()
 
     const recipientEmail = recipient === 'guest' ? booking.guest_email : hostUser?.email
-    const otherPartyName = recipient === 'guest' ? (hostUser?.full_name || 'Host') : (guestUser?.full_name || 'Guest')
-    const otherPartyEmail = recipient === 'guest' ? (hostUser?.email || 'N/A') : booking.guest_email
-    const otherPartyPhone = recipient === 'guest' ? (hostUser?.phone || 'N/A') : (guestUser?.phone || 'N/A')
+    const otherName  = recipient === 'guest' ? (hostUser?.full_name  ?? 'tu host')    : (guestUser?.full_name  ?? 'tu huésped')
+    const otherEmail = recipient === 'guest' ? (hostUser?.email      ?? 'N/A')        : (booking.guest_email  ?? 'N/A')
+    const otherPhone = recipient === 'guest' ? (hostUser?.phone      ?? 'No registrado') : (guestUser?.phone ?? 'No registrado')
 
     if (!recipientEmail) {
-      console.error(`No email found for ${recipient}`)
+      console.error(`❌ Sin email para ${recipient}`)
       return
     }
 
-    const checkInDate = new Date(booking.check_in).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    const checkIn = booking.check_in
+      ? new Date(booking.check_in).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+      : 'Por confirmar'
+    const months = booking.months_duration ?? '?'
+    const durLabel = months === 1 ? '1 mes' : `${months} meses`
+    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const roleLabel = recipient === 'guest' ? 'host' : 'huésped'
+    const nextStepsGuest = '1. Contacta al host para coordinar la llegada<br>2. Acuerda detalles de check-in y llaves<br>3. Confirma método de pago de renta y depósito directamente con el host'
+    const nextStepsHost  = '1. El huésped te contactará pronto<br>2. Coordina detalles de llegada y entrega de llaves<br>3. Acuerda el método de pago de renta y depósito directamente'
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
       to: recipientEmail,
-      subject: `✅ ¡Contactos Liberados! - ${booking.listings?.title}`,
+      subject: `✅ Reserva confirmada — Datos de contacto de tu ${roleLabel}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎉 ¡Reserva Confirmada!</h1>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+          <div style="background:#059669;padding:28px;text-align:center;border-radius:10px 10px 0 0;">
+            <h1 style="color:#fff;margin:0;font-size:26px;">🎉 Reserva Confirmada</h1>
+            <p style="color:#d1fae5;margin:8px 0 0;">Ambos pagos recibidos — contactos liberados</p>
           </div>
-          
-          <div style="background: white; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #1f2937; font-size: 22px; margin-top: 0;">
-              Todos los pagos completados - Contactos liberados
-            </h2>
-            
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
-              ¡Excelente! ${recipient === 'guest' ? 'Tu pago' : 'El pago del huésped'} se ha procesado correctamente. 
-              Ahora pueden coordinar directamente para finalizar todos los detalles.
-            </p>
-
-            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 25px 0;">
-              <h3 style="color: #1f2937; margin-top: 0; font-size: 18px;">📋 Detalles de la Reserva</h3>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Propiedad:</strong> ${booking.listings?.title}</p>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Check-in:</strong> ${checkInDate}</p>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Duración:</strong> ${booking.months_duration} ${booking.months_duration === 1 ? 'mes' : 'meses'}</p>
+          <div style="background:#fff;padding:30px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 10px 10px;">
+            <h2 style="color:#111827;font-size:20px;margin-top:0;">Datos de contacto de tu ${roleLabel}</h2>
+            <div style="background:#059669;padding:20px;border-radius:8px;margin:20px 0;">
+              <p style="color:#fff;margin:6px 0;"><strong>Nombre:</strong> ${otherName}</p>
+              <p style="color:#fff;margin:6px 0;"><strong>Email:</strong> <a href="mailto:${otherEmail}" style="color:#d1fae5;">${otherEmail}</a></p>
+              <p style="color:#fff;margin:6px 0;"><strong>Teléfono:</strong> ${otherPhone}</p>
             </div>
-
-            <div style="background: #10b981; background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 8px; margin: 25px 0;">
-              <h3 style="color: white; margin-top: 0; font-size: 18px;">📞 Datos de Contacto</h3>
-              <p style="margin: 8px 0; color: white;"><strong>Nombre:</strong> ${otherPartyName}</p>
-              <p style="margin: 8px 0; color: white;"><strong>Email:</strong> ${otherPartyEmail}</p>
-              <p style="margin: 8px 0; color: white;"><strong>Teléfono:</strong> ${otherPartyPhone}</p>
+            <div style="background:#f3f4f6;padding:18px;border-radius:8px;margin:20px 0;">
+              <p style="margin:6px 0;color:#374151;"><strong>Propiedad:</strong> ${propertyTitle}</p>
+              <p style="margin:6px 0;color:#374151;"><strong>Check-in:</strong> ${checkIn}</p>
+              <p style="margin:6px 0;color:#374151;"><strong>Duración:</strong> ${durLabel}</p>
             </div>
-
-            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
-              <p style="margin: 0; color: #92400e; font-size: 14px;">
-                <strong>💡 Próximos pasos:</strong><br>
-                ${recipient === 'guest' 
-                  ? '1. Contacta al host para coordinar llegada<br>2. Confirma detalles de check-in y llaves<br>3. Acuerda método de pago de renta y depósito'
-                  : '1. El huésped te contactará pronto<br>2. Coordina detalles de llegada y entrega de llaves<br>3. Acuerda método de pago de renta y depósito'
-                }
+            <div style="background:#fef3c7;border-left:4px solid #f59e0b;padding:14px;border-radius:4px;margin:20px 0;">
+              <p style="margin:0;color:#92400e;font-size:14px;">
+                <strong>Próximos pasos:</strong><br>
+                ${recipient === 'guest' ? nextStepsGuest : nextStepsHost}
               </p>
             </div>
-
-            <p style="color: #6b7280; font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-              A partir de ahora, inhabitme no interviene en la relación. Renta, depósito y todos los detalles 
-              los coordinas directamente con ${recipient === 'guest' ? 'el host' : 'el huésped'}. ¡Que disfrutes tu estancia!
+            <p style="color:#6b7280;font-size:13px;margin-top:24px;padding-top:16px;border-top:1px solid #e5e7eb;">
+              A partir de aquí InhabitMe no interviene. La renta, el depósito y todos los detalles los coordinan directamente entre ustedes. ¡Mucho éxito!
             </p>
-
-            <div style="text-align: center; margin-top: 30px;">
-              <p style="color: #9ca3af; font-size: 12px; margin: 5px 0;">
-                Powered by <strong>inhabitme</strong>
-              </p>
-            </div>
+            <p style="color:#9ca3af;font-size:12px;text-align:center;margin-top:20px;">
+              Powered by <strong>InhabitMe</strong>
+            </p>
           </div>
         </div>
       `,
     })
 
-    console.log(`✅ Contacts email sent to ${recipient}: ${recipientEmail}`)
-  } catch (error) {
-    console.error(`Error sending contacts email to ${recipient}:`, error)
+    console.log(`✅ Email de contactos enviado a ${recipient}: ${recipientEmail}`)
+  } catch (err) {
+    console.error(`❌ Error enviando email a ${recipient}:`, err)
   }
 }
 
-// Send email to guest to complete payment
-async function sendGuestPaymentEmail(booking: any) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Recordatorio al host para que pague (guest pagó primero)
+// ─────────────────────────────────────────────────────────────────────────────
+async function sendHostPaymentReminderEmail(booking: any) {
   try {
-    const checkInDate = new Date(booking.check_in).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    const { data: hostUser } = await createClient(supabaseUrl, supabaseKey)
+      .from('users').select('email, full_name').eq('id', booking.host_id).single()
 
-    const currency = normalizeCurrency(booking.currency)
-    const locale = currency === 'EUR' ? 'es-ES' : 'en-US'
-    const totalAmount = formatMoneyFromMinor((booking.guest_fee_amount || booking.guest_fee || 0), currency, locale)
+    const hostEmail = hostUser?.email
+    if (!hostEmail) return
+
+    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const months = booking.months_duration ?? '?'
+    const durLabel = months === 1 ? '1 mes' : `${months} meses`
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
-      to: booking.guest_email,
-      subject: `✅ ¡Host Aceptó! Completa el Pago - ${booking.listings?.title}`,
+      to: hostEmail,
+      subject: `⏳ El huésped ya pagó — Completa tu pago para liberar contactos`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">🎉 ¡El Host Aceptó!</h1>
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;">
+          <h2 style="color:#111827;">¡El huésped ya realizó su pago!</h2>
+          <p style="color:#4b5563;">Tu huésped ha pagado la tarifa de conexión para <strong>${propertyTitle}</strong> (${durLabel}).</p>
+          <p style="color:#4b5563;">En cuanto completes tu pago, ambos recibirán los datos de contacto del otro para coordinar directamente.</p>
+          <div style="text-align:center;margin:30px 0;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/en/host/bookings/${booking.id}"
+               style="background:#2563eb;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
+              Completar mi pago →
+            </a>
           </div>
-          
-          <div style="background: white; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px;">
-            <h2 style="color: #1f2937; font-size: 22px; margin-top: 0;">
-              Tu solicitud fue aceptada - Completa el pago
-            </h2>
-            
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
-              ¡Excelente noticia! El host ha aceptado tu solicitud para <strong>${booking.listings?.title}</strong>.
-              Para finalizar la reserva y recibir los datos de contacto, completa el pago del service fee.
-            </p>
-
-            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 25px 0;">
-              <h3 style="color: #1f2937; margin-top: 0; font-size: 18px;">📋 Detalles de la Reserva</h3>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Check-in:</strong> ${checkInDate}</p>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Duración:</strong> ${booking.months_duration} ${booking.months_duration === 1 ? 'mes' : 'meses'}</p>
-              <p style="margin: 8px 0; color: #4b5563;"><strong>Service fee:</strong> ${totalAmount}</p>
-            </div>
-
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/bookings/${booking.id}" 
-                 style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; 
-                        padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
-                💳 Completar Pago
-              </a>
-            </div>
-
-            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
-              <p style="margin: 0; color: #92400e; font-size: 14px;">
-                <strong>💡 Importante:</strong> Una vez completes el pago, recibirás inmediatamente 
-                los datos de contacto del host (email + teléfono) para coordinar todos los detalles directamente.
-              </p>
-            </div>
-
-            <p style="color: #6b7280; font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-              ¿Tienes preguntas? Escríbenos a <a href="mailto:${process.env.INTERNAL_ALERT_EMAIL}" style="color: #3b82f6;">
-              ${process.env.INTERNAL_ALERT_EMAIL}</a>
-            </p>
-
-            <div style="text-align: center; margin-top: 30px;">
-              <p style="color: #9ca3af; font-size: 12px; margin: 5px 0;">
-                Powered by <strong>inhabitme</strong>
-              </p>
-            </div>
-          </div>
+          <p style="color:#9ca3af;font-size:12px;text-align:center;">Powered by InhabitMe</p>
         </div>
       `,
     })
+  } catch (err) {
+    console.error('❌ Error enviando recordatorio al host:', err)
+  }
+}
 
-    console.log('✅ Guest payment email sent:', booking.guest_email)
-  } catch (error) {
-    console.error('Error sending guest payment email:', error)
+// ─────────────────────────────────────────────────────────────────────────────
+// Recordatorio al guest para que pague (host pagó primero)
+// ─────────────────────────────────────────────────────────────────────────────
+async function sendGuestPaymentReminderEmail(booking: any) {
+  try {
+    const guestEmail = booking.guest_email
+    if (!guestEmail) return
+
+    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const months = booking.months_duration ?? '?'
+    const durLabel = months === 1 ? '1 mes' : `${months} meses`
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM!,
+      to: guestEmail,
+      subject: `⏳ El host ya pagó — Completa tu pago para obtener sus datos de contacto`,
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:30px;">
+          <h2 style="color:#111827;">¡El host ya realizó su pago!</h2>
+          <p style="color:#4b5563;">Tu host ha pagado la tarifa de conexión para <strong>${propertyTitle}</strong> (${durLabel}).</p>
+          <p style="color:#4b5563;">En cuanto completes tu pago, ambos recibirán los datos de contacto del otro para coordinar directamente.</p>
+          <div style="text-align:center;margin:30px 0;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${booking.id}"
+               style="background:#7c3aed;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
+              Completar mi pago →
+            </a>
+          </div>
+          <p style="color:#9ca3af;font-size:12px;text-align:center;">Powered by InhabitMe</p>
+        </div>
+      `,
+    })
+  } catch (err) {
+    console.error('❌ Error enviando recordatorio al guest:', err)
   }
 }

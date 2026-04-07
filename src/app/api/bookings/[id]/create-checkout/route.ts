@@ -1,190 +1,131 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import { createClient } from '@supabase/supabase-js';
-import Stripe from 'stripe';
-import { normalizeCurrency, toStripeCurrency } from '@/lib/currency';
+/**
+ * Guest Checkout — InhabitMe
+ *
+ * Crea una sesión de Stripe Checkout para que el GUEST pague la tarifa
+ * de conexión de InhabitMe. Solo un line item: el fee según duración.
+ *
+ * Fuente de verdad de precios: src/lib/pricing/duration-fees.ts
+ *
+ * Flujo:
+ *  Host aprueba booking → ambos reciben notificación de pago
+ *  Guest paga aquí → webhook actualiza guest_payment_status = 'paid'
+ *  Si host ya pagó → booking pasa a 'confirmed' y se liberan contactos
+ *  Si host no ha pagado → booking queda en estado intermedio hasta que host pague
+ */
 
-const stripeKey = process.env.STRIPE_SECRET_KEY;
+import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
+import { createClient } from '@supabase/supabase-js'
+import Stripe from 'stripe'
+import { calculateDurationFees, getTierName, type SupportedCurrency } from '@/lib/pricing/duration-fees'
 
-if (!stripeKey) {
-  console.error('❌ STRIPE_SECRET_KEY not found in environment variables');
-}
-
-const stripe = new Stripe(stripeKey!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
-});
+})
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
-type Ctx = { params: Promise<{ id: string }> };
+// Cualquier estado post-aprobación permite pagar (host y guest pueden pagar en cualquier orden)
+const PAYABLE_STATUSES = ['approved', 'pending_guest_payment', 'pending_host_payment']
+
+type Ctx = { params: Promise<{ id: string }> }
 
 export async function POST(request: NextRequest, { params }: Ctx) {
   try {
-    console.log('🔥 CREATE CHECKOUT CALLED');
-
-    const { id: bookingId } = await params;
-    console.log('🔥 Booking ID:', bookingId);
-
-    const { userId } = await auth();
-
+    const { userId } = await auth()
     if (!userId) {
-      console.log('❌ Unauthorized - no userId');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    console.log('✅ User authenticated:', userId);
-
+    const { id: bookingId } = await params
     if (!bookingId) {
-      return NextResponse.json({ error: 'Booking ID is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Booking ID requerido' }, { status: 400 })
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    console.log('🔍 Fetching booking from DB...');
-
-    // Get booking
-    const { data: booking, error: fetchError } = await supabase
+    // Obtener booking con datos de la propiedad
+    const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('*')
+      .select('*, listings(title, city)')
       .eq('id', bookingId)
-      .single();
+      .single()
 
-    if (fetchError || !booking) {
-      console.error('❌ Booking not found:', fetchError);
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+    if (bookingError || !booking) {
+      return NextResponse.json({ error: 'Booking no encontrado' }, { status: 404 })
     }
 
-    // Get property details
-    const { data: property, error: propertyError } = await supabase
-      .from('listings')
-      .select('title')
-      .eq('id', booking.property_id)
-      .single();
-
-    if (propertyError || !property) {
-      console.error('❌ Property not found:', propertyError);
-      return NextResponse.json({ error: 'Property not found' }, { status: 404 });
-    }
-
-    // Add property to booking object
-    (booking as any).property = property;
-
-    console.log('✅ Booking found:', booking.id);
-    console.log('📧 Guest email:', booking.guest_email);
-
-    // Use guest_fee_amount from database (calculated by trigger based on booking value)
-    // If not set, calculate based on duration
-    let guestFeeAmount = booking.guest_fee_amount || booking.guest_fee;
-
-    if (!guestFeeAmount && booking.months_duration) {
-      const { calculateDurationFees } = await import('@/lib/pricing/duration-fees');
-      const fees = calculateDurationFees(booking.months_duration);
-      guestFeeAmount = fees.guestFee;
-    } else if (!guestFeeAmount) {
-      guestFeeAmount = 13900; // Default to 2-3 months tier if no duration
-    }
-
-    const pricingTier = booking.pricing_tier || 'Standard';
-    const bookingCurrency = normalizeCurrency(booking.currency)
-    const stripeCurrency = toStripeCurrency(bookingCurrency)
-
-    console.log('💰 Amounts:', {
-      monthly_price: booking.monthly_price,
-      deposit: booking.deposit_amount,
-      guest_fee: guestFeeAmount,
-      pricing_tier: pricingTier,
-    });
-
-    // Verify user is the guest
+    // Verificar que el usuario es el guest
     if (booking.guest_id !== userId) {
-      console.log('❌ Unauthorized - user is not the guest');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
-    // Verify booking status
-    if (booking.status !== 'pending_guest_payment') {
-      console.log('❌ Booking not ready for payment. Status:', booking.status);
-      return NextResponse.json({ error: 'Booking not ready for payment' }, { status: 400 });
+    // Verificar que el booking está en un estado que permite pago
+    if (!PAYABLE_STATUSES.includes(booking.status)) {
+      return NextResponse.json(
+        { error: `Booking no disponible para pago. Estado actual: ${booking.status}` },
+        { status: 400 }
+      )
     }
 
-    console.log('🔵 Creating Stripe checkout session...');
+    // No cobrar dos veces
+    if (booking.guest_payment_status === 'paid') {
+      return NextResponse.json({ error: 'Ya completaste el pago' }, { status: 400 })
+    }
 
-    // Create Stripe checkout session
+    // Moneda: el guest puede elegir EUR o USD en el UI.
+    // Si no se envía en el body, se usa la moneda del booking (detectada por ubicación).
+    const body = await request.json().catch(() => ({}))
+    const rawCurrency = (body.currency ?? booking.currency ?? 'eur').toLowerCase()
+    const currency: SupportedCurrency = rawCurrency === 'usd' ? 'usd' : 'eur'
+
+    // Calcular fee — fuente única de verdad: duration-fees.ts
+    const months = booking.months_duration ?? 2
+    const fees = calculateDurationFees(months, currency)
+    const guestFeeAmount = fees.guestFee  // siempre desde duration-fees, no de la DB
+
+    const tierName = getTierName(months)
+    const durationLabel = months === 1 ? '1 mes' : `${months} meses`
+    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const currencySymbol = currency === 'usd' ? '$' : '€'
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}/payment-success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}`,
+      payment_method_types: ['card'],
       customer_email: booking.guest_email,
-      metadata: {
-        booking_id: bookingId,
-        guest_id: userId,
-        payment_type: 'guest',
-        currency: bookingCurrency,
-        type: 'guest_payment', // legacy compatibility
-      },
       line_items: [
         {
           price_data: {
-            currency: stripeCurrency,
+            currency,
             product_data: {
-              name: `Primer mes - ${property.title}`,
-              description: `${booking.check_in} - ${booking.check_out}`,
-            },
-            unit_amount: booking.monthly_price,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: stripeCurrency,
-            product_data: {
-              name: 'Depósito',
-              description: 'Reembolsable al final de la estancia',
-            },
-            unit_amount: booking.deposit_amount,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: stripeCurrency,
-            product_data: {
-              name: `inhabitme service fee - ${pricingTier}`,
-              description: 'Pago único por conexión (valor basado en duración del booking)',
+              name: `InhabitMe — Conexión confirmada · ${durationLabel}`,
+              description: `Acceso a los datos de contacto de tu host en "${propertyTitle}". Pago único ${currencySymbol}${guestFeeAmount / 100}. Sin comisiones adicionales sobre la renta.`,
             },
             unit_amount: guestFeeAmount,
           },
           quantity: 1,
         },
       ],
-      payment_intent_data: {
-        metadata: {
-          booking_id: bookingId,
-        },
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}/payment-success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}`,
+      metadata: {
+        booking_id: bookingId,
+        guest_id: userId,
+        payment_type: 'guest',
+        months_duration: String(months),
+        tier: tierName,
+        fee_cents: String(guestFeeAmount),
+        currency,
       },
-    });
+    })
 
-    console.log('✅ Stripe session created:', session.id);
-    console.log('🔗 Checkout URL:', session.url);
-
-    return NextResponse.json({
-      success: true,
-      sessionId: session.id,
-      url: session.url,
-    });
+    return NextResponse.json({ sessionId: session.id, url: session.url })
   } catch (error: any) {
-    console.error('❌ Checkout creation error:', error);
-    console.error('❌ Error name:', error?.name);
-    console.error('❌ Error message:', error?.message);
-    console.error('❌ Error stack:', error?.stack);
-
+    console.error('❌ Guest checkout error:', error?.message)
     return NextResponse.json(
-      {
-        error: 'Failed to create checkout',
-        details: error?.message,
-      },
+      { error: 'Error al crear el checkout', details: error?.message },
       { status: 500 }
-    );
+    )
   }
 }

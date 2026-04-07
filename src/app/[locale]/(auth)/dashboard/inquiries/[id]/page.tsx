@@ -246,9 +246,7 @@ export default async function InquiryDetailPage({
                   <CalendarCheck2 className="h-4 w-4" /> {t('requestBookingButton')}
                 </a>
 
-                <a href={`/${locale}/api/inquiries/${inquiry.id}/create-checkout?locale=${locale}`} className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-white/30 bg-white/10 text-white font-semibold hover:bg-white/20">
-                  <ArrowRightCircle className="h-4 w-4" /> {t('proceedBookingButton')}
-                </a>
+                {/* El checkout de inquiries fue reemplazado por el flujo de bookings */}
 
                 <p className="text-xs opacity-80">{t('proceedNote')}</p>
               </div>

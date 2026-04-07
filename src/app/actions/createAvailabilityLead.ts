@@ -30,7 +30,32 @@ export async function createAvailabilityLead(input: CreateLeadInput) {
   })
 
   /**
-   * 2️⃣ Persist lead
+   * 2️⃣ Resolve host email from listing owner
+   */
+  let hostEmail: string | null = null
+  try {
+    const { data: listing } = await supabase
+      .from('listings')
+      .select('owner_id')
+      .eq('id', input.listingId)
+      .single()
+
+    if (listing?.owner_id) {
+      // Try User table first (legacy)
+      const { data: userRow } = await supabase
+        .from('User')
+        .select('email')
+        .or(`clerkId.eq.${listing.owner_id},id.eq.${listing.owner_id}`)
+        .maybeSingle()
+
+      hostEmail = (userRow as any)?.email ?? null
+    }
+  } catch (e) {
+    console.warn('[createAvailabilityLead] Could not resolve host email:', e)
+  }
+
+  /**
+   * 3️⃣ Persist lead
    */
   const { error } = await supabase
     .from('availability_leads')
@@ -48,6 +73,9 @@ export async function createAvailabilityLead(input: CreateLeadInput) {
       // ✅ Lead scoring fields
       score,
       score_label: label,
+
+      // ✅ Host email — necesario para filtrar leads por host en el dashboard
+      host_email: hostEmail,
     })
 
   if (error) {
@@ -56,7 +84,7 @@ export async function createAvailabilityLead(input: CreateLeadInput) {
   }
 
   /**
-   * 3️⃣ Internal alert (non-blocking)
+   * 4️⃣ Internal alert (non-blocking)
    */
   sendInternalLeadAlert({
     listingId: input.listingId,

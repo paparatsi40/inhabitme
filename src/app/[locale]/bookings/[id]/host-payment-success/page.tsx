@@ -17,35 +17,10 @@ export default function HostPaymentSuccessPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      if (!sessionId) {
-        setError('No session ID provided')
-        setLoading(false)
-        return
-      }
-
-      try {
-        // Verify payment with backend
-        const res = await fetch(`/api/bookings/${bookingId}/verify-host-payment`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId }),
-        })
-
-        if (!res.ok) {
-          throw new Error('Failed to verify payment')
-        }
-
-        setLoading(false)
-      } catch (err: any) {
-        console.error('Verification error:', err)
-        setError(err.message)
-        setLoading(false)
-      }
-    }
-
-    verifyPayment()
-  }, [bookingId, sessionId])
+    // El pago ya fue procesado por el webhook de Stripe (/api/webhooks/stripe-bookings).
+    // No se necesita verificación adicional — solo mostramos confirmación.
+    setLoading(false)
+  }, [])
 
   if (loading) {
     return (
