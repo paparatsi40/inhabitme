@@ -1,6 +1,6 @@
 import { SearchFilters } from '@/lib/domain/search-filters'
 
-export async function searchListings(filters: SearchFilters) {
+export async function searchListings(filters: SearchFilters, signal?: AbortSignal) {
   // Construir query params
   const params = new URLSearchParams();
   
@@ -23,7 +23,7 @@ export async function searchListings(filters: SearchFilters) {
   }
 
   // Llamar a la API route
-  const response = await fetch(url);
+  const response = await fetch(url, { signal });
   
   if (process.env.NODE_ENV === 'development') {
     console.log('[searchListings] Response status:', response.status);

@@ -63,23 +63,28 @@ export default function SearchClient() {
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
+    const controller = new AbortController()
+
     async function runSearch() {
       setLoading(true)
       try {
         console.log('[SearchClient] Starting search with filters:', filters)
-        const data = await searchListings(filters)
-        console.log('[SearchClient] Received data:', data)
-        console.log('[SearchClient] Data length:', data?.length)
-        setResults(data)
-      } catch (error) {
+        const data = await searchListings(filters, controller.signal)
+        if (!controller.signal.aborted) {
+          console.log('[SearchClient] Received data:', data?.length)
+          setResults(data)
+        }
+      } catch (error: any) {
+        if (error?.name === 'AbortError') return // navegación normal, no es un error
         console.error('[SearchClient] Search failed', error)
         setResults([])
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
 
     runSearch()
+    return () => controller.abort()
   }, [filters])
 
   const applyFilters = (newFilters: SearchFiltersType) => {

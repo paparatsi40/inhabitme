@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
 import { NextIntlClientProvider } from 'next-intl'
-import { getTranslations } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
@@ -93,16 +93,9 @@ export default async function LocaleLayout({
     notFound()
   }
 
-  // FIX — en vez de enviar TODO el JSON de mensajes al cliente,
-  // enviamos solo los namespaces que los componentes cliente necesitan.
-  //
-  // Regla: solo van aquí los namespaces que se usan en componentes 'use client'
-  // (ClientNav, CityCarousel). Las páginas y layouts Server Component llaman
-  // a getTranslations() directamente y nunca necesitan este provider.
-  //
-  // Si en el futuro añades un componente cliente que use t('algún.namespace'),
-  // agrégalo a esta lista.
-  const clientMessages = {}
+  // Pasamos todos los mensajes al cliente para que cualquier componente
+  // 'use client' que use useTranslations() tenga acceso a su namespace.
+  const clientMessages = await getMessages()
 
   return (
     <NextIntlClientProvider messages={clientMessages}>

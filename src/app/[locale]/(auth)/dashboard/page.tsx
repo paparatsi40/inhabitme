@@ -188,20 +188,26 @@ export default async function DashboardPage() {
     .eq('host_id', userId)
     .eq('status', 'pending_host_approval');
   
-  // Stats de vistas
-  const viewsOwnerIds = Array.from(new Set([...ownerIds, ...ownedProperties.map((p: any) => p.owner_id).filter(Boolean)]))
-  const viewsStatsResults = await Promise.all(
-    viewsOwnerIds.map((ownerId) =>
-      supabase
-        .rpc('get_owner_views_stats', { p_owner_id: ownerId })
-        .single()
+  // Stats de vistas (el RPC puede no existir — manejamos el error gracefully)
+  let totalViews = 0
+  try {
+    const viewsOwnerIds = Array.from(new Set([...ownerIds, ...ownedProperties.map((p: any) => p.owner_id).filter(Boolean)]))
+    const viewsStatsResults = await Promise.all(
+      viewsOwnerIds.map((ownerId) =>
+        supabase
+          .rpc('get_owner_views_stats', { p_owner_id: ownerId })
+          .maybeSingle()
+      )
     )
-  )
-  const totalViews = viewsStatsResults.reduce((sum, result) => {
-    const views = Number((result.data as any)?.total_views || 0)
-    return sum + (Number.isFinite(views) ? views : 0)
-  }, 0)
-  
+    totalViews = viewsStatsResults.reduce((sum, result) => {
+      if (result.error) return sum
+      const views = Number((result.data as any)?.total_views || 0)
+      return sum + (Number.isFinite(views) ? views : 0)
+    }, 0)
+  } catch (e) {
+    console.warn('[Dashboard] get_owner_views_stats RPC unavailable, defaulting to 0')
+  }
+
   const viewsStats = {
     total_views: totalViews
   };
