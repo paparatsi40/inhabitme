@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { CheckCircle } from 'lucide-react'
 import { CITIES } from '@/config/cities'
 
-const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=640&h=480&fit=crop&q=60'
+const FALLBACK_CITY_IMAGE = 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1600&h=1200&fit=crop&q=75&auto=format'
 
 function normalizeImageUrl(src?: string) {
   if (!src) return FALLBACK_CITY_IMAGE
@@ -18,7 +18,12 @@ function normalizeImageUrl(src?: string) {
     if (parsed.protocol === 'http:') parsed.protocol = 'https:'
     if (parsed.protocol !== 'https:') return FALLBACK_CITY_IMAGE
 
-    if (!parsed.searchParams.get('q')) parsed.searchParams.set('q', '60')
+    parsed.searchParams.set('w', parsed.searchParams.get('w') || '1600')
+    parsed.searchParams.set('h', parsed.searchParams.get('h') || '1200')
+    parsed.searchParams.set('fit', parsed.searchParams.get('fit') || 'crop')
+    parsed.searchParams.set('q', parsed.searchParams.get('q') || '75')
+    parsed.searchParams.set('auto', parsed.searchParams.get('auto') || 'format')
+
     return parsed.toString()
   } catch {
     return FALLBACK_CITY_IMAGE
@@ -60,7 +65,7 @@ export function CityCarousel({ messages }: { messages: CityCarouselMessages }) {
               alt={currentCity.name}
               fill
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 560px"
-              quality={24}
+              quality={55}
               className="object-cover"
               placeholder="blur"
               blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzYnPjxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzYnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4="
