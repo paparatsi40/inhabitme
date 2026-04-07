@@ -44,7 +44,7 @@ export function CityCarousel({ messages }: { messages: CityCarouselMessages }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % CITIES.length)
-    }, 4500)
+    }, 7000)
 
     return () => clearInterval(interval)
   }, [])
@@ -60,12 +60,12 @@ export function CityCarousel({ messages }: { messages: CityCarouselMessages }) {
               alt={currentCity.name}
               fill
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 48vw, 560px"
-              quality={30}
+              quality={24}
               className="object-cover"
               placeholder="blur"
               blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc4JyBoZWlnaHQ9JzYnPjxyZWN0IHdpZHRoPSc4JyBoZWlnaHQ9JzYnIGZpbGw9JyNlNWU3ZWInLz48L3N2Zz4="
-              priority
-              fetchPriority="high"
+              priority={currentIndex === 0}
+              fetchPriority={currentIndex === 0 ? 'high' : 'auto'}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
             
