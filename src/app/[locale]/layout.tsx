@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
@@ -26,7 +26,6 @@ export async function generateMetadata({
   params: LocaleParams
 }): Promise<Metadata> {
   const { locale } = await params
-
   const t = await getTranslations({ locale, namespace: 'metadata' })
   const localeUrl = getLocalizedUrl('', locale as 'en' | 'es')
 
@@ -76,9 +75,7 @@ export async function generateMetadata({
       apple: '/favicon.svg',
     },
     ...(SEO_CONFIG.verification.google && {
-      verification: {
-        google: SEO_CONFIG.verification.google,
-      },
+      verification: { google: SEO_CONFIG.verification.google },
     }),
   }
 }
@@ -92,16 +89,23 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params
 
-  // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
-  // Providing all messages to the client
-  const messages = await getMessages()
+  // FIX — en vez de enviar TODO el JSON de mensajes al cliente,
+  // enviamos solo los namespaces que los componentes cliente necesitan.
+  //
+  // Regla: solo van aquí los namespaces que se usan en componentes 'use client'
+  // (ClientNav, CityCarousel). Las páginas y layouts Server Component llaman
+  // a getTranslations() directamente y nunca necesitan este provider.
+  //
+  // Si en el futuro añades un componente cliente que use t('algún.namespace'),
+  // agrégalo a esta lista.
+  const clientMessages = {}
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider messages={clientMessages}>
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow">{children}</main>
         <Footer />
