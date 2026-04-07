@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { propertyId, checkIn, checkOut, message } = body;
+    const { propertyId, checkIn, checkOut, message, locale = 'en' } = body;
 
     // Get guest email from Clerk at booking creation
     let guestEmail = '';
@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.NEXT_PUBLIC_APP_URL}/en/host/bookings/${booking.id}" 
+                <a href="${process.env.NEXT_PUBLIC_APP_URL}/${locale}/host/bookings/${booking.id}"
                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block; font-size: 16px;">
                   Ver Solicitud y Responder
                 </a>

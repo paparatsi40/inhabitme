@@ -93,7 +93,7 @@ function BookingCard({ booking, locale }: { booking: Booking; locale: string }) 
       const res = await fetch(`/api/bookings/${booking.id}/host-checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currency }),
+        body: JSON.stringify({ currency, locale }),
       })
       const data = await res.json()
       if (data.url) {

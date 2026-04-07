@@ -28,6 +28,7 @@ export default function BookingDetailPage() {
   const params = useParams()
   const searchParams = useSearchParams()
   const bookingId = params?.id as string
+  const locale = (params?.locale as string) || 'en'
   const justPaid = searchParams?.get('payment') === 'success'
 
   const [booking, setBooking] = useState<any>(null)
@@ -50,7 +51,7 @@ export default function BookingDetailPage() {
       const res = await fetch(`/api/bookings/${bookingId}/create-checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currency }),
+        body: JSON.stringify({ currency, locale }),
       })
       const data = await res.json()
       if (data.url) {

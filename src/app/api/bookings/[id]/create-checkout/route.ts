@@ -79,6 +79,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const body = await request.json().catch(() => ({}))
     const rawCurrency = (body.currency ?? booking.currency ?? 'eur').toLowerCase()
     const currency: SupportedCurrency = rawCurrency === 'usd' ? 'usd' : 'eur'
+    const locale = (body.locale ?? 'en').replace(/[^a-z]/g, '') || 'en'
 
     // Calcular fee — fuente única de verdad: duration-fees.ts
     const months = booking.months_duration ?? 2
@@ -107,8 +108,8 @@ export async function POST(request: NextRequest, { params }: Ctx) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}/payment-success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${bookingId}`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/bookings/${bookingId}/payment-success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/bookings/${bookingId}`,
       metadata: {
         booking_id: bookingId,
         guest_id: userId,
@@ -117,6 +118,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         tier: tierName,
         fee_cents: String(guestFeeAmount),
         currency,
+        locale,
       },
     })
 

@@ -80,7 +80,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       try {
         if (process.env.RESEND_API_KEY) {
           await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL || 'hola@inhabitme.com',
+            from: process.env.EMAIL_FROM!,
             to: guestEmail,
             subject: 'Tu host aceptó la reserva',
             html: `<p>Tu host aceptó la reserva. Ya puedes proceder con el pago.</p>`,
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         try {
           if (process.env.RESEND_API_KEY) {
             await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'hola@inhabitme.com',
+              from: process.env.EMAIL_FROM!,
               to: guestEmail,
               subject: 'The host requested changes to your booking request',
               html: `<p>Your host requested changes before acceptance.</p><p>${message || ''}</p>`,
@@ -201,7 +201,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         try {
           if (process.env.RESEND_API_KEY) {
             await resend.emails.send({
-              from: process.env.RESEND_FROM_EMAIL || 'hola@inhabitme.com',
+              from: process.env.EMAIL_FROM!,
               to: guestEmail,
               subject: 'Tu host rechazó la reserva',
               html: `<p>Tu host rechazó la reserva.</p>`,

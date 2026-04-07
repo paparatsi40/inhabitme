@@ -69,8 +69,17 @@ export async function POST(request: NextRequest) {
           ? session.payment_intent
           : null
 
+        const sessionLocale = session.metadata?.locale ?? 'en'
+        const sessionCurrency = session.metadata?.currency ?? session.currency ?? 'eur'
+
         // ── Pago del GUEST ─────────────────────────────────────────────────
         if (paymentType === 'guest') {
+          // Idempotency guard — ignorar evento duplicado de Stripe
+          if (booking.guest_payment_status === 'paid') {
+            console.log('⚠️ Evento duplicado ignorado — guest ya pagó:', bookingId)
+            return NextResponse.json({ received: true })
+          }
+
           console.log('💳 Guest payment completado para booking:', bookingId)
 
           await supabase.from('bookings').update({
@@ -86,7 +95,7 @@ export async function POST(request: NextRequest) {
             payer_role: 'guest',
             payer_id: booking.guest_id,
             amount_cents: Number(session.amount_total ?? 0),
-            currency: 'eur',
+            currency: sessionCurrency,
             payment_type: 'booking_guest_fee',
             status: 'paid',
             stripe_session_id: session.id,
@@ -110,12 +119,18 @@ export async function POST(request: NextRequest) {
             }).eq('id', bookingId)
 
             console.log('⏳ Guest pagó. Esperando pago del host para liberar contactos.')
-            await sendHostPaymentReminderEmail(booking)
+            await sendHostPaymentReminderEmail(booking, sessionLocale)
           }
         }
 
         // ── Pago del HOST ──────────────────────────────────────────────────
         else if (paymentType === 'host') {
+          // Idempotency guard — ignorar evento duplicado de Stripe
+          if (booking.host_payment_status === 'paid') {
+            console.log('⚠️ Evento duplicado ignorado — host ya pagó:', bookingId)
+            return NextResponse.json({ received: true })
+          }
+
           console.log('💳 Host payment completado para booking:', bookingId)
 
           await supabase.from('bookings').update({
@@ -131,7 +146,7 @@ export async function POST(request: NextRequest) {
             payer_role: 'host',
             payer_id: booking.host_id,
             amount_cents: Number(session.amount_total ?? 0),
-            currency: 'eur',
+            currency: sessionCurrency,
             payment_type: 'booking_host_fee',
             status: 'paid',
             stripe_session_id: session.id,
@@ -155,7 +170,7 @@ export async function POST(request: NextRequest) {
             }).eq('id', bookingId)
 
             console.log('⏳ Host pagó. Esperando pago del guest para liberar contactos.')
-            await sendGuestPaymentReminderEmail(booking)
+            await sendGuestPaymentReminderEmail(booking, sessionLocale)
           }
         }
 
@@ -310,7 +325,7 @@ async function sendContactsEmail(
 // ─────────────────────────────────────────────────────────────────────────────
 // Recordatorio al host para que pague (guest pagó primero)
 // ─────────────────────────────────────────────────────────────────────────────
-async function sendHostPaymentReminderEmail(booking: any) {
+async function sendHostPaymentReminderEmail(booking: any, locale = 'en') {
   try {
     const { data: hostUser } = await createClient(supabaseUrl, supabaseKey)
       .from('users').select('email, full_name').eq('id', booking.host_id).single()
@@ -321,6 +336,7 @@ async function sendHostPaymentReminderEmail(booking: any) {
     const propertyTitle = booking.listings?.title ?? 'tu propiedad'
     const months = booking.months_duration ?? '?'
     const durLabel = months === 1 ? '1 mes' : `${months} meses`
+    const payUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/host/dashboard`
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
@@ -332,7 +348,7 @@ async function sendHostPaymentReminderEmail(booking: any) {
           <p style="color:#4b5563;">Tu huésped ha pagado la tarifa de conexión para <strong>${propertyTitle}</strong> (${durLabel}).</p>
           <p style="color:#4b5563;">En cuanto completes tu pago, ambos recibirán los datos de contacto del otro para coordinar directamente.</p>
           <div style="text-align:center;margin:30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/en/host/bookings/${booking.id}"
+            <a href="${payUrl}"
                style="background:#2563eb;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
               Completar mi pago →
             </a>
@@ -349,7 +365,7 @@ async function sendHostPaymentReminderEmail(booking: any) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Recordatorio al guest para que pague (host pagó primero)
 // ─────────────────────────────────────────────────────────────────────────────
-async function sendGuestPaymentReminderEmail(booking: any) {
+async function sendGuestPaymentReminderEmail(booking: any, locale = 'en') {
   try {
     const guestEmail = booking.guest_email
     if (!guestEmail) return
@@ -357,6 +373,7 @@ async function sendGuestPaymentReminderEmail(booking: any) {
     const propertyTitle = booking.listings?.title ?? 'tu propiedad'
     const months = booking.months_duration ?? '?'
     const durLabel = months === 1 ? '1 mes' : `${months} meses`
+    const payUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/bookings/${booking.id}`
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM!,
@@ -368,7 +385,7 @@ async function sendGuestPaymentReminderEmail(booking: any) {
           <p style="color:#4b5563;">Tu host ha pagado la tarifa de conexión para <strong>${propertyTitle}</strong> (${durLabel}).</p>
           <p style="color:#4b5563;">En cuanto completes tu pago, ambos recibirán los datos de contacto del otro para coordinar directamente.</p>
           <div style="text-align:center;margin:30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/en/bookings/${booking.id}"
+            <a href="${payUrl}"
                style="background:#7c3aed;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">
               Completar mi pago →
             </a>
