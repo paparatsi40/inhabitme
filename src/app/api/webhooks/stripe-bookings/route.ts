@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
             stripe_session_id: session.id,
             stripe_payment_intent_id: paymentIntentId,
             metadata: { source: 'stripe_webhook', tier: session.metadata?.tier },
-          }).then(({ error }) => {
+          }).then(({ error }: { error: any }) => {
             if (error) console.error('⚠️ payment_transactions insert (guest):', error.message)
           })
 
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
             stripe_session_id: session.id,
             stripe_payment_intent_id: paymentIntentId,
             metadata: { source: 'stripe_webhook', tier: session.metadata?.tier, featured: session.metadata?.featured },
-          }).then(({ error }) => {
+          }).then(({ error }: { error: any }) => {
             if (error) console.error('⚠️ payment_transactions insert (host):', error.message)
           })
 
@@ -232,7 +232,7 @@ async function confirmAndReleaseContacts(
       actor_id: null,
       metadata: { trigger: 'both_payments_received' },
     },
-  ]).then(({ error }) => {
+  ]).then(({ error }: { error: any }) => {
     if (error) console.error('⚠️ booking_flow_events insert:', error.message)
   })
 
