@@ -1,12 +1,12 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
-import { getHostLeads } from '@/lib/hosts/getHostLeads'
+import { createClient } from '@supabase/supabase-js'
 import { HostDashboardClient } from './HostDashboardClient'
 
 export const dynamic = 'force-dynamic'
 
 type Params = Promise<{ locale: string }>
-type SearchParams = Promise<{ unlocked?: string }>
+type SearchParams = Promise<{ payment?: string }>
 
 export default async function HostDashboardPage({
   params,
@@ -16,32 +16,32 @@ export default async function HostDashboardPage({
   searchParams: SearchParams
 }) {
   const { locale } = await params
-  const { unlocked } = await searchParams
+  const { payment } = await searchParams
 
   const { userId } = await auth()
-  if (!userId) {
-    redirect(`/${locale}/sign-in`)
-  }
+  if (!userId) redirect(`/${locale}/sign-in`)
 
   const user = await currentUser()
-  const hostEmail = user?.primaryEmailAddress?.emailAddress
+  const hostEmail = user?.primaryEmailAddress?.emailAddress ?? ''
 
-  if (!hostEmail) {
-    return (
-      <main className="max-w-3xl mx-auto px-6 py-16 text-center">
-        <p className="text-gray-500">No email associated with this account.</p>
-      </main>
-    )
-  }
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
-  const leads = await getHostLeads(hostEmail)
+  const { data: bookings } = await supabase
+    .from('bookings')
+    .select('id, status, guest_payment_status, host_payment_status, months_duration, check_in, guest_email, property_id, listings(title, city)')
+    .eq('host_id', userId)
+    .not('status', 'in', '("cancelled","rejected")')
+    .order('created_at', { ascending: false })
 
   return (
     <HostDashboardClient
-      leads={leads as any}
+      bookings={bookings ?? []}
       hostEmail={hostEmail}
-      justUnlocked={unlocked ?? null}
       locale={locale}
+      justPaid={payment === 'success'}
     />
   )
 }
