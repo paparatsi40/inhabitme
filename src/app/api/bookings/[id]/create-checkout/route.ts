@@ -88,7 +88,8 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     const tierName = getTierName(months)
     const durationLabel = months === 1 ? '1 mes' : `${months} meses`
-    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const listingData = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings
+    const propertyTitle = listingData?.title ?? 'tu propiedad'
     const currencySymbol = currency === 'usd' ? '$' : '€'
 
     const session = await stripe.checkout.sessions.create({

@@ -19,6 +19,7 @@ export default function HostBookingDetailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const bookingId = params.id as string;
+  const locale = (params.locale as string) || 'en';
   const action = searchParams?.get('action');
 
   const [booking, setBooking] = useState<any>(null);
@@ -55,11 +56,10 @@ export default function HostBookingDetailPage() {
   const handleAccept = async () => {
     setResponding(true);
     try {
-      console.log('🔵 Starting host acceptance flow...')
-      
-      // Step 1: Create host checkout session
       const checkoutRes = await fetch(`/api/bookings/${bookingId}/host-checkout`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currency: normalizeCurrency(booking?.currency ?? 'eur').toLowerCase(), locale }),
       });
 
       if (!checkoutRes.ok) {
@@ -71,17 +71,12 @@ export default function HostBookingDetailPage() {
       }
 
       const checkoutData = await checkoutRes.json();
-      console.log('Checkout response:', checkoutData)
-
-      // Redirect to Stripe for host fee payment
       if (checkoutData.url) {
-        console.log('💳 Redirecting to Stripe checkout:', checkoutData.url)
         window.location.href = checkoutData.url;
       } else {
         alert('Error: No se pudo crear el checkout de Stripe');
         setResponding(false);
       }
-
     } catch (error) {
       console.error('❌ Accept error:', error);
       alert('Error al procesar la aceptación');
@@ -108,7 +103,7 @@ export default function HostBookingDetailPage() {
 
       if (res.ok) {
         alert('Changes requested. The guest has been notified.');
-        router.push('/host/bookings');
+        router.push(`/${locale}/host/bookings`);
       } else {
         alert('Error requesting changes');
       }
@@ -139,7 +134,7 @@ export default function HostBookingDetailPage() {
 
       if (res.ok) {
         alert('Solicitud rechazada. El huésped recibirá tu mensaje.');
-        router.push('/host/bookings');
+        router.push(`/${locale}/host/bookings`);
       } else {
         alert('Error al rechazar la solicitud');
       }
@@ -242,8 +237,12 @@ export default function HostBookingDetailPage() {
               <p className="text-purple-800">
                 El huésped ya pagó. Ahora paga tu fee de {formatMajor(hostFee)} para confirmar.
               </p>
-              <button className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700">
-                Pagar {formatMajor(hostFee)}
+              <button
+                onClick={handleAccept}
+                disabled={responding}
+                className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-purple-700 disabled:opacity-50"
+              >
+                {responding ? 'Procesando...' : `Pagar ${formatMajor(hostFee)}`}
               </button>
             </div>
           )}

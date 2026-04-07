@@ -114,7 +114,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     const { id: listingId } = await params;
     const body = await request.json();
 
-    console.log('[Theme API] Received payload:', JSON.stringify(body, null, 2));
 
     if (!body || typeof body !== 'object') {
       return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
@@ -126,7 +125,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       ...(body.background && { background: body.background }),
     };
 
-    console.log('[Theme API] Processing theme:', JSON.stringify(theme, null, 2));
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -184,7 +182,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
       updated_at: new Date().toISOString(),
     };
 
-    console.log('[Theme API] Prepared themeData:', JSON.stringify(themeData, null, 2));
 
     const { data: savedTheme, error: saveError } = await supabase
       .from('listing_themes')
@@ -200,7 +197,6 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     revalidatePath(`/properties/${listingId}`);
     revalidatePath(`/es/properties/${listingId}`);
     revalidatePath(`/en/properties/${listingId}`);
-    console.log('[Theme API] 🔄 Cache invalidated for listing:', listingId);
 
     return NextResponse.json({
       success: true,

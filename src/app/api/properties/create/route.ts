@@ -26,7 +26,6 @@ async function handleCreateProperty(req: NextRequest) {
   try {
     const authResult = await auth()
     userId = authResult.userId
-    console.log('[API] auth() result:', userId)
   } catch (error) {
     console.error('[API] Error with auth():', error)
   }
@@ -35,7 +34,6 @@ async function handleCreateProperty(req: NextRequest) {
     try {
       const user = await currentUser()
       userId = user?.id || null
-      console.log('[API] currentUser() result:', userId)
     } catch (error) {
       console.error('[API] Error with currentUser():', error)
     }
@@ -43,7 +41,6 @@ async function handleCreateProperty(req: NextRequest) {
 
   const clerkAuthStatus = req.headers.get('x-clerk-auth-status')
   const clerkAuthReason = req.headers.get('x-clerk-auth-reason')
-  console.log('[API] Clerk status:', clerkAuthStatus, 'reason:', clerkAuthReason)
 
   if (!userId) {
     console.error('[API] No userId found')
@@ -59,8 +56,6 @@ async function handleCreateProperty(req: NextRequest) {
     )
   }
 
-  console.log('[API] ✅ User authenticated:', userId)
-  console.log('[API] Will create property with owner_id:', userId)
 
   let body: any
   try {
@@ -122,10 +117,6 @@ async function handleCreateProperty(req: NextRequest) {
 
     images,
   } = body
-
-  console.log('[API] 📸 Images recibidas:', images);
-  console.log('[API] 📸 Images es array?', Array.isArray(images));
-  console.log('[API] 📸 Images length:', images?.length);
 
   const supabase = getSupabaseServerClient()
 
@@ -189,8 +180,6 @@ async function handleCreateProperty(req: NextRequest) {
     status: 'active',
   }
 
-  console.log('[API] 🔍 INSERT PAYLOAD:', JSON.stringify(insertPayload, null, 2))
-
   const { data, error } = await supabase
     .from('listings')
     .insert(insertPayload)
@@ -217,15 +206,12 @@ async function handleCreateProperty(req: NextRequest) {
   // 🔁 Revalidar DESPUÉS del insert exitoso
   revalidatePath('/dashboard')
 
-  console.log('[API] ✅ Property created successfully:', data.id)
-
   // 🔔 Check if there are users waiting for this city
   try {
     if (city) {
       const waitingCount = await getWaitlistCount(city)
-      
+
       if (waitingCount > 0) {
-        console.log(`[API] 📧 Found ${waitingCount} users waiting for ${city}`)
         
         // Notify waitlist asynchronously (don't block response)
         notifyWaitlist({

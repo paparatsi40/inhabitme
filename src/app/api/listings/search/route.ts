@@ -54,9 +54,16 @@ function mapRowToListing(row: any) {
   };
 }
 
+const DEFAULT_PAGE_SIZE = 20
+const MAX_PAGE_SIZE = 100
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  
+
+  const page  = Math.max(1, Number(searchParams.get('page')  ?? 1))
+  const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(searchParams.get('limit') ?? DEFAULT_PAGE_SIZE)))
+  const offset = (page - 1) * limit
+
   // Helper para parsear boolean
   const parseBoolean = (value: string | null) => {
     if (value === 'true') return true;
@@ -233,25 +240,30 @@ export async function GET(request: NextRequest) {
       query = query.eq('featured', true);
     }
 
-    // Ordenar: Featured primero, luego por fecha
-    const { data, error } = await query.order('featured', { ascending: false }).order('created_at', { ascending: false });
+    // Solo listings activos (filtrado en DB, no en memoria)
+    query = query.eq('status', 'active')
+
+    // Contar total para paginación
+    const { count } = await (query as any).select('id', { count: 'exact', head: true })
+
+    // Ordenar y paginar: Featured primero, luego por fecha
+    const { data, error } = await query
+      .order('featured', { ascending: false })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1)
 
     if (error) {
-      console.error('[API /api/listings/search] Error:', error);
+      console.error('[listings/search] Supabase error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Filtrar solo propiedades activas (case-insensitive) en memoria
-    const activeListings = (data || []).filter((listing: any) => 
-      listing.status?.toLowerCase() === 'active'
-    );
+    const listings = (data || []).map(mapRowToListing);
+    const total = count ?? listings.length
 
-    console.log('[API /api/listings/search] Total listings:', data?.length, 'Active listings:', activeListings.length);
-
-    // Transformar los datos al formato del dominio
-    const listings = activeListings.map(mapRowToListing);
-
-    return NextResponse.json({ data: listings });
+    return NextResponse.json({
+      data: listings,
+      pagination: { page, limit, total, hasMore: offset + listings.length < total },
+    });
   } catch (error: any) {
     console.error('[API /api/listings/search] Exception:', error);
     return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });

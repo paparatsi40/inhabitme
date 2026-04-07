@@ -267,12 +267,13 @@ async function sendContactsEmail(
       return
     }
 
+    const listingData = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings
     const checkIn = booking.check_in
       ? new Date(booking.check_in).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
       : 'Por confirmar'
     const months = booking.months_duration ?? '?'
     const durLabel = months === 1 ? '1 mes' : `${months} meses`
-    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const propertyTitle = listingData?.title ?? 'tu propiedad'
     const roleLabel = recipient === 'guest' ? 'host' : 'huésped'
     const nextStepsGuest = '1. Contacta al host para coordinar la llegada<br>2. Acuerda detalles de check-in y llaves<br>3. Confirma método de pago de renta y depósito directamente con el host'
     const nextStepsHost  = '1. El huésped te contactará pronto<br>2. Coordina detalles de llegada y entrega de llaves<br>3. Acuerda el método de pago de renta y depósito directamente'
@@ -333,7 +334,8 @@ async function sendHostPaymentReminderEmail(booking: any, locale = 'en') {
     const hostEmail = hostUser?.email
     if (!hostEmail) return
 
-    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const listingDataH = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings
+    const propertyTitle = listingDataH?.title ?? 'tu propiedad'
     const months = booking.months_duration ?? '?'
     const durLabel = months === 1 ? '1 mes' : `${months} meses`
     const payUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/host/dashboard`
@@ -370,7 +372,8 @@ async function sendGuestPaymentReminderEmail(booking: any, locale = 'en') {
     const guestEmail = booking.guest_email
     if (!guestEmail) return
 
-    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const listingDataG = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings
+    const propertyTitle = listingDataG?.title ?? 'tu propiedad'
     const months = booking.months_duration ?? '?'
     const durLabel = months === 1 ? '1 mes' : `${months} meses`
     const payUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/bookings/${booking.id}`

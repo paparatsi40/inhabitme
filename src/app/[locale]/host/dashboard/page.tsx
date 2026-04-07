@@ -29,16 +29,22 @@ export default async function HostDashboardPage({
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const { data: bookings } = await supabase
+  const { data: rawBookings } = await supabase
     .from('bookings')
     .select('id, status, guest_payment_status, host_payment_status, months_duration, check_in, guest_email, property_id, listings(title, city)')
     .eq('host_id', userId)
     .not('status', 'in', '("cancelled","rejected")')
     .order('created_at', { ascending: false })
 
+  // Supabase returns joined relations as arrays; normalize to single object
+  const bookings = rawBookings?.map(b => ({
+    ...b,
+    listings: Array.isArray(b.listings) ? (b.listings[0] ?? null) : b.listings,
+  })) ?? []
+
   return (
     <HostDashboardClient
-      bookings={bookings ?? []}
+      bookings={bookings}
       hostEmail={hostEmail}
       locale={locale}
       justPaid={payment === 'success'}

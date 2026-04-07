@@ -54,11 +54,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Property not found' }, { status: 404 });
     }
 
-    // Calculate months duration
-    // Add time to avoid timezone issues with date-only strings
+    // Calculate months duration using calendar months (not fixed 30-day approximation)
     const checkInDate = new Date(`${checkIn}T12:00:00`);
     const checkOutDate = new Date(`${checkOut}T12:00:00`);
-    const monthsDiff = Math.ceil((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24 * 30));
+    const calendarMonths =
+      (checkOutDate.getFullYear() - checkInDate.getFullYear()) * 12 +
+      (checkOutDate.getMonth() - checkInDate.getMonth());
+    const monthsDiff = Math.max(1, calendarMonths);
 
     
     // Resolve booking currency from listing/location (single source of truth)

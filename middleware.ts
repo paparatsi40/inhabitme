@@ -45,9 +45,7 @@ export default clerkMiddleware(async (auth, req) => {
       (sessionClaims as any)?.publicMetadata ||
       (sessionClaims as any)?.metadata;
 
-    // Temp: hardcode admin user ID until Clerk metadata is configured
-    const TEMP_ADMIN_USER_ID = 'user_37XxJQhGu4KbCylCP8ra8P8Nt0i';
-    const isAdmin = publicMetadata?.role === 'admin' || userId === TEMP_ADMIN_USER_ID;
+    const isAdmin = publicMetadata?.role === 'admin' || userId === process.env.ADMIN_USER_ID;
 
     if (!isAdmin) {
       return NextResponse.redirect(new URL('/', req.url));

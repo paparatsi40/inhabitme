@@ -9,10 +9,8 @@ const supabase = createClient(
 )
 
 export async function GET(request: NextRequest, { params }: Ctx) {
-  console.log('🔥 GET /api/listings/[id] CALLED')
   try {
     const { id: listingId } = await params
-    console.log('📍 Listing ID:', listingId)
 
     if (!listingId) {
       return NextResponse.json({ error: 'Listing ID is required' }, { status: 400 })
@@ -64,11 +62,10 @@ export async function GET(request: NextRequest, { params }: Ctx) {
       .single()
 
     if (error || !listing) {
-      console.log('❌ Listing not found:', error?.message || 'No data')
+      console.error('❌ Listing not found:', listingId, error?.message)
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 })
     }
 
-    console.log('✅ Listing found:', listing.title)
     return NextResponse.json(listing)
   } catch (error: any) {
     console.error('Error fetching listing:', error)

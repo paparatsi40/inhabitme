@@ -84,12 +84,13 @@ export async function POST(request: NextRequest, { params }: Ctx) {
     // Calcular fee — fuente única de verdad: duration-fees.ts
     const months = booking.months_duration ?? 2
     const fees = calculateDurationFees(months, currency)
-    const isFeatured = booking.listings?.featured ?? false
+    const listingData = Array.isArray(booking.listings) ? booking.listings[0] : booking.listings
+    const isFeatured = listingData?.featured ?? false
     const hostFeeAmount = isFeatured ? fees.hostFeaturedFee : fees.hostFee
 
     const tierName = getTierName(months)
     const durationLabel = months === 1 ? '1 mes' : `${months} meses`
-    const propertyTitle = booking.listings?.title ?? 'tu propiedad'
+    const propertyTitle = listingData?.title ?? 'tu propiedad'
     const currencySymbol = currency === 'usd' ? '$' : '€'
 
     // Obtener email del host desde Clerk
