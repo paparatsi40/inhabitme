@@ -3,7 +3,6 @@ import { redirect as nextRedirect } from 'next/navigation';
 import { auth, currentUser, clerkClient } from '@clerk/nextjs/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserMenu } from '@/components/dashboard/UserMenu';
 import Image from 'next/image';
 import { getTranslations, getLocale } from 'next-intl/server';
@@ -25,8 +24,6 @@ export default async function DashboardPage() {
   if (!userId) {
     nextRedirect(`/${locale}/sign-in`);
   }
-
-  console.log('[Dashboard] userId:', userId);
 
   // Obtener stats del usuario
   const supabase = getSupabaseServerClient();
@@ -88,8 +85,6 @@ export default async function DashboardPage() {
       ...emailLinkedClerkIds,
     ].filter(Boolean) as string[])
   )
-  console.log('[Dashboard] ownerIds used for queries:', ownerIds)
-  
   // Obtener propiedades del owner (exact match), con fallback robusto para datos legacy
   let ownedProperties: any[] = []
   const { data: exactProperties, error: exactPropertiesError } = await supabase
@@ -129,14 +124,10 @@ export default async function DashboardPage() {
         return candidates.some((value) => ownerSet.has(value))
       })
 
-      if (ownedProperties.length > 0) {
-        console.log('[Dashboard] recovered properties via legacy field reconciliation:', ownedProperties.length)
-      }
     }
   }
 
   const propertiesCount = ownedProperties.length
-  console.log('[Dashboard] propertiesCount:', propertiesCount)
 
   const ownedListingIds = ownedProperties.map((p: any) => p.id)
 

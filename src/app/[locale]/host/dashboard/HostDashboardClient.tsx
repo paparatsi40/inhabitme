@@ -159,7 +159,7 @@ function BookingCard({ booking, locale }: { booking: Booking; locale: string }) 
 
       {/* CTAs */}
       {booking.status === 'pending' && (
-        <Link href={`/${locale}/host/bookings/${booking.id}`}>
+        <Link href={`/host/bookings/${booking.id}`}>
           <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold">
             Responder solicitud
           </Button>
@@ -207,7 +207,7 @@ export function HostDashboardClient({ bookings, hostEmail, locale, justPaid }: P
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/" className="font-black text-lg text-gray-900">inhabitme</Link>
-          <Link href={`/${locale}/dashboard`} className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900">
+          <Link href="/dashboard" className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900">
             <ArrowLeft className="h-4 w-4" /> Dashboard
           </Link>
         </div>
@@ -231,7 +231,7 @@ export function HostDashboardClient({ bookings, hostEmail, locale, justPaid }: P
             <h1 className="text-3xl font-black text-gray-900">Mis Reservas</h1>
             <p className="text-gray-500 mt-1">{hostEmail}</p>
           </div>
-          <Link href={`/${locale}/dashboard/properties`}>
+          <Link href="/dashboard/properties">
             <Button variant="outline" className="flex items-center gap-2">
               <Plus className="h-4 w-4" /> Nueva propiedad
             </Button>
@@ -260,7 +260,7 @@ export function HostDashboardClient({ bookings, hostEmail, locale, justPaid }: P
             <p className="text-gray-500 mb-6">
               Cuando un huésped solicite una de tus propiedades, aparecerá aquí.
             </p>
-            <Link href={`/${locale}/dashboard/properties`}>
+            <Link href="/dashboard/properties">
               <Button variant="outline">
                 <Plus className="h-4 w-4 mr-2" /> Gestionar propiedades
               </Button>
