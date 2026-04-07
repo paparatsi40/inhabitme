@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
 // Confirmar booking y liberar datos de contacto a ambas partes
 // ─────────────────────────────────────────────────────────────────────────────
 async function confirmAndReleaseContacts(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   booking: any,
   sessionId: string,
   lastPayer: 'guest' | 'host'
@@ -247,7 +247,7 @@ async function confirmAndReleaseContacts(
 // Email con datos de contacto (se envía cuando ambos han pagado)
 // ─────────────────────────────────────────────────────────────────────────────
 async function sendContactsEmail(
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   booking: any,
   recipient: 'guest' | 'host'
 ) {
