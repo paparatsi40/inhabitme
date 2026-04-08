@@ -230,9 +230,9 @@
   "askQuestionModal": {
     "title": "Enviar consulta",
     "sentTitle": "¡Consulta enviada!",
-    "sentDescription": "Tu solicitud fue enviada directo al anfitrión. Debería responder pronto.",
-    "helperText": "💬 Pregunta lo que necesites sobre disponibilidad, condiciones o fecha de entrada.",
-    "helperBold": "Sin compromiso.",
+    "sentDescription": "El anfitrión recibirá tu consulta y podrá responderte por el inbox de InhabitMe.",
+    "helperText": "💬 Pregunta lo que necesites: disponibilidad, condiciones o fecha de entrada.",
+    "helperBold": "El anfitrión responde por InhabitMe — los datos de contacto directo se comparten al confirmar la reserva.",
     "yourQuestion": "Mensaje",
     "moveInDate": "¿Cuándo quieres mudarte?",
     "durationMonths": "¿Cuánto tiempo te quedarás? (1–12 meses)",
@@ -242,7 +242,7 @@
     "sending": "Enviando...",
     "sendQuestion": "Enviar consulta",
     "sendInquiryButton": "Enviar consulta",
-    "emailNotice": "Enviaremos tu solicitud directamente al anfitrión",
+    "emailNotice": "Tu información de contacto queda protegida hasta que ambas partes confirmen la reserva.",
     "writeQuestionError": "Por favor escribe tu mensaje",
     "genericError": "No se pudo enviar la consulta. Inténtalo de nuevo."
   },
@@ -540,20 +540,62 @@
       "payments": "Pagos y Seguridad"
     },
     "items": {
-      "q1": { "q": "¿Qué es inhabitme?", "a": "inhabitme es una plataforma especializada en estancias medias (1-6 meses) para trabajadores remotos y nómadas digitales. Conectamos hosts con espacios verificados con guests que buscan alojamiento de calidad con WiFi rápido y espacios de trabajo." },
-      "q2": { "q": "¿En qué se diferencia de Airbnb o Booking?", "a": "Estamos especializados en estancias medias (no noches cortas). Verificamos WiFi, tenemos precios transparentes sin sorpresas, y cobramos una tarifa única (€79-239) según duración, no comisiones mensuales." },
-      "q3": { "q": "¿En qué ciudades están disponibles?", "a": "Actualmente tenemos propiedades en Madrid, Barcelona, Valencia, Sevilla, Málaga, Lisboa y otras ciudades principales de España y Portugal. Estamos expandiéndonos constantemente." },
-      "g1": { "q": "¿Cómo funciona el proceso de reserva?", "a": "1) Busca y encuentra tu alojamiento ideal. 2) Solicita una reserva con tus fechas. 3) El host revisa y aprueba tu solicitud. 4) Pagas de forma segura. 5) Recibes detalles de acceso antes de llegar." },
-      "g2": { "q": "¿Cuánto cuesta usar inhabitme?", "a": "Cobramos una tarifa única según duración: €79 (1-2 meses), €139 (3-4 meses), o €239 (5-6 meses). Sin comisiones mensuales ni costos ocultos." },
-      "g3": { "q": "¿Qué incluye el alojamiento?", "a": "Todos los alojamientos incluyen WiFi verificado (mínimo 50 Mbps), espacio de trabajo y amenidades básicas. Algunos incluyen extras como limpieza, coworking o gimnasio." },
-      "g4": { "q": "¿Puedo cancelar mi reserva?", "a": "Sí. La política de cancelación depende de cada host. Generalmente: cancelación gratis hasta 30 días antes, 50% de reembolso hasta 14 días antes, sin reembolso después." },
-      "h1": { "q": "¿Cuánto cobra inhabitme a los hosts?", "a": "Cobramos un 3% del valor total de la reserva al host, mucho menos que otras plataformas (15-20%). Recibes el pago 24 horas después del check-in." },
-      "h2": { "q": "¿Cómo publicar mi propiedad?", "a": "1) Crea una cuenta gratuita. 2) Completa el formulario de tu propiedad. 3) Sube fotos de calidad. 4) Verifica tu WiFi. 5) Publicamos tu listing en 24-48 horas tras revisión." },
-      "h3": { "q": "¿Qué requisitos debe cumplir mi propiedad?", "a": "Requisitos mínimos: WiFi >50 Mbps verificado, espacio de trabajo dedicado, disponibilidad mínima de 1 mes, fotos de calidad, descripción completa y precio competitivo." },
-      "h4": { "q": "¿Cómo recibo los pagos?", "a": "Los pagos se procesan de forma segura con Stripe. Recibes tu pago (menos 3% de comisión) 24 horas después del check-in del guest en tu cuenta bancaria." },
-      "p1": { "q": "¿Es seguro pagar a través de inhabitme?", "a": "Sí, totalmente. Todos los pagos se procesan con Stripe, uno de los procesadores más seguros del mundo. Nunca almacenamos datos de tarjeta." },
-      "p2": { "q": "¿Qué métodos de pago aceptan?", "a": "Aceptamos tarjetas principales (Visa, Mastercard, American Express) y transferencias SEPA para estancias más largas." },
-      "p3": { "q": "¿Qué pasa si hay un problema con la propiedad?", "a": "Si la propiedad no cumple lo prometido, contáctanos de inmediato. Nuestro soporte mediará y resolverá el problema. En casos graves ofrecemos reembolso o reubicación." }
+      "q1": {
+        "q": "¿Qué es inhabitme?",
+        "a": "inhabitme es una plataforma especializada en estancias medias (1-6 meses) para trabajadores remotos y nómadas digitales. Conectamos hosts con espacios verificados con guests que buscan alojamiento de calidad con WiFi rápido y espacios de trabajo."
+      },
+      "q2": {
+        "q": "¿En qué se diferencia de Airbnb o Booking?",
+        "a": "Estamos especializados en estancias medias (no noches cortas). Verificamos WiFi, tenemos precios transparentes sin sorpresas, y cobramos una tarifa única (€79-239) según duración, no comisiones mensuales."
+      },
+      "q3": {
+        "q": "¿En qué ciudades están disponibles?",
+        "a": "Actualmente tenemos propiedades en Madrid, Barcelona, Valencia, Sevilla, Málaga, Lisboa y otras ciudades principales de España y Portugal. Estamos expandiéndonos constantemente."
+      },
+      "g1": {
+        "q": "¿Cómo funciona el proceso de reserva?",
+        "a": "1) Busca y encuentra tu alojamiento ideal. 2) Solicita una reserva con tus fechas. 3) El host revisa y aprueba tu solicitud. 4) Pagas de forma segura. 5) Recibes detalles de acceso antes de llegar."
+      },
+      "g2": {
+        "q": "¿Cuánto cuesta usar inhabitme?",
+        "a": "Cobramos una tarifa única según duración: €79 (1-2 meses), €139 (3-4 meses), o €239 (5-6 meses). Sin comisiones mensuales ni costos ocultos."
+      },
+      "g3": {
+        "q": "¿Qué incluye el alojamiento?",
+        "a": "Todos los alojamientos incluyen WiFi verificado (mínimo 50 Mbps), espacio de trabajo y amenidades básicas. Algunos incluyen extras como limpieza, coworking o gimnasio."
+      },
+      "g4": {
+        "q": "¿Puedo cancelar mi reserva?",
+        "a": "Sí. La política de cancelación depende de cada host. Generalmente: cancelación gratis hasta 30 días antes, 50% de reembolso hasta 14 días antes, sin reembolso después."
+      },
+      "h1": {
+        "q": "¿Cuánto cobra inhabitme a los hosts?",
+        "a": "Cobramos un 3% del valor total de la reserva al host, mucho menos que otras plataformas (15-20%). Recibes el pago 24 horas después del check-in."
+      },
+      "h2": {
+        "q": "¿Cómo publicar mi propiedad?",
+        "a": "1) Crea una cuenta gratuita. 2) Completa el formulario de tu propiedad. 3) Sube fotos de calidad. 4) Verifica tu WiFi. 5) Publicamos tu listing en 24-48 horas tras revisión."
+      },
+      "h3": {
+        "q": "¿Qué requisitos debe cumplir mi propiedad?",
+        "a": "Requisitos mínimos: WiFi >50 Mbps verificado, espacio de trabajo dedicado, disponibilidad mínima de 1 mes, fotos de calidad, descripción completa y precio competitivo."
+      },
+      "h4": {
+        "q": "¿Cómo recibo los pagos?",
+        "a": "Los pagos se procesan de forma segura con Stripe. Recibes tu pago (menos 3% de comisión) 24 horas después del check-in del guest en tu cuenta bancaria."
+      },
+      "p1": {
+        "q": "¿Es seguro pagar a través de inhabitme?",
+        "a": "Sí, totalmente. Todos los pagos se procesan con Stripe, uno de los procesadores más seguros del mundo. Nunca almacenamos datos de tarjeta."
+      },
+      "p2": {
+        "q": "¿Qué métodos de pago aceptan?",
+        "a": "Aceptamos tarjetas principales (Visa, Mastercard, American Express) y transferencias SEPA para estancias más largas."
+      },
+      "p3": {
+        "q": "¿Qué pasa si hay un problema con la propiedad?",
+        "a": "Si la propiedad no cumple lo prometido, contáctanos de inmediato. Nuestro soporte mediará y resolverá el problema. En casos graves ofrecemos reembolso o reubicación."
+      }
     },
     "cta": {
       "title": "¿No encuentras tu respuesta?",
@@ -1208,5 +1250,50 @@
       "subtitle": "Solo te toma unos minutos.",
       "cta": "Publicar propiedad"
     }
+  },
+  "listingPage": {
+    "bedrooms": "dormitorio",
+    "bedroomsPlural": "dormitorios",
+    "bathrooms": "baño",
+    "bathroomsPlural": "baños",
+    "sqm": "m²",
+    "guests": "huéspedes",
+    "stayDuration": "Duración de estancia",
+    "minimum": "Mínimo",
+    "maximum": "Máximo",
+    "month": "mes",
+    "months": "meses",
+    "about": "Sobre este alojamiento",
+    "amenities": "Comodidades",
+    "essentials": "Esenciales",
+    "kitchenHome": "Cocina y hogar",
+    "extras": "Extras",
+    "wifi": "WiFi",
+    "wifiWithSpeed": "WiFi · {speed} Mbps",
+    "airConditioning": "Aire acondicionado",
+    "heating": "Calefacción",
+    "elevator": "Ascensor",
+    "washingMachine": "Lavadora",
+    "dryer": "Secadora",
+    "dishwasher": "Lavavajillas",
+    "tv": "TV",
+    "parking": "Parking incluido",
+    "petsAllowed": "Mascotas permitidas",
+    "gym": "Gimnasio",
+    "pool": "Piscina",
+    "perMonth": "por mes · sin comisiones",
+    "stayLabel": "Estancia",
+    "minStay": "mín. {n} mes",
+    "minStayPlural": "mín. {n} meses",
+    "maxStay": "máx. {n} mes",
+    "maxStayPlural": "máx. {n} meses",
+    "requestStay": "Solicitar estancia",
+    "askQuestion": "Hacer una pregunta",
+    "noChargesUntilAccepted": "Sin cargos hasta que el host acepte",
+    "surface": "Superficie",
+    "neighborhood": "Barrio",
+    "featured": "Destacado",
+    "bedroomsSidebar": "Dormitorios",
+    "bathroomsSidebar": "Baños"
   }
 }

@@ -29,12 +29,11 @@ You have a new inquiry for ${input.listingTitle} (${input.city}).
 
 Move-in date: ${input.moveInDate}
 Duration: ${input.durationMonths} month(s)
-Guest email: ${input.guestEmail || 'not provided'}
 
-Message:
+Message from the guest:
 "${input.guestMessage}"
 
-View inquiry and reply:
+Reply via InhabitMe — guest contact details are shared once both parties confirm the booking:
 ${inboxUrl}
 
 Respond quickly to increase your chances of closing.

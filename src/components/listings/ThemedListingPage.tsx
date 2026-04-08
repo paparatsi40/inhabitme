@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { ThemeProvider } from './theme/ThemeProvider'
 import { CTASection } from './variants/cta/CTASection'
 import { BookingRequestModal } from '@/components/bookings/BookingRequestModal'
@@ -165,13 +166,7 @@ function HeaderRenderer({
 
   switch (headerStyle) {
     case 'split':
-      return (
-        <SplitHeader
-          {...commonProps}
-          images={images}
-          featured={listing.featured}
-        />
-      )
+      return <SplitHeader {...commonProps} images={images} featured={listing.featured} />
     case 'compact':
       return <CompactHeader {...commonProps} images={images} />
     case 'minimal':
@@ -195,8 +190,9 @@ function HeaderRenderer({
   }
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Main component ────────────────────────────────────────────────────────────
 export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
+  const t = useTranslations('listingPage')
   const [showBookingModal, setShowBookingModal] = useState(false)
   const [showQuestionModal, setShowQuestionModal] = useState(false)
 
@@ -229,15 +225,15 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
     pool: listing.has_pool ?? false,
   }
 
-  // For headers that already show images[0] as a fullscreen/hero, start the
-  // gallery from index 1 to avoid showing the main image twice.
+  // For headers that already show images[0] as fullscreen/hero background, start
+  // the gallery from index 1 to avoid showing the main photo twice.
   const heroStyleHeaders = ['hero', 'fullscreen']
   const galleryImages =
     heroStyleHeaders.includes(layout.header) && images.length > 1
       ? images.slice(1)
       : images
 
-  // Whether to show the sticky sidebar (only for inline CTA variant)
+  // Sidebar shown only for inline CTA variant (cozy / minimal templates)
   const showSidebar = layout.cta === 'inline'
 
   return (
@@ -255,7 +251,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
         {/* ── CONTENT ────────────────────────────────────────────────────── */}
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-          {/* Gallery (after header) */}
+          {/* Gallery */}
           {galleryImages.length > 0 && (
             <div className="mb-8">
               <GalleryRenderer
@@ -283,7 +279,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                       <Bed className="h-6 w-6 text-blue-500 mx-auto mb-1" />
                       <div className="text-2xl font-black text-gray-900">{listing.bedrooms}</div>
                       <div className="text-xs text-gray-500 font-medium">
-                        {listing.bedrooms === 1 ? 'dormitorio' : 'dormitorios'}
+                        {listing.bedrooms === 1 ? t('bedrooms') : t('bedroomsPlural')}
                       </div>
                     </div>
                   )}
@@ -292,7 +288,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                       <Bath className="h-6 w-6 text-purple-500 mx-auto mb-1" />
                       <div className="text-2xl font-black text-gray-900">{listing.bathrooms}</div>
                       <div className="text-xs text-gray-500 font-medium">
-                        {listing.bathrooms === 1 ? 'baño' : 'baños'}
+                        {listing.bathrooms === 1 ? t('bathrooms') : t('bathroomsPlural')}
                       </div>
                     </div>
                   )}
@@ -300,14 +296,14 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                     <div className="bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
                       <Package className="h-6 w-6 text-green-500 mx-auto mb-1" />
                       <div className="text-2xl font-black text-gray-900">{listing.size_sqm}</div>
-                      <div className="text-xs text-gray-500 font-medium">m²</div>
+                      <div className="text-xs text-gray-500 font-medium">{t('sqm')}</div>
                     </div>
                   )}
                   {listing.max_guests && (
                     <div className="bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
                       <Users className="h-6 w-6 text-orange-500 mx-auto mb-1" />
                       <div className="text-2xl font-black text-gray-900">{listing.max_guests}</div>
-                      <div className="text-xs text-gray-500 font-medium">huéspedes</div>
+                      <div className="text-xs text-gray-500 font-medium">{t('guests')}</div>
                     </div>
                   )}
                 </div>
@@ -318,17 +314,18 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
                   <h2 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-2">
                     <Calendar className="h-5 w-5" style={{ color: colors.primary }} />
-                    Duración de estancia
+                    {t('stayDuration')}
                   </h2>
                   <div className="flex flex-wrap gap-4">
                     {listing.min_months && (
                       <div className="flex items-center gap-3 bg-blue-50 rounded-xl px-4 py-3">
                         <Clock className="h-5 w-5 text-blue-600" />
                         <div>
-                          <div className="text-xs text-gray-500">Mínimo</div>
+                          <div className="text-xs text-gray-500">{t('minimum')}</div>
                           <div className="font-bold text-gray-900">
-                            {listing.min_months}{' '}
-                            {listing.min_months === 1 ? 'mes' : 'meses'}
+                            {listing.min_months === 1
+                              ? t('minStay', { n: listing.min_months })
+                              : t('minStayPlural', { n: listing.min_months })}
                           </div>
                         </div>
                       </div>
@@ -337,10 +334,11 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                       <div className="flex items-center gap-3 bg-purple-50 rounded-xl px-4 py-3">
                         <Calendar className="h-5 w-5 text-purple-600" />
                         <div>
-                          <div className="text-xs text-gray-500">Máximo</div>
+                          <div className="text-xs text-gray-500">{t('maximum')}</div>
                           <div className="font-bold text-gray-900">
-                            {listing.max_months}{' '}
-                            {listing.max_months === 1 ? 'mes' : 'meses'}
+                            {listing.max_months === 1
+                              ? t('maxStay', { n: listing.max_months })
+                              : t('maxStayPlural', { n: listing.max_months })}
                           </div>
                         </div>
                       </div>
@@ -352,9 +350,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
               {/* Description */}
               {listing.description && (
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-                  <h2 className="text-xl font-black text-gray-900 mb-4">
-                    Sobre este alojamiento
-                  </h2>
+                  <h2 className="text-xl font-black text-gray-900 mb-4">{t('about')}</h2>
                   <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                     {listing.description}
                   </p>
@@ -365,13 +361,13 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
               <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
                 <h2 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  Comodidades
+                  {t('amenities')}
                 </h2>
 
-                {/* Esenciales */}
+                {/* Essentials */}
                 <div className="mb-5">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
-                    Esenciales
+                    {t('essentials')}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <AmenityBadge
@@ -379,44 +375,44 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                       icon={Wifi}
                       label={
                         amenities.wifiSpeed
-                          ? `WiFi · ${amenities.wifiSpeed} Mbps`
-                          : 'WiFi'
+                          ? t('wifiWithSpeed', { speed: amenities.wifiSpeed })
+                          : t('wifi')
                       }
                     />
-                    <AmenityBadge active={amenities.ac} icon={Wind} label="Aire acondicionado" />
-                    <AmenityBadge active={amenities.heating} icon={Thermometer} label="Calefacción" />
-                    <AmenityBadge active={amenities.elevator} icon={Building2} label="Ascensor" />
+                    <AmenityBadge active={amenities.ac} icon={Wind} label={t('airConditioning')} />
+                    <AmenityBadge active={amenities.heating} icon={Thermometer} label={t('heating')} />
+                    <AmenityBadge active={amenities.elevator} icon={Building2} label={t('elevator')} />
                   </div>
                 </div>
 
-                {/* Cocina y hogar */}
+                {/* Kitchen & home */}
                 <div className="mb-5">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
-                    Cocina y hogar
+                    {t('kitchenHome')}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <AmenityBadge active={amenities.washingMachine} icon={Shirt} label="Lavadora" />
-                    <AmenityBadge active={amenities.dryer} icon={Shirt} label="Secadora" />
-                    <AmenityBadge active={amenities.dishwasher} icon={Utensils} label="Lavavajillas" />
-                    <AmenityBadge active={amenities.tv} icon={Tv} label="TV" />
+                    <AmenityBadge active={amenities.washingMachine} icon={Shirt} label={t('washingMachine')} />
+                    <AmenityBadge active={amenities.dryer} icon={Shirt} label={t('dryer')} />
+                    <AmenityBadge active={amenities.dishwasher} icon={Utensils} label={t('dishwasher')} />
+                    <AmenityBadge active={amenities.tv} icon={Tv} label={t('tv')} />
                   </div>
                 </div>
 
                 {/* Extras */}
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
-                    Extras
+                    {t('extras')}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <AmenityBadge active={amenities.parking} icon={Car} label="Parking incluido" />
-                    <AmenityBadge active={amenities.pets} icon={PawPrint} label="Mascotas permitidas" />
-                    <AmenityBadge active={amenities.gym} icon={Dumbbell} label="Gimnasio" />
-                    <AmenityBadge active={amenities.pool} icon={Star} label="Piscina" />
+                    <AmenityBadge active={amenities.parking} icon={Car} label={t('parking')} />
+                    <AmenityBadge active={amenities.pets} icon={PawPrint} label={t('petsAllowed')} />
+                    <AmenityBadge active={amenities.gym} icon={Dumbbell} label={t('gym')} />
+                    <AmenityBadge active={amenities.pool} icon={Star} label={t('pool')} />
                   </div>
                 </div>
               </div>
 
-              {/* Inline CTA (within content stream, for cozy/minimal templates) */}
+              {/* Inline CTA (rendered within content stream for cozy/minimal) */}
               {layout.cta === 'inline' && (
                 <CTASection
                   variant="inline"
@@ -437,18 +433,24 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                     <div className="text-3xl font-black text-gray-900">
                       {formatPrice(price, currency)}
                     </div>
-                    <div className="text-sm text-gray-500">por mes · sin comisiones</div>
+                    <div className="text-sm text-gray-500">{t('perMonth')}</div>
                   </div>
 
-                  {/* Duration info */}
+                  {/* Duration summary */}
                   {(listing.min_months || listing.max_months) && (
                     <div className="bg-blue-50 rounded-xl p-3 text-sm text-blue-800">
-                      <span className="font-semibold">Estancia:</span>{' '}
-                      {listing.min_months &&
-                        `mín. ${listing.min_months} mes${listing.min_months > 1 ? 'es' : ''}`}
+                      <span className="font-semibold">{t('stayLabel')}:</span>{' '}
+                      {listing.min_months && (
+                        listing.min_months === 1
+                          ? t('minStay', { n: listing.min_months })
+                          : t('minStayPlural', { n: listing.min_months })
+                      )}
                       {listing.min_months && listing.max_months && ' · '}
-                      {listing.max_months &&
-                        `máx. ${listing.max_months} mes${listing.max_months > 1 ? 'es' : ''}`}
+                      {listing.max_months && (
+                        listing.max_months === 1
+                          ? t('maxStay', { n: listing.max_months })
+                          : t('maxStayPlural', { n: listing.max_months })
+                      )}
                     </div>
                   )}
 
@@ -460,17 +462,17 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                       background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
                     }}
                   >
-                    Solicitar estancia
+                    {t('requestStay')}
                   </button>
                   <button
                     onClick={() => setShowQuestionModal(true)}
                     className="w-full py-3 rounded-xl font-semibold border-2 border-gray-200 text-gray-700 hover:border-gray-400 transition"
                   >
-                    Hacer una pregunta
+                    {t('askQuestion')}
                   </button>
 
                   <p className="text-xs text-gray-400 text-center">
-                    Sin cargos hasta que el host acepte
+                    {t('noChargesUntilAccepted')}
                   </p>
 
                   {/* Quick stats summary */}
@@ -478,7 +480,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                     {listing.bedrooms !== undefined && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500 flex items-center gap-1">
-                          <Bed className="h-4 w-4" /> Dormitorios
+                          <Bed className="h-4 w-4" /> {t('bedroomsSidebar')}
                         </span>
                         <span className="font-semibold">{listing.bedrooms}</span>
                       </div>
@@ -486,21 +488,21 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                     {listing.bathrooms !== undefined && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500 flex items-center gap-1">
-                          <Bath className="h-4 w-4" /> Baños
+                          <Bath className="h-4 w-4" /> {t('bathroomsSidebar')}
                         </span>
                         <span className="font-semibold">{listing.bathrooms}</span>
                       </div>
                     )}
                     {listing.size_sqm && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-500">Superficie</span>
-                        <span className="font-semibold">{listing.size_sqm} m²</span>
+                        <span className="text-gray-500">{t('surface')}</span>
+                        <span className="font-semibold">{listing.size_sqm} {t('sqm')}</span>
                       </div>
                     )}
                     {listing.neighborhood && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500 flex items-center gap-1">
-                          <MapPin className="h-4 w-4" /> Barrio
+                          <MapPin className="h-4 w-4" /> {t('neighborhood')}
                         </span>
                         <span className="font-semibold truncate ml-2">{listing.neighborhood}</span>
                       </div>
@@ -508,7 +510,7 @@ export function ThemedListingPage({ listing, theme }: ThemedListingPageProps) {
                     {amenities.wifi && amenities.wifiSpeed && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-500 flex items-center gap-1">
-                          <Wifi className="h-4 w-4" /> WiFi
+                          <Wifi className="h-4 w-4" /> {t('wifi')}
                         </span>
                         <span className="font-semibold">{amenities.wifiSpeed} Mbps</span>
                       </div>
