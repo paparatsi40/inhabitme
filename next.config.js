@@ -18,6 +18,13 @@ const nextConfig = {
       "@radix-ui/react-accordion",
       "@radix-ui/react-toast",
     ],
+    // Ensure blog MDX content files are bundled in Vercel serverless functions.
+    // Next.js file tracing can't detect dynamically-constructed paths like
+    // path.join(process.cwd(), 'content', 'blog', locale), so we declare them explicitly.
+    outputFileTracingIncludes: {
+      "/[locale]/blog": ["./content/blog/**/*.mdx"],
+      "/[locale]/blog/[slug]": ["./content/blog/**/*.mdx"],
+    },
   },
 
   // Image optimization
