@@ -437,7 +437,8 @@
     "terms": "Terms of Service",
     "cookies": "Cookie Policy",
     "rights": "All rights reserved.",
-    "made": "Made with ❤️ for digital nomads"
+    "made": "Made with ❤️ for digital nomads",
+    "blog": "Blog"
   },
   "termsPage": {
     "metadataTitle": "Terms of Service | InhabitMe",
@@ -1376,5 +1377,17 @@
     "essentialOnly": "Essential only",
     "preference": "Preferences saved. You can change them anytime in our",
     "cookiesPage": "Cookie Policy"
+  },
+  "blogPage": {
+    "metadataTitle": "Blog | InhabitMe",
+    "metadataDescription": "Tips, guides, and insights for digital nomads and remote workers finding medium-term stays in Spain.",
+    "title": "Blog",
+    "subtitle": "Guides, tips, and stories for digital nomads and remote workers.",
+    "noPosts": "No posts yet. Check back soon!",
+    "readMore": "Read article",
+    "minRead": "min read",
+    "backToBlog": "Back to blog",
+    "ctaText": "Ready to find your perfect medium-term home in Spain?",
+    "ctaButton": "Browse listings"
   }
 }

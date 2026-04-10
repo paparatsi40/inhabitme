@@ -437,7 +437,8 @@
     "terms": "Términos de servicio",
     "cookies": "Política de cookies",
     "rights": "Todos los derechos reservados.",
-    "made": "Hecho con ❤️ para nómadas digitales"
+    "made": "Hecho con ❤️ para nómadas digitales",
+    "blog": "Blog"
   },
   "termsPage": {
     "metadataTitle": "Términos de Servicio | InhabitMe",
@@ -1376,5 +1377,17 @@
     "essentialOnly": "Solo esenciales",
     "preference": "Preferencias guardadas. Puedes cambiarlas en cualquier momento en",
     "cookiesPage": "Política de Cookies"
+  },
+  "blogPage": {
+    "metadataTitle": "Blog | InhabitMe",
+    "metadataDescription": "Guías, consejos e historias para nómadas digitales y trabajadores remotos que buscan alojamiento de medio plazo en España.",
+    "title": "Blog",
+    "subtitle": "Guías, consejos e historias para nómadas digitales y trabajadores remotos.",
+    "noPosts": "Todavía no hay artículos. ¡Vuelve pronto!",
+    "readMore": "Leer artículo",
+    "minRead": "min de lectura",
+    "backToBlog": "Volver al blog",
+    "ctaText": "¿Listo para encontrar tu hogar perfecto de medio plazo en España?",
+    "ctaButton": "Ver anuncios"
   }
 }

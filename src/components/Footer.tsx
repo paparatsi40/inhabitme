@@ -52,12 +52,12 @@ export function Footer() {
               >
                 <Instagram className="h-5 w-5" />
               </a>
-              <a 
-                href="https://linkedin.com/company/inhabitme" 
-                target="_blank" 
+              <a
+                href="https://www.linkedin.com/in/carlos-alfaro-2802133ba"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 bg-gray-800 hover:bg-blue-700 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label="Follow us on LinkedIn"
+                aria-label="Connect on LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -104,6 +104,11 @@ export function Footer() {
               {t('company', { defaultValue: 'Empresa' })}
             </h3>
             <ul className="space-y-3">
+              <li>
+                <Link href="/blog" className="text-sm hover:text-white transition-colors">
+                  {t('blog', { defaultValue: 'Blog' })}
+                </Link>
+              </li>
               <li>
                 <Link href="/about" className="text-sm hover:text-white transition-colors">
                   {t('about', { defaultValue: 'Sobre nosotros' })}
