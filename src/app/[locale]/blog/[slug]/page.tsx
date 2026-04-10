@@ -11,10 +11,9 @@ type Props = { params: Promise<{ locale: string; slug: string }> }
 export async function generateStaticParams({
   params,
 }: {
-  params: Promise<{ locale: string }>
+  params: { locale: string }
 }) {
-  const { locale } = await params
-  const slugs = getAllSlugs(locale)
+  const slugs = getAllSlugs(params.locale)
   return slugs.map((slug) => ({ slug }))
 }
 
