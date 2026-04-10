@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
 
   const cityConfig = getCityConfig(citySlug)
-  if (!cityConfig) return { title: 'Barrio no encontrado | inhabitme' }
+  if (!cityConfig) return { title: localeSafe === 'es' ? 'Barrio no encontrado | inhabitme' : 'Neighborhood not found | inhabitme' }
 
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
   const cityName = cityConfig.name
@@ -73,30 +73,43 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
   const canonical = `${baseUrl}/${localeSafe}/${citySlug}/${neighborhoodSlug}`
 
+  const isEs = localeSafe === 'es'
+
+  const title = isEs
+    ? `Alquiler medio plazo en ${neighborhoodName}, ${cityName} | inhabitme`
+    : `Medium-term rentals in ${neighborhoodName}, ${cityName} | inhabitme`
+
+  const description = isEs
+    ? `Alojamientos verificados en ${neighborhoodName}, ${cityName}: estancias de 1-6 meses con WiFi rápido, escritorio dedicado y precios transparentes. Ideal para nómadas digitales.`
+    : `Verified 1-6 month stays in ${neighborhoodName}, ${cityName}. Fast WiFi, dedicated workspace, and transparent pricing for digital nomads and remote workers.`
+
+  const keywords = isEs
+    ? [`alquiler medio plazo ${neighborhoodName}`, `alquiler ${neighborhoodName} ${cityName}`, 'nómadas digitales', 'alquiler con WiFi', 'estancias medias']
+    : [`medium-term rental ${neighborhoodName}`, `furnished apartment ${neighborhoodName} ${cityName}`, 'digital nomads', 'remote work accommodation']
+
   return {
-    title: `Alquiler mensual en ${neighborhoodName}, ${cityName} | inhabitme`,
-    description: `Descubre ${neighborhoodName}, ${cityName}: alojamientos verificados para estancias de 1-12 meses. Viviendas con WiFi rápido, escritorio dedicado y espacios de trabajo. Ideal para nómadas digitales y profesionales remotos.`,
-    keywords: [
-      `alquiler mensual ${neighborhoodName}`,
-      `alquiler ${neighborhoodName} ${cityName}`,
-      `piso mensual ${neighborhoodName}`,
-      'estancias medias',
-      'vivienda nómadas digitales',
-      'alquiler con WiFi',
-    ],
+    title,
+    description,
+    keywords,
     openGraph: {
-      title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
-      description: `Alojamientos verificados en ${neighborhoodName} con workspace dedicado, WiFi rápido y precios claros. Estancias de 1-12 meses.`,
+      title,
+      description,
       url: canonical,
       siteName: 'inhabitme',
-      locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
+      locale: isEs ? 'es_ES' : 'en_US',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Alquiler mensual en ${neighborhoodName}, ${cityName}`,
+      title,
     },
-    alternates: { canonical },
+    alternates: {
+      canonical,
+      languages: {
+        en: `${baseUrl}/en/${citySlug}/${neighborhoodSlug}`,
+        es: `${baseUrl}/es/${citySlug}/${neighborhoodSlug}`,
+      },
+    },
     robots: { index: true, follow: true },
   }
 }

@@ -37,24 +37,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
 
   if (!cityConfig) {
-    return { title: 'Ciudad no encontrada | inhabitme' }
+    return { title: localeSafe === 'es' ? 'Ciudad no encontrada | inhabitme' : 'City not found | inhabitme' }
   }
 
   const canonical = `${baseUrl}/${localeSafe}/${citySlug}`
 
+  const titleTemplate = localeSafe === 'es'
+    ? `Alquiler medio plazo ${cityConfig.name} | inhabitme`
+    : `Medium-term rentals in ${cityConfig.name} | inhabitme`
+
+  const descriptionTemplate = localeSafe === 'es'
+    ? `Alojamientos verificados de 1-6 meses en ${cityConfig.name}. WiFi rápido, workspace dedicado y precios transparentes.`
+    : `Verified 1-6 month stays in ${cityConfig.name}. Fast WiFi, dedicated workspace, and transparent pricing for digital nomads.`
+
   return {
-    title: `Vive en ${cityConfig.name} | inhabitme`,
-    description: cityConfig.description,
-    alternates: { canonical },
+    title: titleTemplate,
+    description: descriptionTemplate,
+    alternates: {
+      canonical,
+      languages: {
+        en: `${baseUrl}/en/${citySlug}`,
+        es: `${baseUrl}/es/${citySlug}`,
+      },
+    },
     openGraph: {
-      title: `Vive en ${cityConfig.name} | inhabitme`,
-      description: cityConfig.description,
+      title: titleTemplate,
+      description: descriptionTemplate,
       url: canonical,
       siteName: 'inhabitme',
       locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
       type: 'website',
     },
-    robots: { index: true, follow: true },
+    robots: { index: cityConfig.indexable, follow: true },
   }
 }
 
