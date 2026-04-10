@@ -440,36 +440,73 @@
     "made": "Hecho con ❤️ para nómadas digitales"
   },
   "termsPage": {
-    "metadataTitle": "Términos de Servicio | inhabitme",
-    "metadataDescription": "Lee los términos y condiciones de uso de inhabitme.",
+    "metadataTitle": "Términos de Servicio | InhabitMe",
+    "metadataDescription": "Términos y condiciones de uso de la plataforma InhabitMe para estancias de mediano plazo.",
     "back": "Volver",
     "title": "Términos de Servicio",
-    "lastUpdated": "Última actualización: 13 de enero de 2026",
-    "intro": "Bienvenido a inhabitme. Al usar nuestra plataforma, aceptas estos Términos de Servicio.",
-    "sections": {
-      "acceptance": {
-        "title": "1. Aceptación de Términos",
-        "body": "Al registrarte o usar inhabitme, confirmas que tienes al menos 18 años, capacidad legal y que proporcionarás información veraz."
+    "lastUpdated": "Última actualización: enero de 2026",
+    "intro": "Bienvenido a InhabitMe. Al crear una cuenta o usar nuestra plataforma, aceptas estos Términos de Servicio. Te recomendamos leerlos con atención.",
+    "sections": [
+      {
+        "title": "1. Aceptación de los términos",
+        "body": "El acceso y uso de InhabitMe implica la aceptación plena de estos términos. Si no los aceptas, no podrás usar la plataforma. InhabitMe se reserva el derecho de modificar estos términos en cualquier momento, notificándolo con al menos 15 días de antelación por email."
       },
-      "service": {
-        "title": "2. Descripción del Servicio",
-        "body": "inhabitme conecta anfitriones y huéspedes para estancias de mediano plazo y actúa como intermediario para descubrimiento y comunicación."
+      {
+        "title": "2. Descripción del servicio",
+        "body": "InhabitMe es una plataforma que conecta propietarios o gestores de alojamientos (anfitriones) con personas que buscan estancias de mediano plazo (1–12 meses). InhabitMe actúa como intermediario tecnológico y no es parte del contrato de arrendamiento entre anfitrión e inquilino. El contrato de alquiler se establece directamente entre ambas partes."
       },
-      "accounts": {
-        "title": "3. Cuentas de Usuario",
-        "body": "Eres responsable de la seguridad de tu cuenta y de toda la actividad asociada, y debes notificar accesos no autorizados."
+      {
+        "title": "3. Registro y cuenta de usuario",
+        "body": "Para usar InhabitMe debes:",
+        "points": [
+          "Tener al menos 18 años y capacidad legal para contratar.",
+          "Proporcionar información veraz, completa y actualizada.",
+          "Mantener la confidencialidad de tus credenciales de acceso.",
+          "Notificarnos inmediatamente de cualquier acceso no autorizado a tu cuenta.",
+          "No crear más de una cuenta por persona o empresa."
+        ]
       },
-      "payments": {
-        "title": "4. Pagos y Tarifas",
-        "body": "Los pagos se procesan de forma segura con Stripe. Las tarifas y cargos aplicables se muestran claramente antes de pagar."
+      {
+        "title": "4. Tarifas y pagos",
+        "body": "InhabitMe cobra una tarifa única a los inquilinos al confirmar una reserva. Esta tarifa cubre el acceso a los datos de contacto del anfitrión y la gestión del proceso de reserva. Las tarifas varían según la duración de la estancia:",
+        "points": [
+          "1 mes: 79 € / inquilino",
+          "2–3 meses: 139 € / inquilino",
+          "4–6 meses: 189 € / inquilino",
+          "7 meses o más: 239 € / inquilino"
+        ]
       },
-      "liability": {
-        "title": "5. Limitación de Responsabilidad",
-        "body": "inhabitme actúa como intermediario y no es parte del contrato de arrendamiento entre anfitrión y huésped."
+      {
+        "title": "5. Política de cancelación y reembolsos",
+        "body": "Una vez abonada la tarifa de plataforma e intercambiados los datos de contacto, el cargo no es reembolsable, dado que el servicio de intermediación ha sido prestado. Si experimentas un problema técnico que impida completar el proceso, contacta con soporte@inhabitme.com en las 48 horas siguientes al pago."
+      },
+      {
+        "title": "6. Obligaciones de los anfitriones",
+        "body": "Los anfitriones se comprometen a:",
+        "points": [
+          "Publicar información veraz sobre el alojamiento: fotos actuales, descripción precisa, disponibilidad real y precio correcto.",
+          "Responder a las consultas de los inquilinos en un plazo razonable (recomendado: 48 horas).",
+          "Cumplir la normativa local aplicable al arrendamiento de viviendas.",
+          "No solicitar a los inquilinos pagos fuera de la plataforma para eludir las tarifas."
+        ]
+      },
+      {
+        "title": "7. Obligaciones de los inquilinos",
+        "body": "Los inquilinos se comprometen a:",
+        "points": [
+          "Proporcionar información veraz al solicitar una reserva.",
+          "Respetar las condiciones del alojamiento pactadas con el anfitrión.",
+          "No publicar información falsa sobre su situación económica o identidad.",
+          "Abonar el alquiler directamente al anfitrión según lo acordado."
+        ]
+      },
+      {
+        "title": "8. Limitación de responsabilidad",
+        "body": "InhabitMe no es responsable de: el cumplimiento de los contratos de alquiler entre anfitriones e inquilinos, daños al alojamiento, impagos de renta, discrepancias entre la descripción del alojamiento y la realidad, o disputas entre usuarios. InhabitMe se limita a facilitar el contacto entre las partes."
       }
-    },
-    "contactTitle": "¿Preguntas sobre los Términos?",
-    "contactBody": "Si tienes dudas sobre estos Términos de Servicio, contáctanos en:"
+    ],
+    "contactTitle": "¿Preguntas sobre los términos?",
+    "contactBody": "Si tienes dudas sobre estos términos, escríbenos a legal@inhabitme.com. Respondemos en un plazo máximo de 5 días hábiles."
   },
   "cookiesPage": {
     "metadataTitle": "Política de Cookies | inhabitme",
@@ -498,36 +535,71 @@
     "questionsPrefix": "¿Preguntas? Contáctanos en"
   },
   "privacyPage": {
-    "metadataTitle": "Política de Privacidad | inhabitme",
-    "metadataDescription": "Conoce cómo inhabitme recopila, usa y protege tus datos personales.",
+    "metadataTitle": "Política de Privacidad | InhabitMe",
+    "metadataDescription": "Cómo InhabitMe recopila, usa y protege tus datos personales de acuerdo con el RGPD.",
     "back": "Volver",
     "title": "Política de Privacidad",
-    "lastUpdated": "Última actualización: 13 de enero de 2026",
-    "intro": "En inhabitme, tu privacidad es fundamental. Esta política explica cómo recopilamos, usamos, compartimos y protegemos tu información personal.",
-    "sections": {
-      "dataCollect": {
-        "title": "1. Datos que recopilamos",
-        "body": "Recopilamos información de cuenta, perfil, datos de propiedades y reservas, y analítica básica necesaria para operar la plataforma."
+    "lastUpdated": "Última actualización: enero de 2026",
+    "intro": "En InhabitMe nos comprometemos a proteger tu privacidad. Esta política explica qué datos recopilamos, cómo los usamos y qué derechos tienes sobre ellos, en cumplimiento del Reglamento General de Protección de Datos (RGPD) y la normativa española aplicable.",
+    "sections": [
+      {
+        "title": "1. Responsable del tratamiento",
+        "body": "InhabitMe es el responsable del tratamiento de tus datos personales. Puedes contactarnos en privacy@inhabitme.com para cualquier consulta sobre privacidad."
       },
-      "dataUse": {
-        "title": "2. Cómo usamos tus datos",
-        "body": "Usamos tus datos para prestar el servicio, procesar pagos, mejorar búsquedas y producto, comunicar actualizaciones importantes y mantener la seguridad."
+      {
+        "title": "2. Datos que recopilamos",
+        "body": "Recopilamos los siguientes datos según cómo uses la plataforma:",
+        "points": [
+          "Datos de cuenta: nombre, email y foto de perfil facilitados al registrarte (a través de Clerk).",
+          "Datos de propiedades: título, descripción, imágenes, ubicación y características de los alojamientos publicados por anfitriones.",
+          "Datos de reservas e inquilinos: mensajes, fechas de estancia y preferencias indicadas al solicitar una reserva.",
+          "Datos de pago: procesados de forma segura por Stripe. InhabitMe no almacena números de tarjeta ni datos bancarios.",
+          "Datos de uso: páginas visitadas, búsquedas realizadas y métricas de rendimiento, recogidos de forma anónima."
+        ]
       },
-      "dataShare": {
-        "title": "3. Compartición de datos",
-        "body": "Nunca vendemos tus datos. Solo compartimos información cuando es necesario con proveedores clave (pagos, autenticación, almacenamiento) o por obligación legal."
+      {
+        "title": "3. Finalidad y base legal del tratamiento",
+        "body": "Tratamos tus datos para las siguientes finalidades:",
+        "points": [
+          "Prestación del servicio (base legal: ejecución de contrato): gestionar tu cuenta, procesar reservas y facilitar la comunicación entre anfitriones e inquilinos.",
+          "Pagos y facturación (base legal: ejecución de contrato): procesar los pagos de tarifas de plataforma.",
+          "Comunicaciones sobre el servicio (base legal: interés legítimo): notificarte sobre reservas, consultas y cambios en la plataforma.",
+          "Mejora del producto (base legal: interés legítimo): analizar el uso agregado y anónimo para mejorar la experiencia.",
+          "Cumplimiento legal (base legal: obligación legal): conservar registros cuando lo exija la normativa aplicable."
+        ]
       },
-      "security": {
-        "title": "4. Seguridad",
-        "body": "Aplicamos cifrado en tránsito, controles de acceso estrictos, monitoreo y copias de seguridad seguras para proteger tu información."
+      {
+        "title": "4. Compartición de datos",
+        "body": "InhabitMe no vende ni cede tus datos personales a terceros con fines comerciales. Solo compartimos datos en los siguientes casos:",
+        "points": [
+          "Proveedores de servicio: Clerk (autenticación), Stripe (pagos), Supabase (base de datos), Cloudinary (almacenamiento de imágenes) y Resend (email). Todos actúan como encargados del tratamiento bajo acuerdos de protección de datos.",
+          "Entre usuarios: cuando se confirma una reserva, el anfitrión y el inquilino reciben los datos de contacto necesarios para coordinar la estancia.",
+          "Obligación legal: cuando sea requerido por las autoridades competentes en virtud de la normativa vigente."
+        ]
       },
-      "rights": {
-        "title": "5. Tus derechos",
-        "body": "Puedes solicitar acceso, corrección, eliminación, portabilidad, oposición o limitación del tratamiento contactándonos."
+      {
+        "title": "5. Conservación de datos",
+        "body": "Conservamos tus datos durante el tiempo necesario para cumplir las finalidades descritas. En general: los datos de cuenta se eliminan a los 30 días de dar de baja la cuenta; los registros de transacciones se conservan 5 años por obligaciones fiscales; los mensajes de reservas se conservan 2 años."
+      },
+      {
+        "title": "6. Tus derechos (RGPD)",
+        "body": "Como usuario europeo tienes los siguientes derechos, que puedes ejercer escribiendo a privacy@inhabitme.com:",
+        "points": [
+          "Acceso: solicitar una copia de todos los datos que tenemos sobre ti.",
+          "Rectificación: corregir datos incorrectos o incompletos.",
+          "Supresión: solicitar la eliminación de tus datos cuando ya no sean necesarios.",
+          "Portabilidad: recibir tus datos en formato estructurado y legible por máquina.",
+          "Oposición y limitación: oponerte al tratamiento basado en interés legítimo o solicitar que lo limitemos.",
+          "Retirada del consentimiento: cuando el tratamiento se base en tu consentimiento, puedes retirarlo en cualquier momento."
+        ]
+      },
+      {
+        "title": "7. Seguridad",
+        "body": "Aplicamos medidas técnicas y organizativas adecuadas: cifrado en tránsito (HTTPS/TLS), control de accesos, autenticación segura y monitorización de incidentes. Ningún sistema es 100% seguro; en caso de brecha que afecte tus derechos, te notificaremos en los plazos previstos por el RGPD."
       }
-    },
-    "contactTitle": "¿Preguntas sobre privacidad?",
-    "contactBody": "Si tienes preguntas sobre esta política o sobre cómo tratamos tus datos, escríbenos a:"
+    ],
+    "contactTitle": "¿Preguntas sobre tu privacidad?",
+    "contactBody": "Puedes ejercer tus derechos o resolver cualquier duda escribiendo a nuestro equipo de privacidad. Respondemos en un máximo de 30 días."
   },
   "faqPage": {
     "back": "Volver",

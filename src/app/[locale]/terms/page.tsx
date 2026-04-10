@@ -19,13 +19,8 @@ export default async function TermsPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'termsPage' })
 
-  const sections = [
-    { title: t('sections.acceptance.title'), body: t('sections.acceptance.body') },
-    { title: t('sections.service.title'), body: t('sections.service.body') },
-    { title: t('sections.accounts.title'), body: t('sections.accounts.body') },
-    { title: t('sections.payments.title'), body: t('sections.payments.body') },
-    { title: t('sections.liability.title'), body: t('sections.liability.body') },
-  ]
+  // sections is now an array in JSON (supports optional `points` list per section)
+  const sections = t.raw('sections') as Array<{ title: string; body: string; points?: string[] }>
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -42,34 +37,49 @@ export default async function TermsPage({ params }: Props) {
             </div>
             <h1 className="text-3xl lg:text-4xl font-black text-gray-900">{t('title')}</h1>
           </div>
-          <p className="text-sm text-gray-600">{t('lastUpdated')}</p>
+          <p className="text-sm text-gray-500">{t('lastUpdated')}</p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="prose prose-lg max-w-none">
-          <div className="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-r-lg mb-8">
-            <p className="text-gray-800 leading-relaxed m-0">{t('intro')}</p>
-          </div>
+        {/* Intro */}
+        <div className="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-r-xl mb-10">
+          <p className="text-gray-800 leading-relaxed">{t('intro')}</p>
+        </div>
 
+        {/* Sections */}
+        <div className="space-y-6">
           {sections.map((section) => (
-            <section key={section.title} className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">{section.title}</h2>
-              <p className="text-gray-700">{section.body}</p>
+            <section key={section.title} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-3">{section.title}</h2>
+              <p className="text-gray-700 leading-relaxed">{section.body}</p>
+              {section.points && section.points.length > 0 && (
+                <ul className="mt-3 space-y-2">
+                  {section.points.map((point, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-gray-700 text-sm leading-relaxed">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-purple-500 shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
           ))}
+        </div>
 
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-600 p-6 rounded-r-xl mt-12">
-            <div className="flex items-start gap-3">
-              <Mail className="h-6 w-6 text-purple-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2 m-0">{t('contactTitle')}</h3>
-                <p className="text-gray-700 mb-3 text-base">{t('contactBody')}</p>
-                <p className="text-sm m-0">
-                  <strong>Email:</strong>{' '}
-                  <a href="mailto:legal@inhabitme.com" className="text-purple-600 hover:text-purple-700">legal@inhabitme.com</a>
-                </p>
-              </div>
+        {/* Contact block */}
+        <div className="mt-10 bg-gradient-to-r from-purple-50 to-blue-50 border-l-4 border-purple-600 p-6 rounded-r-xl">
+          <div className="flex items-start gap-3">
+            <Mail className="h-6 w-6 text-purple-600 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{t('contactTitle')}</h3>
+              <p className="text-gray-700 mb-3 text-sm">{t('contactBody')}</p>
+              <p className="text-sm">
+                <strong>Email:</strong>{' '}
+                <a href="mailto:legal@inhabitme.com" className="text-purple-600 hover:text-purple-700">
+                  legal@inhabitme.com
+                </a>
+              </p>
             </div>
           </div>
         </div>

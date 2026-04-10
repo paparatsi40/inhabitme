@@ -440,36 +440,73 @@
     "made": "Made with ❤️ for digital nomads"
   },
   "termsPage": {
-    "metadataTitle": "Terms of Service | inhabitme",
-    "metadataDescription": "Read the terms and conditions for using inhabitme.",
+    "metadataTitle": "Terms of Service | InhabitMe",
+    "metadataDescription": "Terms and conditions for using the InhabitMe platform for medium-term stays.",
     "back": "Back",
     "title": "Terms of Service",
-    "lastUpdated": "Last updated: January 13, 2026",
-    "intro": "Welcome to inhabitme. By using our platform, you agree to these Terms of Service.",
-    "sections": {
-      "acceptance": {
-        "title": "1. Acceptance of Terms",
-        "body": "By registering or using inhabitme, you confirm you are at least 18 years old, have legal capacity, and will provide accurate information."
+    "lastUpdated": "Last updated: January 2026",
+    "intro": "Welcome to InhabitMe. By creating an account or using our platform, you agree to these Terms of Service. Please read them carefully.",
+    "sections": [
+      {
+        "title": "1. Acceptance of terms",
+        "body": "Accessing and using InhabitMe implies full acceptance of these terms. If you do not accept them, you may not use the platform. InhabitMe reserves the right to update these terms at any time, with at least 15 days' notice by email."
       },
-      "service": {
-        "title": "2. Service Description",
-        "body": "inhabitme connects hosts and guests for medium-term rentals and acts as an intermediary for discovery and communication."
+      {
+        "title": "2. Description of service",
+        "body": "InhabitMe is a platform connecting property owners or managers (hosts) with people looking for medium-term stays (1–12 months). InhabitMe acts as a technology intermediary and is not a party to the rental contract between host and guest. The rental agreement is established directly between both parties."
       },
-      "accounts": {
-        "title": "3. User Accounts",
-        "body": "You are responsible for account security and all activity under your account, and must notify us of unauthorized access."
+      {
+        "title": "3. Registration and user account",
+        "body": "To use InhabitMe you must:",
+        "points": [
+          "Be at least 18 years old and have legal capacity to enter contracts.",
+          "Provide truthful, complete and up-to-date information.",
+          "Keep your login credentials confidential.",
+          "Notify us immediately of any unauthorised access to your account.",
+          "Not create more than one account per person or company."
+        ]
       },
-      "payments": {
-        "title": "4. Payments and Fees",
-        "body": "Payments are processed securely through Stripe. Platform fees and applicable charges are shown clearly before payment."
+      {
+        "title": "4. Fees and payments",
+        "body": "InhabitMe charges a one-time fee to guests when confirming a booking. This fee covers access to host contact details and the booking process. Fees vary by stay duration:",
+        "points": [
+          "1 month: €79 / guest",
+          "2–3 months: €139 / guest",
+          "4–6 months: €189 / guest",
+          "7+ months: €239 / guest"
+        ]
       },
-      "liability": {
-        "title": "5. Limitation of Liability",
-        "body": "inhabitme acts as an intermediary and is not a party to rental contracts between host and guest."
+      {
+        "title": "5. Cancellation and refund policy",
+        "body": "Once the platform fee has been paid and contact details exchanged, the charge is non-refundable, as the intermediation service has been delivered. If you experience a technical issue preventing completion of the process, contact support@inhabitme.com within 48 hours of payment."
+      },
+      {
+        "title": "6. Host obligations",
+        "body": "Hosts agree to:",
+        "points": [
+          "Publish accurate information: current photos, precise descriptions, real availability and correct pricing.",
+          "Respond to guest enquiries within a reasonable time (recommended: 48 hours).",
+          "Comply with local rental regulations applicable to their property.",
+          "Not request off-platform payments to circumvent platform fees."
+        ]
+      },
+      {
+        "title": "7. Guest obligations",
+        "body": "Guests agree to:",
+        "points": [
+          "Provide truthful information when requesting a booking.",
+          "Respect the conditions of the accommodation agreed with the host.",
+          "Not misrepresent their financial situation or identity.",
+          "Pay rent directly to the host as agreed."
+        ]
+      },
+      {
+        "title": "8. Limitation of liability",
+        "body": "InhabitMe is not liable for: fulfilment of rental contracts between hosts and guests, property damage, unpaid rent, discrepancies between a listing's description and reality, or disputes between users. InhabitMe's role is limited to facilitating contact between parties."
       }
-    },
-    "contactTitle": "Questions about the Terms?",
-    "contactBody": "If you have questions about these Terms of Service, contact us at:"
+    ],
+    "contactTitle": "Questions about the terms?",
+    "contactBody": "If you have questions about these terms, write to us at legal@inhabitme.com. We respond within 5 business days."
   },
   "cookiesPage": {
     "metadataTitle": "Cookie Policy | inhabitme",
@@ -498,36 +535,71 @@
     "questionsPrefix": "Questions? Contact us at"
   },
   "privacyPage": {
-    "metadataTitle": "Privacy Policy | inhabitme",
-    "metadataDescription": "Learn how inhabitme collects, uses and protects your personal data.",
+    "metadataTitle": "Privacy Policy | InhabitMe",
+    "metadataDescription": "How InhabitMe collects, uses and protects your personal data under GDPR.",
     "back": "Back",
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: January 13, 2026",
-    "intro": "At inhabitme, your privacy matters. This policy explains how we collect, use, share and protect your personal information.",
-    "sections": {
-      "dataCollect": {
-        "title": "1. Data we collect",
-        "body": "We collect account information, profile details, listing and booking data, and basic analytics needed to operate the platform."
+    "lastUpdated": "Last updated: January 2026",
+    "intro": "At InhabitMe we are committed to protecting your privacy. This policy explains what data we collect, how we use it and what rights you have, in compliance with the EU General Data Protection Regulation (GDPR).",
+    "sections": [
+      {
+        "title": "1. Data controller",
+        "body": "InhabitMe is the controller of your personal data. Contact us at privacy@inhabitme.com for any privacy-related questions."
       },
-      "dataUse": {
-        "title": "2. How we use your data",
-        "body": "We use your data to provide the service, process payments, improve search and product quality, communicate important updates, and keep the platform secure."
+      {
+        "title": "2. Data we collect",
+        "body": "We collect the following data depending on how you use the platform:",
+        "points": [
+          "Account data: name, email and profile photo provided on registration (via Clerk).",
+          "Property data: title, description, images, location and features of listings published by hosts.",
+          "Booking data: messages, stay dates and preferences provided when requesting a booking.",
+          "Payment data: securely processed by Stripe. InhabitMe does not store card numbers or bank details.",
+          "Usage data: pages visited, searches and performance metrics, collected anonymously."
+        ]
       },
-      "dataShare": {
-        "title": "3. Data sharing",
-        "body": "We never sell your data. We only share information when needed with core providers (payments, authentication, storage) or when legally required."
+      {
+        "title": "3. Purpose and legal basis",
+        "body": "We process your data for the following purposes:",
+        "points": [
+          "Service delivery (legal basis: contract): managing your account, processing bookings and facilitating communication between hosts and guests.",
+          "Payments (legal basis: contract): processing platform fee payments.",
+          "Service communications (legal basis: legitimate interest): notifying you about bookings, enquiries and platform updates.",
+          "Product improvement (legal basis: legitimate interest): analysing aggregated, anonymised usage to improve the experience.",
+          "Legal compliance (legal basis: legal obligation): retaining records as required by applicable law."
+        ]
       },
-      "security": {
-        "title": "4. Security",
-        "body": "We apply encryption in transit, strict access controls, monitoring, and secure backups to protect your information."
+      {
+        "title": "4. Data sharing",
+        "body": "InhabitMe does not sell or transfer your personal data to third parties for commercial purposes. We only share data in the following cases:",
+        "points": [
+          "Service providers: Clerk (auth), Stripe (payments), Supabase (database), Cloudinary (image storage) and Resend (email) — all acting as processors under data protection agreements.",
+          "Between users: when a booking is confirmed, hosts and guests receive each other's contact details to coordinate the stay.",
+          "Legal obligation: when required by competent authorities under applicable law."
+        ]
       },
-      "rights": {
-        "title": "5. Your rights",
-        "body": "You can request access, correction, deletion, portability, objection, or restriction of processing by contacting us."
+      {
+        "title": "5. Data retention",
+        "body": "We retain your data for as long as necessary to fulfil the stated purposes. As a general rule: account data is deleted within 30 days of account closure; transaction records are kept for 5 years for tax obligations; booking messages are kept for 2 years."
+      },
+      {
+        "title": "6. Your rights (GDPR)",
+        "body": "As a European user you have the following rights, which you can exercise by writing to privacy@inhabitme.com:",
+        "points": [
+          "Access: request a copy of all data we hold about you.",
+          "Rectification: correct inaccurate or incomplete data.",
+          "Erasure: request deletion of your data when it is no longer necessary.",
+          "Portability: receive your data in a structured, machine-readable format.",
+          "Objection and restriction: object to processing based on legitimate interest or ask us to restrict it.",
+          "Withdrawal of consent: where processing is based on consent, you may withdraw it at any time."
+        ]
+      },
+      {
+        "title": "7. Security",
+        "body": "We apply appropriate technical and organisational measures: in-transit encryption (HTTPS/TLS), access controls, secure authentication and incident monitoring. No system is 100% secure; in the event of a breach affecting your rights, we will notify you within the timeframes required by GDPR."
       }
-    },
-    "contactTitle": "Questions about privacy?",
-    "contactBody": "If you have questions about this policy or how we process data, contact us at:"
+    ],
+    "contactTitle": "Questions about your privacy?",
+    "contactBody": "You can exercise your rights or resolve any queries by writing to our privacy team. We respond within 30 days."
   },
   "faqPage": {
     "back": "Back",
