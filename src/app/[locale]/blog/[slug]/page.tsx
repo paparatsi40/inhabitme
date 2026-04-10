@@ -3,8 +3,9 @@ import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowLeft, Clock, Calendar, Tag, User } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
-import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getAllSlugs, getPostBySlug } from '@/lib/blog'
+import { markdownToReact } from '@/lib/markdown'
+import type { Components } from 'hast-util-to-jsx-runtime'
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
@@ -36,78 +37,60 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-// MDX component overrides — Tailwind prose-like styling without the plugin
-const mdxComponents = {
-  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="text-3xl font-black text-gray-900 mt-10 mb-4" {...props} />
+// Prose component overrides — Tailwind styling without @tailwindcss/typography
+const proseComponents: Partial<Components> = {
+  h1: ({ children, ...props }) => (
+    <h1 className="text-3xl font-black text-gray-900 mt-10 mb-4" {...props}>{children}</h1>
   ),
-  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-3 pb-2 border-b border-gray-100" {...props} />
+  h2: ({ children, ...props }) => (
+    <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-3 pb-2 border-b border-gray-100" {...props}>{children}</h2>
   ),
-  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2" {...props} />
+  h3: ({ children, ...props }) => (
+    <h3 className="text-xl font-bold text-gray-800 mt-6 mb-2" {...props}>{children}</h3>
   ),
-  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="text-gray-700 leading-relaxed mb-4" {...props} />
+  p: ({ children, ...props }) => (
+    <p className="text-gray-700 leading-relaxed mb-4" {...props}>{children}</p>
   ),
-  ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className="list-none space-y-2 my-4 pl-0" {...props} />
+  ul: ({ children, ...props }) => (
+    <ul className="list-disc list-outside ml-5 space-y-1.5 my-4 text-gray-700" {...props}>{children}</ul>
   ),
-  ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className="list-decimal list-inside space-y-2 my-4 pl-4 text-gray-700" {...props} />
+  ol: ({ children, ...props }) => (
+    <ol className="list-decimal list-outside ml-5 space-y-1.5 my-4 text-gray-700" {...props}>{children}</ol>
   ),
-  li: (props: React.HTMLAttributes<HTMLLIElement>) => (
-    <li
-      className="flex items-start gap-2.5 text-gray-700 leading-relaxed before:content-[''] before:mt-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-blue-500 before:shrink-0"
-      {...props}
-    />
+  li: ({ children, ...props }) => (
+    <li className="leading-relaxed" {...props}>{children}</li>
   ),
-  strong: (props: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-bold text-gray-900" {...props} />
+  strong: ({ children, ...props }) => (
+    <strong className="font-bold text-gray-900" {...props}>{children}</strong>
   ),
-  em: (props: React.HTMLAttributes<HTMLElement>) => (
-    <em className="italic text-gray-700" {...props} />
+  em: ({ children, ...props }) => (
+    <em className="italic text-gray-700" {...props}>{children}</em>
   ),
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a
-      className="text-blue-600 hover:text-blue-700 underline underline-offset-2"
-      {...props}
-    />
+  a: ({ children, ...props }) => (
+    <a className="text-blue-600 hover:text-blue-700 underline underline-offset-2" {...props}>{children}</a>
   ),
-  blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote
-      className="border-l-4 border-blue-400 bg-blue-50 pl-4 py-2 my-4 text-gray-700 italic rounded-r-xl"
-      {...props}
-    />
+  blockquote: ({ children, ...props }) => (
+    <blockquote className="border-l-4 border-blue-400 bg-blue-50 pl-4 py-2 my-4 text-gray-700 italic rounded-r-xl" {...props}>{children}</blockquote>
   ),
-  code: (props: React.HTMLAttributes<HTMLElement>) => (
-    <code
-      className="bg-gray-100 text-blue-700 px-1.5 py-0.5 rounded text-sm font-mono"
-      {...props}
-    />
+  code: ({ children, ...props }) => (
+    <code className="bg-gray-100 text-blue-700 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>
   ),
-  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-    <pre
-      className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto my-6 text-sm"
-      {...props}
-    />
+  pre: ({ children, ...props }) => (
+    <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto my-6 text-sm" {...props}>{children}</pre>
   ),
-  table: (props: React.HTMLAttributes<HTMLTableElement>) => (
+  table: ({ children, ...props }) => (
     <div className="overflow-x-auto my-6">
-      <table className="w-full border-collapse text-sm" {...props} />
+      <table className="w-full border-collapse text-sm" {...props}>{children}</table>
     </div>
   ),
-  thead: (props: React.HTMLAttributes<HTMLTableSectionElement>) => (
-    <thead className="bg-gray-50" {...props} />
+  thead: ({ children, ...props }) => (
+    <thead className="bg-gray-50" {...props}>{children}</thead>
   ),
-  th: (props: React.ThHTMLAttributes<HTMLTableCellElement>) => (
-    <th
-      className="border border-gray-200 px-4 py-2.5 text-left font-semibold text-gray-900"
-      {...props}
-    />
+  th: ({ children, ...props }) => (
+    <th className="border border-gray-200 px-4 py-2.5 text-left font-semibold text-gray-900" {...props}>{children}</th>
   ),
-  td: (props: React.TdHTMLAttributes<HTMLTableCellElement>) => (
-    <td className="border border-gray-200 px-4 py-2.5 text-gray-700" {...props} />
+  td: ({ children, ...props }) => (
+    <td className="border border-gray-200 px-4 py-2.5 text-gray-700" {...props}>{children}</td>
   ),
   hr: () => <hr className="my-8 border-gray-200" />,
 }
@@ -117,13 +100,14 @@ export default async function BlogPostPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'blogPage' })
 
   const post = getPostBySlug(slug, locale)
-
   if (!post) notFound()
 
   const formattedDate = new Date(post.date).toLocaleDateString(
     locale === 'es' ? 'es-ES' : 'en-GB',
     { day: 'numeric', month: 'long', year: 'numeric' }
   )
+
+  const content = await markdownToReact(post.content, proseComponents)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -180,9 +164,9 @@ export default async function BlogPostPage({ params }: Props) {
           )}
         </div>
 
-        {/* MDX Content */}
+        {/* Content rendered via unified → HAST → React (no eval/new Function) */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-10">
-          <MDXRemote source={post.content} components={mdxComponents} />
+          {content}
         </div>
 
         {/* Footer CTA */}
