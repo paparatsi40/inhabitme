@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { Link } from '@/i18n/routing'
 import { ArrowRight, BookOpen, Clock, Tag } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import Image from 'next/image'
 import { getAllPosts } from '@/lib/blog'
 
 type Props = { params: Promise<{ locale: string }> }
@@ -49,12 +50,28 @@ export default async function BlogListPage({ params }: Props) {
             {posts.map((post) => (
               <article
                 key={post.slug}
-                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col group"
               >
-                {/* Cover image placeholder */}
-                <div className="h-48 bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100 flex items-center justify-center">
-                  <BookOpen className="h-16 w-16 text-blue-300" />
-                </div>
+                {/* Cover image */}
+                <Link href={`/blog/${post.slug}`} className="block overflow-hidden">
+                  {post.coverImage ? (
+                    <div className="relative h-52 w-full overflow-hidden">
+                      <Image
+                        src={post.coverImage}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      {/* Subtle overlay for readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    </div>
+                  ) : (
+                    <div className="h-52 bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100 flex items-center justify-center group-hover:from-blue-200 group-hover:to-indigo-200 transition-colors duration-300">
+                      <BookOpen className="h-16 w-16 text-blue-300" />
+                    </div>
+                  )}
+                </Link>
 
                 <div className="p-6 flex flex-col flex-1">
                   {/* Tags */}

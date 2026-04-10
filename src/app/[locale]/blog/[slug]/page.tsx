@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/routing'
 import { ArrowLeft, Clock, Calendar, Tag, User } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
+import Image from 'next/image'
 import { getAllSlugs, getPostBySlug } from '@/lib/blog'
 import { markdownToReact } from '@/lib/markdown'
 import type { Components } from 'hast-util-to-jsx-runtime'
@@ -123,6 +124,21 @@ export default async function BlogPostPage({ params }: Props) {
           </Link>
         </div>
       </div>
+
+      {/* Hero cover image */}
+      {post.coverImage && (
+        <div className="relative h-64 sm:h-80 lg:h-96 w-full overflow-hidden">
+          <Image
+            src={post.coverImage}
+            alt={post.title}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40" />
+        </div>
+      )}
 
       {/* Article */}
       <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
