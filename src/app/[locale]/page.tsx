@@ -140,7 +140,7 @@ export default async function HomePage({
                     size="lg"
                     className="w-full sm:w-auto min-h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg"
                   >
-                    <Link href="/properties/new" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
+                    <Link href="/search" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
                       {t('hero.cta.primary')}
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
@@ -151,9 +151,9 @@ export default async function HomePage({
                     variant="outline"
                     className="w-full sm:w-auto border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold px-8 py-6 text-lg"
                   >
-                    <a href="#ciudades" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
+                    <Link href="/properties/new" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
                       {t('hero.cta.secondary')}
-                    </a>
+                    </Link>
                   </Button>
                 </div>
                 <div className="mt-8 p-5 bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-300 rounded-2xl">
