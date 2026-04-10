@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +13,29 @@ import {
   Shield, MessageCircle
 } from 'lucide-react';
 
-export default async function FAQPage() {
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const isEs = locale === 'es'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
+  const title = isEs ? 'Preguntas Frecuentes | InhabitMe' : 'Frequently Asked Questions | InhabitMe'
+  const description = isEs
+    ? 'Resuelve tus dudas sobre alquiler de medio plazo, reservas, pagos y cómo funciona InhabitMe para nómadas digitales y propietarios.'
+    : 'Find answers about medium-term rentals, bookings, payments, and how InhabitMe works for digital nomads and property owners.'
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${baseUrl}/${locale}/faq`,
+      languages: { en: `${baseUrl}/en/faq`, es: `${baseUrl}/es/faq` },
+    },
+    openGraph: { title, description, url: `${baseUrl}/${locale}/faq`, type: 'website' },
+  }
+}
+
+export default async function FAQPage({ params }: Props) {
+  const { locale } = await params
   const t = await getTranslations('faqPage');
 
   const sections = [
@@ -130,6 +153,27 @@ export default async function FAQPage() {
           </Link>
         </div>
       </main>
+
+      {/* FAQ Schema — tells Google to show rich snippets in search results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              ...(['q1','q2','q3','g1','g2','g3','g4','h1','h2','h3','h4','p1','p2','p3'] as const).map((key) => ({
+                '@type': 'Question',
+                name: t(`items.${key}.q`),
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: t(`items.${key}.a`),
+                },
+              })),
+            ],
+          }),
+        }}
+      />
     </div>
   );
 }
