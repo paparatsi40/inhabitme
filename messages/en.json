@@ -1367,5 +1367,14 @@
     "featured": "Featured",
     "bedroomsSidebar": "Bedrooms",
     "bathroomsSidebar": "Bathrooms"
+  },
+  "cookieBanner": {
+    "title": "We use cookies",
+    "description": "InhabitMe uses essential cookies to keep the platform working (session, security, language). We don't use tracking or advertising cookies.",
+    "learnMore": "Learn more",
+    "acceptAll": "Accept all",
+    "essentialOnly": "Essential only",
+    "preference": "Preferences saved. You can change them anytime in our",
+    "cookiesPage": "Cookie Policy"
   }
 }

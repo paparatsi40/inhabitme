@@ -6,6 +6,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
+import { CookieBanner } from '@/components/CookieBanner'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
 
 const inter = Inter({
@@ -102,6 +103,7 @@ export default async function LocaleLayout({
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow">{children}</main>
         <Footer />
+        <CookieBanner />
       </div>
     </NextIntlClientProvider>
   )
