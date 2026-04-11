@@ -71,9 +71,16 @@ export async function generateMetadata({
       creator: SEO_CONFIG.twitter.creator,
     },
     robots: SEO_CONFIG.robots,
+    manifest: '/manifest.json',
     icons: {
-      icon: '/favicon.svg',
-      apple: '/favicon.svg',
+      icon: [
+        { url: '/favicon.svg', type: 'image/svg+xml' },
+        { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+        { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+      ],
+      apple: [
+        { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      ],
     },
     ...(SEO_CONFIG.verification.google && {
       verification: { google: SEO_CONFIG.verification.google },

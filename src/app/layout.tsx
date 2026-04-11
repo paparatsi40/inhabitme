@@ -10,6 +10,8 @@ const inter = Inter({
 export const metadata = {
   title: 'inhabitme',
   description: 'Medium-term stays for digital nomads',
+  manifest: '/manifest.json',
+  themeColor: '#2563eb',
 };
 
 // Root layout for ALL routes (auth + i18n)
