@@ -10,8 +10,7 @@ Disallow: /test
 Disallow: /test-*
 
 # Host
-Host: http://localhost:3000
+Host: https://www.inhabitme.com
 
 # Sitemaps
-Sitemap: http://localhost:3000/sitemap.xml
 Sitemap: https://www.inhabitme.com/sitemap.xml

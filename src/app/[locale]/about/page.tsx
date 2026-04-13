@@ -10,10 +10,19 @@ type AboutPageProps = {
 export async function generateMetadata({ params }: AboutPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'about' });
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com';
 
   return {
     title: t('metadataTitle'),
     description: t('metadataDescription'),
+    alternates: {
+      canonical: `${baseUrl}/${locale}/about`,
+      languages: {
+        en: `${baseUrl}/en/about`,
+        es: `${baseUrl}/es/about`,
+      },
+    },
+    robots: { index: true, follow: true },
   };
 }
 

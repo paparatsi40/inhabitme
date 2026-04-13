@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com',
+  siteUrl: 'https://www.inhabitme.com',
   generateRobotsTxt: true,
   generateIndexSitemap: false, // Solo un sitemap (no múltiples)
   changefreq: 'weekly',

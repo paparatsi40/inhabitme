@@ -107,6 +107,18 @@ const nextConfig = {
         permanent: false,
       },
 
+      // Legacy /vision page → /about
+      {
+        source: "/vision",
+        destination: "/en/about",
+        permanent: true,
+      },
+      {
+        source: "/:locale/vision",
+        destination: "/:locale/about",
+        permanent: true,
+      },
+
       // Legacy /listings → /properties
       {
         source: "/:locale/listings/:id",

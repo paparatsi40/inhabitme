@@ -10,10 +10,19 @@ type Props = { params: Promise<{ locale: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'blogPage' })
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com'
 
   return {
     title: t('metadataTitle'),
     description: t('metadataDescription'),
+    alternates: {
+      canonical: `${baseUrl}/${locale}/blog`,
+      languages: {
+        en: `${baseUrl}/en/blog`,
+        es: `${baseUrl}/es/blog`,
+      },
+    },
+    robots: { index: true, follow: true },
   }
 }
 
