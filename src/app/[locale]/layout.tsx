@@ -8,6 +8,8 @@ import { routing } from '@/i18n/routing'
 import { Footer } from '@/components/Footer'
 import { CookieBanner } from '@/components/CookieBanner'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
+import { OrganizationJsonLd } from '@/components/seo/OrganizationJsonLd'
+import { WebSiteJsonLd } from '@/components/seo/WebSiteJsonLd'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -107,6 +109,8 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={clientMessages}>
+      <OrganizationJsonLd />
+      <WebSiteJsonLd locale={locale === 'es' ? 'es' : 'en'} />
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow">{children}</main>
         <Footer />

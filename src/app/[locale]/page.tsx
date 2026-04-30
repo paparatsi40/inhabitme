@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CITIES } from '@/config/cities'
 import { CityCarousel } from '@/components/hero/CityCarousel'
+import { FaqJsonLd } from '@/components/seo/FaqJsonLd'
 
 // ── Lazy-load secciones below-fold pesadas ─────────────────────────────────
 // Se cargan solo cuando el navegador las necesita, aligerando el bundle inicial
@@ -56,13 +57,16 @@ export default async function HomePage({
   // FIX #1 — todas las traducciones en paralelo, no secuenciales
   // Antes: 6 awaits encadenados = suma de tiempos
   // Ahora: Promise.all = tiempo del más lento (≈ el mismo que uno solo)
-  const [t, tCommon, tHow, tFaq, tFaqSection, tFinalCta] = await Promise.all([
+  const [t, tCommon, tHow, tFaq, tFaqSection, tFinalCta, tCities, tAirbnb, tHosts] = await Promise.all([
     getTranslations('home'),
     getTranslations('common'),
     getTranslations('home.howItWorks'),
     getTranslations('home.faq'),
     getTranslations('home.faqSection'),
     getTranslations('home.finalCtaSection'),
+    getTranslations('home.citiesSection'),
+    getTranslations('home.airbnbVs'),
+    getTranslations('home.forHosts'),
   ])
 
   return (
@@ -151,7 +155,7 @@ export default async function HomePage({
                     variant="outline"
                     className="w-full sm:w-auto border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold px-8 py-6 text-lg"
                   >
-                    <Link href="/properties/new" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
+                    <Link href="/list-your-space" className="flex-1 sm:flex-initial min-h-11 inline-flex items-center justify-center">
                       {t('hero.cta.secondary')}
                     </Link>
                   </Button>
@@ -206,9 +210,9 @@ export default async function HomePage({
               <TrustItem icon={<Clock className="h-8 w-8 text-purple-600" />} title={t('whyInhabitme.flexible.title')} text={t('whyInhabitme.flexible.description')} gradient="from-purple-50 to-purple-100" borderColor="border-purple-200" />
             </div>
             <div className="mt-12 text-center">
-              <Link href="/properties/new">
+              <Link href="/list-your-space">
                 <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg">
-                  List your property
+                  {t('listProperty.cta')}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -259,7 +263,7 @@ export default async function HomePage({
                 <div className="mt-6 pt-6 border-t-2 border-red-200">
                   <p className="text-base text-gray-700 mb-2">{tHow('example.title')}</p>
                   <p className="text-2xl font-black text-red-600">{tHow('example.otherPlatformTotal')}</p>
-                  <p className="text-sm text-gray-600 mt-1">{tHow('example.inhabitme')}</p>
+                  <p className="text-sm text-gray-600 mt-1">{tHow('example.otherPlatform')}</p>
                 </div>
               </div>
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-8 relative overflow-hidden">
@@ -342,10 +346,10 @@ export default async function HomePage({
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl lg:text-4xl font-black mb-4">
-                Available in selected cities · Starting with Austin
+                {tCities('title')}
               </h2>
               <p className="text-lg text-gray-700">
-                Austin focus for liquidity · Expanding to new cities soon · Built for remote workers
+                {tCities('subtitle')}
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -361,13 +365,20 @@ export default async function HomePage({
                   gradient={city.gradient}
                   hoverBorder={city.hoverBorder}
                   textColor={city.textColor}
+                  available={city.available ?? false}
+                  labels={{
+                    fromPrice: tCities('fromPrice', { price: city.price }),
+                    viewProperties: tCities('viewProperties'),
+                    comingSoon: tCities('comingSoon'),
+                    joinWaitlist: tCities('joinWaitlist'),
+                  }}
                 />
               ))}
             </div>
             <div className="mt-10 text-center">
-              <Link href="/properties/new">
+              <Link href="/list-your-space">
                 <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg">
-                  List your property
+                  {t('listProperty.cta')}
                 </Button>
               </Link>
             </div>
@@ -379,30 +390,30 @@ export default async function HomePage({
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
               <h2 className="text-3xl lg:text-5xl font-black mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Airbnb vs InhabitMe
+                {tAirbnb('title')}
               </h2>
-              <p className="text-lg text-gray-700">Simple pricing that protects host margins</p>
+              <p className="text-lg text-gray-700">{tAirbnb('subtitle')}</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-2xl border-2 border-red-200 bg-gradient-to-br from-red-50 to-orange-50 p-8">
-                <p className="text-2xl font-black text-gray-900 mb-4">Airbnb</p>
+                <p className="text-2xl font-black text-gray-900 mb-4">{tAirbnb('airbnb.title')}</p>
                 <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />15–20% commission</li>
-                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />Higher effective fees for longer stays</li>
-                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />Host margins get compressed</li>
+                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />{tAirbnb('airbnb.point1')}</li>
+                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />{tAirbnb('airbnb.point2')}</li>
+                  <li className="flex items-start gap-2"><X className="h-5 w-5 text-red-500 mt-0.5" />{tAirbnb('airbnb.point3')}</li>
                 </ul>
               </div>
               <div className="rounded-2xl border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-8">
-                <p className="text-2xl font-black text-gray-900 mb-4">InhabitMe</p>
+                <p className="text-2xl font-black text-gray-900 mb-4">{tAirbnb('inhabitme.title')}</p>
                 <ul className="space-y-3 text-gray-700">
-                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />Flat fee (€128–€358 total platform fee)</li>
-                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />No commissions</li>
-                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />Pay only if booking happens</li>
+                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />{tAirbnb('inhabitme.point1')}</li>
+                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />{tAirbnb('inhabitme.point2')}</li>
+                  <li className="flex items-start gap-2"><CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />{tAirbnb('inhabitme.point3')}</li>
                 </ul>
               </div>
             </div>
             <div className="mt-8 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 text-center">
-              <p className="text-lg font-bold">You can save €300–€900 per stay</p>
+              <p className="text-lg font-bold">{tAirbnb('savings')}</p>
             </div>
           </div>
         </section>
@@ -410,24 +421,19 @@ export default async function HomePage({
         {/* ── FOR HOSTS ───────────────────────────────────────────────────── */}
         <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-purple-50">
           <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-3xl lg:text-5xl font-black mb-4 text-gray-900">For Hosts</h2>
-            <p className="text-lg text-gray-700 mb-8">No commissions. Pay only if you get a tenant.</p>
+            <h2 className="text-3xl lg:text-5xl font-black mb-4 text-gray-900">{tHosts('title')}</h2>
+            <p className="text-lg text-gray-700 mb-8">{tHosts('subtitle')}</p>
             <div className="grid sm:grid-cols-2 gap-4 text-left mb-8">
-              {[
-                'List your property for free',
-                'Only pay if you get a tenant',
-                'No commissions on monthly rent',
-                'Reach remote workers and students',
-              ].map((text) => (
-                <div key={text} className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
+              {(['point1', 'point2', 'point3', 'point4'] as const).map((key) => (
+                <div key={key} className="bg-white border border-green-200 rounded-xl p-5 flex items-start gap-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span>{text}</span>
+                  <span>{tHosts(key)}</span>
                 </div>
               ))}
             </div>
-            <Link href="/properties/new">
+            <Link href="/list-your-space">
               <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-lg px-10 py-6 text-lg">
-                List your property
+                {t('listProperty.cta')}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -436,20 +442,28 @@ export default async function HomePage({
 
         {/* ── FAQ — carga lazy (below fold, pesada) ───────────────────────── */}
         <section className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white">
-          <FaqSection
-            tFaqSection={{
-              title: tFaqSection('title'),
-              subtitle: tFaqSection('subtitle'),
-              moreQuestions: tFaqSection('moreQuestions'),
-              contactSupport: tFaqSection('contactSupport'),
-            }}
-            faqs={[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+          {(() => {
+            const faqItems = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
               key: `q${n}`,
               question: tFaq(`q${n}.question` as any),
-              answer: tFaq.raw(`q${n}.answer` as any),
+              answer: tFaq.raw(`q${n}.answer` as any) as string,
               colors: FAQ_COLORS[n - 1],
-            }))}
-          />
+            }))
+            return (
+              <>
+                <FaqJsonLd faqs={faqItems.map((f) => ({ question: f.question, answer: f.answer }))} />
+                <FaqSection
+                  tFaqSection={{
+                    title: tFaqSection('title'),
+                    subtitle: tFaqSection('subtitle'),
+                    moreQuestions: tFaqSection('moreQuestions'),
+                    contactSupport: tFaqSection('contactSupport'),
+                  }}
+                  faqs={faqItems}
+                />
+              </>
+            )
+          })()}
         </section>
 
         {/* ── FINAL CTA ───────────────────────────────────────────────────── */}
@@ -464,7 +478,7 @@ export default async function HomePage({
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Link href="/properties/new">
+              <Link href="/list-your-space">
                 <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 font-semibold px-10 py-6 text-lg">
                   {tFinalCta('listSpace')}
                 </Button>
@@ -518,6 +532,7 @@ function TrustItem({
 }
 
 // FIX #5 — acepta `image` como prop directa, sin búsqueda interna en CITIES
+// FIX #10 — soporta `available` para mostrar "Coming soon" en ciudades sin liquidez
 function CityCard({
   slug,
   name,
@@ -527,6 +542,8 @@ function CityCard({
   gradient,
   hoverBorder,
   textColor,
+  available = false,
+  labels,
 }: {
   slug: string
   name: string
@@ -536,11 +553,25 @@ function CityCard({
   gradient: string
   hoverBorder: string
   textColor: string
+  available?: boolean
+  labels: {
+    fromPrice: string
+    viewProperties: string
+    comingSoon: string
+    joinWaitlist: string
+  }
 }) {
+  // Ciudad disponible: link a /[city] con propiedades.
+  // Ciudad próxima: link a la misma página (que ya muestra waitlist) pero con UI distinta.
+  const isAvailable = available
+
   return (
     <Link
       href={`/${slug}`}
-      className={`group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-gray-200 ${hoverBorder}`}
+      aria-label={isAvailable ? `${name} — ${labels.viewProperties}` : `${name} — ${labels.joinWaitlist}`}
+      className={`group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border-2 ${
+        isAvailable ? `border-gray-200 ${hoverBorder}` : 'border-gray-200 opacity-95'
+      }`}
     >
       <div className="aspect-[4/3] relative overflow-hidden">
         {image ? (
@@ -552,7 +583,9 @@ function CityCard({
               sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 325px"
               quality={40}
               loading="lazy"
-              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              className={`object-cover group-hover:scale-110 transition-transform duration-500 ${
+                !isAvailable ? 'grayscale-[60%] group-hover:grayscale-0' : ''
+              }`}
             />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition" />
           </>
@@ -565,6 +598,12 @@ function CityCard({
             </div>
           </>
         )}
+        {/* Badge Coming Soon en ciudades no disponibles */}
+        {!isAvailable && (
+          <div className="absolute top-3 right-3 bg-amber-500 text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-md">
+            {labels.comingSoon}
+          </div>
+        )}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6">
           <h3 className="text-2xl font-black text-white mb-1">{name}</h3>
           <p className="text-sm text-white/90">{subtitle}</p>
@@ -572,10 +611,21 @@ function CityCard({
       </div>
       <div className="p-5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-gray-700">From {price}/month</span>
-          <span className={`text-sm font-bold ${textColor} group-hover:translate-x-1 transition-transform inline-flex items-center gap-1`}>
-            View properties <ArrowRight className="h-4 w-4" />
-          </span>
+          {isAvailable ? (
+            <>
+              <span className="text-sm font-semibold text-gray-700">{labels.fromPrice}</span>
+              <span className={`text-sm font-bold ${textColor} group-hover:translate-x-1 transition-transform inline-flex items-center gap-1`}>
+                {labels.viewProperties} <ArrowRight className="h-4 w-4" />
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="text-sm font-semibold text-gray-500">—</span>
+              <span className="text-sm font-bold text-amber-700 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                {labels.joinWaitlist} <ArrowRight className="h-4 w-4" />
+              </span>
+            </>
+          )}
         </div>
       </div>
     </Link>

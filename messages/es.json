@@ -26,23 +26,23 @@
   },
   "home": {
     "hero": {
-      "title": "Tu hogar para",
-      "titleHighlight": "meses, no noches",
-      "subtitle": "Encuentra el espacio perfecto para <strong>vivir y trabajar</strong>.<br/>Sin comisiones absurdas. Sin sorpresas.",
-      "badge": "Estancias medias sin intermediarios",
+      "title": "Quédate 1 a 6 meses",
+      "titleHighlight": "con una tarifa plana — sin el 15% de Airbnb",
+      "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas $79–$239 una sola vez.</strong> Sin comisión mensual. Nunca.",
+      "badge": "Mediana estancia · Listo para trabajo remoto",
       "features": {
-        "wifi": "Internet para trabajo remoto",
-        "workspace": "Espacio de trabajo",
-        "transparent": "Precio transparente"
+        "wifi": "WiFi verificado",
+        "workspace": "Espacio de trabajo dedicado",
+        "transparent": "Una tarifa plana"
       },
       "cta": {
-        "primary": "Ver propiedades",
-        "secondary": "Publicar mi espacio"
+        "primary": "Ver apartamentos",
+        "secondary": "Soy anfitrión"
       },
-      "trustSignal": "Hosts verificados · Listo para trabajo remoto · Cero fake data",
-      "pricingBadge": "Un solo pago (€79-239) según duración",
-      "pricingSubtitle": "Sin comisiones mensuales · Sin sobrecargos ocultos · Cuanto más tiempo, mejor precio",
-      "joinMessage": "Únete a cientos de nómadas digitales que ya confían en inhabitme"
+      "trustSignal": "Anfitriones verificados · Listo para remoto · Sin datos falsos",
+      "pricingBadge": "Tarifa única, $79–$239 según duración",
+      "pricingSubtitle": "Estancias más largas, mejor precio. Sin comisión mensual.",
+      "joinMessage": "Ya activo en Austin · Próximamente en más ciudades"
     },
     "heroCarousel": {
       "wifiBadge": "✓ WiFi >50 Mbps",
@@ -208,11 +208,13 @@
       "cta": "Ver propiedades"
     },
     "citiesSection": {
-      "title": "Encuentra tu ciudad perfecta",
-      "subtitle": "Estancias medias en las mejores ciudades para nómadas digitales",
-      "from": "Desde",
-      "perMonth": "/mes",
-      "viewProperties": "Ver propiedades"
+      "title": "Disponible en ciudades seleccionadas · Empezamos por Austin",
+      "subtitle": "Foco en Austin para asegurar liquidez · Pronto en más ciudades · Pensado para trabajo remoto",
+      "comingSoon": "Próximamente",
+      "joinWaitlist": "Únete a la lista de espera",
+      "available": "Disponible ahora",
+      "viewProperties": "Ver propiedades",
+      "fromPrice": "Desde {price}/mes"
     },
     "finalCtaSection": {
       "title": "¿Listo para encontrar tu próximo hogar?",
@@ -225,6 +227,34 @@
       "subtitle": "Todo lo que necesitas saber sobre cómo funciona inhabitme",
       "moreQuestions": "¿Tienes más preguntas? Estamos aquí para ayudarte",
       "contactSupport": "Contactar soporte"
+    },
+    "listProperty": {
+      "cta": "Publicar mi espacio"
+    },
+    "airbnbVs": {
+      "title": "Airbnb vs InhabitMe",
+      "subtitle": "Precios simples que protegen el margen del anfitrión",
+      "airbnb": {
+        "title": "Airbnb",
+        "point1": "Comisión del 15–20%",
+        "point2": "Fees efectivos más altos en estancias largas",
+        "point3": "Los márgenes del host se comprimen"
+      },
+      "inhabitme": {
+        "title": "InhabitMe",
+        "point1": "Tarifa plana (€128–€358 total de plataforma)",
+        "point2": "Sin comisiones",
+        "point3": "Pagas solo si hay reserva"
+      },
+      "savings": "Puedes ahorrar €300–€900 por estancia"
+    },
+    "forHosts": {
+      "title": "Para anfitriones",
+      "subtitle": "Sin comisiones. Pagas solo si consigues inquilino.",
+      "point1": "Publica tu propiedad gratis",
+      "point2": "Solo pagas si consigues inquilino",
+      "point3": "Sin comisiones sobre la renta mensual",
+      "point4": "Llega a trabajadores remotos y estudiantes"
     }
   },
   "askQuestionModal": {
@@ -1389,5 +1419,62 @@
     "backToBlog": "Volver al blog",
     "ctaText": "¿Listo para encontrar tu hogar perfecto de medio plazo en España?",
     "ctaButton": "Ver anuncios"
+  },
+  "listYourSpacePage": {
+    "meta": {
+      "title": "Publica tu alquiler de mediana estancia — tarifa plana, sin comisiones | InhabitMe",
+      "description": "Llega a trabajadores remotos y nómadas digitales. Pagas una tarifa plana de $49–$119 solo cuando confirmas un inquilino. Sin comisión mensual, sin porcentaje sobre la renta."
+    },
+    "hero": {
+      "badge": "Para anfitriones y property managers",
+      "title": "Gana más con",
+      "titleHighlight": "estancias largas — quédate la comisión",
+      "subtitle": "Publica tu propiedad gratis. Solo pagas una tarifa plana cuando confirmas un inquilino. Sin recortes mensuales sobre tu renta."
+    },
+    "hero_cta": {},
+    "benefits": {
+      "title": "Por qué publicar en InhabitMe",
+      "subtitle": "Diseñado específicamente para estancias de 1 a 12 meses.",
+      "noCommission": {
+        "title": "Cero comisión sobre la renta",
+        "description": "Nunca cobramos un porcentaje del alquiler mensual. El total es para ti."
+      },
+      "longerStays": {
+        "title": "Reservas más largas y rentables",
+        "description": "La estancia promedio es de 3 meses. Menos rotación, menos limpiezas, más estabilidad."
+      },
+      "verifiedTenants": {
+        "title": "Inquilinos listos para trabajar remoto",
+        "description": "Nómadas digitales y profesionales que buscan pisos amueblados con buen WiFi."
+      }
+    },
+    "fees": {
+      "title": "Tarifa plana transparente",
+      "subtitle": "Pagas solo cuando confirmas un inquilino — según la duración.",
+      "duration": "Duración de la estancia",
+      "hostFee": "Tarifa del anfitrión",
+      "disclaimer": "* Tarifa cobrada una sola vez por reserva confirmada. Sin suscripción mensual. Sin comisión sobre la renta."
+    },
+    "how": {
+      "title": "Cómo funciona",
+      "step1": {
+        "title": "Publica gratis",
+        "description": "Crea tu anuncio en 5 minutos: fotos, comodidades, velocidad de WiFi y precio mensual."
+      },
+      "step2": {
+        "title": "Recibe consultas verificadas",
+        "description": "Los inquilinos pagan a InhabitMe una pequeña tarifa para contactarte: vienen comprometidos."
+      },
+      "step3": {
+        "title": "Confirma y aloja",
+        "description": "Negocia directo con el inquilino. Solo pagas tu tarifa plana cuando la reserva queda confirmada."
+      }
+    },
+    "finalCta": {
+      "title": "Empieza a recibir inquilinos en minutos",
+      "subtitle": "Publicar es gratis. No pagas nada hasta confirmar un inquilino.",
+      "button": "Crear mi anuncio",
+      "support": "¿Dudas? Escríbenos a contact@inhabitme.com"
+    }
   }
-}
+}
