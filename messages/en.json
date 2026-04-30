@@ -26,23 +26,23 @@
   },
   "home": {
     "hero": {
-      "title": "Your home for",
-      "titleHighlight": "months, not nights",
-      "subtitle": "Find the perfect space to <strong>live and work</strong>.<br/>No absurd commissions. No surprises.",
-      "badge": "Medium-term stays without intermediaries",
+      "title": "Stay 1–6 months",
+      "titleHighlight": "for one flat fee — not a 15% Airbnb cut",
+      "subtitle": "Furnished apartments, ready for remote work. <strong>Pay $79–$239 once.</strong> No monthly commission. Ever.",
+      "badge": "Medium-term stays · Remote-work ready",
       "features": {
-        "wifi": "Internet for remote work",
-        "workspace": "Workspace included",
-        "transparent": "Transparent pricing"
+        "wifi": "Verified WiFi",
+        "workspace": "Dedicated workspace",
+        "transparent": "One flat fee"
       },
       "cta": {
-        "primary": "View properties",
-        "secondary": "List my space"
+        "primary": "Browse apartments",
+        "secondary": "I'm a host"
       },
       "trustSignal": "Verified hosts · Remote-work ready · No fake data",
-      "pricingBadge": "One-time payment ($79-239) based on duration",
-      "pricingSubtitle": "No monthly commissions · No hidden charges · Longer stays, better value",
-      "joinMessage": "Join hundreds of digital nomads who already trust inhabitme"
+      "pricingBadge": "One-time fee, $79–$239 by duration",
+      "pricingSubtitle": "Longer stays get a better rate. No monthly commission.",
+      "joinMessage": "Now live in Austin · Expanding to more cities soon"
     },
     "heroCarousel": {
       "wifiBadge": "✓ WiFi >50 Mbps",
@@ -208,11 +208,13 @@
       "cta": "View properties"
     },
     "citiesSection": {
-      "title": "Find your perfect city",
-      "subtitle": "Medium-term stays in the best cities for digital nomads",
-      "from": "From",
-      "perMonth": "/month",
-      "viewProperties": "View properties"
+      "title": "Available in selected cities · Starting with Austin",
+      "subtitle": "Austin focus for liquidity · Expanding to new cities soon · Built for remote workers",
+      "comingSoon": "Coming soon",
+      "joinWaitlist": "Join waitlist",
+      "available": "Available now",
+      "viewProperties": "View properties",
+      "fromPrice": "From {price}/month"
     },
     "finalCtaSection": {
       "title": "Ready to find your next home?",
@@ -225,6 +227,34 @@
       "subtitle": "Everything you need to know about how inhabitme works",
       "moreQuestions": "Have more questions? We're here to help",
       "contactSupport": "Contact support"
+    },
+    "listProperty": {
+      "cta": "List your property"
+    },
+    "airbnbVs": {
+      "title": "Airbnb vs InhabitMe",
+      "subtitle": "Simple pricing that protects host margins",
+      "airbnb": {
+        "title": "Airbnb",
+        "point1": "15–20% commission",
+        "point2": "Higher effective fees for longer stays",
+        "point3": "Host margins get compressed"
+      },
+      "inhabitme": {
+        "title": "InhabitMe",
+        "point1": "Flat fee (€128–€358 total platform fee)",
+        "point2": "No commissions",
+        "point3": "Pay only if booking happens"
+      },
+      "savings": "You can save €300–€900 per stay"
+    },
+    "forHosts": {
+      "title": "For Hosts",
+      "subtitle": "No commissions. Pay only if you get a tenant.",
+      "point1": "List your property for free",
+      "point2": "Only pay if you get a tenant",
+      "point3": "No commissions on monthly rent",
+      "point4": "Reach remote workers and students"
     }
   },
   "askQuestionModal": {
@@ -1389,5 +1419,62 @@
     "backToBlog": "Back to blog",
     "ctaText": "Ready to find your perfect medium-term home in Spain?",
     "ctaButton": "Browse listings"
+  },
+  "listYourSpacePage": {
+    "meta": {
+      "title": "List your medium-term rental — flat fee, no commissions | InhabitMe",
+      "description": "Reach remote workers and digital nomads. Pay only when you confirm a tenant — $49–$119 flat fee, no monthly commission, no rent percentage."
+    },
+    "hero": {
+      "badge": "For hosts and property managers",
+      "title": "Earn more from",
+      "titleHighlight": "longer stays — keep the commission",
+      "subtitle": "List your property for free. Pay a flat fee only when you confirm a tenant. No monthly cuts on your rent."
+    },
+    "hero_cta": {},
+    "benefits": {
+      "title": "Why list with InhabitMe",
+      "subtitle": "Built specifically for stays of 1 to 12 months.",
+      "noCommission": {
+        "title": "No commission on rent",
+        "description": "We never take a percentage of the monthly rent. The full amount goes to you."
+      },
+      "longerStays": {
+        "title": "Longer, more profitable bookings",
+        "description": "Average stay is 3 months. Less turnover, less cleaning, more stability."
+      },
+      "verifiedTenants": {
+        "title": "Remote-work-ready tenants",
+        "description": "Digital nomads and professionals looking for furnished apartments with good WiFi."
+      }
+    },
+    "fees": {
+      "title": "Transparent flat fee",
+      "subtitle": "Pay only when you confirm a tenant — based on stay duration.",
+      "duration": "Stay duration",
+      "hostFee": "Host fee",
+      "disclaimer": "* Fee charged once per confirmed booking. No monthly subscription. No commission on rent."
+    },
+    "how": {
+      "title": "How it works",
+      "step1": {
+        "title": "List for free",
+        "description": "Create your listing in 5 minutes. Photos, amenities, WiFi speed, monthly price."
+      },
+      "step2": {
+        "title": "Receive verified inquiries",
+        "description": "Tenants pay InhabitMe a small fee to contact you. They are committed."
+      },
+      "step3": {
+        "title": "Confirm and host",
+        "description": "Negotiate directly with the tenant. Pay your flat fee only when the booking is confirmed."
+      }
+    },
+    "finalCta": {
+      "title": "Start hosting in minutes",
+      "subtitle": "Free to list. Pay nothing until you confirm a tenant.",
+      "button": "Create my listing",
+      "support": "Questions? Email contact@inhabitme.com"
+    }
   }
-}
+}

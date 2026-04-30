@@ -22,7 +22,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        {/* Preconexiones a orígenes críticos para reducir handshake */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://clerk.inhabitme.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://js.stripe.com" />
+        <link rel="dns-prefetch" href="https://api.stripe.com" />
+        <link rel="dns-prefetch" href="https://hooks.stripe.com" />
+      </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
       </body>

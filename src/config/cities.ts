@@ -19,6 +19,8 @@ export interface CityConfig {
   textColor: string
   description: string
   indexable: boolean
+  /** Si la ciudad está disponible (Austin) o aún en lista de espera (resto). */
+  available?: boolean
   neighborhoods: Array<{
     slug: string
     name: string
@@ -240,6 +242,7 @@ export const CITIES: CityConfig[] = [
     slug: 'austin',
     name: 'Austin',
     subtitle: 'Tech hub de Texas',
+    available: true,
     price: '850 EUR',
     country: 'US',
     image: 'https://images.unsplash.com/photo-1531218150217-54595bc2b934?w=640&h=480&fit=crop&q=60',
