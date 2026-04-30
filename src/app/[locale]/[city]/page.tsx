@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { getTranslations } from 'next-intl/server'
 import { getCityBySlug, getAllCitySlugs } from '@/config/cities'
 import { routing } from '@/i18n/routing'
+import { LodgingBusinessJsonLd } from '@/components/seo/LodgingBusinessJsonLd'
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -88,8 +89,30 @@ export default async function CityPage({ params }: PageProps) {
   const cityName = cityConfig.name
   const neighborhoods = cityConfig.neighborhoods
 
+  // Heurística simple: Austin/Miami/USA en USD; Madrid/BCN/Lisboa/Porto/MX/AR/CO en EUR.
+  // (Ajustar cuando se separe correctamente USD/EUR por mercado.)
+  const currency: 'USD' | 'EUR' = ['austin', 'miami'].includes(citySlug) ? 'USD' : 'EUR'
+
+  // Convertir "800 EUR" -> 800 (number) para el schema
+  const priceFromMatch = cityConfig.price.match(/(\d+)/)
+  const priceFromNumber = priceFromMatch ? Number(priceFromMatch[1]) : undefined
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
+      {/* Schema.org LodgingBusiness — solo emitir si la ciudad es indexable */}
+      {cityConfig.indexable && (
+        <LodgingBusinessJsonLd
+          cityName={cityName}
+          citySlug={citySlug}
+          locale={localeSafe === 'es' ? 'es' : 'en'}
+          priceFrom={priceFromNumber}
+          currency={currency}
+          description={cityConfig.description}
+          latitude={cityConfig.coordinates?.lat}
+          longitude={cityConfig.coordinates?.lng}
+        />
+      )}
+
       {/* Breadcrumbs */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-10">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2 text-sm text-gray-600">
