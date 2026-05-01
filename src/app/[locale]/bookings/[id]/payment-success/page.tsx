@@ -12,10 +12,6 @@ export default function PaymentSuccessPage() {
   const locale = useLocale()
   const [booking, setBooking] = useState<any>(null);
 
-  useEffect(() => {
-    fetchBooking();
-  }, []);
-
   const fetchBooking = async () => {
     try {
       const res = await fetch(`/api/bookings/${params.id}`);
@@ -27,6 +23,10 @@ export default function PaymentSuccessPage() {
       console.error('Error fetching booking:', error);
     }
   };
+
+  useEffect(() => {
+    fetchBooking();
+  }, []);
 
   const currency = normalizeCurrency(booking?.currency)
   const numberLocale = currency === 'EUR' ? 'es-ES' : 'en-US'
