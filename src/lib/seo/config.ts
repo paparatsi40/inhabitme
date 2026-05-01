@@ -36,8 +36,9 @@ export const SEO_CONFIG = {
   // Twitter defaults
   twitter: {
     card: 'summary_large_image' as const,
-    site: '@inhabitme',
-    creator: '@inhabitme',
+    // Twitter handle no configurado — eliminar cuando se cree la cuenta
+    // site: '@inhabitme',
+    // creator: '@inhabitme',
   },
   
   // Robots configuration

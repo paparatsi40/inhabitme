@@ -80,11 +80,6 @@ const nextConfig = {
       { source: "/robots.txt", destination: "/robots.txt", locale: false },
       { source: "/sitemap.xml", destination: "/sitemap.xml", locale: false },
       { source: "/favicon.ico", destination: "/favicon.svg", locale: false },
-      // PostHog reverse proxy (recomendado para evitar ad-blockers).
-      // Las requests del cliente irán a /ingest/* y se reescriben al host configurado.
-      // OPT-IN: descomentar cuando los ad-blockers se vuelvan un problema real.
-      // { source: "/ingest/static/:path*", destination: "https://us-assets.i.posthog.com/static/:path*" },
-      // { source: "/ingest/:path*", destination: "https://us.i.posthog.com/:path*" },
     ];
   },
 
@@ -158,16 +153,12 @@ module.exports = withSentryConfig(module.exports, {
   widenClientFileUpload: true,
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // DISABLED temporalmente — el tunnel route conflictúa con next-intl middleware
-  // y los eventos quedaban devolviendo 200 sin reenviarse a Sentry.
-  // Reactivar cuando se implemente correctamente el route handler en /[locale]/monitoring.
-  // tunnelRoute: "/monitoring",
+  // El handler propio en src/app/monitoring/route.ts forwardea al ingest real,
+  // y middleware.ts excluye /monitoring del redirect de next-intl.
+  tunnelRoute: "/monitoring",
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-    // See the following for more information:
-    // https://docs.sentry.io/product/crons/
-    // https://vercel.com/docs/cron-jobs
     automaticVercelMonitors: true,
 
     // Tree-shaking options for reducing bundle size

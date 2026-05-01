@@ -22,7 +22,6 @@ export function OrganizationJsonLd() {
       availableLanguage: ['English', 'Spanish'],
     },
     sameAs: [
-      'https://twitter.com/inhabitme',
       'https://instagram.com/inhabitme',
     ],
   }

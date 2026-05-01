@@ -67,8 +67,7 @@ export async function generateMetadata({
       title: t('title'),
       description: t('description'),
       images: [`${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-6 meses' : 'Medium-term rentals 1-6 months')}`],
-      site: SEO_CONFIG.twitter.site,
-      creator: SEO_CONFIG.twitter.creator,
+      // Twitter @inhabitme aún no existe — site/creator se omiten hasta que se cree.
     },
     robots: SEO_CONFIG.robots,
     manifest: '/manifest.json',

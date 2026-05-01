@@ -28,6 +28,7 @@ import { getFAQs } from '@/config/faqs'
 import { NeighborhoodMap } from '@/components/maps/NeighborhoodMap'
 import { getNeighborhoodDescription } from '@/config/neighborhood-descriptions'
 import { getCurrencyFromLocation } from '@/lib/currency'
+import { getCityLifestyle } from '@/config/city-lifestyle'
 import { getTranslations } from 'next-intl/server'
 
 // ISR con revalidación cada 60 segundos
@@ -121,6 +122,9 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const neighborhoodSlug = safeLower(neighborhoodSlugRaw)
   const t = await getTranslations({ locale: localeSafe, namespace: 'neighborhoodPage' })
   const tNeighborhoods = await getTranslations({ locale: localeSafe, namespace: 'neighborhoods' })
+
+  // Lifestyle signals específicos de la ciudad. Si no está mapeada, fallback al copy genérico.
+  const cityLifestyle = getCityLifestyle(citySlug, localeSafe === 'es' ? 'es' : 'en')
 
   const cityConfig = getCityConfig(citySlug)
   const neighborhood = getNeighborhoodConfig(citySlug, neighborhoodSlug)
@@ -274,7 +278,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">{t('wifiVerified')}</h3>
-                    <p className="text-sm text-gray-600">{t('wifiDescription')}</p>
+                    <p className="text-sm text-gray-600">{cityLifestyle?.internet ?? t('wifiDescription')}</p>
                   </div>
                 </div>
 
@@ -284,7 +288,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">{t('coworking')}</h3>
-                    <p className="text-sm text-gray-600">{t('coworkingDescription')}</p>
+                    <p className="text-sm text-gray-600">{cityLifestyle?.cowork ?? t('coworkingDescription')}</p>
                   </div>
                 </div>
 
@@ -294,7 +298,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">{t('wellConnected')}</h3>
-                    <p className="text-sm text-gray-600">{t('connectedDescription')}</p>
+                    <p className="text-sm text-gray-600">{cityLifestyle?.transport ?? t('connectedDescription')}</p>
                   </div>
                 </div>
 
@@ -304,7 +308,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">{t('community')}</h3>
-                    <p className="text-sm text-gray-600">{t('communityDescription')}</p>
+                    <p className="text-sm text-gray-600">{cityLifestyle?.community ?? t('communityDescription')}</p>
                   </div>
                 </div>
               </div>
