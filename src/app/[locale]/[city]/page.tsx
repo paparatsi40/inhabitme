@@ -46,12 +46,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = `${baseUrl}/${localeSafe}/${citySlug}`
 
   const titleTemplate = localeSafe === 'es'
-    ? `Alquiler medio plazo ${cityConfig.name} | inhabitme`
-    : `Medium-term rentals in ${cityConfig.name} | inhabitme`
+    ? `Alquiler Temporal ${cityConfig.name} · Pisos Amueblados 1–6 Meses | InhabitMe`
+    : `${cityConfig.name} Furnished Apartments · Medium-Term Rentals (1–6 Months) | InhabitMe`
 
   const descriptionTemplate = localeSafe === 'es'
-    ? `Alojamientos verificados de 1-6 meses en ${cityConfig.name}. WiFi rápido, workspace dedicado y precios transparentes.`
-    : `Verified 1-6 month stays in ${cityConfig.name}. Fast WiFi, dedicated workspace, and transparent pricing for digital nomads.`
+    ? `Alquiler de mediana estancia en ${cityConfig.name}: pisos amueblados verificados de 1 a 6 meses, listos para trabajo remoto. Tarifa plana, sin comisiones, contacto directo con el anfitrión.`
+    : `Medium-term rentals in ${cityConfig.name}: verified furnished apartments for 1 to 6 month stays, remote-work ready. Flat fee, no commissions, direct host contact.`
 
   return {
     title: titleTemplate,
@@ -70,6 +70,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: 'inhabitme',
       locale: localeSafe === 'es' ? 'es_ES' : 'en_US',
       type: 'website',
+      images: [
+        {
+          url: `${baseUrl}/api/og?city=${citySlug}&title=${encodeURIComponent(cityConfig.name)}&subtitle=${encodeURIComponent(localeSafe === 'es' ? 'Alquiler temporal · 1-6 meses' : 'Medium-term rentals · 1-6 months')}`,
+          width: 1200,
+          height: 630,
+          alt: `${cityConfig.name} — InhabitMe`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: titleTemplate,
+      description: descriptionTemplate,
+      images: [`${baseUrl}/api/og?city=${citySlug}&title=${encodeURIComponent(cityConfig.name)}`],
     },
     robots: { index: cityConfig.indexable, follow: true },
   }

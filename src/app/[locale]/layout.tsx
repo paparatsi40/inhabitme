@@ -35,8 +35,6 @@ export async function generateMetadata({
   return {
     title: t('title'),
     description: t('description'),
-    keywords:
-      'medium-term rentals, coliving, digital nomads, furnished apartments, Madrid, Barcelona, Valencia, remote work',
     authors: [{ name: SEO_CONFIG.siteName }],
     creator: SEO_CONFIG.siteName,
     publisher: SEO_CONFIG.siteName,
@@ -57,7 +55,7 @@ export async function generateMetadata({
       type: 'website',
       images: [
         {
-          url: `${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`,
+          url: `${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-6 meses' : 'Medium-term rentals 1-6 months')}&subtitle=${encodeURIComponent(locale === 'es' ? 'Pisos amueblados para nómadas digitales' : 'Furnished apartments for remote workers')}`,
           width: SEO_CONFIG.openGraph.imageWidth,
           height: SEO_CONFIG.openGraph.imageHeight,
           alt: 'InhabitMe - Medium-term stays',
@@ -68,7 +66,7 @@ export async function generateMetadata({
       card: SEO_CONFIG.twitter.card,
       title: t('title'),
       description: t('description'),
-      images: [`${SEO_CONFIG.baseUrl}${SEO_CONFIG.openGraph.defaultImage}`],
+      images: [`${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-6 meses' : 'Medium-term rentals 1-6 months')}`],
       site: SEO_CONFIG.twitter.site,
       creator: SEO_CONFIG.twitter.creator,
     },
