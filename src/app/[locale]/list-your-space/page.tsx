@@ -2,6 +2,7 @@ import { Link } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
 import { CheckCircle, ArrowRight, Wifi, Calculator, Mail, Shield, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { HostSavingsCalculator } from '@/components/hosts/HostSavingsCalculator'
 import type { Metadata } from 'next'
 import { SEO_CONFIG, getLocalizedUrl } from '@/lib/seo/config'
 
@@ -128,6 +129,32 @@ export default async function ListYourSpacePage({ params }: { params: LocalePara
             </table>
           </div>
           <p className="text-sm text-gray-600 text-center mt-4">{t('fees.disclaimer')}</p>
+        </div>
+      </section>
+
+      {/* SAVINGS CALCULATOR */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <HostSavingsCalculator
+            labels={{
+              title: t('calculator.title'),
+              description: t('calculator.description'),
+              monthlyRentLabel: t('calculator.monthlyRentLabel'),
+              monthlyRentPlaceholder: t('calculator.monthlyRentPlaceholder'),
+              durationLabel: t('calculator.durationLabel'),
+              durationUnitSingular: t('calculator.durationUnitSingular'),
+              durationUnitPlural: t('calculator.durationUnitPlural'),
+              results: {
+                totalRevenue: t('calculator.results.totalRevenue'),
+                airbnbFee: t('calculator.results.airbnbFee'),
+                inhabitmeFee: t('calculator.results.inhabitmeFee'),
+                yourSavings: t('calculator.results.yourSavings'),
+                perStay: t('calculator.results.perStay'),
+              },
+              cta: t('calculator.cta'),
+              disclaimer: t('calculator.disclaimer'),
+            }}
+          />
         </div>
       </section>
 

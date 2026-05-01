@@ -1489,6 +1489,24 @@
       "subtitle": "Publicar es gratis. No pagas nada hasta confirmar un inquilino.",
       "button": "Crear mi anuncio",
       "support": "¿Dudas? Escríbenos a contact@inhabitme.com"
+    },
+    "calculator": {
+      "title": "¿Cuánto ahorras vs Airbnb?",
+      "description": "Pon tu renta mensual y duración de estancia. Comparamos el 15% de comisión de Airbnb contra nuestra tarifa plana.",
+      "monthlyRentLabel": "Renta mensual",
+      "monthlyRentPlaceholder": "1200",
+      "durationLabel": "Duración de la estancia",
+      "durationUnitSingular": "mes",
+      "durationUnitPlural": "meses",
+      "results": {
+        "totalRevenue": "Tu alquiler total",
+        "airbnbFee": "Airbnb se queda (15%)",
+        "inhabitmeFee": "Tarifa plana InhabitMe",
+        "yourSavings": "Ahorras",
+        "perStay": "por estancia vs. Airbnb"
+      },
+      "cta": "Empieza a publicar gratis",
+      "disclaimer": "Estimación basada en la comisión efectiva típica del 15% que Airbnb cobra al host. Tus números reales pueden variar."
     }
   }
 }
