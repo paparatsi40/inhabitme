@@ -122,6 +122,8 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
 
   // Efecto para inicializar/actualizar el mapa cuando cambian city/neighborhood
   useEffect(() => {
+    let cancelled = false
+
     if (!mapLoaded || !mapRef.current || !window.google?.maps) return
 
     const citySlug = city.toLowerCase()
@@ -134,18 +136,17 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
       zoom: 13,
     }
 
+    // mapId obligatorio para AdvancedMarkerElement. Configurable via env.
+    // Con mapId no se usa la prop `styles` — los estilos del mapa se editan
+    // en Google Cloud Console asociados al mapId.
+    const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID'
+
     // Si el mapa no existe, crearlo
     if (!mapInstanceRef.current) {
       mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
         center: { lat: coords.lat, lng: coords.lng },
         zoom: coords.zoom,
-        styles: [
-          {
-            featureType: 'poi',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }],
-          },
-        ],
+        mapId,
         disableDefaultUI: false,
         zoomControl: true,
         mapTypeControl: false,
@@ -158,32 +159,17 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
       mapInstanceRef.current.setZoom(coords.zoom)
     }
 
-    // Limpiar marcador anterior si existe
+    // Limpiar marcador anterior si existe (AdvancedMarkerElement usa .map = null)
     if (markerRef.current) {
-      markerRef.current.setMap(null)
+      markerRef.current.map = null
     }
-
-    // Crear nuevo marcador
-    markerRef.current = new window.google.maps.Marker({
-      position: { lat: coords.lat, lng: coords.lng },
-      map: mapInstanceRef.current,
-      title: neighborhood,
-      icon: {
-        path: window.google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: '#8B5CF6',
-        fillOpacity: 1,
-        strokeColor: '#ffffff',
-        strokeWeight: 3,
-      },
-    })
 
     // Limpiar círculo anterior si existe
     if (circleRef.current) {
       circleRef.current.setMap(null)
     }
 
-    // Crear nuevo círculo
+    // Crear nuevo círculo (sincrónico)
     circleRef.current = new window.google.maps.Circle({
       center: { lat: coords.lat, lng: coords.lng },
       radius: 500,
@@ -195,10 +181,29 @@ export function NeighborhoodMap({ city, neighborhood, className = '' }: Neighbor
       strokeWeight: 2,
     })
 
-    // Cleanup al desmontar
+    // AdvancedMarkerElement requiere importar la librería marker (async).
+    // Reemplaza al deprecated google.maps.Marker.
+    ;(async () => {
+      const { AdvancedMarkerElement } = await window.google.maps.importLibrary('marker')
+      if (cancelled || !mapInstanceRef.current) return
+
+      const pin = document.createElement('div')
+      pin.style.cssText =
+        'width:20px;height:20px;border-radius:50%;background:#8B5CF6;border:3px solid #FFFFFF;box-shadow:0 1px 4px rgba(0,0,0,0.3);'
+
+      markerRef.current = new AdvancedMarkerElement({
+        position: { lat: coords.lat, lng: coords.lng },
+        map: mapInstanceRef.current,
+        title: neighborhood,
+        content: pin,
+      })
+    })()
+
+    // Cleanup al desmontar / al cambiar city|neighborhood
     return () => {
+      cancelled = true
       if (markerRef.current) {
-        markerRef.current.setMap(null)
+        markerRef.current.map = null
       }
       if (circleRef.current) {
         circleRef.current.setMap(null)

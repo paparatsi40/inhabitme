@@ -86,16 +86,17 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
           zoom = 16 // Aún más zoom para listing específico
         }
 
+        // mapId es obligatorio para AdvancedMarkerElement. Usamos uno desde env
+        // (configurable en Google Cloud Console) con fallback a DEMO_MAP_ID,
+        // un mapId público que Google provee para pruebas.
+        // NOTA: con mapId no se puede usar la prop `styles` — los estilos se
+        // configuran en Cloud Console asociados al mapId.
+        const mapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID'
+
         const map = new (window as any).google.maps.Map(mapRef.current, {
           center: coordinates,
           zoom: zoom,
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }]
-            }
-          ],
+          mapId,
           disableDefaultUI: false,
           zoomControl: true,
           mapTypeControl: false,
@@ -117,19 +118,19 @@ export function ListingMap({ cityName, neighborhoodName, cityCountry }: ListingM
           radius: 300, // 300 metros de radio (más pequeño que neighborhood pages)
         })
 
-        // Pin central
-        new (window as any).google.maps.Marker({
+        // Pin central — AdvancedMarkerElement (reemplaza al deprecated Marker).
+        // Aseguramos que la librería marker esté cargada (idempotente).
+        const { AdvancedMarkerElement } = await (window as any).google.maps.importLibrary('marker')
+
+        const pin = document.createElement('div')
+        pin.style.cssText =
+          'width:20px;height:20px;border-radius:50%;background:#8B5CF6;border:3px solid #FFFFFF;box-shadow:0 1px 4px rgba(0,0,0,0.3);'
+
+        new AdvancedMarkerElement({
           position: coordinates,
           map,
           title: neighborhoodName || cityName || 'Ubicación',
-          icon: {
-            path: (window as any).google.maps.SymbolPath.CIRCLE,
-            scale: 10,
-            fillColor: '#8B5CF6',
-            fillOpacity: 1,
-            strokeColor: '#FFFFFF',
-            strokeWeight: 3,
-          },
+          content: pin,
         })
 
         if (mounted) setMapLoaded(true)
