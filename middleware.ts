@@ -64,6 +64,11 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
+  // Sentry tunnel route — skip intl (no debe llevar prefijo /en o /es)
+  if (req.nextUrl.pathname.startsWith('/monitoring')) {
+    return NextResponse.next();
+  }
+
   // Protected routes — require Clerk session
   if (isProtectedRoute(req)) {
     const { userId } = await auth();
