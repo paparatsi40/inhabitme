@@ -8,6 +8,8 @@ import { getTranslations } from 'next-intl/server'
 import { getCityBySlug, getAllCitySlugs } from '@/config/cities'
 import { routing } from '@/i18n/routing'
 import { LodgingBusinessJsonLd } from '@/components/seo/LodgingBusinessJsonLd'
+import { CityWaitlistForm } from '@/components/leads/CityWaitlistForm'
+import { ArrowRight } from 'lucide-react'
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -166,15 +168,39 @@ export default async function CityPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* Coming soon */}
-        <section className="text-center py-12">
-          <div className="inline-flex p-8 bg-white rounded-3xl shadow-xl mb-8">
-            <MapPin className="h-16 w-16 text-blue-600" />
+        {/* Empty state mejorado: waitlist form + host CTA */}
+        <section className="py-12 space-y-8">
+          {/* Waitlist form para guests */}
+          <CityWaitlistForm
+            cityName={cityName}
+            citySlug={citySlug}
+            labels={{
+              title: t('waitlist.title', { city: cityName }),
+              description: t('waitlist.description', { city: cityName }),
+              emailPlaceholder: t('waitlist.emailPlaceholder'),
+              submit: t('waitlist.submit'),
+              submitting: t('waitlist.submitting'),
+              successTitle: t('waitlist.successTitle'),
+              successDescription: t('waitlist.successDescription', { city: cityName }),
+              privacyNote: t('waitlist.privacyNote'),
+              errorGeneric: t('waitlist.errorGeneric'),
+            }}
+          />
+
+          {/* Host CTA */}
+          <div className="bg-white border-2 border-gray-200 rounded-2xl p-8 text-center">
+            <h3 className="text-xl lg:text-2xl font-black text-gray-900 mb-2">
+              {t('waitlist.hostCtaTitle', { city: cityName })}
+            </h3>
+            <p className="text-gray-600 mb-6">{t('waitlist.hostCtaDescription')}</p>
+            <Link
+              href="/list-your-space"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl transition-colors"
+            >
+              {t('waitlist.hostCtaButton')}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-black mb-4">{t('noPropertiesTitle', { city: cityName })}</h2>
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            {t('noPropertiesDesc', { city: cityName })}
-          </p>
         </section>
 
         {/* Neighborhoods */}
