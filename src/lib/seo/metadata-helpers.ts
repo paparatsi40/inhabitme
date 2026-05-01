@@ -84,8 +84,7 @@ export function generatePageMetadata({
       title: fullTitle,
       description,
       images: ogImages.map(img => img.url),
-      site: SEO_CONFIG.twitter.site,
-      creator: SEO_CONFIG.twitter.creator,
+      // Twitter @inhabitme aún no existe — site/creator se omiten hasta que se cree.
     },
 
     robots: SEO_CONFIG.robots,
