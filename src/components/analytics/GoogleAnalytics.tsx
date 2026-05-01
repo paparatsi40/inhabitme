@@ -14,19 +14,23 @@ declare global {
 /**
  * Google Analytics 4 con Consent Mode v2.
  *
- * Flujo:
- * 1. Inyecta un <script> inline en el HTML que declara `consent default` con
- *    todo en 'denied' ANTES de que gtag.js cargue.
- * 2. Carga gtag.js con strategy="afterInteractive".
- * 3. Si el usuario tiene consent='all' guardado, dispara `consent update -> granted`.
- * 4. Escucha `cookieConsentChange` para actualizar en tiempo real.
+ * Patrón único de inicialización (recomendado por Google):
+ * 1. Un solo <script> inline que define dataLayer + gtag stub + consent default + js + config.
+ *    Esto garantiza que window.gtag SIEMPRE sea una función, incluso antes de que gtag.js cargue.
+ * 2. <Script> con afterInteractive que carga gtag.js. Cuando gtag.js carga, "absorbe" la cola
+ *    de dataLayer y reemplaza el stub con el SDK real.
+ * 3. useEffect maneja consent updates cuando el banner cambia.
  *
- * Ref: https://developers.google.com/tag-platform/security/guides/consent
+ * Refs:
+ *   - https://developers.google.com/tag-platform/security/guides/consent
+ *   - https://developers.google.com/tag-platform/gtagjs/install
  */
 export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   useEffect(() => {
-    if (!measurementId) return
-    if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
+    if (!measurementId || typeof window === 'undefined') return
+
+    // gtag debería estar definido por el inline script, pero por defensa:
+    if (typeof window.gtag !== 'function') return
 
     if (hasAnalyticsConsent()) {
       window.gtag('consent', 'update', {
@@ -51,46 +55,35 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
 
   if (!measurementId) return null
 
-  // Consent default inline — debe ejecutarse ANTES de cargar gtag.js
-  const consentDefault = `
+  // TODO en un solo script para evitar race conditions de afterInteractive
+  const initScript = `
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    window.gtag = gtag;
-    gtag('consent', 'default', {
+    window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+    window.gtag('consent', 'default', {
       ad_storage: 'denied',
       ad_user_data: 'denied',
       ad_personalization: 'denied',
       analytics_storage: 'denied',
       wait_for_update: 500
     });
+    window.gtag('js', new Date());
+    window.gtag('config', '${measurementId}', { send_page_view: true });
   `.trim()
 
   return (
     <>
-      {/* Inicialización: declarar consent default ANTES de gtag/js */}
+      {/* Inicialización: stub de gtag + consent default + config — TODO en un script */}
       <script
-        id="ga-consent-default"
-        dangerouslySetInnerHTML={{ __html: consentDefault }}
+        id="ga-init"
+        dangerouslySetInnerHTML={{ __html: initScript }}
       />
 
-      {/* Cargar el SDK de GA4 (afterInteractive: carga sin bloquear LCP) */}
+      {/* Cargar gtag.js asíncrono. Cuando termina, reemplaza el stub con el SDK real */}
       <Script
         id="ga-loader"
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
       />
-
-      {/* Configurar el measurement ID.
-          Usamos window.gtag(...) en vez de gtag(...) porque next/script con
-          strategy="afterInteractive" envuelve el contenido inline en una función,
-          haciendo que gtag (variable local del consent default) no sea visible aquí.
-          window.gtag SÍ está expuesto desde el script anterior. */}
-      <Script id="ga-config" strategy="afterInteractive">
-        {`
-          window.gtag('js', new Date());
-          window.gtag('config', '${measurementId}', { send_page_view: true });
-        `}
-      </Script>
     </>
   )
 }
