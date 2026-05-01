@@ -208,8 +208,8 @@
       "cta": "Ver propiedades"
     },
     "citiesSection": {
-      "title": "Disponible en ciudades seleccionadas · Empezamos por Austin",
-      "subtitle": "Foco en Austin para asegurar liquidez · Pronto en más ciudades · Pensado para trabajo remoto",
+      "title": "Vive donde quieras — 1 a 6 meses",
+      "subtitle": "Pisos amueblados, listos para trabajo remoto. Precio justo, sin comisiones.",
       "comingSoon": "Próximamente",
       "joinWaitlist": "Únete a la lista de espera",
       "available": "Disponible ahora",
@@ -357,7 +357,21 @@
     "noPropertiesDesc": "Estamos trabajando para traerte las mejores opciones de alquiler mensual en {city}. ¡Regístrate para ser el primero en saberlo!",
     "notifyMeButton": "Avísame cuando haya propiedades",
     "exploreOtherCities": "Explora otras ciudades con propiedades",
-    "viewAll": "Ver todas"
+    "viewAll": "Ver todas",
+    "waitlist": {
+      "title": "¿Quieres vivir en {city}?",
+      "description": "Sé el primero en saber cuándo haya pisos listos para trabajo remoto en {city}. Te avisamos una sola vez.",
+      "emailPlaceholder": "tu@email.com",
+      "submit": "Avísame",
+      "submitting": "Guardando…",
+      "successTitle": "Estás en la lista",
+      "successDescription": "Te enviaremos un correo cuando se publique el primer piso en {city}. Sin spam, nunca.",
+      "privacyNote": "Solo usamos tu correo para avisarte. Sin spam, sin terceros.",
+      "errorGeneric": "No se pudo suscribir. Inténtalo de nuevo.",
+      "hostCtaTitle": "¿Eres anfitrión en {city}?",
+      "hostCtaDescription": "Sé de los primeros en publicar. Llega a trabajadores remotos que buscan estancias medias.",
+      "hostCtaButton": "Publicar mi espacio"
+    }
   },
   "neighborhoods": {
     "madrid": {
