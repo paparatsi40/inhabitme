@@ -158,10 +158,10 @@ module.exports = withSentryConfig(module.exports, {
   widenClientFileUpload: true,
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
-  tunnelRoute: "/monitoring",
+  // DISABLED temporalmente — el tunnel route conflictúa con next-intl middleware
+  // y los eventos quedaban devolviendo 200 sin reenviarse a Sentry.
+  // Reactivar cuando se implemente correctamente el route handler en /[locale]/monitoring.
+  // tunnelRoute: "/monitoring",
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
