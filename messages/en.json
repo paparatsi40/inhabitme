@@ -1489,6 +1489,24 @@
       "subtitle": "Free to list. Pay nothing until you confirm a tenant.",
       "button": "Create my listing",
       "support": "Questions? Email contact@inhabitme.com"
+    },
+    "calculator": {
+      "title": "How much do you save vs Airbnb?",
+      "description": "Plug in your monthly rent and stay duration. We compare the 15% Airbnb host fee against our flat fee.",
+      "monthlyRentLabel": "Monthly rent",
+      "monthlyRentPlaceholder": "1200",
+      "durationLabel": "Stay duration",
+      "durationUnitSingular": "month",
+      "durationUnitPlural": "months",
+      "results": {
+        "totalRevenue": "Your total rent",
+        "airbnbFee": "Airbnb takes (15%)",
+        "inhabitmeFee": "InhabitMe flat fee",
+        "yourSavings": "You keep",
+        "perStay": "per stay vs. Airbnb"
+      },
+      "cta": "Start listing for free",
+      "disclaimer": "Estimate based on Airbnb's typical 15% effective host commission. Your actual numbers may vary."
     }
   }
 }
