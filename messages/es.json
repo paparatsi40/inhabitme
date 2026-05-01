@@ -28,10 +28,10 @@
     "hero": {
       "title": "Quédate 1 a 6 meses",
       "titleHighlight": "con una tarifa plana — sin el 15% de Airbnb",
-      "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas $79–$239 una sola vez.</strong> Sin comisión mensual. Nunca.",
+      "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas <priceRange/> una sola vez.</strong> Sin comisión mensual. Nunca.",
       "badge": "Mediana estancia · Listo para trabajo remoto",
       "features": {
-        "wifi": "WiFi verificado",
+        "wifi": "WiFi para trabajo remoto",
         "workspace": "Espacio de trabajo dedicado",
         "transparent": "Una tarifa plana"
       },
@@ -39,28 +39,28 @@
         "primary": "Ver apartamentos",
         "secondary": "Soy anfitrión"
       },
-      "trustSignal": "Anfitriones verificados · Listo para remoto · Sin datos falsos",
-      "pricingBadge": "Tarifa única, $79–$239 según duración",
+      "trustSignal": "Contacto directo · Listo para remoto · Tarifa plana",
+      "pricingBadge": "Tarifa única, <priceRange/> según duración",
       "pricingSubtitle": "Estancias más largas, mejor precio. Sin comisión mensual.",
       "joinMessage": "Ya activo en Austin · Próximamente en más ciudades"
     },
     "heroCarousel": {
-      "wifiBadge": "✓ WiFi >50 Mbps",
+      "wifiBadge": "Confirmado por el host",
       "stats": {
-        "propertiesValue": "Cada día más",
-        "propertiesLabel": "propiedades",
-        "citiesValue": "10",
-        "citiesLabel": "ciudades",
-        "verifiedValue": "100%",
-        "verifiedLabel": "verificado"
+        "propertiesValue": "Creciendo",
+        "propertiesLabel": "propiedades nuevas cada semana",
+        "citiesValue": "Austin",
+        "citiesLabel": "ya activo",
+        "verifiedValue": "1–6",
+        "verifiedLabel": "meses por estancia"
       }
     },
     "whyInhabitme": {
       "title": "¿Por qué inhabitme?",
       "subtitle": "Diseñado específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>",
       "verified": {
-        "title": "Listo para trabajar",
-        "description": "Los hosts garantizan WiFi de alta velocidad, espacio de trabajo dedicado y ambiente tranquilo. Todas las propiedades están preparadas para trabajo remoto y estudio."
+        "title": "Confirmado para trabajo remoto",
+        "description": "Cada anfitrión confirma que su internet y espacio de trabajo son aptos para trabajo remoto al publicar. Ves esta declaración del host en cada listing — sin sorpresas."
       },
       "transparent": {
         "title": "Precio claro, sin sorpresas",
@@ -186,8 +186,8 @@
         "answer": "Sí, el host paga <strong class=\"text-orange-600\">€49-119 cuando acepta una solicitud</strong> (según duración de la estancia). Esto asegura compromiso de ambas partes y permite que inhabitme opere de forma sostenible."
       },
       "q5": {
-        "question": "¿El WiFi está realmente verificado?",
-        "answer": "Todos los anuncios deben tener internet confiable adecuado para trabajo remoto. Los requisitos específicos de velocidad deben confirmarse directamente con el host antes de reservar."
+        "question": "¿Cómo sé que el internet es lo suficientemente bueno?",
+        "answer": "Cada anfitrión confirma explícitamente al publicar si su internet es apto para trabajo remoto. Puedes contactarlo directamente para detalles específicos de velocidad antes de reservar. Nosotros no verificamos las velocidades — lo que ves es la declaración del propio host."
       },
       "q6": {
         "question": "¿Qué pasa con las cancelaciones?",
@@ -1477,4 +1477,4 @@
       "support": "¿Dudas? Escríbenos a contact@inhabitme.com"
     }
   }
-}
+}
