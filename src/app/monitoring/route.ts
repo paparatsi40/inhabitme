@@ -12,6 +12,9 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+// Run on Edge runtime for low latency forwarding (no cold starts)
+export const runtime = 'edge'
+
 // El project ID del DSN — debe coincidir con el proyecto configurado.
 // Solo aceptamos forwarding a este project para evitar abuse del tunnel.
 const ALLOWED_PROJECT_IDS = new Set([
