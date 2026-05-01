@@ -85,11 +85,15 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
         src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
       />
 
-      {/* Configurar el measurement ID */}
+      {/* Configurar el measurement ID.
+          Usamos window.gtag(...) en vez de gtag(...) porque next/script con
+          strategy="afterInteractive" envuelve el contenido inline en una función,
+          haciendo que gtag (variable local del consent default) no sea visible aquí.
+          window.gtag SÍ está expuesto desde el script anterior. */}
       <Script id="ga-config" strategy="afterInteractive">
         {`
-          gtag('js', new Date());
-          gtag('config', '${measurementId}', { send_page_view: true });
+          window.gtag('js', new Date());
+          window.gtag('config', '${measurementId}', { send_page_view: true });
         `}
       </Script>
     </>
