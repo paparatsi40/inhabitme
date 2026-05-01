@@ -410,14 +410,17 @@
       "triana": "El barrio con más duende de Sevilla. Al otro lado del Guadalquivir, famoso por su tradición flamenca y cerámica. Auténtico, animado y perfectamente conectado. Ideal para quienes buscan la esencia sevillana más genuina.",
       "centro": "Corazón histórico de Sevilla con la Catedral y el Alcázar. Arquitectura monumental, ambiente turístico pero con rincones encantadores. Perfecto para amantes de la historia que necesitan máxima centralidad.",
       "nervion": "Zona comercial y residencial moderna. Excelente para compras, con el Estadio Ramón Sánchez-Pizjuán cerca. Bien comunicado y con todos los servicios. Ideal para profesionales que buscan comodidad y modernidad.",
-      "macarena": "Barrio auténtico y tradicional al norte del centro. Menos turístico, con mercados locales y ambiente de barrio. Precios más accesibles. Perfecto para quienes buscan vida local genuina."
+      "macarena": "Barrio auténtico y tradicional al norte del centro. Menos turístico, con mercados locales y ambiente de barrio. Precios más accesibles. Perfecto para quienes buscan vida local genuina.",
+      "alameda": "Alameda de Hércules — el corazón bohemio y creativo de Sevilla. Plaza animada, terrazas todas las noches y un público joven y multicultural. Alquileres accesibles y excelente escena gastronómica. Ideal para nómadas digitales que quieren energía sin la densidad turística de Santa Cruz."
     },
     "lisboa": {
       "baixa": "El corazón neoclásico de Lisboa. Plazas monumentales, tiendas elegantes y máxima conectividad. Perfecto para profesionales que necesitan estar en el centro de todo y valoran la arquitectura histórica.",
       "chiado": "El barrio literario y cultural. Librerías históricas, cafés elegantes y teatros. Ambiente sofisticado y bohemio a la vez. Ideal para escritores, editores y profesionales creativos.",
       "alfama": "El barrio más antiguo de Lisboa. Calles empinadas, fado en cada esquina y vistas espectaculares. Auténtico y lleno de carácter. Perfecto para quienes buscan la esencia más tradicional de Lisboa.",
       "bairro-alto": "Epicentro de la vida nocturna y alternativa. De día tranquilo, de noche vibrante. Galerías de arte, bares y restaurantes únicos. Ideal para nómadas jóvenes que buscan ambiente social.",
-      "principe-real": "El barrio de moda de Lisboa. Jardines hermosos, boutiques de diseño y comunidad LGBTQ+ vibrante. Sofisticado pero relajado. Perfecto para profesionales creativos y emprendedores tech."
+      "principe-real": "El barrio de moda de Lisboa. Jardines hermosos, boutiques de diseño y comunidad LGBTQ+ vibrante. Sofisticado pero relajado. Perfecto para profesionales creativos y emprendedores tech.",
+      "santos": "Santos — distrito emergente de diseño entre Cais do Sodré y Lapa. Galerías, estudios de diseño y coworkings modernos junto al río. Comunidad tech y creativa creciente, menos turística que Bairro Alto. Perfecto para trabajadores remotos que quieren calles tranquilas con acceso rápido a la vida nocturna.",
+      "estrela": "Estrela — barrio residencial elegante con calles arboladas y uno de los parques más bonitos de Lisboa. Tranquilo, familiar y rodeado de cafés portugueses clásicos. Favorito entre profesionales que buscan calidad de vida con el centro a 15 minutos en tranvía."
     },
     "porto": {
       "ribeira": "El alma de Porto junto al río Douro. Patrimonio UNESCO con vistas icónicas y ambiente turístico. Restaurantes tradicionales y mucho encanto. Ideal para estancias cortas que buscan la esencia portuense.",
@@ -430,14 +433,18 @@
       "roma-norte": "El barrio artístico y cultural. Galerías, boutiques independientes y movida gastronómica innovadora. Ambiente bohemio y moderno. Perfecto para artistas, diseñadores y profesionales creativos.",
       "polanco": "La Beverly Hills de CDMX. Zona premium con embajadas, museos y restaurantes de alta gama. Seguro, limpio y sofisticado. Ideal para ejecutivos y profesionales senior que buscan exclusividad.",
       "coyoacan": "Barrio colonial con alma artística, hogar de Frida Kahlo. Plazas con árboles centenarios, mercados tradicionales y ambiente cultural. Perfecto para quienes buscan autenticidad y tranquilidad.",
-      "santa-fe": "Zona corporativa moderna con rascacielos y centros comerciales. Alejada del centro pero con toda la infraestructura. Ideal para profesionales corporativos que trabajan en la zona."
+      "santa-fe": "Zona corporativa moderna con rascacielos y centros comerciales. Alejada del centro pero con toda la infraestructura. Ideal para profesionales corporativos que trabajan en la zona.",
+      "juarez": "Juárez — barrio antes olvidado, hoy renacido como el hotspot de diseño en CDMX. Boutiques independientes, café de especialidad y una retícula caminable que conecta Reforma con Roma Norte. Menos pulido que Condesa pero con más carácter — punto ideal para nómadas que buscan textura y cercanía.",
+      "del-valle": "Del Valle — barrio residencial sólido con mezcla de edificios de mediados de siglo y familias jóvenes. Calles arboladas, buenos supermercados y excelente calidad de vida a precios menores que Roma o Condesa. Ideal para nómadas en estancias largas que priorizan espacio sobre escena.",
+      "san-miguel-chapultepec": "San Miguel Chapultepec — pequeño, céntrico y notablemente tranquilo. Entre el Bosque de Chapultepec y Condesa, es un bolsillo verde con calles silenciosas y acceso fácil a museos. Joya escondida para trabajadores remotos que quieren áreas verdes y caminabilidad sin multitudes."
     },
     "buenos-aires": {
       "palermo": "El barrio más trendy de Buenos Aires. Dividido en Palermo Soho (diseño y moda) y Palermo Hollywood (gastronomía y vida nocturna). Gran comunidad de nómadas digitales. Ideal para creativos y emprendedores.",
       "recoleta": "Elegancia parisina en Buenos Aires. Arquitectura francesa, galerías de arte y el famoso cementerio. Sofisticado y cultural. Perfecto para profesionales que buscan refinamiento y cultura.",
       "san-telmo": "El barrio bohemio y tanguero. Mercado de antigüedades, arte callejero y ambiente histórico. Auténtico y lleno de carácter. Ideal para artistas y quienes buscan la esencia porteña más genuina.",
       "belgrano": "Barrio residencial al norte, con embajadas y ambiente tranquilo. Menos turístico pero bien comunicado. Perfecto para familias y profesionales que buscan calidad de vida residencial.",
-      "puerto-madero": "El waterfront moderno de Buenos Aires. Lofts contemporáneos, restaurantes frente al río y ambiente corporativo. Seguro y moderno. Ideal para ejecutivos y profesionales que buscan modernidad."
+      "puerto-madero": "El waterfront moderno de Buenos Aires. Lofts contemporáneos, restaurantes frente al río y ambiente corporativo. Seguro y moderno. Ideal para ejecutivos y profesionales que buscan modernidad.",
+      "caballito": "Caballito — centro geográfico y sentimental de Buenos Aires. Vida porteña auténtica, departamentos de mediados de siglo a precios justos, excelente conectividad de subte (líneas A, B, E) y el Parque Rivadavia para los fines de semana. Menos hipster que Palermo pero más habitable para estancias largas."
     },
     "medellin": {
       "el-poblado": "La zona premium de Medellín. Parque Lleras como epicentro, con restaurantes internacionales, coworkings y gran comunidad de nómadas digitales. Seguro y moderno. Ideal para trabajadores remotos que buscan comunidad.",

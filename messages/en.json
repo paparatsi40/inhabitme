@@ -410,14 +410,17 @@
       "triana": "Seville's neighborhood with the most duende. Across the Guadalquivir, famous for its flamenco tradition and ceramics. Authentic, lively, and perfectly connected. Ideal for those seeking the most genuine Sevillian essence.",
       "centro": "Historic heart of Seville with the Cathedral and Alcázar. Monumental architecture, tourist atmosphere but with charming corners. Perfect for history lovers who need maximum centrality.",
       "nervion": "Modern commercial and residential area. Excellent for shopping, near Ramón Sánchez-Pizjuán Stadium. Well connected with all services. Ideal for professionals seeking comfort and modernity.",
-      "macarena": "Authentic and traditional neighborhood north of the center. Less touristy, with local markets and neighborhood atmosphere. More accessible prices. Perfect for those seeking genuine local life."
+      "macarena": "Authentic and traditional neighborhood north of the center. Less touristy, with local markets and neighborhood atmosphere. More accessible prices. Perfect for those seeking genuine local life.",
+      "alameda": "Alameda de Hércules — Seville's bohemian and creative core. Lively plaza, terraces every night, and a young, multicultural crowd. Affordable rents and great food scene. Ideal for digital nomads who want energy without the tourist density of Barrio Santa Cruz."
     },
     "lisboa": {
       "baixa": "The neoclassical heart of Lisbon. Monumental plazas, elegant shops, and maximum connectivity. Perfect for professionals who need to be at the center of everything and value historic architecture.",
       "chiado": "The literary and cultural neighborhood. Historic bookstores, elegant cafés, and theaters. Sophisticated and bohemian atmosphere at once. Ideal for writers, editors, and creative professionals.",
       "alfama": "Lisbon's oldest neighborhood. Steep streets, fado at every corner, and spectacular views. Authentic and full of character. Perfect for those seeking the most traditional essence of Lisbon.",
       "bairro-alto": "Epicenter of nightlife and alternative scene. Quiet by day, vibrant by night. Art galleries, bars, and unique restaurants. Ideal for young nomads seeking social atmosphere.",
-      "principe-real": "Lisbon's trendy neighborhood. Beautiful gardens, design boutiques, and vibrant LGBTQ+ community. Sophisticated but relaxed. Perfect for creative professionals and tech entrepreneurs."
+      "principe-real": "Lisbon's trendy neighborhood. Beautiful gardens, design boutiques, and vibrant LGBTQ+ community. Sophisticated but relaxed. Perfect for creative professionals and tech entrepreneurs.",
+      "santos": "Santos — emerging design district between Cais do Sodré and Lapa. Galleries, design studios, and modern coworking spaces along the river. A growing tech and creative crowd, less touristy than Bairro Alto. Perfect for remote workers who want quiet streets but quick access to nightlife.",
+      "estrela": "Estrela — elegant residential neighborhood with leafy streets and one of Lisbon's loveliest parks. Calm, family-friendly, and surrounded by classic Portuguese cafés. A favorite among professionals who want quality of life within a 15-minute tram to the center."
     },
     "porto": {
       "ribeira": "Porto's soul next to the Douro River. UNESCO Heritage with iconic views and tourist atmosphere. Traditional restaurants and lots of charm. Ideal for short stays seeking the essence of Porto.",
@@ -430,14 +433,18 @@
       "roma-norte": "The artistic and cultural neighborhood. Galleries, independent boutiques, and innovative gastronomic movement. Bohemian and modern atmosphere. Perfect for artists, designers, and creative professionals.",
       "polanco": "CDMX's Beverly Hills. Premium area with embassies, museums, and high-end restaurants. Safe, clean, and sophisticated. Ideal for executives and senior professionals seeking exclusivity.",
       "coyoacan": "Colonial neighborhood with artistic soul, home to Frida Kahlo. Plazas with centenary trees, traditional markets, and cultural atmosphere. Perfect for those seeking authenticity and tranquility.",
-      "santa-fe": "Modern corporate area with skyscrapers and shopping centers. Far from the center but with all infrastructure. Ideal for corporate professionals who work in the area."
+      "santa-fe": "Modern corporate area with skyscrapers and shopping centers. Far from the center but with all infrastructure. Ideal for corporate professionals who work in the area.",
+      "juarez": "Juárez — once-faded neighborhood now reborn as CDMX's design hotspot. Independent boutiques, third-wave coffee, and a tight grid of walkable streets connecting Reforma to Roma Norte. Less polished than Condesa but with more character — a sweet spot for nomads who want texture and proximity.",
+      "del-valle": "Del Valle — solid residential neighborhood with a mix of mid-century apartments and young families. Tree-lined streets, excellent groceries, and great quality of life at lower prices than Roma or Condesa. Best for nomads on longer stays who prioritize space over scene.",
+      "san-miguel-chapultepec": "San Miguel Chapultepec — small, central, and remarkably calm. Sandwiched between Bosque de Chapultepec and Condesa, it's a green pocket with quiet streets and easy access to museums. A hidden gem for remote workers who want green space and walkability without the crowds."
     },
     "buenos-aires": {
       "palermo": "Buenos Aires' most trendy neighborhood. Divided into Palermo Soho (design and fashion) and Palermo Hollywood (gastronomy and nightlife). Large digital nomad community. Ideal for creatives and entrepreneurs.",
       "recoleta": "Parisian elegance in Buenos Aires. French architecture, art galleries, and the famous cemetery. Sophisticated and cultural. Perfect for professionals seeking refinement and culture.",
       "san-telmo": "The bohemian and tango neighborhood. Antiques market, street art, and historic atmosphere. Authentic and full of character. Ideal for artists and those seeking the most genuine porteño essence.",
       "belgrano": "Residential neighborhood to the north, with embassies and tranquil atmosphere. Less touristy but well connected. Perfect for families and professionals seeking residential quality of life.",
-      "puerto-madero": "Buenos Aires' modern waterfront. Contemporary lofts, riverside restaurants, and corporate atmosphere. Safe and modern. Ideal for executives and professionals seeking modernity."
+      "puerto-madero": "Buenos Aires' modern waterfront. Contemporary lofts, riverside restaurants, and corporate atmosphere. Safe and modern. Ideal for executives and professionals seeking modernity.",
+      "caballito": "Caballito — geographic and emotional center of Buenos Aires. Authentic porteño life, mid-century apartments at fair prices, excellent subway connectivity (lines A, B, E pass through), and Parque Rivadavia for weekend mornings. Less hip than Palermo but more livable for stays longer than a month."
     },
     "medellin": {
       "el-poblado": "Medellín's premium zone. Parque Lleras as epicenter, with international restaurants, coworkings, and large digital nomad community. Safe and modern. Ideal for remote workers seeking community.",

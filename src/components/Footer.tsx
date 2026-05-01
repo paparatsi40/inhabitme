@@ -2,7 +2,7 @@
 
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { Building2, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Building2, Mail, MapPin, Phone, Facebook, Instagram, Linkedin } from 'lucide-react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function Footer() {
@@ -34,15 +34,7 @@ export function Footer() {
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-3 pt-2">
-              <a 
-                href="https://twitter.com/inhabitme" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="p-3 bg-gray-800 hover:bg-blue-600 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label="Follow us on Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
+
               <a 
                 href="https://instagram.com/inhabitme" 
                 target="_blank" 
