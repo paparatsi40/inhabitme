@@ -1,37 +1,39 @@
 // Script para agregar rol de admin a un usuario
 // Ejecutar con: npx tsx scripts/set-admin-role.ts
 
-import { clerkClient } from '@clerk/nextjs/server';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+// Cargar .env.local ANTES de importar Clerk
+config({ path: resolve(process.cwd(), '.env.local') });
+
+const userEmail = 'alfaroc@live.com';
 
 async function setAdminRole() {
-  const userEmail = 'TU_EMAIL_AQUI@example.com'; // CAMBIA ESTO por tu email
-  
+  // Import dinámico para que dotenv ya esté cargado
+  const { clerkClient } = await import('@clerk/nextjs/server');
+
   try {
-    // Obtener cliente de Clerk
     const client = await clerkClient();
-    
-    // Buscar usuario por email
+
     const response = await client.users.getUserList({
       emailAddress: [userEmail],
     });
 
     if (!response.data || response.data.length === 0) {
-      console.error('❌ Usuario no encontrado con ese email');
+      console.error('❌ Usuario no encontrado:', userEmail);
       return;
     }
 
     const user = response.data[0];
     console.log(`✅ Usuario encontrado: ${user.firstName} ${user.lastName} (${user.id})`);
 
-    // Actualizar metadata
     await client.users.updateUserMetadata(user.id, {
-      publicMetadata: {
-        role: 'admin',
-      },
+      publicMetadata: { role: 'admin' },
     });
 
     console.log('🎉 ¡Rol de admin agregado exitosamente!');
-    console.log('🔄 Cierra sesión y vuelve a iniciar para que se aplique el cambio');
+    console.log('🔄 Cierra sesión y vuelve a iniciar para que se aplique el cambio.');
   } catch (error) {
     console.error('❌ Error:', error);
   }
