@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { CITIES } from '@/config/cities'
 import { CityCarousel } from '@/components/hero/CityCarousel'
 import { FaqJsonLd } from '@/components/seo/FaqJsonLd'
+import { CurrencySymbol } from '@/components/CurrencySymbol'
 
 // ── Lazy-load secciones below-fold pesadas ─────────────────────────────────
 // Se cargan solo cuando el navegador las necesita, aligerando el bundle inicial
@@ -120,10 +121,16 @@ export default async function HomePage({
                     {t('hero.titleHighlight')}
                   </span>
                 </h1>
-                <p
-                  className="text-xl lg:text-2xl text-gray-700 mb-8 lg:mb-10 leading-relaxed font-medium"
-                  dangerouslySetInnerHTML={{ __html: t.raw('hero.subtitle') }}
-                />
+                <p className="text-xl lg:text-2xl text-gray-700 mb-8 lg:mb-10 leading-relaxed font-medium">
+                  {t.rich('hero.subtitle', {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                    priceRange: () => (
+                      <>
+                        <CurrencySymbol />79–<CurrencySymbol />239
+                      </>
+                    ),
+                  })}
+                </p>
                 <div className="flex flex-wrap gap-3 mb-8 lg:mb-10">
                   <div className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
                     <Wifi className="h-5 w-5 text-green-600" />
@@ -165,7 +172,15 @@ export default async function HomePage({
                     <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <Euro className="h-5 w-5 text-white" />
                     </div>
-                    <p className="text-xl font-black text-gray-900">{t('hero.pricingBadge')}</p>
+                    <p className="text-xl font-black text-gray-900">
+                      {t.rich('hero.pricingBadge', {
+                        priceRange: () => (
+                          <>
+                            <CurrencySymbol />79–<CurrencySymbol />239
+                          </>
+                        ),
+                      })}
+                    </p>
                   </div>
                   <p className="text-base text-gray-700 ml-13">{t('hero.pricingSubtitle')}</p>
                 </div>

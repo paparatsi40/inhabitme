@@ -28,10 +28,10 @@
     "hero": {
       "title": "Stay 1–6 months",
       "titleHighlight": "for one flat fee — not a 15% Airbnb cut",
-      "subtitle": "Furnished apartments, ready for remote work. <strong>Pay $79–$239 once.</strong> No monthly commission. Ever.",
+      "subtitle": "Furnished apartments, ready for remote work. <strong>Pay <priceRange/> once.</strong> No monthly commission. Ever.",
       "badge": "Medium-term stays · Remote-work ready",
       "features": {
-        "wifi": "Verified WiFi",
+        "wifi": "Remote-work WiFi",
         "workspace": "Dedicated workspace",
         "transparent": "One flat fee"
       },
@@ -39,28 +39,28 @@
         "primary": "Browse apartments",
         "secondary": "I'm a host"
       },
-      "trustSignal": "Verified hosts · Remote-work ready · No fake data",
-      "pricingBadge": "One-time fee, $79–$239 by duration",
+      "trustSignal": "Direct contact · Remote-work ready · One flat fee",
+      "pricingBadge": "One-time fee, <priceRange/> by duration",
       "pricingSubtitle": "Longer stays get a better rate. No monthly commission.",
       "joinMessage": "Now live in Austin · Expanding to more cities soon"
     },
     "heroCarousel": {
-      "wifiBadge": "✓ WiFi >50 Mbps",
+      "wifiBadge": "Host-confirmed remote work",
       "stats": {
-        "propertiesValue": "Growing every day",
-        "propertiesLabel": "properties",
-        "citiesValue": "10",
-        "citiesLabel": "cities",
-        "verifiedValue": "100%",
-        "verifiedLabel": "verified"
+        "propertiesValue": "Growing",
+        "propertiesLabel": "properties weekly",
+        "citiesValue": "Austin",
+        "citiesLabel": "now live",
+        "verifiedValue": "1–6",
+        "verifiedLabel": "month stays"
       }
     },
     "whyInhabitme": {
       "title": "Why inhabitme?",
       "subtitle": "Designed specifically for <strong>medium-term stays</strong> and <strong>remote work</strong>",
       "verified": {
-        "title": "Work-Ready Guarantee",
-        "description": "Hosts guarantee high-speed WiFi, dedicated workspace and quiet environment. All properties are ready for remote work and study."
+        "title": "Confirmed for remote work",
+        "description": "Each host confirms their internet and workspace are suitable for remote work when listing the property. You see this self-declaration on every listing — no surprises."
       },
       "transparent": {
         "title": "Clear pricing, no surprises",
@@ -186,8 +186,8 @@
         "answer": "Yes, the host pays <strong class=\"text-orange-600\">$49-119 when accepting a request</strong> (based on stay duration). This ensures commitment from both parties and allows inhabitme to operate sustainably."
       },
       "q5": {
-        "question": "Is WiFi really verified?",
-        "answer": "All listings are required to have reliable internet suitable for remote work. Specific speed requirements should be confirmed directly with the host before booking."
+        "question": "How do I know the internet is good enough?",
+        "answer": "Each host explicitly confirms when listing whether their internet is suitable for remote work. You can also message the host directly for specific speed details before booking. We don't verify speeds ourselves — what you see is the host's self-declaration."
       },
       "q6": {
         "question": "What about cancellations?",
@@ -1477,4 +1477,4 @@
       "support": "Questions? Email contact@inhabitme.com"
     }
   }
-}
+}

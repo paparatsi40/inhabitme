@@ -16,8 +16,7 @@ declare global {
  *
  * Flujo:
  * 1. Inyecta un <script> inline en el HTML que declara `consent default` con
- *    todo en 'denied' ANTES de que gtag.js cargue. (No usamos next/script con
- *    beforeInteractive porque está deprecado en App Router.)
+ *    todo en 'denied' ANTES de que gtag.js cargue.
  * 2. Carga gtag.js con strategy="afterInteractive".
  * 3. Si el usuario tiene consent='all' guardado, dispara `consent update -> granted`.
  * 4. Escucha `cookieConsentChange` para actualizar en tiempo real.
@@ -29,7 +28,6 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
     if (!measurementId) return
     if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
 
-    // Si el usuario ya aceptó previamente, granteamos al hidratar
     if (hasAnalyticsConsent()) {
       window.gtag('consent', 'update', {
         ad_storage: 'granted',
@@ -39,7 +37,6 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
       })
     }
 
-    // Escuchar cambios futuros (cuando el usuario interactúa con el banner)
     return onConsentChange((consent) => {
       if (typeof window.gtag !== 'function') return
       const granted = consent === 'all' ? 'granted' : 'denied'
@@ -55,8 +52,6 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   if (!measurementId) return null
 
   // Consent default inline — debe ejecutarse ANTES de cargar gtag.js
-  // Usamos un <script> regular (no next/script) porque next/script con
-  // beforeInteractive no se recomienda en App Router.
   const consentDefault = `
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
