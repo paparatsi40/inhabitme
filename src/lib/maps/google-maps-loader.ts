@@ -31,9 +31,13 @@ export function loadGoogleMaps(apiKey: string): Promise<void> {
     }
 
     // Cargar el script
+    // - loading=async: silencia el warning de Google y mejora performance
+    // - libraries=places,marker: marker es necesario para AdvancedMarkerElement
+    //   (reemplazo de google.maps.Marker, deprecado desde 2024-02-21)
+    // - v=weekly: canal estable recomendado por Google
     isLoading = true
     const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,marker&loading=async&v=weekly`
     script.async = true
     script.defer = true
     
