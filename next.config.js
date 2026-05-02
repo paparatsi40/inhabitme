@@ -59,9 +59,10 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src * blob: data:",
               "font-src 'self' https://fonts.gstatic.com https://vercel.live",
-              // Connect: incluye endpoints de ingesta de GA, PostHog, Sentry y Google Maps
-              // (maps.googleapis.com es necesario para gen_204/csp_test y RPC de la SDK).
-              "connect-src 'self' https://clerk.inhabitme.com https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com https://vercel.live https://www.google-analytics.com https://*.google-analytics.com https://us.i.posthog.com https://eu.i.posthog.com https://*.posthog.com https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io https://maps.googleapis.com https://maps.gstatic.com",
+              // Connect: incluye endpoints de ingesta de GA, PostHog, Sentry y Google Maps.
+              // Maps usa varios subdominios de googleapis.com (maps, mapsresources-pa, etc.)
+              // y data: en fetch() para tiles del WebGL renderer cuando hay mapId/cloud styling.
+              "connect-src 'self' data: https://clerk.inhabitme.com https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com https://vercel.live https://www.google-analytics.com https://*.google-analytics.com https://us.i.posthog.com https://eu.i.posthog.com https://*.posthog.com https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io https://*.googleapis.com https://*.gstatic.com",
               "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://vercel.live",
               "object-src 'none'",
               "media-src 'self'",
