@@ -21,11 +21,23 @@ export function loadGoogleMaps(apiKey: string): Promise<void> {
     // Verificar si ya existe el script
     const existingScript = document.querySelector('script[src*="maps.googleapis.com"]')
     if (existingScript) {
-      existingScript.addEventListener('load', () => {
-        isLoaded = true
-        resolve()
-        callbacks.forEach(cb => cb())
-        callbacks.length = 0
+      existingScript.addEventListener('load', async () => {
+        try {
+          // Mismo pre-importLibrary que abajo: con loading=async hay que
+          // importar las librerías explícitamente antes de usarlas síncronamente.
+          const g = (window as any).google
+          await Promise.all([
+            g.maps.importLibrary('maps'),
+            g.maps.importLibrary('marker'),
+            g.maps.importLibrary('places'),
+          ])
+          isLoaded = true
+          resolve()
+          callbacks.forEach(cb => cb())
+          callbacks.length = 0
+        } catch (err) {
+          reject(err instanceof Error ? err : new Error('Failed to import Google Maps libraries'))
+        }
       })
       return
     }
@@ -41,14 +53,31 @@ export function loadGoogleMaps(apiKey: string): Promise<void> {
     script.async = true
     script.defer = true
     
-    script.onload = () => {
-      isLoading = false
-      isLoaded = true
-      resolve()
-      callbacks.forEach(cb => cb())
-      callbacks.length = 0
+    script.onload = async () => {
+      try {
+        // Con loading=async las librerías se cargan en modo lazy y NO están
+        // disponibles via window.google.maps.* hasta que se importan.
+        // Pre-importamos las que usamos para que `new google.maps.Map(...)`,
+        // `new google.maps.Circle(...)`, `google.maps.SymbolPath`, etc. sigan
+        // funcionando sin refactorizar todos los componentes.
+        // Ref: https://developers.google.com/maps/documentation/javascript/load-maps-js-api#dynamic-library-import
+        const g = (window as any).google
+        await Promise.all([
+          g.maps.importLibrary('maps'),
+          g.maps.importLibrary('marker'),
+          g.maps.importLibrary('places'),
+        ])
+        isLoading = false
+        isLoaded = true
+        resolve()
+        callbacks.forEach(cb => cb())
+        callbacks.length = 0
+      } catch (err) {
+        isLoading = false
+        reject(err instanceof Error ? err : new Error('Failed to import Google Maps libraries'))
+      }
     }
-    
+
     script.onerror = () => {
       isLoading = false
       reject(new Error('Failed to load Google Maps'))
