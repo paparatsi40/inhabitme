@@ -1,17 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Upload, Crown } from 'lucide-react'
+import { Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 
 interface LogoUploaderProps {
   value?: string
   onChange: (url: string) => void
-  isFoundingHost: boolean
 }
 
-export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderProps) {
+export function LogoUploader({ value, onChange }: LogoUploaderProps) {
   const t = useTranslations('listingCustomization.logoUploader')
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(value || '')
@@ -65,30 +64,6 @@ export function LogoUploader({ value, onChange, isFoundingHost }: LogoUploaderPr
   const handleRemove = () => {
     setPreview('')
     onChange('')
-  }
-
-  if (!isFoundingHost) {
-    return (
-      <div className="bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300 rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-            <Crown className="h-5 w-5 text-white" />
-          </div>
-          <h3 className="text-lg font-bold text-gray-900">{t('title')}</h3>
-        </div>
-        <p className="text-gray-700 mb-3">
-          {t('descriptionLocked')}
-        </p>
-        <div className="bg-white border-2 border-purple-400 rounded-lg p-4">
-          <p className="text-sm font-semibold text-purple-800 mb-2">
-            {t('badgeTitle')}
-          </p>
-          <p className="text-sm text-gray-600">
-            {t('badgeDescription')}
-          </p>
-        </div>
-      </div>
-    )
   }
 
   return (
