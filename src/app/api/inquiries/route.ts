@@ -4,6 +4,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { scoreLead } from '@/lib/leads/scoreLead'
 import { getHostInfo } from '@/lib/clerk/getHostInfo'
 import { sendHostInquiryNotification } from '@/lib/email/send-host-inquiry-notification'
+import { rateLimit } from '@/lib/rate-limit'
 
 const toIsoDate = (value: string) => {
   const d = new Date(value)
@@ -19,6 +20,12 @@ function getDefaultStartDate() {
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1'
+    const { success } = await rateLimit(ip, 10, 60)
+    if (!success) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const body = await req.json()
 
     const listingId = String(body?.listingId || '').trim()
