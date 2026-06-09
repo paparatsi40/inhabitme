@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
     // Handle user.created / user.updated: keep legacy public."User" in sync without duplicating emails
     if (evt.type === 'user.created' || evt.type === 'user.updated') {
-      const { id: userId, unsafe_metadata, email_addresses, primary_email_address_id } = evt.data;
+      const { id: userId, email_addresses, primary_email_address_id } = evt.data;
       const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
       const primaryEmail = (email_addresses || [])
@@ -86,25 +86,6 @@ export async function POST(req: NextRequest) {
                 role: 'GUEST',
               });
           }
-        }
-      }
-
-      // Check if this is a founding host signup
-      if (unsafe_metadata?.role === 'founding_host' && unsafe_metadata?.invitation_token) {
-        // Mark invitation as accepted
-        const { error: updateError } = await supabase
-          .from('founding_host_invitations')
-          .update({
-            status: 'accepted',
-            user_id: userId,
-            accepted_at: new Date().toISOString()
-          })
-          .eq('token', unsafe_metadata.invitation_token);
-
-        if (updateError) {
-          console.error('Error updating invitation:', updateError);
-        } else {
-          console.log(`Founding Host invitation accepted for user ${userId}`);
         }
       }
     }

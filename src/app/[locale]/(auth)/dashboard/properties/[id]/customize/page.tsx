@@ -29,8 +29,7 @@ export default function CustomizeListingPage() {
   const [showPreview, setShowPreview] = useState(false)
   const [customBackground, setCustomBackground] = useState<string>('')
   const [customLogo, setCustomLogo] = useState<string>('')
-  const [isFoundingHost, setIsFoundingHost] = useState(true) // Todos los hosts tienen acceso completo
-  
+
   // Fetch listing data
   useEffect(() => {
     const fetchListing = async () => {
@@ -308,21 +307,19 @@ export default function CustomizeListingPage() {
               </div>
             </div>
             
-            {/* Background Uploader - Founding Host */}
+            {/* Background Uploader */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <BackgroundUploader
                 value={customBackground}
                 onChange={setCustomBackground}
-                isFoundingHost={isFoundingHost}
               />
             </div>
-            
-            {/* Logo Uploader - Founding Host */}
+
+            {/* Logo Uploader */}
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <LogoUploader
                 value={customLogo}
                 onChange={setCustomLogo}
-                isFoundingHost={isFoundingHost}
               />
             </div>
           </div>

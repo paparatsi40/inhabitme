@@ -9,23 +9,6 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 type Ctx = { params: Promise<{ id: string }> };
 
-// Helper para verificar si es Founding Host
-async function isFoundingHost(userId: string): Promise<boolean> {
-  try {
-    const { sessionClaims } = await auth();
-    const publicMetadata = (sessionClaims as any)?.public_metadata || {};
-    const unsafeMetadata = (sessionClaims as any)?.unsafe_metadata || {};
-    const metadata = { ...publicMetadata, ...unsafeMetadata };
-
-    return (
-      metadata.role === 'founding_host' &&
-      (metadata.founding_host_year === 2026 || metadata.founding_host_year === '2026')
-    );
-  } catch {
-    return false;
-  }
-}
-
 // GET - Obtener theme de un listing
 export async function GET(request: NextRequest, { params }: Ctx) {
   try {

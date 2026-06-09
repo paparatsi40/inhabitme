@@ -209,7 +209,7 @@ export interface TemplateMetadata {
   preview: string
   idealFor: string[]
   features: string[]
-  tier: 'free' | 'founding' | 'premium'
+  tier: 'free' | 'premium'
 }
 
 export const TEMPLATE_METADATA: Record<TemplateId, TemplateMetadata> = {
@@ -240,7 +240,7 @@ export const TEMPLATE_METADATA: Record<TemplateId, TemplateMetadata> = {
     preview: '/templates/vibrant-preview.jpg',
     idealFor: ['Artists', 'Creatives', 'Young Professionals', 'Unique Spaces'],
     features: ['Masonry gallery', 'Badge amenities', 'Floating CTA'],
-    tier: 'founding',
+    tier: 'free',
   },
 
   minimal: {
@@ -250,7 +250,7 @@ export const TEMPLATE_METADATA: Record<TemplateId, TemplateMetadata> = {
     preview: '/templates/minimal-preview.jpg',
     idealFor: ['Minimalists', 'Modern Spaces', 'Professionals'],
     features: ['Compact header', 'Icon amenities', 'Clean layout'],
-    tier: 'founding',
+    tier: 'free',
   },
 
   luxury: {
@@ -260,7 +260,7 @@ export const TEMPLATE_METADATA: Record<TemplateId, TemplateMetadata> = {
     preview: '/templates/luxury-preview.jpg',
     idealFor: ['Luxury Properties', 'High-End Rentals', 'Premium Spaces'],
     features: ['Fullscreen header', 'Elegant typography', 'Premium feel'],
-    tier: 'founding',
+    tier: 'free',
   },
 }
 
@@ -274,15 +274,6 @@ export function getDefaultTheme(): ListingTheme {
 
 export function getThemePreset(templateId: TemplateId): ListingTheme {
   return THEME_PRESETS[templateId] || THEME_PRESETS.modern
-}
-
-export function isFoundingHostTemplate(templateId: TemplateId): boolean {
-  return TEMPLATE_METADATA[templateId].tier === 'founding'
-}
-
-export function getAvailableTemplates(isFoundingHost: boolean): TemplateId[] {
-  // Todos los templates están disponibles para todos los hosts
-  return Object.keys(THEME_PRESETS) as TemplateId[]
 }
 
 export function validateThemeColors(colors: ThemeColors): boolean {

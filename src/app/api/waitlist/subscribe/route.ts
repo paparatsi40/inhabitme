@@ -1,21 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
+import { z } from 'zod'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+// Escapa caracteres con significado en HTML para evitar inyección en los correos
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+const waitlistSchema = z.object({
+  email: z.string().email(),
+  city: z.string().min(1).max(100),
+  citySlug: z.string().max(100).optional(),
+})
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, city, citySlug } = await request.json()
-    
-    console.log('[Waitlist] Starting process for:', { email, city, citySlug })
+    const parsed = waitlistSchema.safeParse(await request.json())
 
-    if (!email || !city) {
+    if (!parsed.success) {
       return NextResponse.json(
         { error: 'Email y ciudad son requeridos' },
         { status: 400 }
       )
     }
+
+    const { email, city, citySlug } = parsed.data
+    // Valores escapados para interpolar de forma segura en los templates de email
+    const safeEmail = escapeHtml(email)
+    const safeCity = escapeHtml(city)
+
+    console.log('[Waitlist] Starting process for:', { email, city, citySlug })
 
     // Guardar en base de datos
     const supabase = getSupabaseServerClient()
@@ -58,7 +80,7 @@ export async function POST(request: NextRequest) {
               </p>
               
               <p style="font-size: 16px; color: #374151; line-height: 1.6;">
-                Te confirmo que estás en nuestra lista de espera para <strong>${city}</strong>.
+                Te confirmo que estás en nuestra lista de espera para <strong>${safeCity}</strong>.
               </p>
               
               <p style="font-size: 16px; color: #374151; line-height: 1.6;">
@@ -110,8 +132,8 @@ export async function POST(request: NextRequest) {
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #1f2937;">Nuevo registro en waitlist</h2>
-            <p><strong>Ciudad:</strong> ${city}</p>
-            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Ciudad:</strong> ${safeCity}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
             <p><strong>Fecha:</strong> ${new Date().toLocaleString('es-ES')}</p>
           </div>
         `,
