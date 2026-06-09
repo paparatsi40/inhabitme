@@ -254,7 +254,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('[listings/search] Supabase error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 
     const listings = (data || []).map(mapRowToListing);
@@ -266,6 +266,6 @@ export async function GET(request: NextRequest) {
     );
   } catch (error: any) {
     console.error('[API /api/listings/search] Exception:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -84,14 +84,14 @@ export async function PUT(
 
     if (error) {
       console.error('Update error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, data })
   } catch (error: any) {
     console.error('Server error:', error)
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
