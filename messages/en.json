@@ -28,7 +28,7 @@
     "hero": {
       "title": "Stay 1–6 months",
       "titleHighlight": "for one flat fee — not a 15% Airbnb cut",
-      "subtitle": "Furnished apartments, ready for remote work. <strong>Pay <priceRange/> once.</strong> No monthly commission. Ever.",
+      "subtitle": "Furnished apartments, ready for remote work. <strong>Pay <priceRange></priceRange> once.</strong> No monthly commission. Ever.",
       "badge": "Medium-term stays · Remote-work ready",
       "features": {
         "wifi": "Remote-work WiFi",
@@ -40,7 +40,7 @@
         "secondary": "I'm a host"
       },
       "trustSignal": "Direct contact · Remote-work ready · One flat fee",
-      "pricingBadge": "One-time fee, <priceRange/> by duration",
+      "pricingBadge": "One-time fee, <priceRange></priceRange> by duration",
       "pricingSubtitle": "Longer stays get a better rate. No monthly commission.",
       "joinMessage": "Now live in Austin · Expanding to more cities soon"
     },

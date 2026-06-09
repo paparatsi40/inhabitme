@@ -28,7 +28,7 @@
     "hero": {
       "title": "Quédate 1 a 6 meses",
       "titleHighlight": "con una tarifa plana — sin el 15% de Airbnb",
-      "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas <priceRange/> una sola vez.</strong> Sin comisión mensual. Nunca.",
+      "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas <priceRange></priceRange> una sola vez.</strong> Sin comisión mensual. Nunca.",
       "badge": "Mediana estancia · Listo para trabajo remoto",
       "features": {
         "wifi": "WiFi para trabajo remoto",
@@ -40,7 +40,7 @@
         "secondary": "Soy anfitrión"
       },
       "trustSignal": "Contacto directo · Listo para remoto · Tarifa plana",
-      "pricingBadge": "Tarifa única, <priceRange/> según duración",
+      "pricingBadge": "Tarifa única, <priceRange></priceRange> según duración",
       "pricingSubtitle": "Estancias más largas, mejor precio. Sin comisión mensual.",
       "joinMessage": "Ya activo en Austin · Próximamente en más ciudades"
     },
