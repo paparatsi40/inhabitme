@@ -193,12 +193,7 @@ async function handleCreateProperty(req: NextRequest) {
     console.error('[API] ❌ Error hint:', error.hint)
     console.error('[API] ❌ Error message:', error.message)
     return NextResponse.json(
-      { 
-        error: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

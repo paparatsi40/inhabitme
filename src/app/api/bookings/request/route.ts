@@ -242,9 +242,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error: any) {
     console.error('Booking request error:', error);
-    return NextResponse.json({ 
-      error: 'Internal server error', 
-      message: error.message 
-    }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

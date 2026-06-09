@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error('[properties/search] Supabase error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 
     // Filter active listings in memory (case-insensitive)
@@ -66,9 +66,6 @@ export async function GET(request: Request) {
     );
   } catch (error: any) {
     console.error('[properties/search] Unexpected error:', error?.message);
-    return NextResponse.json({
-      error: error.message || 'Failed to search properties',
-      stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined
-    }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
