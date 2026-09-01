@@ -15,10 +15,18 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
+import * as Sentry from '@sentry/nextjs'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-02-25.clover',
 })
+
+// Estados desde los que un pago puede hacer avanzar el booking. Coincide con
+// PAYABLE_STATUSES de create-checkout / host-checkout. Fuera de este conjunto
+// (confirmed, cancelled, rejected, pending_host_approval) un webhook no debe
+// mover nada: 'cancelled' lo escribe bookings/[id]/respond cuando el host
+// rechaza, y un pago tardío no puede resucitar ese booking.
+const PAYMENT_FLOW_STATUSES = ['approved', 'pending_guest_payment', 'pending_host_payment']
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -46,9 +54,9 @@ export async function POST(request: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session
 
         const bookingId = session.metadata?.booking_id
-        const paymentType = session.metadata?.payment_type // 'guest' | 'host'
+        const paymentType = session.metadata?.payment_type as 'guest' | 'host' | undefined
 
-        if (!bookingId || !paymentType) {
+        if (!bookingId || (paymentType !== 'guest' && paymentType !== 'host')) {
           console.error('❌ Metadata incompleto:', session.metadata)
           return NextResponse.json({ error: 'Missing metadata' }, { status: 400 })
         }
@@ -72,103 +80,85 @@ export async function POST(request: NextRequest) {
         const sessionLocale = session.metadata?.locale ?? 'en'
         const sessionCurrency = session.metadata?.currency ?? session.currency ?? 'eur'
 
-        // ── Pago del GUEST ─────────────────────────────────────────────────
-        if (paymentType === 'guest') {
-          // Idempotency guard — ignorar evento duplicado de Stripe
-          if (booking.guest_payment_status === 'paid') {
-            console.log('⚠️ Evento duplicado ignorado — guest ya pagó:', bookingId)
-            return NextResponse.json({ received: true })
-          }
-
-          console.log('💳 Guest payment completado para booking:', bookingId)
-
-          await supabase.from('bookings').update({
-            guest_payment_status: 'paid',
-            guest_paid_at: new Date().toISOString(),
-            guest_payment_intent_id: paymentIntentId,
-            updated_at: new Date().toISOString(),
-          }).eq('id', bookingId)
-
-          // Registrar transacción
-          await supabase.from('payment_transactions').insert({
+        // ── 1. Registrar la transacción ────────────────────────────────────
+        // Idempotente vía el índice único parcial uq_payment_transactions_stripe_session:
+        // en un reintento del mismo evento la inserción choca con 23505
+        // (unique_violation), que aquí es el resultado esperado, no un error.
+        // No usamos upsert/onConflict porque Postgres no infiere un índice
+        // parcial sin repetir su predicado, y PostgREST no lo emite.
+        const { error: txError } = await supabase
+          .from('payment_transactions')
+          .insert({
             booking_id: bookingId,
-            payer_role: 'guest',
-            payer_id: booking.guest_id,
+            payer_role: paymentType,
+            payer_id: paymentType === 'guest' ? booking.guest_id : booking.host_id,
             amount_cents: Number(session.amount_total ?? 0),
             currency: sessionCurrency,
-            payment_type: 'booking_guest_fee',
+            payment_type: paymentType === 'guest' ? 'booking_guest_fee' : 'booking_host_fee',
             status: 'paid',
             stripe_session_id: session.id,
             stripe_payment_intent_id: paymentIntentId,
-            metadata: { source: 'stripe_webhook', tier: session.metadata?.tier },
-          }).then(({ error }: { error: any }) => {
-            if (error) console.error('⚠️ payment_transactions insert (guest):', error.message)
+            metadata: {
+              source: 'stripe_webhook',
+              tier: session.metadata?.tier,
+              ...(paymentType === 'host' && { featured: session.metadata?.featured }),
+            },
           })
 
-          // Verificar si el host ya pagó → si es así, confirmar y liberar contactos
-          const hostAlreadyPaid = booking.host_payment_status === 'paid' || booking.host_payment_status === 'waived'
+        if (txError && txError.code === '23505') {
+          console.log(`↻ Transacción ya registrada (${paymentType}):`, session.id)
+        } else if (txError) {
+          console.error(`⚠️ payment_transactions insert (${paymentType}):`, txError.message)
+        }
 
-          if (hostAlreadyPaid) {
-            await confirmAndReleaseContacts(supabase, booking, session.id, 'guest')
-          } else {
-            // Host no ha pagado aún — actualizar estado y notificarle
-            await supabase.from('bookings').update({
-              status: 'pending_host_payment',
-              flow_state: 'payment_pending',
-              updated_at: new Date().toISOString(),
-            }).eq('id', bookingId)
+        // ── 2. Marcar el pago del pagador ──────────────────────────────────
+        const payerAlreadyPaid = booking[`${paymentType}_payment_status`] === 'paid'
 
+        if (!payerAlreadyPaid) {
+          await supabase.from('bookings').update({
+            [`${paymentType}_payment_status`]: 'paid',
+            [`${paymentType}_paid_at`]: new Date().toISOString(),
+            [`${paymentType}_payment_intent_id`]: paymentIntentId,
+            updated_at: new Date().toISOString(),
+          }).eq('id', bookingId)
+
+          console.log(`💳 Pago del ${paymentType} completado para booking:`, bookingId)
+        } else {
+          // Reintento de Stripe. El flag de pago ya estaba puesto, pero los
+          // efectos posteriores (confirmar, liberar contactos, emails) pueden
+          // haber quedado a medias en la entrega anterior: seguimos para
+          // completarlos. Las transiciones de abajo evitan duplicarlos.
+          console.log(`↻ Reintento de Stripe (${paymentType} ya pagado) — completando efectos:`, bookingId)
+        }
+
+        // ── 3. Estado de pagos una vez aplicado este evento ────────────────
+        // Releemos los flags: si guest y host pagan casi a la vez, el `booking`
+        // cargado arriba está obsoleto y ninguno de los dos eventos vería al
+        // otro como pagado (el booking se quedaría sin confirmar). Como cada
+        // handler lee DESPUÉS de su propia escritura, al menos uno ve ambos.
+        const { data: fresh } = await supabase
+          .from('bookings')
+          .select('guest_payment_status, host_payment_status')
+          .eq('id', bookingId)
+          .single()
+
+        const guestPaid = paymentType === 'guest' || fresh?.guest_payment_status === 'paid'
+        const hostPaid =
+          paymentType === 'host' ||
+          fresh?.host_payment_status === 'paid' ||
+          fresh?.host_payment_status === 'waived'
+
+        if (guestPaid && hostPaid) {
+          await confirmAndReleaseContacts(supabase, booking, session.id, paymentType)
+        } else if (guestPaid) {
+          // Falta el host
+          if (await claimStatusTransition(supabase, bookingId, 'pending_host_payment', 'payment_pending')) {
             console.log('⏳ Guest pagó. Esperando pago del host para liberar contactos.')
             await sendHostPaymentReminderEmail(booking, sessionLocale)
           }
-        }
-
-        // ── Pago del HOST ──────────────────────────────────────────────────
-        else if (paymentType === 'host') {
-          // Idempotency guard — ignorar evento duplicado de Stripe
-          if (booking.host_payment_status === 'paid') {
-            console.log('⚠️ Evento duplicado ignorado — host ya pagó:', bookingId)
-            return NextResponse.json({ received: true })
-          }
-
-          console.log('💳 Host payment completado para booking:', bookingId)
-
-          await supabase.from('bookings').update({
-            host_payment_status: 'paid',
-            host_paid_at: new Date().toISOString(),
-            host_payment_intent_id: paymentIntentId,
-            updated_at: new Date().toISOString(),
-          }).eq('id', bookingId)
-
-          // Registrar transacción
-          await supabase.from('payment_transactions').insert({
-            booking_id: bookingId,
-            payer_role: 'host',
-            payer_id: booking.host_id,
-            amount_cents: Number(session.amount_total ?? 0),
-            currency: sessionCurrency,
-            payment_type: 'booking_host_fee',
-            status: 'paid',
-            stripe_session_id: session.id,
-            stripe_payment_intent_id: paymentIntentId,
-            metadata: { source: 'stripe_webhook', tier: session.metadata?.tier, featured: session.metadata?.featured },
-          }).then(({ error }: { error: any }) => {
-            if (error) console.error('⚠️ payment_transactions insert (host):', error.message)
-          })
-
-          // Verificar si el guest ya pagó → si es así, confirmar y liberar contactos
-          const guestAlreadyPaid = booking.guest_payment_status === 'paid'
-
-          if (guestAlreadyPaid) {
-            await confirmAndReleaseContacts(supabase, booking, session.id, 'host')
-          } else {
-            // Guest no ha pagado aún — actualizar estado y notificarle
-            await supabase.from('bookings').update({
-              status: 'pending_guest_payment',
-              flow_state: 'payment_pending',
-              updated_at: new Date().toISOString(),
-            }).eq('id', bookingId)
-
+        } else {
+          // Falta el guest
+          if (await claimStatusTransition(supabase, bookingId, 'pending_guest_payment', 'payment_pending')) {
             console.log('⏳ Host pagó. Esperando pago del guest para liberar contactos.')
             await sendGuestPaymentReminderEmail(booking, sessionLocale)
           }
@@ -178,6 +168,9 @@ export async function POST(request: NextRequest) {
       }
 
       case 'checkout.session.expired': {
+        // Solo se registra. Deliberadamente NO muta el estado del booking: la
+        // sesión expirada no cancela nada, el booking sigue en su estado de pago
+        // y el usuario puede generar un checkout nuevo.
         const session = event.data.object as Stripe.Checkout.Session
         console.log('⏰ Checkout expirado:', session.id, '| booking:', session.metadata?.booking_id)
         // TODO: notificar al usuario que el enlace expiró y generar uno nuevo
@@ -207,14 +200,17 @@ async function confirmAndReleaseContacts(
   sessionId: string,
   lastPayer: 'guest' | 'host'
 ) {
-  console.log(`✅ Ambos pagaron. Confirmando booking ${booking.id} y liberando contactos.`)
+  // Reclamamos la transición a 'confirmed' de forma atómica: solo la entrega
+  // que gana la carrera envía los emails de contacto. Un reintento de Stripe
+  // sobre un booking ya confirmado no reenvía nada.
+  const claimed = await claimStatusTransition(supabase, booking.id, 'confirmed', 'confirmed')
 
-  // Confirmar el booking
-  await supabase.from('bookings').update({
-    status: 'confirmed',
-    flow_state: 'confirmed',
-    updated_at: new Date().toISOString(),
-  }).eq('id', booking.id)
+  if (!claimed) {
+    // claimStatusTransition ya ha logueado el motivo (reintento benigno vs anomalía).
+    return
+  }
+
+  console.log(`✅ Ambos pagaron. Confirmando booking ${booking.id} y liberando contactos.`)
 
   // Log del evento
   await supabase.from('booking_flow_events').insert([
@@ -244,6 +240,75 @@ async function confirmAndReleaseContacts(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Transición de estado atómica — devuelve true solo si esta llamada fue la que
+// movió el booking a `nextStatus`. Es el guard de idempotencia del webhook:
+// `UPDATE ... WHERE status IN (origenes válidos)` bloquea la fila, y una
+// segunda entrega concurrente re-evalúa el WHERE tras el commit de la primera,
+// ya no encuentra un origen válido y no recibe ninguna fila.
+//
+// El origen se acota a PAYMENT_FLOW_STATUSES (menos el destino, que es lo que
+// hace de guard). Así un pago tardío o un reintento NO puede mover un booking
+// 'cancelled' / 'rejected' / 'confirmed' ni saltarse la aprobación del host
+// desde 'pending_host_approval'.
+// ─────────────────────────────────────────────────────────────────────────────
+async function claimStatusTransition(
+  supabase: any,
+  bookingId: string,
+  nextStatus: string,
+  flowState: string
+): Promise<boolean> {
+  const sourceStatuses = PAYMENT_FLOW_STATUSES.filter((s) => s !== nextStatus)
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .update({
+      status: nextStatus,
+      flow_state: flowState,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', bookingId)
+    .in('status', sourceStatuses)
+    .select('id')
+
+  if (error) {
+    console.error(`⚠️ No se pudo reclamar la transición a ${nextStatus}:`, error.message)
+    Sentry.captureException(error, {
+      tags: { area: 'stripe-webhook', booking_id: bookingId },
+      extra: { bookingId, nextStatus, sourceStatuses },
+    })
+    return false
+  }
+
+  if ((data?.length ?? 0) > 0) return true
+
+  // No se actualizó ninguna fila: o es un reintento benigno (el booking ya está
+  // en el estado destino) o es una anomalía que hay que ver en Sentry — dinero
+  // cobrado sobre un booking cancelado, rechazado o aún sin aprobar.
+  const { data: current } = await supabase
+    .from('bookings')
+    .select('status')
+    .eq('id', bookingId)
+    .single()
+
+  const currentStatus = current?.status ?? 'desconocido'
+
+  if (currentStatus === nextStatus) {
+    console.log(`↻ Booking ${bookingId} ya estaba en '${nextStatus}' — sin efectos duplicados.`)
+  } else {
+    console.error(
+      `🚨 Pago sobre booking ${bookingId} en estado '${currentStatus}': no se aplica '${nextStatus}'.`
+    )
+    Sentry.captureMessage('Stripe payment on booking outside the payment flow', {
+      level: 'error',
+      tags: { area: 'stripe-webhook', booking_id: bookingId },
+      extra: { bookingId, currentStatus, attemptedStatus: nextStatus, sourceStatuses },
+    })
+  }
+
+  return false
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Email con datos de contacto (se envía cuando ambos han pagado)
 // ─────────────────────────────────────────────────────────────────────────────
 async function sendContactsEmail(
@@ -264,6 +329,11 @@ async function sendContactsEmail(
 
     if (!recipientEmail) {
       console.error(`❌ Sin email para ${recipient}`)
+      Sentry.captureMessage('Confirmed booking without contact email', {
+        level: 'error',
+        tags: { area: 'stripe-webhook', booking_id: booking.id },
+        extra: { bookingId: booking.id, recipient },
+      })
       return
     }
 
@@ -317,9 +387,15 @@ async function sendContactsEmail(
       `,
     })
 
-    console.log(`✅ Email de contactos enviado a ${recipient}: ${recipientEmail}`)
+    console.log(`✅ Email de contactos enviado a ${recipient} (booking ${booking.id})`)
   } catch (err) {
+    // Crítico: el booking ya está confirmado, así que un reintento de Stripe no
+    // reenviará este email. Tiene que ser visible en Sentry, no solo en Vercel.
     console.error(`❌ Error enviando email a ${recipient}:`, err)
+    Sentry.captureException(err, {
+      tags: { area: 'stripe-webhook', booking_id: booking.id },
+      extra: { bookingId: booking.id, recipient, stage: 'contacts_email' },
+    })
   }
 }
 
@@ -361,6 +437,10 @@ async function sendHostPaymentReminderEmail(booking: any, locale = 'en') {
     })
   } catch (err) {
     console.error('❌ Error enviando recordatorio al host:', err)
+    Sentry.captureException(err, {
+      tags: { area: 'stripe-webhook', booking_id: booking.id },
+      extra: { bookingId: booking.id, stage: 'host_payment_reminder' },
+    })
   }
 }
 
@@ -399,5 +479,9 @@ async function sendGuestPaymentReminderEmail(booking: any, locale = 'en') {
     })
   } catch (err) {
     console.error('❌ Error enviando recordatorio al guest:', err)
+    Sentry.captureException(err, {
+      tags: { area: 'stripe-webhook', booking_id: booking.id },
+      extra: { bookingId: booking.id, stage: 'guest_payment_reminder' },
+    })
   }
 }

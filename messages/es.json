@@ -1448,6 +1448,10 @@
     },
     "hero": {
       "badge": "Para anfitriones y property managers",
+      "cta": {
+        "primary": "Publica tu espacio gratis",
+        "secondary": "Habla con nosotros"
+      },
       "title": "Gana más con",
       "titleHighlight": "estancias largas — quédate la comisión",
       "subtitle": "Publica tu propiedad gratis. Solo pagas una tarifa plana cuando confirmas un inquilino. Sin recortes mensuales sobre tu renta."

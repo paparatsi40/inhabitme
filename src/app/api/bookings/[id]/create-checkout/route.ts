@@ -125,9 +125,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ sessionId: session.id, url: session.url })
   } catch (error: any) {
-    console.error('❌ Guest checkout error:', error?.message)
+    console.error('❌ Guest checkout error:', error)
     return NextResponse.json(
-      { error: 'Error al crear el checkout', details: error?.message },
+      { error: 'Error al crear el checkout', code: 'guest_checkout_failed' },
       { status: 500 }
     )
   }

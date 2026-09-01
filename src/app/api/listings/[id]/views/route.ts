@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
 import { auth } from '@clerk/nextjs/server';
 import { headers } from 'next/headers';
-import { rateLimit } from '@/lib/rate-limit';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
   try {
     const { id: listingId } = await params;
 
-    const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+    const ip = getClientIp(req.headers);
     const { success } = await rateLimit(ip, 20, 60);
     if (!success) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 });

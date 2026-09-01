@@ -6,6 +6,7 @@ const withNextIntl = require("next-intl/plugin")("./src/i18n/request.ts");
 const nextConfig = {
   reactStrictMode: true,
   compress: true,
+  poweredByHeader: false,
   experimental: {
     optimizePackageImports: [
       "lucide-react",

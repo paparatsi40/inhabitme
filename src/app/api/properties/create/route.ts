@@ -10,11 +10,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('[API] 🔥 Uncaught error in POST handler:', error)
     return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        message: error?.message || 'Unknown error',
-        stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined,
-      },
+      { error: 'Internal server error', code: 'property_create_failed' },
       { status: 500 }
     )
   }

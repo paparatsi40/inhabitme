@@ -57,9 +57,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('[API] Error creating period:', error)
     
+    // El mensaje de solapamiento lo genera nuestro propio caso de uso y esta
+    // pensado para el usuario: no es una fuga de detalle interno.
     if (error instanceof Error && error.message.includes('solapa')) {
       return NextResponse.json(
-        { error: error.message },
+        { error: error.message, code: 'period_overlap' },
         { status: 409 }
       )
     }

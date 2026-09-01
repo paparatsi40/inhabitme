@@ -139,7 +139,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
   } catch (error: any) {
     console.error('❌ Host checkout error:', error?.message)
     return NextResponse.json(
-      { error: 'Error al crear el checkout', details: error?.message },
+      { error: 'Error al crear el checkout', code: 'host_checkout_failed' },
       { status: 500 }
     )
   }

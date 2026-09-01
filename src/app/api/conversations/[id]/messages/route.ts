@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { computeIntentScore } from '@/lib/conversations/status'
+import { rateLimit } from '@/lib/rate-limit'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -59,6 +60,13 @@ export async function POST(req: NextRequest, { params }: Ctx) {
     const { userId } = await auth()
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Limite por usuario: la sesion de Clerk autoriza, pero no acota el volumen
+    // de mensajes que un participante puede inyectar en la conversacion.
+    const { success: withinLimit } = await rateLimit(`user:${userId}`, 30, 60)
+    if (!withinLimit) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
     const body = await req.json()

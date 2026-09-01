@@ -219,7 +219,7 @@ export async function notifyWaitlist(data: WaitlistNotificationData) {
           text: generateWaitlistNotificationText(data),
         })
         
-        console.log(`[Waitlist] ✅ Email sent to ${user.email}`)
+        console.log('[Waitlist] ✅ Email sent')
         
         // Mark as notified in DB
         await supabase

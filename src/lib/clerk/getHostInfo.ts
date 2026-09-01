@@ -42,7 +42,7 @@ export async function getHostInfo(userId: string): Promise<HostInfo | null> {
       ? `${user.firstName} ${user.lastName}`
       : user.firstName || user.username || undefined
     
-    console.log('[Clerk] ✅ User info retrieved:', { email, name })
+    console.log('[Clerk] ✅ User info retrieved for:', userId)
     
     return {
       email,

@@ -5,6 +5,8 @@ import { Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+
 interface BackgroundUploaderProps {
   value?: string
   onChange: (url: string) => void
@@ -19,8 +21,8 @@ export function BackgroundUploader({ value, onChange }: BackgroundUploaderProps)
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
+    // Mismo conjunto que ALLOWED_MIME en /api/upload (SVG excluido: XSS)
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       alert(t('errors.invalidImage'))
       return
     }
@@ -101,7 +103,7 @@ export function BackgroundUploader({ value, onChange }: BackgroundUploaderProps)
               {t('changeImage')}
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/avif"
                 onChange={handleFileChange}
                 className="hidden"
                 disabled={uploading}
@@ -130,7 +132,7 @@ export function BackgroundUploader({ value, onChange }: BackgroundUploaderProps)
           </div>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/avif"
             onChange={handleFileChange}
             className="hidden"
             disabled={uploading}
