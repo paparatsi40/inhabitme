@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     const safeEmail = escapeHtml(email)
     const safeCity = escapeHtml(city)
 
-    console.log('[Waitlist] Starting process for:', { email, city, citySlug })
+    console.log('[Waitlist] Starting process for:', { city, citySlug })
 
     // Guardar en base de datos
     const supabase = getSupabaseServerClient()
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Enviar email de confirmación al usuario
-    console.log('[Waitlist] 📧 Attempting to send user email to:', email)
+    console.log('[Waitlist] 📧 Attempting to send user email')
     try {
       await resend.emails.send({
         from: 'InhabitMe <noreply@mail.inhabitme.com>',

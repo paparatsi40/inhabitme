@@ -26,7 +26,6 @@ const isAuthRoute = createRouteMatcher([
   '/sign-up(.*)',
   '/api/(.*)',
   '/admin(.*)',
-  '/founding-host/join/(.*)',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -56,11 +55,6 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Auth / API routes — skip intl
   if (isAuthRoute(req)) {
-    return NextResponse.next();
-  }
-
-  // Founding-host join — skip intl
-  if (req.nextUrl.pathname.includes('/founding-host/join/')) {
     return NextResponse.next();
   }
 

@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
 
     if (bookingError) {
       console.error('Booking creation error:', bookingError);
-      return NextResponse.json({ error: 'Failed to create booking', details: bookingError.message }, { status: 500 });
+      return NextResponse.json({ error: 'Failed to create booking', code: 'booking_create_failed' }, { status: 500 });
     }
 
     // Send emails about new booking request

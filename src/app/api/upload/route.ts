@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     if (uploadError) {
       console.error('[Upload API] Supabase upload error:', uploadError)
       return NextResponse.json(
-        { error: 'Failed to upload image', details: uploadError.message },
+        { error: 'Failed to upload image', code: 'upload_failed' },
         { status: 500 }
       )
     }

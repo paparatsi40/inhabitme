@@ -73,7 +73,7 @@ export async function POST(request: NextRequest, { params }: Ctx) {
         return NextResponse.json({ error: 'Guest email not found' }, { status: 500 })
       }
 
-      console.log('✅ Guest email from DB:', guestEmail)
+      console.log('✅ Guest email recuperado de la BD para booking:', bookingId)
 
       // (Opcional) notificación por email usando Resend
       // NOTA: no conozco tu template exacto, así que dejo un envío mínimo y seguro.

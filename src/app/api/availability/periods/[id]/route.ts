@@ -64,8 +64,9 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
   } catch (error) {
     console.error('[API] Error updating period:', error)
 
+    // Mensaje de dominio dirigido al usuario, no un detalle interno.
     if (error instanceof Error && error.message.includes('solapa')) {
-      return NextResponse.json({ error: error.message }, { status: 409 })
+      return NextResponse.json({ error: error.message, code: 'period_overlap' }, { status: 409 })
     }
 
     return NextResponse.json(

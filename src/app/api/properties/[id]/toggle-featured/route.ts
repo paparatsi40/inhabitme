@@ -58,8 +58,9 @@ export async function POST(request: NextRequest, { params }: Ctx) {
 
     return NextResponse.json({ success: true, featured: newFeatured })
   } catch (error: any) {
+    console.error('[toggle-featured] Error:', error)
     return NextResponse.json(
-      { error: error?.message ?? 'Internal server error' },
+      { error: 'Internal server error', code: 'toggle_featured_failed' },
       { status: 500 }
     )
   }

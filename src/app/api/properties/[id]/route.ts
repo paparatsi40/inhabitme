@@ -149,7 +149,7 @@ export async function PUT(request: NextRequest, { params }: Ctx) {
       console.error('[API PUT] Error updating property:', updateError)
       console.error('[API PUT] Update error details:', JSON.stringify(updateError, null, 2))
       return NextResponse.json(
-        { error: 'Failed to update property', details: updateError.message },
+        { error: 'Failed to update property', code: 'property_update_failed' },
         { status: 500 }
       )
     }

@@ -387,7 +387,7 @@ async function sendContactsEmail(
       `,
     })
 
-    console.log(`✅ Email de contactos enviado a ${recipient}: ${recipientEmail}`)
+    console.log(`✅ Email de contactos enviado a ${recipient} (booking ${booking.id})`)
   } catch (err) {
     // Crítico: el booking ya está confirmado, así que un reintento de Stripe no
     // reenviará este email. Tiene que ser visible en Sentry, no solo en Vercel.
