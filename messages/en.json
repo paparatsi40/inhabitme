@@ -1448,6 +1448,10 @@
     },
     "hero": {
       "badge": "For hosts and property managers",
+      "cta": {
+        "primary": "List your space for free",
+        "secondary": "Talk to us"
+      },
       "title": "Earn more from",
       "titleHighlight": "longer stays — keep the commission",
       "subtitle": "List your property for free. Pay a flat fee only when you confirm a tenant. No monthly cuts on your rent."
