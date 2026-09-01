@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Carpetas permitidas dentro del bucket. `folder` llega del cliente, asi que no
 // puede pasar en crudo al path: se elige de esta lista o se rechaza.
@@ -25,6 +26,13 @@ export async function POST(request: NextRequest) {
         { error: 'Unauthorized' },
         { status: 401 }
       )
+    }
+
+    // Limite por usuario: cada peticion escribe hasta 10MB en el bucket, y la
+    // sesion de Clerk no es por si sola un limite de volumen.
+    const { success: withinLimit } = await rateLimit(`user:${userId}`, 20, 60)
+    if (!withinLimit) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
     const formData = await request.formData()

@@ -3,6 +3,7 @@ import { auth, clerkClient } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 import { formatMoneyFromMinor, getCurrencyFromLocation, normalizeCurrency } from '@/lib/currency';
+import { rateLimit } from '@/lib/rate-limit';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -14,6 +15,13 @@ export async function POST(request: NextRequest) {
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Limite por usuario: estas rutas escriben y mandan correo, y la sesion de
+    // Clerk no es por si sola un limite de volumen.
+    const { success: withinLimit } = await rateLimit(`user:${userId}`, 10, 60)
+    if (!withinLimit) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
     const body = await request.json();

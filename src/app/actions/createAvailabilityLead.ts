@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { sendInternalLeadAlert } from '@/lib/email/sendInternalLeadAlert'
 import { scoreLead } from '@/lib/leads/scoreLead'
-import { rateLimit } from '@/lib/rate-limit'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 // Una server action es un endpoint POST publico: cualquiera con el action id
 // puede invocarla sin pasar por el formulario. Se valida, se limita por IP y se
@@ -42,7 +42,7 @@ export async function createAvailabilityLead(input: CreateLeadInput) {
     throw new Error('Invalid lead data')
   }
 
-  const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1'
+  const ip = getClientIp(await headers())
   const { success } = await rateLimit(ip, 5, 60)
 
   if (!success) {

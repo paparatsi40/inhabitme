@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { z } from 'zod'
-import { rateLimit } from '@/lib/rate-limit'
+import { rateLimit, getClientIp } from '@/lib/rate-limit'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -24,7 +24,7 @@ const waitlistSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1'
+    const ip = getClientIp(request.headers)
     const { success } = await rateLimit(ip, 5, 60)
     if (!success) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
