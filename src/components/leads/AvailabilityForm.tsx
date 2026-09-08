@@ -66,7 +66,7 @@ export function AvailabilityForm({
           className="mt-1 w-full rounded-md border px-3 py-2"
         />
         <p className="mt-1 text-xs text-gray-500">
-          Most stays on inhabitme are between 1 and 6 months.
+          Most stays on inhabitme are between 1 and 12 months.
         </p>
       </div>
 

@@ -144,9 +144,10 @@ export default async function ListYourSpacePage({ params }: { params: LocalePara
               durationLabel: t('calculator.durationLabel'),
               durationUnitSingular: t('calculator.durationUnitSingular'),
               durationUnitPlural: t('calculator.durationUnitPlural'),
+              commissionLabel: t('calculator.commissionLabel'),
               results: {
                 totalRevenue: t('calculator.results.totalRevenue'),
-                airbnbFee: t('calculator.results.airbnbFee'),
+                airbnbFee: t.raw('calculator.results.airbnbFee'),
                 inhabitmeFee: t('calculator.results.inhabitmeFee'),
                 yourSavings: t('calculator.results.yourSavings'),
                 perStay: t('calculator.results.perStay'),

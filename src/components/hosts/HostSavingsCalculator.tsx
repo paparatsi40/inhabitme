@@ -23,8 +23,11 @@ const HOST_FEE_BY_MONTHS: Record<number, number> = {
   12: 119,
 }
 
-/** Comisión típica de Airbnb sobre el monto total del alquiler (3% host + 14% guest = host paga ~3% pero el rent efectivo sube). Para simplificar usamos 15% que es el efecto neto en el host margin. */
-const AIRBNB_HOST_FEE_PCT = 0.15
+/**
+ * Comisión porcentual de referencia. No afirmamos la tarifa de ninguna plataforma
+ * concreta: el host introduce la comisión que paga hoy (default 15%).
+ */
+const DEFAULT_COMMISSION_PCT = 15
 
 interface CalculatorLabels {
   title: string
@@ -34,6 +37,7 @@ interface CalculatorLabels {
   durationLabel: string
   durationUnitSingular: string
   durationUnitPlural: string
+  commissionLabel: string
   results: {
     totalRevenue: string
     airbnbFee: string
@@ -56,14 +60,15 @@ export function HostSavingsCalculator({ labels }: HostSavingsCalculatorProps) {
   // Defaults razonables para una propiedad media
   const [monthlyRent, setMonthlyRent] = useState<number>(1200)
   const [months, setMonths] = useState<number>(3)
+  const [commissionPct, setCommissionPct] = useState<number>(DEFAULT_COMMISSION_PCT)
 
   const calc = useMemo(() => {
     const totalRevenue = monthlyRent * months
-    const airbnbFee = Math.round(totalRevenue * AIRBNB_HOST_FEE_PCT)
+    const airbnbFee = Math.round(totalRevenue * (commissionPct / 100))
     const inhabitmeFee = HOST_FEE_BY_MONTHS[Math.min(months, 12)] ?? 119
     const savings = airbnbFee - inhabitmeFee
     return { totalRevenue, airbnbFee, inhabitmeFee, savings }
-  }, [monthlyRent, months])
+  }, [monthlyRent, months, commissionPct])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat(currency === 'EUR' ? 'es-ES' : 'en-US', {
@@ -86,7 +91,7 @@ export function HostSavingsCalculator({ labels }: HostSavingsCalculatorProps) {
 
         {/* Inputs */}
         <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-gray-200 mb-6">
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-3 gap-6">
             {/* Monthly rent */}
             <div>
               <label htmlFor="monthly-rent" className="block text-sm font-bold text-gray-900 mb-2">
@@ -131,6 +136,28 @@ export function HostSavingsCalculator({ labels }: HostSavingsCalculatorProps) {
                 <span>12</span>
               </div>
             </div>
+
+            {/* Commission the host pays today */}
+            <div>
+              <label htmlFor="commission-pct" className="block text-sm font-bold text-gray-900 mb-2">
+                {labels.commissionLabel}
+              </label>
+              <div className="relative">
+                <input
+                  id="commission-pct"
+                  type="number"
+                  min={0}
+                  max={50}
+                  step={0.5}
+                  value={commissionPct}
+                  onChange={(e) => setCommissionPct(Math.min(50, Math.max(0, Number(e.target.value) || 0)))}
+                  className="w-full pl-4 pr-12 py-3 text-2xl font-black border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl font-black text-gray-400 pointer-events-none">
+                  %
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -144,7 +171,7 @@ export function HostSavingsCalculator({ labels }: HostSavingsCalculatorProps) {
 
           {/* Airbnb fee */}
           <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6">
-            <p className="text-sm text-red-700 font-semibold mb-1">{labels.results.airbnbFee}</p>
+            <p className="text-sm text-red-700 font-semibold mb-1">{labels.results.airbnbFee.replace('{pct}', String(commissionPct))}</p>
             <p className="text-3xl font-black text-red-600 line-through decoration-2">{fmt(calc.airbnbFee)}</p>
           </div>
 

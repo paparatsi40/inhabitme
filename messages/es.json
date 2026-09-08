@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Alquiler Temporal Amueblado · Estancias 1–6 Meses para Nómadas Digitales | InhabitMe",
-    "description": "Encuentra pisos amueblados verificados para alquiler de mediana estancia (1–6 meses). Listos para trabajo remoto, tarifa plana transparente, sin comisiones. Madrid, Barcelona, Lisboa y más."
+    "title": "Alquiler Temporal Amueblado · Estancias 1–12 Meses para Nómadas Digitales | InhabitMe",
+    "description": "Encuentra pisos amueblados verificados para alquiler de mediana estancia (1–12 meses). Listos para trabajo remoto, tarifa plana transparente, sin comisiones. Madrid, Barcelona, Lisboa y más."
   },
   "common": {
     "logo": "InhabitMe",
@@ -22,16 +22,32 @@
     "signIn": "Iniciar Sesión",
     "signUp": "Registrarse",
     "publishProperty": "Publicar Propiedad",
-    "logout": "Salir"
+    "logout": "Salir",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "pageMetadata": {
+    "search": {
+      "title": "Buscar pisos amueblados · Estancias de 1 a 12 meses | InhabitMe",
+      "description": "Explora pisos amueblados verificados para estancias medias. Filtra por ciudad, fechas y presupuesto. Listos para trabajo remoto, tarifa plana, sin comisiones."
+    },
+    "signIn": {
+      "title": "Iniciar sesión | InhabitMe",
+      "description": "Accede a tu cuenta de InhabitMe para gestionar tus estancias, anuncios y mensajes."
+    },
+    "signUp": {
+      "title": "Crea tu cuenta | InhabitMe",
+      "description": "Únete a InhabitMe para encontrar o publicar pisos amueblados para estancias de 1 a 12 meses. Registro gratuito."
+    }
   },
   "home": {
     "hero": {
-      "title": "Quédate 1 a 6 meses",
-      "titleHighlight": "con una tarifa plana — sin el 15% de Airbnb",
+      "title": "Quédate 1 a 12 meses",
+      "titleHighlight": "con una tarifa plana — no un porcentaje de tu renta",
       "subtitle": "Pisos amueblados listos para trabajo remoto. <strong>Pagas <priceRange></priceRange> una sola vez.</strong> Sin comisión mensual. Nunca.",
       "badge": "Mediana estancia · Listo para trabajo remoto",
       "features": {
-        "wifi": "WiFi para trabajo remoto",
+        "wifi": "WiFi declarado por el host",
         "workspace": "Espacio de trabajo dedicado",
         "transparent": "Una tarifa plana"
       },
@@ -45,13 +61,13 @@
       "joinMessage": "Ya activo en Austin · Próximamente en más ciudades"
     },
     "heroCarousel": {
-      "wifiBadge": "Confirmado por el host",
+      "wifiBadge": "Declarado por el host",
       "stats": {
         "propertiesValue": "Creciendo",
         "propertiesLabel": "propiedades nuevas cada semana",
         "citiesValue": "Austin",
         "citiesLabel": "ya activo",
-        "verifiedValue": "1–6",
+        "verifiedValue": "1–12",
         "verifiedLabel": "meses por estancia"
       }
     },
@@ -59,8 +75,8 @@
       "title": "¿Por qué inhabitme?",
       "subtitle": "Diseñado específicamente para <strong>estancias medias</strong> y <strong>trabajo remoto</strong>",
       "verified": {
-        "title": "Confirmado para trabajo remoto",
-        "description": "Cada anfitrión confirma que su internet y espacio de trabajo son aptos para trabajo remoto al publicar. Ves esta declaración del host en cada listing — sin sorpresas."
+        "title": "Listo para trabajo remoto, según el anfitrión",
+        "description": "Cada anfitrión declara la velocidad de su internet y su espacio de trabajo al publicar. Mostramos esa autodeclaración en cada listing para que sepas qué esperar — nosotros no medimos las velocidades."
       },
       "transparent": {
         "title": "Precio claro, sin sorpresas",
@@ -174,8 +190,8 @@
         "answer": "<strong class=\"text-blue-600\">€79-239 fee único para el inquilino</strong> según duración de la estancia. Es un <strong>pago único, no mensual</strong>. Sin comisiones sobre el alquiler, sin porcentajes ocultos. Pagas una sola vez para obtener el contacto y coordinar todo directamente."
       },
       "q2": {
-        "question": "¿Por qué es tan barato comparado con Airbnb?",
-        "answer": "Porque cobramos un <strong>fee flat transparente</strong> (€79-239 según duración), no porcentajes sobre el alquiler. Airbnb cobra 14-20% del total. En 3 meses de €1200/mes, Airbnb cobra €500-720. inhabitme solo €139. Ahorras cientos de euros. Es un <strong>modelo más justo y transparente</strong>."
+        "question": "¿Por qué es más barato que las plataformas de corta estancia?",
+        "answer": "Porque nuestra tarifa es <strong>plana</strong> (€79–239 según la duración) y no crece con la renta. Las plataformas de corta estancia cobran un porcentaje de toda la reserva — en una estancia de varios meses eso suma cientos, y los anfitriones lo meten en el precio por noche. Con inhabitme pagas a la plataforma una sola vez y la renta va directa al anfitrión. Es un <strong>modelo más justo y transparente</strong>."
       },
       "q3": {
         "question": "¿Qué obtengo exactamente por este fee?",
@@ -208,7 +224,7 @@
       "cta": "Ver propiedades"
     },
     "citiesSection": {
-      "title": "Vive donde quieras — 1 a 6 meses",
+      "title": "Vive donde quieras — 1 a 12 meses",
       "subtitle": "Pisos amueblados, listos para trabajo remoto. Precio justo, sin comisiones.",
       "comingSoon": "Próximamente",
       "joinWaitlist": "Únete a la lista de espera",
@@ -232,21 +248,21 @@
       "cta": "Publicar mi espacio"
     },
     "airbnbVs": {
-      "title": "Airbnb vs InhabitMe",
+      "title": "Plataformas de corta estancia vs InhabitMe",
       "subtitle": "Precios simples que protegen el margen del anfitrión",
       "airbnb": {
-        "title": "Airbnb",
-        "point1": "Comisión del 15–20%",
-        "point2": "Fees efectivos más altos en estancias largas",
-        "point3": "Los márgenes del host se comprimen"
+        "title": "Plataformas de corta estancia",
+        "point1": "Comisión porcentual en cada reserva",
+        "point2": "Cuanto más larga la estancia, más se lleva la plataforma",
+        "point3": "Va incluida en el precio por noche que pagas"
       },
       "inhabitme": {
         "title": "InhabitMe",
-        "point1": "Tarifa plana (€128–€358 total de plataforma)",
-        "point2": "Sin comisiones",
+        "point1": "Tarifa plana por estancia (€79–239 inquilino · €49–119 anfitrión)",
+        "point2": "La renta va directa al anfitrión",
         "point3": "Pagas solo si hay reserva"
       },
-      "savings": "Puedes ahorrar €300–€900 por estancia"
+      "savings": "Una tarifa plana, sea cual sea la renta — cuanto más te quedas, más ahorras"
     },
     "forHosts": {
       "title": "Para anfitriones",
@@ -666,11 +682,11 @@
     "items": {
       "q1": {
         "q": "¿Qué es inhabitme?",
-        "a": "inhabitme es una plataforma especializada en estancias medias (1-6 meses) para trabajadores remotos y nómadas digitales. Conectamos hosts con espacios verificados con guests que buscan alojamiento de calidad con WiFi rápido y espacios de trabajo."
+        "a": "inhabitme es una plataforma especializada en estancias medias (1–12 meses) para trabajadores remotos y nómadas digitales. Conectamos hosts con espacios verificados con guests que buscan alojamiento de calidad con WiFi rápido y espacios de trabajo."
       },
       "q2": {
-        "q": "¿En qué se diferencia de Airbnb o Booking?",
-        "a": "Estamos especializados en estancias medias (no noches cortas). Verificamos WiFi, tenemos precios transparentes sin sorpresas, y cobramos una tarifa única (€79-239) según duración, no comisiones mensuales."
+        "q": "¿En qué se diferencia de las plataformas de corta estancia?",
+        "a": "Estamos especializados en estancias medias (no noches cortas). Los anfitriones declaran WiFi y espacio de trabajo desde el inicio, los precios son transparentes y sin sorpresas, y cobramos una tarifa única (€79–239) según la duración — nunca un porcentaje de la renta."
       },
       "q3": {
         "q": "¿En qué ciudades están disponibles?",
@@ -682,11 +698,11 @@
       },
       "g2": {
         "q": "¿Cuánto cuesta usar inhabitme?",
-        "a": "Cobramos una tarifa única según duración: €79 (1-2 meses), €139 (3-4 meses), o €239 (5-6 meses). Sin comisiones mensuales ni costos ocultos."
+        "a": "Cobramos una tarifa única según duración: €79 (1 mes), €139 (2–3 meses), €189 (4–6 meses), o €239 (7+ meses). Sin comisiones mensuales ni costos ocultos."
       },
       "g3": {
         "q": "¿Qué incluye el alojamiento?",
-        "a": "Todos los alojamientos incluyen WiFi verificado (mínimo 50 Mbps), espacio de trabajo y amenidades básicas. Algunos incluyen extras como limpieza, coworking o gimnasio."
+        "a": "Todos los alojamientos incluyen WiFi declarado por el anfitrión (mínimo 50 Mbps), espacio de trabajo y amenidades básicas. Algunos incluyen extras como limpieza, coworking o gimnasio."
       },
       "g4": {
         "q": "¿Puedo cancelar mi reserva?",
@@ -702,7 +718,7 @@
       },
       "h3": {
         "q": "¿Qué requisitos debe cumplir mi propiedad?",
-        "a": "Requisitos mínimos: WiFi >50 Mbps verificado, espacio de trabajo dedicado, disponibilidad mínima de 1 mes, fotos de calidad, descripción completa y precio competitivo."
+        "a": "Requisitos mínimos: WiFi >50 Mbps (declarado por ti), espacio de trabajo dedicado, disponibilidad mínima de 1 mes, fotos de calidad, descripción completa y precio competitivo."
       },
       "h4": {
         "q": "¿Cómo recibo los pagos?",
@@ -735,9 +751,9 @@
     "missionTitle": "Nuestra misión",
     "missionText": "Hacer que encontrar el hogar perfecto para trabajar remoto sea simple, transparente y confiable.",
     "problemTitle": "El problema que resolvemos",
-    "problemText": "Los nómadas digitales y trabajadores remotos enfrentan un desafío único: necesitan alojamientos de mediano plazo (1-6 meses) con WiFi confiable y espacios de trabajo adecuados. Las plataformas tradicionales no están diseñadas para esto.",
-    "wifiTitle": "WiFi verificado",
-    "wifiText": "Todos los alojamientos tienen velocidad de internet confirmada, crucial para trabajo remoto.",
+    "problemText": "Los nómadas digitales y trabajadores remotos enfrentan un desafío único: necesitan alojamientos de mediano plazo (1–12 meses) con WiFi confiable y espacios de trabajo adecuados. Las plataformas tradicionales no están diseñadas para esto.",
+    "wifiTitle": "WiFi declarado por el anfitrión",
+    "wifiText": "Cada alojamiento muestra la velocidad de internet declarada por el anfitrión, crucial para trabajo remoto.",
     "midStaysTitle": "Estancias medias",
     "midStaysText": "Enfocados en 1-12 meses, el sweet spot para nómadas digitales.",
     "communityTitle": "Comunidad",
@@ -758,8 +774,8 @@
     "why1Text": "Precios claros, sin tarifas ocultas",
     "why2Strong": "Enfoque remoto:",
     "why2Text": "Entendemos tus necesidades específicas",
-    "why3Strong": "Verificación:",
-    "why3Text": "WiFi, espacios de trabajo y amenities confirmados",
+    "why3Strong": "Transparencia:",
+    "why3Text": "WiFi, espacio de trabajo y amenities declarados por cada anfitrión",
     "why4Strong": "Directo al anfitrión:",
     "why4Text": "Sin intermediarios innecesarios",
     "ctaTitle": "¿Listo para encontrar tu próximo hogar?",
@@ -991,8 +1007,8 @@
     "proceedBookingButton": "Continuar reserva",
     "requestBookingButton": "Solicitar reserva",
     "proceedNote": "El pago se cobra solo cuando la intención del inquilino es real.",
-    "savingsTitle": "Fees típicos de Airbnb: €500+ · InhabitMe: €129–€229",
-    "savingsBody": "Puedes ahorrar €300+ por operación manteniendo alta conversión.",
+    "savingsTitle": "Las comisiones porcentuales crecen con la renta · Tarifa de anfitrión InhabitMe: €49–€119 fija",
+    "savingsBody": "Conserva tu margen en cada operación manteniendo alta conversión.",
     "internalChatNoteTitle": "Protección de chat interno",
     "internalChatNoteBody": "Mantén la primera interacción dentro de InhabitMe y evita compartir contacto directo demasiado pronto.",
     "pipeline": "Pipeline",
@@ -1317,21 +1333,21 @@
       "title": "¿Por qué publicar en InhabitMe?",
       "item1": "Publicar es completamente gratis",
       "item2": "Sin costo inicial",
-      "item3": "Sin comisiones como Airbnb",
+      "item3": "Sin comisiones porcentuales",
       "item4": "Solo pagas cuando consigues una reserva",
       "item5": "Llega a trabajadores remotos y estudiantes",
       "cta": "Publicar propiedad"
     },
     "compare": {
       "title": "Deja de pagar comisiones altas",
-      "leftTitle": "Airbnb",
-      "left1": "Comisión del 15–20%",
-      "left2": "Fees en cada reserva",
+      "leftTitle": "Plataformas de corta estancia",
+      "left1": "Comisión porcentual",
+      "left2": "Los fees crecen con cada mes de estancia",
       "rightTitle": "InhabitMe",
       "right1": "Sin comisiones",
       "right2": "Solo pagas si consigues inquilino",
       "right3": "Diseñado para estancias medias",
-      "savings": "Ahorro típico: $300–$900 por reserva"
+      "savings": "Una tarifa plana por reserva, sea cual sea la renta"
     },
     "austinFocus": {
       "title": "Lanzando en Austin",
@@ -1364,7 +1380,7 @@
       "title": "Preguntas frecuentes",
       "q1": "¿Pago algo por adelantado?",
       "a1": "No. Publicar tu propiedad es completamente gratis. Solo pagas una tarifa si consigues una reserva.",
-      "q2": "¿En qué se diferencia de Airbnb?",
+      "q2": "¿En qué se diferencia de las plataformas de corta estancia?",
       "a2": "No cobramos comisiones. En su lugar, usamos una tarifa plana simple solo cuando alquilas tu propiedad con éxito.",
       "q3": "¿Qué tipo de estancias?",
       "a3": "Nos enfocamos en estancias de 1–12 meses para trabajadores remotos, estudiantes y profesionales."
@@ -1502,22 +1518,23 @@
       "support": "¿Dudas? Escríbenos a contact@inhabitme.com"
     },
     "calculator": {
-      "title": "¿Cuánto ahorras vs Airbnb?",
-      "description": "Pon tu renta mensual y duración de estancia. Comparamos el 15% de comisión de Airbnb contra nuestra tarifa plana.",
+      "title": "¿Cuánto ahorras frente a una comisión porcentual?",
+      "description": "Pon tu renta mensual, la duración de la estancia y la comisión que pagas hoy. La comparamos con nuestra tarifa plana.",
       "monthlyRentLabel": "Renta mensual",
       "monthlyRentPlaceholder": "1200",
       "durationLabel": "Duración de la estancia",
       "durationUnitSingular": "mes",
       "durationUnitPlural": "meses",
+      "commissionLabel": "Comisión que pagas hoy",
       "results": {
         "totalRevenue": "Tu alquiler total",
-        "airbnbFee": "Airbnb se queda (15%)",
+        "airbnbFee": "Una comisión del {pct}% se lleva",
         "inhabitmeFee": "Tarifa plana InhabitMe",
         "yourSavings": "Ahorras",
-        "perStay": "por estancia vs. Airbnb"
+        "perStay": "por estancia frente a una comisión porcentual"
       },
       "cta": "Empieza a publicar gratis",
-      "disclaimer": "Estimación basada en la comisión efectiva típica del 15% que Airbnb cobra al host. Tus números reales pueden variar."
+      "disclaimer": "Estimación basada en la comisión que tú indicas. Revisa las tarifas actuales de tu plataforma — tus números reales pueden variar."
     }
   }
 }

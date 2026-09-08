@@ -76,7 +76,7 @@ export default function OnboardingClient() {
               </div>
               <CardTitle className="text-2xl">Soy Huésped</CardTitle>
               <CardDescription className="text-base">
-                Busco alojamiento para estancias de 1-6 meses
+                Busco alojamiento para estancias de 1–12 meses
               </CardDescription>
             </CardHeader>
             <CardContent>

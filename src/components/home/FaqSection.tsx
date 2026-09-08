@@ -57,7 +57,7 @@ export default function FaqSection({ tFaqSection, faqs }: FaqSectionProps) {
       <div className="mt-12 text-center">
         <p className="text-gray-700 mb-6">{tFaqSection.moreQuestions}</p>
         <a
-          href="mailto:hola@inhabitme.com"
+          href="mailto:contact@inhabitme.com"
           className="inline-flex min-h-11 items-center px-6 py-3 border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 font-semibold rounded-lg transition-colors"
         >
           {tFaqSection.contactSupport}

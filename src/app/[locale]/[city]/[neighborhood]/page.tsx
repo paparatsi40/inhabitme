@@ -81,8 +81,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : `Medium-term rentals in ${neighborhoodName}, ${cityName} | inhabitme`
 
   const description = isEs
-    ? `Alojamientos verificados en ${neighborhoodName}, ${cityName}: estancias de 1-6 meses con WiFi rápido, escritorio dedicado y precios transparentes. Ideal para nómadas digitales.`
-    : `Verified 1-6 month stays in ${neighborhoodName}, ${cityName}. Fast WiFi, dedicated workspace, and transparent pricing for digital nomads and remote workers.`
+    ? `Alojamientos verificados en ${neighborhoodName}, ${cityName}: estancias de 1–12 meses con WiFi rápido, escritorio dedicado y precios transparentes. Ideal para nómadas digitales.`
+    : `Verified 1–12 month stays in ${neighborhoodName}, ${cityName}. Fast WiFi, dedicated workspace, and transparent pricing for digital nomads and remote workers.`
 
   const keywords = isEs
     ? [`alquiler medio plazo ${neighborhoodName}`, `alquiler ${neighborhoodName} ${cityName}`, 'nómadas digitales', 'alquiler con WiFi', 'estancias medias']

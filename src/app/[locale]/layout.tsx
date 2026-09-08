@@ -55,7 +55,7 @@ export async function generateMetadata({
       type: 'website',
       images: [
         {
-          url: `${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-6 meses' : 'Medium-term rentals 1-6 months')}&subtitle=${encodeURIComponent(locale === 'es' ? 'Pisos amueblados para nómadas digitales' : 'Furnished apartments for remote workers')}`,
+          url: `${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-12 meses' : 'Medium-term rentals 1-12 months')}&subtitle=${encodeURIComponent(locale === 'es' ? 'Pisos amueblados para nómadas digitales' : 'Furnished apartments for remote workers')}`,
           width: SEO_CONFIG.openGraph.imageWidth,
           height: SEO_CONFIG.openGraph.imageHeight,
           alt: 'InhabitMe - Medium-term stays',
@@ -66,7 +66,7 @@ export async function generateMetadata({
       card: SEO_CONFIG.twitter.card,
       title: t('title'),
       description: t('description'),
-      images: [`${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-6 meses' : 'Medium-term rentals 1-6 months')}`],
+      images: [`${SEO_CONFIG.baseUrl}/api/og?title=${encodeURIComponent(locale === 'es' ? 'Alquiler temporal 1-12 meses' : 'Medium-term rentals 1-12 months')}`],
       // Twitter @inhabitme aún no existe — site/creator se omiten hasta que se cree.
     },
     robots: SEO_CONFIG.robots,

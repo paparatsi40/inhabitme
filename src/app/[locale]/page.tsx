@@ -99,7 +99,14 @@ export default async function HomePage({
                 inhabitme
               </span>
             </Link>
-            <ClientNav signIn={tCommon('signIn')} signUp={tCommon('signUp')} locale={currentLocale} />
+            <ClientNav
+              signIn={tCommon('signIn')}
+              signUp={tCommon('signUp')}
+              dashboard={tCommon('dashboard')}
+              openMenu={tCommon('openMenu')}
+              closeMenu={tCommon('closeMenu')}
+              locale={currentLocale}
+            />
           </div>
         </div>
       </nav>
@@ -115,7 +122,7 @@ export default async function HomePage({
                   {t('hero.badge')}
                 </div>
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black mb-6 lg:mb-8 leading-[1.1]">
-                  {t('hero.title')}
+                  {t('hero.title')}{' '}
                   <br />
                   <span className="bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 bg-clip-text text-transparent drop-shadow-sm">
                     {t('hero.titleHighlight')}

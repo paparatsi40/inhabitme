@@ -5,14 +5,15 @@
  * Se usa en: guest-checkout, host-checkout, webhook, UI de precios.
  *
  * Monedas soportadas: EUR (default) y USD (guests americanos).
- * Los montos USD son equivalentes redondeados psicológicamente
- * — siempre iguales o ligeramente por debajo del equivalente exacto.
+ * Decisión de producto (sep-2026): los importes son los MISMOS números
+ * en ambas monedas (€79 = $79). Así el copy de precios (hero, FAQ,
+ * tabla) es válido en las dos monedas sin depender del tipo de cambio.
  *
  * Tiers:
- *  Tier 1 — 1 mes:    €79 guest  / €49 host   |  $85 guest  / $55 host
- *  Tier 2 — 2-3 mes: €139 guest  / €79 host   | $149 guest  / $85 host
- *  Tier 3 — 4-6 mes: €189 guest  / €99 host   | $199 guest  / $109 host
- *  Tier 4 — 7+ mes:  €239 guest  / €119 host  | $249 guest  / $129 host
+ *  Tier 1 — 1 mes:    €79 guest  / €49 host   |  $79 guest  / $49 host
+ *  Tier 2 — 2-3 mes: €139 guest  / €79 host   | $139 guest  / $79 host
+ *  Tier 3 — 4-6 mes: €189 guest  / €99 host   | $189 guest  / $99 host
+ *  Tier 4 — 7+ mes:  €239 guest  / €119 host  | $239 guest  / $119 host
  */
 
 export type SupportedCurrency = 'eur' | 'usd'
@@ -32,12 +33,8 @@ const TIERS_EUR = [
   { months: [7, 999], guestFee: 23900, hostFee: 11900, hostFeaturedFee: 15900 },
 ]
 
-const TIERS_USD = [
-  { months: [1, 1],   guestFee: 8500,  hostFee: 5500,  hostFeaturedFee: 7500  },
-  { months: [2, 3],   guestFee: 14900, hostFee: 8500,  hostFeaturedFee: 10500 },
-  { months: [4, 6],   guestFee: 19900, hostFee: 10900, hostFeaturedFee: 13900 },
-  { months: [7, 999], guestFee: 24900, hostFee: 12900, hostFeaturedFee: 16900 },
-]
+// Mismos importes que EUR (ver nota arriba).
+const TIERS_USD = TIERS_EUR
 
 /**
  * Calcula los fees según duración y moneda.
@@ -76,7 +73,7 @@ export function getTierName(months: number): string {
 /**
  * Formatea un monto en centavos como string con símbolo de moneda.
  * Ej: formatFee(7900, 'eur') → '€79'
- *     formatFee(8500, 'usd') → '$85'
+ *     formatFee(7900, 'usd') → '$79'
  */
 export function formatFee(cents: number, currency: SupportedCurrency = 'eur'): string {
   const amount = Math.round(cents / 100)

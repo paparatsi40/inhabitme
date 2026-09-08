@@ -46,12 +46,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = `${baseUrl}/${localeSafe}/${citySlug}`
 
   const titleTemplate = localeSafe === 'es'
-    ? `Alquiler Temporal ${cityConfig.name} · Pisos Amueblados 1–6 Meses | InhabitMe`
-    : `${cityConfig.name} Furnished Apartments · Medium-Term Rentals (1–6 Months) | InhabitMe`
+    ? `Alquiler Temporal ${cityConfig.name} · Pisos Amueblados 1–12 Meses | InhabitMe`
+    : `${cityConfig.name} Furnished Apartments · Medium-Term Rentals (1–12 Months) | InhabitMe`
 
   const descriptionTemplate = localeSafe === 'es'
-    ? `Alquiler de mediana estancia en ${cityConfig.name}: pisos amueblados verificados de 1 a 6 meses, listos para trabajo remoto. Tarifa plana, sin comisiones, contacto directo con el anfitrión.`
-    : `Medium-term rentals in ${cityConfig.name}: verified furnished apartments for 1 to 6 month stays, remote-work ready. Flat fee, no commissions, direct host contact.`
+    ? `Alquiler de mediana estancia en ${cityConfig.name}: pisos amueblados verificados de 1 a 12 meses, listos para trabajo remoto. Tarifa plana, sin comisiones, contacto directo con el anfitrión.`
+    : `Medium-term rentals in ${cityConfig.name}: verified furnished apartments for 1 to 12 month stays, remote-work ready. Flat fee, no commissions, direct host contact.`
 
   return {
     title: titleTemplate,
@@ -72,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'website',
       images: [
         {
-          url: `${baseUrl}/api/og?city=${citySlug}&title=${encodeURIComponent(cityConfig.name)}&subtitle=${encodeURIComponent(localeSafe === 'es' ? 'Alquiler temporal · 1-6 meses' : 'Medium-term rentals · 1-6 months')}`,
+          url: `${baseUrl}/api/og?city=${citySlug}&title=${encodeURIComponent(cityConfig.name)}&subtitle=${encodeURIComponent(localeSafe === 'es' ? 'Alquiler temporal · 1-12 meses' : 'Medium-term rentals · 1-12 months')}`,
           width: 1200,
           height: 630,
           alt: `${cityConfig.name} — InhabitMe`,

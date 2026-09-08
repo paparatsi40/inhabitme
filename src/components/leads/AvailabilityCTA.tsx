@@ -13,7 +13,7 @@ export function AvailabilityCTA({ onClick }: AvailabilityCTAProps) {
       </button>
 
       <p className="mt-2 text-sm text-gray-500 text-center">
-        No commitment · Mid-term stays (1–6 months)
+        No commitment · Mid-term stays (1–12 months)
       </p>
     </div>
   )

@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "title": "Medium-Term Furnished Rentals · 1–6 Month Stays for Remote Workers | InhabitMe",
-    "description": "Find verified furnished apartments for medium-term stays (1–6 months). Remote-work ready, transparent flat fee, no commissions. Madrid, Barcelona, Austin, Lisbon and more."
+    "title": "Medium-Term Furnished Rentals · 1–12 Month Stays for Remote Workers | InhabitMe",
+    "description": "Find verified furnished apartments for medium-term stays (1–12 months). Remote-work ready, transparent flat fee, no commissions. Madrid, Barcelona, Austin, Lisbon and more."
   },
   "common": {
     "logo": "InhabitMe",
@@ -22,16 +22,32 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "publishProperty": "List Property",
-    "logout": "Logout"
+    "logout": "Logout",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "pageMetadata": {
+    "search": {
+      "title": "Search furnished apartments · 1–12 month stays | InhabitMe",
+      "description": "Browse verified furnished apartments for medium-term stays. Filter by city, dates and budget. Remote-work ready, flat fee, no commissions."
+    },
+    "signIn": {
+      "title": "Sign in | InhabitMe",
+      "description": "Sign in to your InhabitMe account to manage your stays, listings and messages."
+    },
+    "signUp": {
+      "title": "Create your account | InhabitMe",
+      "description": "Join InhabitMe to find or list furnished apartments for 1–12 month stays. Free to sign up."
+    }
   },
   "home": {
     "hero": {
-      "title": "Stay 1–6 months",
-      "titleHighlight": "for one flat fee — not a 15% Airbnb cut",
+      "title": "Stay 1–12 months",
+      "titleHighlight": "for one flat fee — not a percentage of your rent",
       "subtitle": "Furnished apartments, ready for remote work. <strong>Pay <priceRange></priceRange> once.</strong> No monthly commission. Ever.",
       "badge": "Medium-term stays · Remote-work ready",
       "features": {
-        "wifi": "Remote-work WiFi",
+        "wifi": "Host-declared WiFi",
         "workspace": "Dedicated workspace",
         "transparent": "One flat fee"
       },
@@ -45,13 +61,13 @@
       "joinMessage": "Now live in Austin · Expanding to more cities soon"
     },
     "heroCarousel": {
-      "wifiBadge": "Host-confirmed remote work",
+      "wifiBadge": "Host-declared remote-work ready",
       "stats": {
         "propertiesValue": "Growing",
         "propertiesLabel": "properties weekly",
         "citiesValue": "Austin",
         "citiesLabel": "now live",
-        "verifiedValue": "1–6",
+        "verifiedValue": "1–12",
         "verifiedLabel": "month stays"
       }
     },
@@ -59,8 +75,8 @@
       "title": "Why inhabitme?",
       "subtitle": "Designed specifically for <strong>medium-term stays</strong> and <strong>remote work</strong>",
       "verified": {
-        "title": "Confirmed for remote work",
-        "description": "Each host confirms their internet and workspace are suitable for remote work when listing the property. You see this self-declaration on every listing — no surprises."
+        "title": "Remote-work ready, declared by the host",
+        "description": "Each host declares their internet speed and workspace when listing the property. We show that self-declaration on every listing so you know what to expect — we don't test speeds ourselves."
       },
       "transparent": {
         "title": "Clear pricing, no surprises",
@@ -174,8 +190,8 @@
         "answer": "<strong class=\"text-blue-600\">$79-239 one-time fee for the tenant</strong> based on stay duration. It's a <strong>one-time payment, not monthly</strong>. No commissions on rent, no hidden percentages. You pay once to get the contact and coordinate everything directly."
       },
       "q2": {
-        "question": "Why is it so cheap compared to Airbnb?",
-        "answer": "Because we charge a <strong>transparent flat fee</strong> ($79-239 based on duration), not percentages on rent. Airbnb charges 14-20% of the total. For 3 months at $1200/month, Airbnb charges $500-720. inhabitme only $139. You save hundreds of dollars. It's a <strong>fairer and more transparent model</strong>."
+        "question": "Why is it cheaper than short-term rental platforms?",
+        "answer": "Because our fee is <strong>flat</strong> ($79–239 depending on stay length) and does not scale with rent. Short-term platforms charge a percentage of the whole booking — on a multi-month stay that adds up to hundreds, and hosts build it into the nightly price. With inhabitme you pay the platform once and the rent goes directly to the host. It's a <strong>fairer and more transparent model</strong>."
       },
       "q3": {
         "question": "What exactly do I get for this fee?",
@@ -208,7 +224,7 @@
       "cta": "View properties"
     },
     "citiesSection": {
-      "title": "Live anywhere — 1 to 6 months",
+      "title": "Live anywhere — 1 to 12 months",
       "subtitle": "Furnished apartments, remote-work ready. Fair price, no commissions.",
       "comingSoon": "Coming soon",
       "joinWaitlist": "Join waitlist",
@@ -232,21 +248,21 @@
       "cta": "List your property"
     },
     "airbnbVs": {
-      "title": "Airbnb vs InhabitMe",
+      "title": "Short-term platforms vs InhabitMe",
       "subtitle": "Simple pricing that protects host margins",
       "airbnb": {
-        "title": "Airbnb",
-        "point1": "15–20% commission",
-        "point2": "Higher effective fees for longer stays",
-        "point3": "Host margins get compressed"
+        "title": "Short-term platforms",
+        "point1": "Percentage-based commission on every booking",
+        "point2": "The longer the stay, the more the platform takes",
+        "point3": "Built into the nightly price you pay"
       },
       "inhabitme": {
         "title": "InhabitMe",
-        "point1": "Flat fee (€128–€358 total platform fee)",
-        "point2": "No commissions",
-        "point3": "Pay only if booking happens"
+        "point1": "Flat fee per stay ($79–239 guest · $49–119 host)",
+        "point2": "Rent goes directly to the host",
+        "point3": "Pay only if the booking happens"
       },
-      "savings": "You can save €300–€900 per stay"
+      "savings": "One flat fee, whatever the rent — the longer you stay, the more you save"
     },
     "forHosts": {
       "title": "For Hosts",
@@ -666,11 +682,11 @@
     "items": {
       "q1": {
         "q": "What is inhabitme?",
-        "a": "inhabitme is a platform specialized in medium-term stays (1-6 months) for remote workers and digital nomads. We connect hosts with verified spaces to guests looking for quality accommodation with fast WiFi and proper workspaces."
+        "a": "inhabitme is a platform specialized in medium-term stays (1–12 months) for remote workers and digital nomads. We connect hosts with verified spaces to guests looking for quality accommodation with fast WiFi and proper workspaces."
       },
       "q2": {
-        "q": "How is it different from Airbnb or Booking?",
-        "a": "We focus on medium-term stays (not short nights). We verify WiFi, offer transparent pricing without surprises, and charge a one-time fee ($79-239) based on stay duration, not monthly commissions."
+        "q": "How is it different from short-term rental platforms?",
+        "a": "We focus on medium-term stays (not short nights). Hosts declare WiFi and workspace up front, pricing is transparent with no surprises, and we charge a one-time fee ($79–239) based on stay duration — never a percentage of the rent."
       },
       "q3": {
         "q": "Which cities are available?",
@@ -682,11 +698,11 @@
       },
       "g2": {
         "q": "How much does inhabitme cost?",
-        "a": "We charge a one-time service fee based on duration: $79 (1-2 months), $139 (3-4 months), or $239 (5-6 months). No monthly commissions, no hidden costs."
+        "a": "We charge a one-time service fee based on duration: $79 (1 month), $139 (2–3 months), $189 (4–6 months), or $239 (7+ months). No monthly commissions, no hidden costs."
       },
       "g3": {
         "q": "What's included in the accommodation?",
-        "a": "All accommodations include verified WiFi (minimum 50 Mbps), workspace, and basic amenities. Some include extras like cleaning, coworking, or gym. Check each listing for details."
+        "a": "All accommodations include host-declared WiFi (minimum 50 Mbps), workspace, and basic amenities. Some include extras like cleaning, coworking, or gym. Check each listing for details."
       },
       "g4": {
         "q": "Can I cancel my booking?",
@@ -702,7 +718,7 @@
       },
       "h3": {
         "q": "What requirements must my property meet?",
-        "a": "Minimum requirements: verified WiFi >50 Mbps, dedicated workspace, minimum 1-month availability, quality photos, complete description, and competitive pricing."
+        "a": "Minimum requirements: WiFi >50 Mbps (declared by you), dedicated workspace, minimum 1-month availability, quality photos, complete description, and competitive pricing."
       },
       "h4": {
         "q": "How do I receive payments?",
@@ -735,11 +751,11 @@
     "missionTitle": "Our mission",
     "missionText": "Make finding the perfect home for remote work simple, transparent, and reliable.",
     "problemTitle": "The problem we solve",
-    "problemText": "Digital nomads and remote workers face a unique challenge: they need medium-term housing (1-6 months) with reliable WiFi and proper workspaces. Traditional platforms weren't designed for this.",
-    "wifiTitle": "Verified WiFi",
-    "wifiText": "All listings include confirmed internet quality, crucial for remote work.",
+    "problemText": "Digital nomads and remote workers face a unique challenge: they need medium-term housing (1–12 months) with reliable WiFi and proper workspaces. Traditional platforms weren't designed for this.",
+    "wifiTitle": "Host-declared WiFi",
+    "wifiText": "Every listing shows the internet speed declared by the host, crucial for remote work.",
     "midStaysTitle": "Medium stays",
-    "midStaysText": "Focused on 1-12 months, the sweet spot for digital nomads.",
+    "midStaysText": "Focused on 1–12 months, the sweet spot for digital nomads.",
     "communityTitle": "Community",
     "communityText": "We connect hosts who understand remote workers' needs.",
     "noSurprisesTitle": "No surprises",
@@ -758,8 +774,8 @@
     "why1Text": "Clear pricing, no hidden fees",
     "why2Strong": "Remote-first:",
     "why2Text": "We understand your specific needs",
-    "why3Strong": "Verification:",
-    "why3Text": "WiFi, workspace, and amenities confirmed",
+    "why3Strong": "Transparency:",
+    "why3Text": "WiFi, workspace, and amenities declared by each host",
     "why4Strong": "Direct to host:",
     "why4Text": "No unnecessary intermediaries",
     "ctaTitle": "Ready to find your next home?",
@@ -991,8 +1007,8 @@
     "proceedBookingButton": "Continue booking",
     "requestBookingButton": "Request booking",
     "proceedNote": "Payment is charged only when tenant intent is real.",
-    "savingsTitle": "Typical Airbnb fees: €500+ · InhabitMe: €129–€229",
-    "savingsBody": "You can save €300+ per deal while keeping conversions high.",
+    "savingsTitle": "Percentage commissions grow with the rent · InhabitMe host fee: €49–€119 flat",
+    "savingsBody": "Keep your margin on every deal while keeping conversions high.",
     "internalChatNoteTitle": "Internal chat protection",
     "internalChatNoteBody": "Keep the first interaction inside InhabitMe and avoid sharing direct contact too early.",
     "pipeline": "Pipeline",
@@ -1317,21 +1333,21 @@
       "title": "Why list on InhabitMe?",
       "item1": "Listing is completely free",
       "item2": "No upfront cost",
-      "item3": "No commissions like Airbnb",
+      "item3": "No percentage commissions",
       "item4": "Only pay when you get a booking",
       "item5": "Reach remote workers and students",
       "cta": "List your property"
     },
     "compare": {
       "title": "Stop paying high commissions",
-      "leftTitle": "Airbnb",
-      "left1": "15–20% commission",
-      "left2": "Fees on every booking",
+      "leftTitle": "Short-term platforms",
+      "left1": "Percentage-based commission",
+      "left2": "Fees grow with every month of the stay",
       "rightTitle": "InhabitMe",
       "right1": "No commissions",
       "right2": "Pay only if you get a tenant",
       "right3": "Built for mid-term stays",
-      "savings": "Typical savings: $300–$900 per booking"
+      "savings": "One flat fee per booking, whatever the rent"
     },
     "austinFocus": {
       "title": "Launching in Austin",
@@ -1364,7 +1380,7 @@
       "title": "Frequently asked questions",
       "q1": "Do I pay anything upfront?",
       "a1": "No. Listing your property is completely free. You only pay a fee if you get a booking.",
-      "q2": "How is this different from Airbnb?",
+      "q2": "How is this different from short-term rental platforms?",
       "a2": "We don’t charge commissions. Instead, we use a simple flat fee only when you successfully rent your property.",
       "q3": "What kind of stays?",
       "a3": "We focus on 1–12 month stays for remote workers, students, and professionals."
@@ -1502,22 +1518,23 @@
       "support": "Questions? Email contact@inhabitme.com"
     },
     "calculator": {
-      "title": "How much do you save vs Airbnb?",
-      "description": "Plug in your monthly rent and stay duration. We compare the 15% Airbnb host fee against our flat fee.",
+      "title": "How much do you save vs a percentage commission?",
+      "description": "Plug in your monthly rent, stay duration and the commission you pay today. We compare it against our flat fee.",
       "monthlyRentLabel": "Monthly rent",
       "monthlyRentPlaceholder": "1200",
       "durationLabel": "Stay duration",
       "durationUnitSingular": "month",
       "durationUnitPlural": "months",
+      "commissionLabel": "Commission you pay today",
       "results": {
         "totalRevenue": "Your total rent",
-        "airbnbFee": "Airbnb takes (15%)",
+        "airbnbFee": "A {pct}% commission takes",
         "inhabitmeFee": "InhabitMe flat fee",
         "yourSavings": "You keep",
-        "perStay": "per stay vs. Airbnb"
+        "perStay": "per stay vs. a percentage commission"
       },
       "cta": "Start listing for free",
-      "disclaimer": "Estimate based on Airbnb's typical 15% effective host commission. Your actual numbers may vary."
+      "disclaimer": "Estimate based on the commission rate you enter. Check your current platform's fees — your actual numbers may vary."
     }
   }
 }

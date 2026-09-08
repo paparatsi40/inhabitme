@@ -13,7 +13,7 @@ export function OrganizationJsonLd() {
     url: SEO_CONFIG.baseUrl,
     logo: `${SEO_CONFIG.baseUrl}/icon-512.png`,
     description:
-      'Platform for medium-term rentals (1–6 months) tailored for digital nomads and remote workers. Flat fee, no commissions.',
+      'Platform for medium-term rentals (1–12 months) tailored for digital nomads and remote workers. Flat fee, no commissions.',
     foundingDate: '2024',
     contactPoint: {
       '@type': 'ContactPoint',

@@ -31,7 +31,7 @@ export function LodgingBusinessJsonLd({
     url: `${SEO_CONFIG.baseUrl}/${locale}/${citySlug}`,
     description:
       description ??
-      `Verified medium-term rentals (1–6 months) in ${cityName}. Remote-work-ready apartments, transparent flat fee.`,
+      `Verified medium-term rentals (1–12 months) in ${cityName}. Remote-work-ready apartments, transparent flat fee.`,
     address: {
       '@type': 'PostalAddress',
       addressLocality: cityName,

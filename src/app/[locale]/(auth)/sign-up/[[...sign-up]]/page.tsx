@@ -1,3 +1,29 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'pageMetadata.signUp' });
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.inhabitme.com';
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: {
+      canonical: `${baseUrl}/${locale}/sign-up`,
+      languages: {
+        en: `${baseUrl}/en/sign-up`,
+        es: `${baseUrl}/es/sign-up`,
+      },
+    },
+    robots: { index: false, follow: true },
+  };
+}
+
 import { SignUp } from '@clerk/nextjs';
 
 type SignUpParams = Promise<{ locale: string }>;

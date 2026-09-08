@@ -20,8 +20,8 @@ export const SEO_CONFIG = {
     es: 'InhabitMe - Estancias sin sorpresas',
   },
   defaultDescription: {
-    en: 'Find verified 1-6 month stays with dedicated workspace, fast WiFi, and transparent pricing in Madrid, Barcelona & Valencia.',
-    es: 'Alojamientos verificados de 1-6 meses con workspace dedicado, WiFi rápido y precios claros en Madrid, Barcelona y Valencia.',
+    en: 'Find verified 1–12 month stays with dedicated workspace, fast WiFi, and transparent pricing in Madrid, Barcelona & Valencia.',
+    es: 'Alojamientos verificados de 1–12 meses con workspace dedicado, WiFi rápido y precios claros en Madrid, Barcelona y Valencia.',
   },
   
   // Open Graph defaults
@@ -87,7 +87,7 @@ export const SEO_CONFIG = {
       // 'https://twitter.com/inhabitme',
       // 'https://www.facebook.com/inhabitme',
       // 'https://www.instagram.com/inhabitme',
-      // 'https://www.linkedin.com/company/inhabitme',
+      'https://www.linkedin.com/in/inhabitme',
     ],
   },
 } as const
