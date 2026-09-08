@@ -93,9 +93,9 @@
       "subtitle": "No hidden commissions · No surcharges · No surprises",
       "otherPlatforms": {
         "title": "Other platforms",
-        "commission": "15-20% commissions",
-        "commissionDesc": "On the total rental price",
-        "fees": "Hidden fees up to $500",
+        "commission": "Percentage-based commissions",
+        "commissionDesc": "On the total rental price — the longer you stay, the more you pay",
+        "fees": "Fees hidden in the nightly price",
         "feesDesc": "You discover the real cost at the end",
         "host": "Host pays commission",
         "hostDesc": "Results in higher prices for you"
@@ -113,16 +113,16 @@
         "fairPriceDesc": "Host doesn't need to inflate the price"
       },
       "example": {
-        "title": "Example 3 months in Austin:",
+        "title": "Illustrative example — 3 months in Austin, assuming a 15% commission:",
         "otherPlatformTotal": "3600 + 540 = 4140 USD",
         "inhabitmeTotal": "3600 + 218 = 3818 USD",
         "otherPlatform": "Rent ($1,200/month × 3) + $540 commission (15% fee)",
         "inhabitme": "Rent ($1,200/month × 3) + $218 fee ($139 guest + $79 host)"
       },
       "savings": {
-        "badge": "💰 Average savings per stay",
-        "amount": "$320 - $900",
-        "description": "Depending on duration and city",
+        "badge": "💰 Savings in this example",
+        "amount": "$322",
+        "description": "And the gap grows with every extra month",
         "title": "You save $322 in this example!",
         "subtitle": "And savings increase when you rent longer"
       },

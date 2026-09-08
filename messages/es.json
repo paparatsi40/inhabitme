@@ -93,9 +93,9 @@
       "subtitle": "Sin comisiones escondidas · Sin sobrecargos · Sin sorpresas",
       "otherPlatforms": {
         "title": "Otras plataformas",
-        "commission": "Comisiones del 15-20%",
-        "commissionDesc": "Sobre el precio total del alquiler",
-        "fees": "Fees escondidos hasta €500",
+        "commission": "Comisiones porcentuales",
+        "commissionDesc": "Sobre el precio total del alquiler — cuanto más te quedas, más pagas",
+        "fees": "Fees escondidos en el precio por noche",
         "feesDesc": "Descubres el costo real al final",
         "host": "El host paga comisión",
         "hostDesc": "Resulta en precios más altos para ti"
@@ -113,16 +113,16 @@
         "fairPriceDesc": "El host no necesita inflar el precio"
       },
       "example": {
-        "title": "Ejemplo 3 meses en Madrid:",
+        "title": "Ejemplo ilustrativo — 3 meses en Madrid, suponiendo una comisión del 15%:",
         "otherPlatform": "Alquiler (€1,200/mes × 3) + €540 comisión (15% fee)",
         "otherPlatformTotal": "3600 + 540 = 4140 EUR",
         "inhabitme": "Alquiler (€1,200/mes × 3) + €218 fee (€139 guest + €79 host)",
         "inhabitmeTotal": "3600 + 218 = 3818 EUR"
       },
       "savings": {
-        "badge": "💰 Ahorro promedio por estancia",
-        "amount": "€320 - €900",
-        "description": "Dependiendo de la duración y ciudad",
+        "badge": "💰 Ahorro en este ejemplo",
+        "amount": "€322",
+        "description": "Y la diferencia crece con cada mes adicional",
         "title": "¡Ahorras €322 en este ejemplo!",
         "subtitle": "Y el ahorro aumenta cuando alquilas por más tiempo"
       },
