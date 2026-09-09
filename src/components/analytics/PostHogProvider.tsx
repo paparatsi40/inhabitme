@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import posthog from 'posthog-js'
 import { PostHogProvider as PHProvider } from 'posthog-js/react'
 import { hasAnalyticsConsent, onConsentChange } from '@/lib/analytics/consent'
+import { captureAttribution } from '@/lib/analytics/attribution'
 
 /**
  * Inicialización lazy de PostHog.
@@ -44,7 +45,12 @@ function PostHogPageviewTracker() {
 
   useEffect(() => {
     if (!pathname) return
+
+    // Guardar utm_*/gclid de la primera visita (first-touch) aunque aún no haya consentimiento
+    const attribution = captureAttribution()
+
     if (posthog.has_opted_out_capturing()) return
+    if (attribution) posthog.register(attribution)
 
     const url = searchParams && searchParams.toString()
       ? `${pathname}?${searchParams.toString()}`

@@ -12,6 +12,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent } from '@/components/ui/card'
+import { getAttribution } from '@/lib/analytics/attribution'
+import { trackListingPublished } from '@/lib/analytics/events'
 import {
   ArrowLeft,
   ArrowRight,
@@ -195,6 +197,7 @@ function CreatePropertyContent() {
 
       const submitData = {
         ...formData,
+        attribution: getAttribution(),
         floorNumber: formData.floorNumber ?? null,
         monthlyPrice: formData.pricePerMonth,
         minStayMonths: normalizedMinStayMonths,
@@ -260,6 +263,12 @@ function CreatePropertyContent() {
 
       console.log('[CreateProperty] ✅ Propiedad creada:', responseData)
       setSuccess(true)
+      trackListingPublished({
+        property_id: String(responseData?.id ?? ''),
+        city: formData.city || undefined,
+        bedrooms: Number(formData.bedrooms) || undefined,
+        monthly_price: Number(formData.pricePerMonth) || undefined,
+      })
 
       setTimeout(() => {
         router.push(`/${locale}/dashboard`)

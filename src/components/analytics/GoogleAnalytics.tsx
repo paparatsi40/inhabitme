@@ -25,7 +25,7 @@ declare global {
  *   - https://developers.google.com/tag-platform/security/guides/consent
  *   - https://developers.google.com/tag-platform/gtagjs/install
  */
-export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
+export function GoogleAnalytics({ measurementId, adsId }: { measurementId: string; adsId?: string }) {
   useEffect(() => {
     if (!measurementId || typeof window === 'undefined') return
 
@@ -68,6 +68,7 @@ export function GoogleAnalytics({ measurementId }: { measurementId: string }) {
     });
     window.gtag('js', new Date());
     window.gtag('config', '${measurementId}', { send_page_view: true });
+    ${adsId ? `window.gtag('config', '${adsId}');` : ''}
   `.trim()
 
   return (

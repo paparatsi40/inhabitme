@@ -1457,6 +1457,88 @@
     "ctaText": "¿Listo para encontrar tu hogar perfecto de medio plazo en España?",
     "ctaButton": "Ver anuncios"
   },
+  "cityHostsPage": {
+    "meta": {
+      "title": "Alquila tu piso por meses en {city} — sin comisión sobre la renta | InhabitMe",
+      "description": "Publica gratis tu piso amueblado en {city}. Profesionales remotos de 1 a 12 meses. Tarifa fija solo cuando confirmas inquilino, nunca un porcentaje de tu renta."
+    },
+    "hero": {
+      "badge": "Para propietarios en {city}",
+      "title": "Alquila tu piso por meses en {city}",
+      "titleHighlight": "sin ceder un porcentaje de tu renta",
+      "subtitle": "Profesionales remotos que buscan piso amueblado de 1 a 12 meses. Publicar es gratis. Pagas una tarifa fija solo cuando confirmas inquilino, y el contrato es directo entre tú y él.",
+      "cta": "Publicar mi piso gratis",
+      "trust": "Sin tarjeta · Sin cuota mensual · Cancela cuando quieras"
+    },
+    "benefits": {
+      "title": "Por qué los propietarios de {city} eligen InhabitMe",
+      "noCommission": {
+        "title": "Tarifa fija, no un porcentaje",
+        "description": "Entre 49 y 119 € por reserva confirmada, sea cual sea la renta. La renta íntegra es para ti."
+      },
+      "longerStays": {
+        "title": "Estancias de 1 a 12 meses",
+        "description": "Menos rotación, menos limpiezas, un solo inquilino que trabaja desde casa y la cuida como suya."
+      },
+      "directContact": {
+        "title": "Tú eliges al inquilino",
+        "description": "Recibes solicitudes con el perfil y las fechas del inquilino. Habláis directamente y decides. Sin intermediarios."
+      }
+    },
+    "fees": {
+      "title": "Lo que pagas, y solo cuando confirmas",
+      "subtitle": "Una tarifa fija por reserva confirmada. Nada antes, nada mensual.",
+      "duration": "Duración de la estancia",
+      "hostFee": "Tu tarifa",
+      "rows": {
+        "m1": "1 mes",
+        "m2": "2–3 meses",
+        "m4": "4–6 meses",
+        "m7": "7+ meses"
+      },
+      "disclaimer": "Ejemplo: una estancia de 3 meses a 1.400 €/mes son 4.200 € de renta. Tú pagas 79 € una sola vez. Una comisión del 15 % sobre la misma reserva serían 630 €."
+    },
+    "how": {
+      "title": "Tres pasos hasta tu primer inquilino",
+      "step1": {
+        "title": "Publica en 10 minutos",
+        "description": "Fotos, precio mensual, velocidad del WiFi y espacio de trabajo. Si lo prefieres, envíanos tus fotos y lo publicamos por ti."
+      },
+      "step2": {
+        "title": "Recibe solicitudes",
+        "description": "Profesionales remotos te envían sus fechas y su perfil. El inquilino paga una pequeña tarifa para contactarte, así que las solicitudes son serias."
+      },
+      "step3": {
+        "title": "Confirma y firma directamente",
+        "description": "Acuerda las condiciones con el inquilino. Paga tu tarifa fija solo cuando la reserva queda confirmada."
+      }
+    },
+    "faq": {
+      "title": "Lo que nos preguntan los propietarios de {city}",
+      "q1": {
+        "q": "¿Esto es alquiler turístico?",
+        "a": "No. Son estancias de 1 a 12 meses de personas que vienen a trabajar, con un contrato de temporada firmado entre tú y el inquilino. Nosotros somos un intermediario tecnológico, no parte del contrato. Te recomendamos confirmar con tu asesor los requisitos de tu comunidad y tu municipio."
+      },
+      "q2": {
+        "q": "¿Cuándo pago?",
+        "a": "Solo cuando confirmas un inquilino. Publicar, recibir solicitudes y hablar con los inquilinos es gratis."
+      },
+      "q3": {
+        "q": "¿Quién verifica el WiFi y el espacio de trabajo?",
+        "a": "Tú declaras la velocidad de internet y el espacio de trabajo al publicar. Mostramos esa declaración a los inquilinos para que las expectativas queden claras desde el principio."
+      },
+      "q4": {
+        "q": "¿Puedo publicar varios pisos?",
+        "a": "Sí. Cada anuncio es independiente y paga su tarifa solo cuando consigue una reserva confirmada. Si gestionas varias viviendas, escríbenos y te ayudamos a publicarlas."
+      }
+    },
+    "finalCta": {
+      "title": "Tu piso en {city}, alquilado por meses",
+      "subtitle": "Publicar es gratis. No pagas nada hasta confirmar inquilino.",
+      "button": "Publicar mi piso gratis",
+      "support": "¿Prefieres hablar antes? contact@inhabitme.com"
+    }
+  },
   "listYourSpacePage": {
     "meta": {
       "title": "Publica tu alquiler de mediana estancia — tarifa plana, sin comisiones | InhabitMe",

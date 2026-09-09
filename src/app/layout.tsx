@@ -17,6 +17,8 @@ export const metadata = {
 };
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || '';
+// Google Ads: NEXT_PUBLIC_GADS_CONVERSION_ID tiene formato AW-XXXXXXXXX/etiqueta; el config usa solo AW-XXXXXXXXX
+const GADS_ID = (process.env.NEXT_PUBLIC_GADS_CONVERSION_ID || '').split('/')[0] || undefined;
 
 // Root layout for ALL routes (auth + i18n)
 export default function RootLayout({
@@ -40,7 +42,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
         {/* Google Analytics 4 con Consent Mode v2 */}
-        {GA_ID && <GoogleAnalytics measurementId={GA_ID} />}
+        {GA_ID && <GoogleAnalytics measurementId={GA_ID} adsId={GADS_ID} />}
 
         {/* PostHog provider — opt-out por defecto hasta que el usuario acepte */}
         <PostHogProvider>

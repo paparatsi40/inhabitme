@@ -55,21 +55,21 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              // Scripts: Clerk, Stripe, Maps, Vercel, GA4 (googletagmanager + google-analytics), PostHog, Sentry
+              // Scripts: Clerk, Stripe, Maps, Vercel, GA4 + Google Ads conversion (googletagmanager, googleadservices, doubleclick), PostHog, Sentry
               // 'wasm-unsafe-eval' (NO full 'unsafe-eval'): required only by the Google Maps JS API
               //   WebGL/vector renderer, which compiles WebAssembly. This is Google's documented
               //   minimal grant — https://developers.google.com/maps/documentation/javascript/content-security-policy
               // 'unsafe-inline': still required for Next.js hydration bootstrap + inline GA init.
               //   TODO: migrate to a nonce-based policy (middleware-generated nonce) to drop this.
-              "script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline' https://clerk.accounts.dev https://clerk.inhabitme.com https://*.clerk.accounts.dev https://js.stripe.com https://maps.googleapis.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://us.i.posthog.com https://eu.i.posthog.com https://us-assets.i.posthog.com https://eu-assets.i.posthog.com https://*.sentry.io",
+              "script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline' https://clerk.accounts.dev https://clerk.inhabitme.com https://*.clerk.accounts.dev https://js.stripe.com https://maps.googleapis.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://us.i.posthog.com https://eu.i.posthog.com https://us-assets.i.posthog.com https://eu-assets.i.posthog.com https://*.sentry.io",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src * blob: data:",
               "font-src 'self' https://fonts.gstatic.com https://vercel.live",
               // Connect: incluye endpoints de ingesta de GA, PostHog, Sentry y Google Maps.
               // Maps usa varios subdominios de googleapis.com (maps, mapsresources-pa, etc.)
               // y data: en fetch() para tiles del WebGL renderer cuando hay mapId/cloud styling.
-              "connect-src 'self' data: https://clerk.inhabitme.com https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com https://vercel.live https://www.google-analytics.com https://*.google-analytics.com https://us.i.posthog.com https://eu.i.posthog.com https://*.posthog.com https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io https://*.googleapis.com https://*.gstatic.com",
-              "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://vercel.live",
+              "connect-src 'self' data: https://clerk.inhabitme.com https://*.clerk.accounts.dev https://api.stripe.com https://*.supabase.co https://*.cloudinary.com https://vercel.live https://www.google-analytics.com https://*.google-analytics.com https://www.google.com https://*.google.com https://www.googleadservices.com https://*.doubleclick.net https://us.i.posthog.com https://eu.i.posthog.com https://*.posthog.com https://*.sentry.io https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://*.ingest.de.sentry.io https://*.googleapis.com https://*.gstatic.com",
+              "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://vercel.live https://td.doubleclick.net https://*.doubleclick.net",
               "object-src 'none'",
               "media-src 'self'",
               "worker-src 'self' blob:",

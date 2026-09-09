@@ -3,6 +3,7 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { notifyWaitlist, getWaitlistCount } from '@/lib/email/send-waitlist-notification'
+import { captureServerEvent } from '@/lib/analytics/posthog-server'
 
 export async function POST(req: NextRequest) {
   try {
@@ -196,6 +197,23 @@ async function handleCreateProperty(req: NextRequest) {
 
   // 🔁 Revalidar DESPUÉS del insert exitoso
   revalidatePath('/dashboard')
+
+  // 📈 Métrica de negocio: piso publicado (server-side, independiente del banner de cookies).
+  // `attribution` llega del cliente (utm_*/gclid de la primera visita, ver lib/analytics/attribution.ts).
+  const attribution =
+    body?.attribution && typeof body.attribution === 'object' ? (body.attribution as Record<string, unknown>) : {}
+  void captureServerEvent({
+    event: 'listing_published',
+    distinctId: userId,
+    properties: {
+      property_id: data.id,
+      city: city ?? null,
+      country: country ?? null,
+      bedrooms: bedrooms ?? null,
+      monthly_price: monthlyPrice ?? null,
+      ...attribution,
+    },
+  })
 
   // 🔔 Check if there are users waiting for this city
   try {

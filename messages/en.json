@@ -1457,6 +1457,88 @@
     "ctaText": "Ready to find your perfect medium-term home in Spain?",
     "ctaButton": "Browse listings"
   },
+  "cityHostsPage": {
+    "meta": {
+      "title": "Rent out your apartment by the month in {city} — no commission on rent | InhabitMe",
+      "description": "List your furnished apartment in {city} for free. Remote professionals staying 1 to 12 months. Flat fee only when you confirm a tenant, never a percentage of your rent."
+    },
+    "hero": {
+      "badge": "For property owners in {city}",
+      "title": "Rent out your apartment by the month in {city}",
+      "titleHighlight": "without giving up a percentage of your rent",
+      "subtitle": "Remote professionals looking for furnished apartments for 1 to 12 months. Listing is free. You pay a flat fee only when you confirm a tenant, and the contract is directly between you and them.",
+      "cta": "List my apartment for free",
+      "trust": "No credit card · No monthly fee · Cancel any time"
+    },
+    "benefits": {
+      "title": "Why owners in {city} choose InhabitMe",
+      "noCommission": {
+        "title": "Flat fee, not a percentage",
+        "description": "Between €49 and €119 per confirmed booking, whatever the rent. The full rent goes to you."
+      },
+      "longerStays": {
+        "title": "Stays of 1 to 12 months",
+        "description": "Fewer turnovers, fewer cleanings, one tenant who works from home and treats the place like their own."
+      },
+      "directContact": {
+        "title": "You choose the tenant",
+        "description": "You receive requests with the tenant's profile and dates. You talk directly and decide. No intermediaries."
+      }
+    },
+    "fees": {
+      "title": "What you pay, and only when you confirm",
+      "subtitle": "One flat fee per confirmed booking. Nothing before, nothing monthly.",
+      "duration": "Stay length",
+      "hostFee": "Your fee",
+      "rows": {
+        "m1": "1 month",
+        "m2": "2–3 months",
+        "m4": "4–6 months",
+        "m7": "7+ months"
+      },
+      "disclaimer": "Example: a 3-month stay at €1,400/month is €4,200 in rent. You pay €79 once. A 15% commission on the same booking would be €630."
+    },
+    "how": {
+      "title": "Three steps to your first tenant",
+      "step1": {
+        "title": "Publish in 10 minutes",
+        "description": "Photos, monthly price, WiFi speed and workspace. If you prefer, send us your photos and we publish it for you."
+      },
+      "step2": {
+        "title": "Receive requests",
+        "description": "Remote professionals send you their dates and profile. Tenants pay a small fee to contact you, so requests are serious."
+      },
+      "step3": {
+        "title": "Confirm and sign directly",
+        "description": "Agree the terms with the tenant. Pay your flat fee only when the booking is confirmed."
+      }
+    },
+    "faq": {
+      "title": "Questions owners in {city} ask us",
+      "q1": {
+        "q": "Is this tourist rental?",
+        "a": "No. These are stays of 1 to 12 months for people who come to work, with a temporary lease signed between you and the tenant. We are a technology intermediary, not a party to the contract. We recommend confirming the requirements for your building and municipality with your advisor."
+      },
+      "q2": {
+        "q": "When do I pay?",
+        "a": "Only when you confirm a tenant. Listing, receiving requests and talking to tenants is free."
+      },
+      "q3": {
+        "q": "Who verifies the WiFi and the workspace?",
+        "a": "You declare the internet speed and the workspace when listing. We show that declaration to tenants so expectations are clear from the start."
+      },
+      "q4": {
+        "q": "Can I list several apartments?",
+        "a": "Yes. Each listing is independent and pays its own fee only when it gets a confirmed booking. If you manage several properties, write to us and we help you publish them."
+      }
+    },
+    "finalCta": {
+      "title": "Your apartment in {city}, rented by the month",
+      "subtitle": "Free to list. Pay nothing until you confirm a tenant.",
+      "button": "List my apartment for free",
+      "support": "Prefer to talk first? contact@inhabitme.com"
+    }
+  },
   "listYourSpacePage": {
     "meta": {
       "title": "List your medium-term rental — flat fee, no commissions | InhabitMe",
