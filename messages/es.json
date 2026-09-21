@@ -53,7 +53,8 @@
       },
       "cta": {
         "primary": "Ver apartamentos",
-        "secondary": "Soy anfitrión"
+        "secondary": "Soy anfitrión",
+        "hostNote": "¿Tienes un piso? Publicarlo es gratis. Solo pagas una tarifa fija cuando confirmas al inquilino."
       },
       "trustSignal": "Contacto directo · Listo para remoto · Tarifa plana",
       "pricingBadge": "Tarifa única, <priceRange></priceRange> según duración",

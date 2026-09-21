@@ -53,7 +53,8 @@
       },
       "cta": {
         "primary": "Browse apartments",
-        "secondary": "I'm a host"
+        "secondary": "I'm a host",
+        "hostNote": "Own an apartment? Listing is free. You pay one flat fee only when you confirm a tenant."
       },
       "trustSignal": "Direct contact · Remote-work ready · One flat fee",
       "pricingBadge": "One-time fee, <priceRange></priceRange> by duration",

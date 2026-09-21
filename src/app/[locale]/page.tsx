@@ -174,6 +174,12 @@ export default async function HomePage({
                     </Link>
                   </Button>
                 </div>
+                <p className="mt-3 text-sm text-gray-600">
+                  {t('hero.cta.hostNote')}{' '}
+                  <Link href="/list-your-space" className="font-semibold text-blue-700 hover:underline">
+                    {t('hero.cta.secondary')} →
+                  </Link>
+                </p>
                 <div className="mt-8 p-5 bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-300 rounded-2xl">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
