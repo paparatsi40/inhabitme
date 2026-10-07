@@ -1475,7 +1475,7 @@
       "title": "Why owners in {city} choose InhabitMe",
       "noCommission": {
         "title": "Flat fee, not a percentage",
-        "description": "Between €49 and €119 per confirmed booking, whatever the rent. The full rent goes to you."
+        "description": "Between {cur}49 and {cur}119 per confirmed booking, whatever the rent. The full rent goes to you."
       },
       "longerStays": {
         "title": "Stays of 1 to 12 months",
@@ -1497,7 +1497,7 @@
         "m4": "4–6 months",
         "m7": "7+ months"
       },
-      "disclaimer": "Example: a 3-month stay at €1,400/month is €4,200 in rent. You pay €79 once. A 15% commission on the same booking would be €630."
+      "disclaimer": "Example: a 3-month stay at {cur}1,400/month is {cur}4,200 in rent. You pay {cur}79 once. A 15% commission on the same booking would be {cur}630."
     },
     "how": {
       "title": "Three steps to your first tenant",
@@ -1516,6 +1516,10 @@
     },
     "faq": {
       "title": "Questions owners in {city} ask us",
+      "q1us": {
+        "q": "Does this count as a short-term rental (STR)?",
+        "a": "No. Stays are 30 nights or longer, outside what Austin and most Texas cities regulate as short-term rental, so no STR license is involved. You sign a fixed-term lease directly with the tenant; InhabitMe connects you but is not a party to the lease. Check your HOA and lease rules, and confirm specifics with your own advisor."
+      },
       "q1": {
         "q": "Is this tourist rental?",
         "a": "No. These are stays of 1 to 12 months for people who come to work, with a temporary lease signed between you and the tenant. We are a technology intermediary, not a party to the contract. We recommend confirming the requirements for your building and municipality with your advisor."

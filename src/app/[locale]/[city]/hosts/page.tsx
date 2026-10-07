@@ -76,6 +76,9 @@ export default async function CityHostsPage({ params }: { params: Params }) {
   const cityName = city.name
   // Moneda por país de la ciudad: los importes son los mismos en EUR y USD (decisión de producto)
   const currency = city.country === 'ES' || city.country === 'PT' ? '€' : '$'
+  // La FAQ legal cambia por país: arrendamiento de temporada (ES/PT) vs. STR 30+ noches (US)
+  const faqKeys: Array<'q1' | 'q1us' | 'q2' | 'q3' | 'q4'> =
+    city.country === 'US' ? ['q1us', 'q2', 'q3', 'q4'] : ['q1', 'q2', 'q3', 'q4']
 
   const benefits = [
     { key: 'noCommission', Icon: Shield },
@@ -118,7 +121,7 @@ export default async function CityHostsPage({ params }: { params: Params }) {
                   <Icon className="h-6 w-6 text-blue-600" />
                 </div>
                 <h3 className="text-xl font-black text-gray-900 mb-2">{t(`benefits.${key}.title`)}</h3>
-                <p className="text-gray-700">{t(`benefits.${key}.description`)}</p>
+                <p className="text-gray-700">{t(`benefits.${key}.description`, { cur: currency })}</p>
               </div>
             ))}
           </div>
@@ -152,7 +155,7 @@ export default async function CityHostsPage({ params }: { params: Params }) {
               </tbody>
             </table>
           </div>
-          <p className="text-sm text-gray-600 text-center mt-4 max-w-xl mx-auto">{t('fees.disclaimer')}</p>
+          <p className="text-sm text-gray-600 text-center mt-4 max-w-xl mx-auto">{t('fees.disclaimer', { cur: currency })}</p>
         </div>
       </section>
 
@@ -181,7 +184,7 @@ export default async function CityHostsPage({ params }: { params: Params }) {
             {t('faq.title', { city: cityName })}
           </h2>
           <div className="space-y-3">
-            {(['q1', 'q2', 'q3', 'q4'] as const).map((key) => (
+            {faqKeys.map((key) => (
               <details key={key} className="group bg-white border border-gray-200 rounded-xl px-5 py-4">
                 <summary className="cursor-pointer list-none flex items-center justify-between font-bold text-gray-900">
                   {t(`faq.${key}.q`)}

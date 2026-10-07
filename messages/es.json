@@ -1475,7 +1475,7 @@
       "title": "Por qué los propietarios de {city} eligen InhabitMe",
       "noCommission": {
         "title": "Tarifa fija, no un porcentaje",
-        "description": "Entre 49 y 119 € por reserva confirmada, sea cual sea la renta. La renta íntegra es para ti."
+        "description": "Entre {cur}49 y {cur}119 por reserva confirmada, sea cual sea la renta. La renta íntegra es para ti."
       },
       "longerStays": {
         "title": "Estancias de 1 a 12 meses",
@@ -1497,7 +1497,7 @@
         "m4": "4–6 meses",
         "m7": "7+ meses"
       },
-      "disclaimer": "Ejemplo: una estancia de 3 meses a 1.400 €/mes son 4.200 € de renta. Tú pagas 79 € una sola vez. Una comisión del 15 % sobre la misma reserva serían 630 €."
+      "disclaimer": "Ejemplo: una estancia de 3 meses a {cur}1.400/mes son {cur}4.200 de renta. Tú pagas {cur}79 una sola vez. Una comisión del 15 % sobre la misma reserva serían {cur}630."
     },
     "how": {
       "title": "Tres pasos hasta tu primer inquilino",
@@ -1516,6 +1516,10 @@
     },
     "faq": {
       "title": "Lo que nos preguntan los propietarios de {city}",
+      "q1us": {
+        "q": "¿Cuenta como alquiler de corta estancia (STR)?",
+        "a": "No. Las estancias son de 30 noches o más, fuera de lo que Austin y la mayoría de ciudades de Texas regulan como short-term rental, así que no interviene ninguna licencia STR. Firmas un contrato de plazo fijo directamente con el inquilino; InhabitMe os conecta pero no es parte del contrato. Revisa las normas de tu HOA y confírmalo con tu asesor."
+      },
       "q1": {
         "q": "¿Esto es alquiler turístico?",
         "a": "No. Son estancias de 1 a 12 meses de personas que vienen a trabajar, con un contrato de temporada firmado entre tú y el inquilino. Nosotros somos un intermediario tecnológico, no parte del contrato. Te recomendamos confirmar con tu asesor los requisitos de tu comunidad y tu municipio."
